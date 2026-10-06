@@ -1,0 +1,1806 @@
+{
+  "regla": "interes-sobre-saldo",
+  "descripcion": "Generado por scripts/generar_interes_aleatorio.py (semilla 20261006). No editar a mano.",
+  "casos": [
+    {
+      "nombre": "aleatorio 0",
+      "saldo": 683169,
+      "tasa": "0.08",
+      "esperado": 54654
+    },
+    {
+      "nombre": "aleatorio 1",
+      "saldo": 100000000,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 2",
+      "saldo": 11,
+      "tasa": "0.059",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 3",
+      "saldo": 589,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 4",
+      "saldo": 167,
+      "tasa": "0.02",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 5",
+      "saldo": 968,
+      "tasa": "0.1",
+      "esperado": 97
+    },
+    {
+      "nombre": "aleatorio 6",
+      "saldo": 64,
+      "tasa": "0.0496",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 7",
+      "saldo": 233,
+      "tasa": "0.1",
+      "esperado": 23
+    },
+    {
+      "nombre": "aleatorio 8",
+      "saldo": 0,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 9",
+      "saldo": 960,
+      "tasa": "0.1",
+      "esperado": 96
+    },
+    {
+      "nombre": "aleatorio 10",
+      "saldo": 10,
+      "tasa": "0.074",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 11",
+      "saldo": 2589035,
+      "tasa": "0.09",
+      "esperado": 233013
+    },
+    {
+      "nombre": "aleatorio 12",
+      "saldo": 509,
+      "tasa": "0.01",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 13",
+      "saldo": 474,
+      "tasa": "0.0659",
+      "esperado": 31
+    },
+    {
+      "nombre": "aleatorio 14",
+      "saldo": 234,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 15",
+      "saldo": 10000000,
+      "tasa": "0.1",
+      "esperado": 1000000
+    },
+    {
+      "nombre": "aleatorio 16",
+      "saldo": 1826913,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 17",
+      "saldo": 1528259,
+      "tasa": "0.1",
+      "esperado": 152826
+    },
+    {
+      "nombre": "aleatorio 18",
+      "saldo": 3119461,
+      "tasa": "0.1",
+      "esperado": 311946
+    },
+    {
+      "nombre": "aleatorio 19",
+      "saldo": 173,
+      "tasa": "0.1",
+      "esperado": 17
+    },
+    {
+      "nombre": "aleatorio 20",
+      "saldo": 100000000,
+      "tasa": "0.0645",
+      "esperado": 6450000
+    },
+    {
+      "nombre": "aleatorio 21",
+      "saldo": 3011669,
+      "tasa": "0.0065",
+      "esperado": 19576
+    },
+    {
+      "nombre": "aleatorio 22",
+      "saldo": 10,
+      "tasa": "0.1",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 23",
+      "saldo": 2389356,
+      "tasa": "0.0116",
+      "esperado": 27717
+    },
+    {
+      "nombre": "aleatorio 24",
+      "saldo": 453,
+      "tasa": "0.0006",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 25",
+      "saldo": 1292054,
+      "tasa": "0.0364",
+      "esperado": 47031
+    },
+    {
+      "nombre": "aleatorio 26",
+      "saldo": 822915,
+      "tasa": "0.1",
+      "esperado": 82292
+    },
+    {
+      "nombre": "aleatorio 27",
+      "saldo": 323141,
+      "tasa": "0.1",
+      "esperado": 32314
+    },
+    {
+      "nombre": "aleatorio 28",
+      "saldo": 4490767,
+      "tasa": "0.10",
+      "esperado": 449077
+    },
+    {
+      "nombre": "aleatorio 29",
+      "saldo": 10,
+      "tasa": "0.06",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 30",
+      "saldo": 100,
+      "tasa": "0.0374",
+      "esperado": 4
+    },
+    {
+      "nombre": "aleatorio 31",
+      "saldo": 25,
+      "tasa": "0.0989",
+      "esperado": 2
+    },
+    {
+      "nombre": "aleatorio 32",
+      "saldo": 534518,
+      "tasa": "0.06",
+      "esperado": 32071
+    },
+    {
+      "nombre": "aleatorio 33",
+      "saldo": 1805872,
+      "tasa": "0.0990",
+      "esperado": 178781
+    },
+    {
+      "nombre": "aleatorio 34",
+      "saldo": 1915721,
+      "tasa": "0.1",
+      "esperado": 191572
+    },
+    {
+      "nombre": "aleatorio 35",
+      "saldo": 4499467,
+      "tasa": "0.1",
+      "esperado": 449947
+    },
+    {
+      "nombre": "aleatorio 36",
+      "saldo": 1,
+      "tasa": "0.04",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 37",
+      "saldo": 100,
+      "tasa": "0.03",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 38",
+      "saldo": 4835647,
+      "tasa": "0.030",
+      "esperado": 145069
+    },
+    {
+      "nombre": "aleatorio 39",
+      "saldo": 483,
+      "tasa": "0.0388",
+      "esperado": 19
+    },
+    {
+      "nombre": "aleatorio 40",
+      "saldo": 125,
+      "tasa": "0.0877",
+      "esperado": 11
+    },
+    {
+      "nombre": "aleatorio 41",
+      "saldo": 100000,
+      "tasa": "0.0544",
+      "esperado": 5440
+    },
+    {
+      "nombre": "aleatorio 42",
+      "saldo": 1000,
+      "tasa": "0.09",
+      "esperado": 90
+    },
+    {
+      "nombre": "aleatorio 43",
+      "saldo": 77,
+      "tasa": "0.056",
+      "esperado": 4
+    },
+    {
+      "nombre": "aleatorio 44",
+      "saldo": 1160212,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 45",
+      "saldo": 588,
+      "tasa": "0.1",
+      "esperado": 59
+    },
+    {
+      "nombre": "aleatorio 46",
+      "saldo": 60,
+      "tasa": "0.1",
+      "esperado": 6
+    },
+    {
+      "nombre": "aleatorio 47",
+      "saldo": 100000000,
+      "tasa": "0.0374",
+      "esperado": 3740000
+    },
+    {
+      "nombre": "aleatorio 48",
+      "saldo": 1000,
+      "tasa": "0.0983",
+      "esperado": 98
+    },
+    {
+      "nombre": "aleatorio 49",
+      "saldo": 1000,
+      "tasa": "0.055",
+      "esperado": 55
+    },
+    {
+      "nombre": "aleatorio 50",
+      "saldo": 1,
+      "tasa": "0.003",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 51",
+      "saldo": 1,
+      "tasa": "0.03",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 52",
+      "saldo": 3473586,
+      "tasa": "0.01",
+      "esperado": 34736
+    },
+    {
+      "nombre": "aleatorio 53",
+      "saldo": 1127263,
+      "tasa": "0.1",
+      "esperado": 112726
+    },
+    {
+      "nombre": "aleatorio 54",
+      "saldo": 642,
+      "tasa": "0.0727",
+      "esperado": 47
+    },
+    {
+      "nombre": "aleatorio 55",
+      "saldo": 757872,
+      "tasa": "0.08",
+      "esperado": 60630
+    },
+    {
+      "nombre": "aleatorio 56",
+      "saldo": 100000,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 57",
+      "saldo": 2,
+      "tasa": "0.0787",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 58",
+      "saldo": 10000,
+      "tasa": "0.08",
+      "esperado": 800
+    },
+    {
+      "nombre": "aleatorio 59",
+      "saldo": 78,
+      "tasa": "0.087",
+      "esperado": 7
+    },
+    {
+      "nombre": "aleatorio 60",
+      "saldo": 1000000,
+      "tasa": "0.1",
+      "esperado": 100000
+    },
+    {
+      "nombre": "aleatorio 61",
+      "saldo": 797,
+      "tasa": "0.0460",
+      "esperado": 37
+    },
+    {
+      "nombre": "aleatorio 62",
+      "saldo": 2466512,
+      "tasa": "0.01",
+      "esperado": 24665
+    },
+    {
+      "nombre": "aleatorio 63",
+      "saldo": 291,
+      "tasa": "0.001",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 64",
+      "saldo": 192,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 65",
+      "saldo": 276972,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 66",
+      "saldo": 100000,
+      "tasa": "0.05",
+      "esperado": 5000
+    },
+    {
+      "nombre": "aleatorio 67",
+      "saldo": 1000000000,
+      "tasa": "0.019",
+      "esperado": 19000000
+    },
+    {
+      "nombre": "aleatorio 68",
+      "saldo": 1,
+      "tasa": "0.073",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 69",
+      "saldo": 100,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 70",
+      "saldo": 3847967,
+      "tasa": "0.10",
+      "esperado": 384797
+    },
+    {
+      "nombre": "aleatorio 71",
+      "saldo": 10000000,
+      "tasa": "0.01",
+      "esperado": 100000
+    },
+    {
+      "nombre": "aleatorio 72",
+      "saldo": 318,
+      "tasa": "0.0513",
+      "esperado": 16
+    },
+    {
+      "nombre": "aleatorio 73",
+      "saldo": 743,
+      "tasa": "0.08",
+      "esperado": 59
+    },
+    {
+      "nombre": "aleatorio 74",
+      "saldo": 10000,
+      "tasa": "0.1",
+      "esperado": 1000
+    },
+    {
+      "nombre": "aleatorio 75",
+      "saldo": 33,
+      "tasa": "0.017",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 76",
+      "saldo": 33,
+      "tasa": "0.00",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 77",
+      "saldo": 200,
+      "tasa": "0.015",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 78",
+      "saldo": 74,
+      "tasa": "0.0133",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 79",
+      "saldo": 169,
+      "tasa": "0.1",
+      "esperado": 17
+    },
+    {
+      "nombre": "aleatorio 80",
+      "saldo": 1000000,
+      "tasa": "0.0948",
+      "esperado": 94800
+    },
+    {
+      "nombre": "aleatorio 81",
+      "saldo": 826,
+      "tasa": "0.00",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 82",
+      "saldo": 1,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 83",
+      "saldo": 2208136,
+      "tasa": "0.039",
+      "esperado": 86117
+    },
+    {
+      "nombre": "aleatorio 84",
+      "saldo": 839,
+      "tasa": "0.02",
+      "esperado": 17
+    },
+    {
+      "nombre": "aleatorio 85",
+      "saldo": 1319230,
+      "tasa": "0.01",
+      "esperado": 13192
+    },
+    {
+      "nombre": "aleatorio 86",
+      "saldo": 2360591,
+      "tasa": "0.070",
+      "esperado": 165241
+    },
+    {
+      "nombre": "aleatorio 87",
+      "saldo": 100000,
+      "tasa": "0.07",
+      "esperado": 7000
+    },
+    {
+      "nombre": "aleatorio 88",
+      "saldo": 2118025,
+      "tasa": "0.1",
+      "esperado": 211803
+    },
+    {
+      "nombre": "aleatorio 89",
+      "saldo": 517,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 90",
+      "saldo": 645,
+      "tasa": "0.0786",
+      "esperado": 51
+    },
+    {
+      "nombre": "aleatorio 91",
+      "saldo": 1158184,
+      "tasa": "0.06",
+      "esperado": 69491
+    },
+    {
+      "nombre": "aleatorio 92",
+      "saldo": 3295317,
+      "tasa": "0.1",
+      "esperado": 329532
+    },
+    {
+      "nombre": "aleatorio 93",
+      "saldo": 395,
+      "tasa": "0.098",
+      "esperado": 39
+    },
+    {
+      "nombre": "aleatorio 94",
+      "saldo": 1519418,
+      "tasa": "0.063",
+      "esperado": 95723
+    },
+    {
+      "nombre": "aleatorio 95",
+      "saldo": 10000000,
+      "tasa": "0.02",
+      "esperado": 200000
+    },
+    {
+      "nombre": "aleatorio 96",
+      "saldo": 414,
+      "tasa": "0.01",
+      "esperado": 4
+    },
+    {
+      "nombre": "aleatorio 97",
+      "saldo": 748984,
+      "tasa": "0.05",
+      "esperado": 37449
+    },
+    {
+      "nombre": "aleatorio 98",
+      "saldo": 1067434,
+      "tasa": "0.07",
+      "esperado": 74720
+    },
+    {
+      "nombre": "aleatorio 99",
+      "saldo": 10000000,
+      "tasa": "0.02",
+      "esperado": 200000
+    },
+    {
+      "nombre": "aleatorio 100",
+      "saldo": 3360409,
+      "tasa": "0.0440",
+      "esperado": 147858
+    },
+    {
+      "nombre": "aleatorio 101",
+      "saldo": 100000000,
+      "tasa": "0.009",
+      "esperado": 900000
+    },
+    {
+      "nombre": "aleatorio 102",
+      "saldo": 1,
+      "tasa": "0.001",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 103",
+      "saldo": 1,
+      "tasa": "0.099",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 104",
+      "saldo": 733,
+      "tasa": "0.07",
+      "esperado": 51
+    },
+    {
+      "nombre": "aleatorio 105",
+      "saldo": 718,
+      "tasa": "0.02",
+      "esperado": 14
+    },
+    {
+      "nombre": "aleatorio 106",
+      "saldo": 1173079,
+      "tasa": "0.1",
+      "esperado": 117308
+    },
+    {
+      "nombre": "aleatorio 107",
+      "saldo": 3430847,
+      "tasa": "0.0032",
+      "esperado": 10979
+    },
+    {
+      "nombre": "aleatorio 108",
+      "saldo": 422,
+      "tasa": "0.06",
+      "esperado": 25
+    },
+    {
+      "nombre": "aleatorio 109",
+      "saldo": 876,
+      "tasa": "0.0828",
+      "esperado": 73
+    },
+    {
+      "nombre": "aleatorio 110",
+      "saldo": 889,
+      "tasa": "0.03",
+      "esperado": 27
+    },
+    {
+      "nombre": "aleatorio 111",
+      "saldo": 1766387,
+      "tasa": "0.048",
+      "esperado": 84787
+    },
+    {
+      "nombre": "aleatorio 112",
+      "saldo": 10,
+      "tasa": "0.010",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 113",
+      "saldo": 530,
+      "tasa": "0.0146",
+      "esperado": 8
+    },
+    {
+      "nombre": "aleatorio 114",
+      "saldo": 10000,
+      "tasa": "0.09",
+      "esperado": 900
+    },
+    {
+      "nombre": "aleatorio 115",
+      "saldo": 100,
+      "tasa": "0.1",
+      "esperado": 10
+    },
+    {
+      "nombre": "aleatorio 116",
+      "saldo": 10,
+      "tasa": "0.0145",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 117",
+      "saldo": 4983297,
+      "tasa": "0.1",
+      "esperado": 498330
+    },
+    {
+      "nombre": "aleatorio 118",
+      "saldo": 432,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 119",
+      "saldo": 1000,
+      "tasa": "0.015",
+      "esperado": 15
+    },
+    {
+      "nombre": "aleatorio 120",
+      "saldo": 522,
+      "tasa": "0.0530",
+      "esperado": 28
+    },
+    {
+      "nombre": "aleatorio 121",
+      "saldo": 10,
+      "tasa": "0.1",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 122",
+      "saldo": 3988851,
+      "tasa": "0.09",
+      "esperado": 358997
+    },
+    {
+      "nombre": "aleatorio 123",
+      "saldo": 10,
+      "tasa": "0.03",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 124",
+      "saldo": 746,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 125",
+      "saldo": 4004780,
+      "tasa": "0.1",
+      "esperado": 400478
+    },
+    {
+      "nombre": "aleatorio 126",
+      "saldo": 2281388,
+      "tasa": "0.1",
+      "esperado": 228139
+    },
+    {
+      "nombre": "aleatorio 127",
+      "saldo": 1000,
+      "tasa": "0.0569",
+      "esperado": 57
+    },
+    {
+      "nombre": "aleatorio 128",
+      "saldo": 10000000,
+      "tasa": "0.02",
+      "esperado": 200000
+    },
+    {
+      "nombre": "aleatorio 129",
+      "saldo": 100000000,
+      "tasa": "0.1",
+      "esperado": 10000000
+    },
+    {
+      "nombre": "aleatorio 130",
+      "saldo": 1000000000,
+      "tasa": "0.072",
+      "esperado": 72000000
+    },
+    {
+      "nombre": "aleatorio 131",
+      "saldo": 344,
+      "tasa": "0.02",
+      "esperado": 7
+    },
+    {
+      "nombre": "aleatorio 132",
+      "saldo": 283,
+      "tasa": "0.077",
+      "esperado": 22
+    },
+    {
+      "nombre": "aleatorio 133",
+      "saldo": 425,
+      "tasa": "0.03",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 134",
+      "saldo": 164,
+      "tasa": "0.0495",
+      "esperado": 8
+    },
+    {
+      "nombre": "aleatorio 135",
+      "saldo": 4810730,
+      "tasa": "0.0684",
+      "esperado": 329054
+    },
+    {
+      "nombre": "aleatorio 136",
+      "saldo": 1185511,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 137",
+      "saldo": 1938986,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 138",
+      "saldo": 638,
+      "tasa": "0.02",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 139",
+      "saldo": 3140549,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 140",
+      "saldo": 3242835,
+      "tasa": "0.0172",
+      "esperado": 55777
+    },
+    {
+      "nombre": "aleatorio 141",
+      "saldo": 3416010,
+      "tasa": "0.05",
+      "esperado": 170801
+    },
+    {
+      "nombre": "aleatorio 142",
+      "saldo": 1516801,
+      "tasa": "0.0419",
+      "esperado": 63554
+    },
+    {
+      "nombre": "aleatorio 143",
+      "saldo": 10000,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 144",
+      "saldo": 1,
+      "tasa": "0.0567",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 145",
+      "saldo": 164,
+      "tasa": "0.067",
+      "esperado": 11
+    },
+    {
+      "nombre": "aleatorio 146",
+      "saldo": 197,
+      "tasa": "0.0482",
+      "esperado": 9
+    },
+    {
+      "nombre": "aleatorio 147",
+      "saldo": 1000000,
+      "tasa": "0.1",
+      "esperado": 100000
+    },
+    {
+      "nombre": "aleatorio 148",
+      "saldo": 175,
+      "tasa": "0.014",
+      "esperado": 2
+    },
+    {
+      "nombre": "aleatorio 149",
+      "saldo": 10000000,
+      "tasa": "0.003",
+      "esperado": 30000
+    },
+    {
+      "nombre": "aleatorio 150",
+      "saldo": 1000000,
+      "tasa": "0.0450",
+      "esperado": 45000
+    },
+    {
+      "nombre": "aleatorio 151",
+      "saldo": 4938888,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 152",
+      "saldo": 3001066,
+      "tasa": "0.06",
+      "esperado": 180064
+    },
+    {
+      "nombre": "aleatorio 153",
+      "saldo": 10000000,
+      "tasa": "0.1",
+      "esperado": 1000000
+    },
+    {
+      "nombre": "aleatorio 154",
+      "saldo": 1,
+      "tasa": "0.02",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 155",
+      "saldo": 100,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 156",
+      "saldo": 100000000,
+      "tasa": "0.09",
+      "esperado": 9000000
+    },
+    {
+      "nombre": "aleatorio 157",
+      "saldo": 2194399,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 158",
+      "saldo": 490,
+      "tasa": "0.0221",
+      "esperado": 11
+    },
+    {
+      "nombre": "aleatorio 159",
+      "saldo": 600,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 160",
+      "saldo": 100000,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 161",
+      "saldo": 100000000,
+      "tasa": "0.035",
+      "esperado": 3500000
+    },
+    {
+      "nombre": "aleatorio 162",
+      "saldo": 1204058,
+      "tasa": "0.07",
+      "esperado": 84284
+    },
+    {
+      "nombre": "aleatorio 163",
+      "saldo": 1000,
+      "tasa": "0.004",
+      "esperado": 4
+    },
+    {
+      "nombre": "aleatorio 164",
+      "saldo": 3363596,
+      "tasa": "0.0774",
+      "esperado": 260342
+    },
+    {
+      "nombre": "aleatorio 165",
+      "saldo": 1000000000,
+      "tasa": "0.09",
+      "esperado": 90000000
+    },
+    {
+      "nombre": "aleatorio 166",
+      "saldo": 904,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 167",
+      "saldo": 2625364,
+      "tasa": "0.0404",
+      "esperado": 106065
+    },
+    {
+      "nombre": "aleatorio 168",
+      "saldo": 1000000000,
+      "tasa": "0.0327",
+      "esperado": 32700000
+    },
+    {
+      "nombre": "aleatorio 169",
+      "saldo": 592,
+      "tasa": "0.1",
+      "esperado": 59
+    },
+    {
+      "nombre": "aleatorio 170",
+      "saldo": 10000,
+      "tasa": "0.00",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 171",
+      "saldo": 100,
+      "tasa": "0.053",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 172",
+      "saldo": 523,
+      "tasa": "0.05",
+      "esperado": 26
+    },
+    {
+      "nombre": "aleatorio 173",
+      "saldo": 105,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 174",
+      "saldo": 93,
+      "tasa": "0.05",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 175",
+      "saldo": 2183071,
+      "tasa": "0.1",
+      "esperado": 218307
+    },
+    {
+      "nombre": "aleatorio 176",
+      "saldo": 250,
+      "tasa": "0.02",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 177",
+      "saldo": 787,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 178",
+      "saldo": 571051,
+      "tasa": "0.0465",
+      "esperado": 26554
+    },
+    {
+      "nombre": "aleatorio 179",
+      "saldo": 50,
+      "tasa": "0.019",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 180",
+      "saldo": 39469,
+      "tasa": "0.060",
+      "esperado": 2368
+    },
+    {
+      "nombre": "aleatorio 181",
+      "saldo": 1808401,
+      "tasa": "0.056",
+      "esperado": 101270
+    },
+    {
+      "nombre": "aleatorio 182",
+      "saldo": 626,
+      "tasa": "0.09",
+      "esperado": 56
+    },
+    {
+      "nombre": "aleatorio 183",
+      "saldo": 2070619,
+      "tasa": "0.048",
+      "esperado": 99390
+    },
+    {
+      "nombre": "aleatorio 184",
+      "saldo": 3237944,
+      "tasa": "0.1",
+      "esperado": 323794
+    },
+    {
+      "nombre": "aleatorio 185",
+      "saldo": 257,
+      "tasa": "0.1",
+      "esperado": 26
+    },
+    {
+      "nombre": "aleatorio 186",
+      "saldo": 594884,
+      "tasa": "0.0906",
+      "esperado": 53896
+    },
+    {
+      "nombre": "aleatorio 187",
+      "saldo": 3526869,
+      "tasa": "0.032",
+      "esperado": 112860
+    },
+    {
+      "nombre": "aleatorio 188",
+      "saldo": 10000,
+      "tasa": "0.0668",
+      "esperado": 668
+    },
+    {
+      "nombre": "aleatorio 189",
+      "saldo": 986,
+      "tasa": "0.0517",
+      "esperado": 51
+    },
+    {
+      "nombre": "aleatorio 190",
+      "saldo": 10000,
+      "tasa": "0.1",
+      "esperado": 1000
+    },
+    {
+      "nombre": "aleatorio 191",
+      "saldo": 2908646,
+      "tasa": "0.021",
+      "esperado": 61082
+    },
+    {
+      "nombre": "aleatorio 192",
+      "saldo": 1000,
+      "tasa": "0.1",
+      "esperado": 100
+    },
+    {
+      "nombre": "aleatorio 193",
+      "saldo": 256,
+      "tasa": "0.091",
+      "esperado": 23
+    },
+    {
+      "nombre": "aleatorio 194",
+      "saldo": 1,
+      "tasa": "0.01",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 195",
+      "saldo": 808,
+      "tasa": "0.00",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 196",
+      "saldo": 2108478,
+      "tasa": "0.0497",
+      "esperado": 104791
+    },
+    {
+      "nombre": "aleatorio 197",
+      "saldo": 100000,
+      "tasa": "0.09",
+      "esperado": 9000
+    },
+    {
+      "nombre": "aleatorio 198",
+      "saldo": 262,
+      "tasa": "0.02",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 199",
+      "saldo": 3140024,
+      "tasa": "0.076",
+      "esperado": 238642
+    },
+    {
+      "nombre": "aleatorio 200",
+      "saldo": 1139384,
+      "tasa": "0.08",
+      "esperado": 91151
+    },
+    {
+      "nombre": "aleatorio 201",
+      "saldo": 123,
+      "tasa": "0.0250",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 202",
+      "saldo": 51,
+      "tasa": "0.01",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 203",
+      "saldo": 113,
+      "tasa": "0.075",
+      "esperado": 8
+    },
+    {
+      "nombre": "aleatorio 204",
+      "saldo": 4279523,
+      "tasa": "0.0918",
+      "esperado": 392860
+    },
+    {
+      "nombre": "aleatorio 205",
+      "saldo": 1000000000,
+      "tasa": "0.068",
+      "esperado": 68000000
+    },
+    {
+      "nombre": "aleatorio 206",
+      "saldo": 362,
+      "tasa": "0.0050",
+      "esperado": 2
+    },
+    {
+      "nombre": "aleatorio 207",
+      "saldo": 192,
+      "tasa": "0.03",
+      "esperado": 6
+    },
+    {
+      "nombre": "aleatorio 208",
+      "saldo": 4356882,
+      "tasa": "0.009",
+      "esperado": 39212
+    },
+    {
+      "nombre": "aleatorio 209",
+      "saldo": 942,
+      "tasa": "0.1",
+      "esperado": 94
+    },
+    {
+      "nombre": "aleatorio 210",
+      "saldo": 1354863,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 211",
+      "saldo": 140,
+      "tasa": "0.09",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 212",
+      "saldo": 10000000,
+      "tasa": "0.0665",
+      "esperado": 665000
+    },
+    {
+      "nombre": "aleatorio 213",
+      "saldo": 10000,
+      "tasa": "0.03",
+      "esperado": 300
+    },
+    {
+      "nombre": "aleatorio 214",
+      "saldo": 1755136,
+      "tasa": "0.05",
+      "esperado": 87757
+    },
+    {
+      "nombre": "aleatorio 215",
+      "saldo": 1,
+      "tasa": "0.0669",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 216",
+      "saldo": 618,
+      "tasa": "0.0819",
+      "esperado": 51
+    },
+    {
+      "nombre": "aleatorio 217",
+      "saldo": 4660990,
+      "tasa": "0.061",
+      "esperado": 284320
+    },
+    {
+      "nombre": "aleatorio 218",
+      "saldo": 942,
+      "tasa": "0.0915",
+      "esperado": 86
+    },
+    {
+      "nombre": "aleatorio 219",
+      "saldo": 981,
+      "tasa": "0.1",
+      "esperado": 98
+    },
+    {
+      "nombre": "aleatorio 220",
+      "saldo": 62,
+      "tasa": "0.1",
+      "esperado": 6
+    },
+    {
+      "nombre": "aleatorio 221",
+      "saldo": 100000,
+      "tasa": "0.084",
+      "esperado": 8400
+    },
+    {
+      "nombre": "aleatorio 222",
+      "saldo": 4097096,
+      "tasa": "0.0923",
+      "esperado": 378162
+    },
+    {
+      "nombre": "aleatorio 223",
+      "saldo": 100000,
+      "tasa": "0.0838",
+      "esperado": 8380
+    },
+    {
+      "nombre": "aleatorio 224",
+      "saldo": 489,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 225",
+      "saldo": 738,
+      "tasa": "0.05",
+      "esperado": 37
+    },
+    {
+      "nombre": "aleatorio 226",
+      "saldo": 1784641,
+      "tasa": "0.04",
+      "esperado": 71386
+    },
+    {
+      "nombre": "aleatorio 227",
+      "saldo": 34,
+      "tasa": "0.0923",
+      "esperado": 3
+    },
+    {
+      "nombre": "aleatorio 228",
+      "saldo": 981,
+      "tasa": "0.1",
+      "esperado": 98
+    },
+    {
+      "nombre": "aleatorio 229",
+      "saldo": 1049426,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 230",
+      "saldo": 812682,
+      "tasa": "0.0756",
+      "esperado": 61439
+    },
+    {
+      "nombre": "aleatorio 231",
+      "saldo": 533,
+      "tasa": "0.0242",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 232",
+      "saldo": 403,
+      "tasa": "0.1",
+      "esperado": 40
+    },
+    {
+      "nombre": "aleatorio 233",
+      "saldo": 997,
+      "tasa": "0.0932",
+      "esperado": 93
+    },
+    {
+      "nombre": "aleatorio 234",
+      "saldo": 2516411,
+      "tasa": "0.10",
+      "esperado": 251641
+    },
+    {
+      "nombre": "aleatorio 235",
+      "saldo": 1000,
+      "tasa": "0.0008",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 236",
+      "saldo": 3311323,
+      "tasa": "0.000",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 237",
+      "saldo": 100000000,
+      "tasa": "0.058",
+      "esperado": 5800000
+    },
+    {
+      "nombre": "aleatorio 238",
+      "saldo": 741,
+      "tasa": "0.04",
+      "esperado": 30
+    },
+    {
+      "nombre": "aleatorio 239",
+      "saldo": 3048154,
+      "tasa": "0.0116",
+      "esperado": 35359
+    },
+    {
+      "nombre": "aleatorio 240",
+      "saldo": 4059885,
+      "tasa": "0.0265",
+      "esperado": 107587
+    },
+    {
+      "nombre": "aleatorio 241",
+      "saldo": 249,
+      "tasa": "0.08",
+      "esperado": 20
+    },
+    {
+      "nombre": "aleatorio 242",
+      "saldo": 1702282,
+      "tasa": "0.1",
+      "esperado": 170228
+    },
+    {
+      "nombre": "aleatorio 243",
+      "saldo": 1310633,
+      "tasa": "0.1",
+      "esperado": 131063
+    },
+    {
+      "nombre": "aleatorio 244",
+      "saldo": 4310890,
+      "tasa": "0.0597",
+      "esperado": 257360
+    },
+    {
+      "nombre": "aleatorio 245",
+      "saldo": 395,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 246",
+      "saldo": 167414,
+      "tasa": "0.0146",
+      "esperado": 2444
+    },
+    {
+      "nombre": "aleatorio 247",
+      "saldo": 857,
+      "tasa": "0.1",
+      "esperado": 86
+    },
+    {
+      "nombre": "aleatorio 248",
+      "saldo": 913,
+      "tasa": "0.006",
+      "esperado": 5
+    },
+    {
+      "nombre": "aleatorio 249",
+      "saldo": 1337510,
+      "tasa": "0.01",
+      "esperado": 13375
+    },
+    {
+      "nombre": "aleatorio 250",
+      "saldo": 10000,
+      "tasa": "0.08",
+      "esperado": 800
+    },
+    {
+      "nombre": "aleatorio 251",
+      "saldo": 347,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 252",
+      "saldo": 1000000000,
+      "tasa": "0.07",
+      "esperado": 70000000
+    },
+    {
+      "nombre": "aleatorio 253",
+      "saldo": 28,
+      "tasa": "0.01",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 254",
+      "saldo": 1,
+      "tasa": "0.080",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 255",
+      "saldo": 10000,
+      "tasa": "0.0400",
+      "esperado": 400
+    },
+    {
+      "nombre": "aleatorio 256",
+      "saldo": 299,
+      "tasa": "0.0127",
+      "esperado": 4
+    },
+    {
+      "nombre": "aleatorio 257",
+      "saldo": 853,
+      "tasa": "0.0344",
+      "esperado": 29
+    },
+    {
+      "nombre": "aleatorio 258",
+      "saldo": 3321525,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 259",
+      "saldo": 716328,
+      "tasa": "0.09",
+      "esperado": 64470
+    },
+    {
+      "nombre": "aleatorio 260",
+      "saldo": 1000,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 261",
+      "saldo": 760,
+      "tasa": "0.023",
+      "esperado": 17
+    },
+    {
+      "nombre": "aleatorio 262",
+      "saldo": 779,
+      "tasa": "0.0621",
+      "esperado": 48
+    },
+    {
+      "nombre": "aleatorio 263",
+      "saldo": 100,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 264",
+      "saldo": 3355789,
+      "tasa": "0.10",
+      "esperado": 335579
+    },
+    {
+      "nombre": "aleatorio 265",
+      "saldo": 10000,
+      "tasa": "0.1",
+      "esperado": 1000
+    },
+    {
+      "nombre": "aleatorio 266",
+      "saldo": 4594138,
+      "tasa": "0.1",
+      "esperado": 459414
+    },
+    {
+      "nombre": "aleatorio 267",
+      "saldo": 3284861,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 268",
+      "saldo": 200287,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 269",
+      "saldo": 100000,
+      "tasa": "0.05",
+      "esperado": 5000
+    },
+    {
+      "nombre": "aleatorio 270",
+      "saldo": 53995,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 271",
+      "saldo": 4268807,
+      "tasa": "0.04",
+      "esperado": 170752
+    },
+    {
+      "nombre": "aleatorio 272",
+      "saldo": 285,
+      "tasa": "0.1",
+      "esperado": 29
+    },
+    {
+      "nombre": "aleatorio 273",
+      "saldo": 411,
+      "tasa": "0.095",
+      "esperado": 39
+    },
+    {
+      "nombre": "aleatorio 274",
+      "saldo": 21,
+      "tasa": "0.1",
+      "esperado": 2
+    },
+    {
+      "nombre": "aleatorio 275",
+      "saldo": 1000,
+      "tasa": "0.04",
+      "esperado": 40
+    },
+    {
+      "nombre": "aleatorio 276",
+      "saldo": 500,
+      "tasa": "0.0836",
+      "esperado": 42
+    },
+    {
+      "nombre": "aleatorio 277",
+      "saldo": 3326469,
+      "tasa": "0.0454",
+      "esperado": 151022
+    },
+    {
+      "nombre": "aleatorio 278",
+      "saldo": 10000,
+      "tasa": "0.073",
+      "esperado": 730
+    },
+    {
+      "nombre": "aleatorio 279",
+      "saldo": 753,
+      "tasa": "0.072",
+      "esperado": 54
+    },
+    {
+      "nombre": "aleatorio 280",
+      "saldo": 272,
+      "tasa": "0.05",
+      "esperado": 14
+    },
+    {
+      "nombre": "aleatorio 281",
+      "saldo": 10,
+      "tasa": "0.1",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 282",
+      "saldo": 10,
+      "tasa": "0.086",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 283",
+      "saldo": 100000,
+      "tasa": "0.0543",
+      "esperado": 5430
+    },
+    {
+      "nombre": "aleatorio 284",
+      "saldo": 184,
+      "tasa": "0.07",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 285",
+      "saldo": 1713271,
+      "tasa": "0.1",
+      "esperado": 171327
+    },
+    {
+      "nombre": "aleatorio 286",
+      "saldo": 610,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 287",
+      "saldo": 10000000,
+      "tasa": "0.0680",
+      "esperado": 680000
+    },
+    {
+      "nombre": "aleatorio 288",
+      "saldo": 432,
+      "tasa": "0.033",
+      "esperado": 14
+    },
+    {
+      "nombre": "aleatorio 289",
+      "saldo": 4165803,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 290",
+      "saldo": 100000,
+      "tasa": "0.099",
+      "esperado": 9900
+    },
+    {
+      "nombre": "aleatorio 291",
+      "saldo": 68,
+      "tasa": "0.0",
+      "esperado": 0
+    },
+    {
+      "nombre": "aleatorio 292",
+      "saldo": 3966951,
+      "tasa": "0.019",
+      "esperado": 75372
+    },
+    {
+      "nombre": "aleatorio 293",
+      "saldo": 47,
+      "tasa": "0.03",
+      "esperado": 1
+    },
+    {
+      "nombre": "aleatorio 294",
+      "saldo": 1000000,
+      "tasa": "0.1",
+      "esperado": 100000
+    },
+    {
+      "nombre": "aleatorio 295",
+      "saldo": 2710443,
+      "tasa": "0.0434",
+      "esperado": 117633
+    },
+    {
+      "nombre": "aleatorio 296",
+      "saldo": 3772012,
+      "tasa": "0.09",
+      "esperado": 339481
+    },
+    {
+      "nombre": "aleatorio 297",
+      "saldo": 132,
+      "tasa": "0.1",
+      "esperado": 13
+    },
+    {
+      "nombre": "aleatorio 298",
+      "saldo": 501,
+      "tasa": "0.08",
+      "esperado": 40
+    },
+    {
+      "nombre": "aleatorio 299",
+      "saldo": 321,
+      "tasa": "0.0",
+      "esperado": 0
+    }
+  ]
+}

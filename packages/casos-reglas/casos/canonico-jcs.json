@@ -1,0 +1,107 @@
+{
+  "regla": "canonico-jcs",
+  "descripcion": "Serialización canónica JSON (RFC 8785) para hashes y firmas. Solo enteros seguros; cualquier número no entero se rechaza.",
+  "casos": [
+    {
+      "nombre": "objeto vacío",
+      "entrada": {},
+      "esperado": "{}",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "nombre": "claves ordenadas",
+      "entrada": {
+        "b": 2,
+        "a": 1,
+        "c": {
+          "z": true,
+          "y": null
+        }
+      },
+      "esperado": "{\"a\":1,\"b\":2,\"c\":{\"y\":null,\"z\":true}}",
+      "sha256": "8de4da99ba10a81ad0712ed5ca145e6017393749463cfdafc1a6b16836ad4d1d"
+    },
+    {
+      "nombre": "movimiento de aporte",
+      "entrada": {
+        "tipo": "aporte",
+        "pesos": 50000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7
+      },
+      "esperado": "{\"id\":\"6f1c2a7e-0000-5000-8000-000000000001\",\"miembro\":7,\"pesos\":50000,\"tipo\":\"aporte\"}",
+      "sha256": "303e9fc11952a4329a99ec79c715c09a0af68611b69af1ba679b34a843073cc4"
+    },
+    {
+      "nombre": "arreglos conservan el orden",
+      "entrada": {
+        "lista": [
+          3,
+          1,
+          2
+        ]
+      },
+      "esperado": "{\"lista\":[3,1,2]}",
+      "sha256": "21100e841b8a5f6499e2baebde283d059a2b50a941a31f50605ee6cdf9c2df30"
+    },
+    {
+      "nombre": "tildes y eñe sin escapar",
+      "entrada": {
+        "nombre": "Peña Asprilla",
+        "nota": "¿sobró?"
+      },
+      "esperado": "{\"nombre\":\"Peña Asprilla\",\"nota\":\"¿sobró?\"}",
+      "sha256": "02890bdc3184f6ecf962989c241bc496f5d17c22de9138c1952f9b77c5057bbb"
+    },
+    {
+      "nombre": "comillas, barra y controles",
+      "entrada": {
+        "t": "a\"b\\c\nd\te\u0001"
+      },
+      "esperado": "{\"t\":\"a\\\"b\\\\c\\nd\\te\\u0001\"}",
+      "sha256": "e474eef9e88a11a4eb05cc9d246cad28e985470b5368f2df4348c4d8a726dfd1"
+    },
+    {
+      "nombre": "orden UTF-16 de claves",
+      "entrada": {
+        "é": 1,
+        "z": 2,
+        "😀": 3,
+        "￿": 4
+      },
+      "esperado": "{\"z\":2,\"é\":1,\"😀\":3,\"￿\":4}",
+      "sha256": "89df1d1d585c9b41d2a43a7bf189f694ac52cb9fe3fc2df5b5a737ffc2574de6"
+    },
+    {
+      "nombre": "negativos y cero",
+      "entrada": {
+        "reverso": -500000,
+        "cero": 0
+      },
+      "esperado": "{\"cero\":0,\"reverso\":-500000}",
+      "sha256": "cfaa63aefd301f4d27570cc6294af1fed9b0a80a64496a7cb1c0e31ed5381285"
+    },
+    {
+      "nombre": "entero seguro máximo",
+      "entrada": {
+        "n": 9007199254740991
+      },
+      "esperado": "{\"n\":9007199254740991}",
+      "sha256": "e1da48c6a6089f06ecb4e0a2259e658e3786b2420f52baccdf929ec6460d7b41"
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "número con decimales",
+      "entrada": {
+        "pesos": 1.5
+      }
+    },
+    {
+      "nombre": "entero fuera del rango seguro",
+      "entrada": {
+        "n": 9007199254740992
+      }
+    }
+  ]
+}
