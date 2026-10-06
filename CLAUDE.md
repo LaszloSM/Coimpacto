@@ -78,3 +78,10 @@ Key routing rules:
 - Save progress → invoke /context-save
 - Resume context → invoke /context-restore
 - Author a backlog-ready spec/issue → invoke /spec
+
+## Design System
+Read DESIGN.md before visual or UI work: it defines the fonts, colors, spacing, and
+aesthetic direction. Ask the user before departing from it. When reviewing or QA-ing
+UI, flag code that doesn't match DESIGN.md.
+
+Resumen: metáfora del cuaderno de la ACAP (renglones, corregir = tachado + reverso, sello «Bien contado» al cerrar), arqueo con el color real de cada billete, Atkinson Hyperlegible Next (`tnum`) en campo, Bitter solo en títulos de la oficina, un solo botón naranja por pantalla, solo modo claro. Vista previa: [docs/designs/preview/sistema-de-diseno.html](docs/designs/preview/sistema-de-diseno.html).

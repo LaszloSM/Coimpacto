@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credimpacto · Sistema de diseño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&family=Bitter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Marca */
+  --navy:#1B3A6B; --naranja:#F07B22; --naranja-texto:#10213D;
+  /* Tinta y papel */
+  --tinta:#10213D; --tinta-2:#3D4A60; --papel:#FFFFFF; --papel-bo:#F2F4F7;
+  --renglon:#D5DCE6; --renglon-fuerte:#AEB9C8; --navy-tinte:#E4EAF3;
+  /* Estados (texto sobre tinte >= 7:1) */
+  --ok:#124B2E; --ok-t:#E8F4EC;
+  --prov:#3D4A60; --prov-t:#ECEFF4;
+  --err:#7E1712; --err-t:#FCE8E6;
+  --conf:#5A2D82; --conf-t:#F1EAF8;
+  --valid:#5E3C00; --valid-t:#FCF2DD;
+  --obs:#1B3A6B; --obs-t:#E4EAF3;
+  /* Billetes (solo franja; nunca fondo de texto) */
+  --b2:#2E7FC1; --b5:#8A5A3B; --b10:#C8332B; --b20:#E9822F; --b50:#7D4A9E; --b100:#3C8C4A;
+  --f-ui:'Atkinson Hyperlegible Next',system-ui,sans-serif;
+  --f-tit:'Bitter',Georgia,serif;
+  --f-mono:'Atkinson Hyperlegible Mono',ui-monospace,monospace;
+  --r-sm:4px; --r-md:8px; --r-lg:12px;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--papel-bo);color:var(--tinta);font:400 18px/1.5 var(--f-ui);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+body.sol .telefono{filter:contrast(.62) brightness(1.18) saturate(.8)}
+.envoltura{max-width:1200px;margin:0 auto;padding:40px 16px 80px}
+h1,h2,h3{font-family:var(--f-tit);color:var(--navy);margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.1}
+h2{font-size:1.75rem;font-weight:600;margin:64px 0 8px}
+h3{font-size:1.125rem;font-weight:600;margin:0 0 12px}
+p.lead{max-width:62ch;color:var(--tinta-2);margin:12px 0 0}
+p.nota{max-width:70ch;color:var(--tinta-2);font-size:16px;margin:4px 0 24px}
+.barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:32px}
+.marca{display:flex;align-items:center;gap:12px;font-family:var(--f-tit);font-weight:700;font-size:20px;color:var(--navy)}
+.sello-mini{width:36px;height:36px;border:3px solid var(--navy);border-radius:50%;display:grid;place-items:center;font:800 13px var(--f-ui)}
+.toggle{font:600 16px var(--f-ui);background:var(--papel);color:var(--tinta);border:2px solid var(--tinta);border-radius:var(--r-md);padding:10px 16px;min-height:48px;cursor:pointer}
+.toggle[aria-pressed=true]{background:var(--tinta);color:#fff}
+.toggle:focus-visible,.btn:focus-visible,.tecla:focus-visible{outline:3px solid var(--naranja);outline-offset:3px}
+
+/* Especímenes */
+.especimen{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;background:var(--papel);border:1px solid var(--renglon);border-radius:var(--r-lg);padding:32px}
+.especimen .rol{font:600 14px var(--f-ui);color:var(--tinta-2);margin-bottom:8px}
+.esp-tit{font:700 40px/1.1 var(--f-tit);color:var(--navy)}
+.esp-ui{font:400 18px/1.5 var(--f-ui)}
+.esp-cifra{font:800 44px/1 var(--f-ui);font-variant-numeric:tabular-nums}
+.esp-mono{font:400 16px/1.5 var(--f-mono)}
+.distinguir{font:700 28px var(--f-ui);letter-spacing:.06em}
+
+/* Color */
+.muestras{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.muestra{background:var(--papel);border:1px solid var(--renglon);border-radius:var(--r-md);overflow:hidden;font-size:15px}
+.muestra i{display:block;height:64px}
+.muestra div{padding:8px 12px}
+.muestra b{display:block;font-weight:600}
+.muestra code{font:400 14px var(--f-mono);color:var(--tinta-2)}
+
+/* Estados */
+.tabla-estados{width:100%;border-collapse:collapse;background:var(--papel);border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--renglon)}
+.tabla-estados td,.tabla-estados th{padding:12px 16px;border-bottom:1px solid var(--renglon);text-align:left;vertical-align:middle}
+.tabla-estados th{font:600 15px var(--f-ui);color:var(--tinta-2);background:var(--papel-bo)}
+.estado{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:var(--r-sm);font-weight:700;font-size:17px;white-space:nowrap}
+.estado svg{width:22px;height:22px;flex:none}
+.e-ok{background:var(--ok-t);color:var(--ok)} .e-prov{background:var(--prov-t);color:var(--prov)}
+.e-err{background:var(--err-t);color:var(--err)} .e-conf{background:var(--conf-t);color:var(--conf)}
+.e-valid{background:var(--valid-t);color:var(--valid)} .e-obs{background:var(--obs-t);color:var(--obs)}
+
+/* Teléfonos */
+.telefonos{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:32px;align-items:start}
+.telefono{background:var(--papel);border:10px solid #1d2430;border-radius:28px;max-width:390px;width:100%;margin:0 auto;overflow:hidden;transition:filter .2s}
+.pie-tel{font-size:15px;color:var(--tinta-2);text-align:center;margin-top:12px}
+.cab{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:2px solid var(--tinta)}
+.cab .paso{font:600 16px var(--f-ui);color:var(--tinta-2)}
+.cab .red{display:flex;align-items:center;gap:6px;font:600 15px var(--f-ui);color:var(--tinta-2)}
+.tel-cuerpo{padding:20px}
+.tel-tit{font:700 26px/1.2 var(--f-ui);margin:0 0 4px}
+.tel-sub{font-size:18px;color:var(--tinta-2);margin:0 0 16px}
+.pasos{display:flex;gap:4px;padding:0 20px 12px}
+.pasos span{flex:1;height:6px;border-radius:2px;background:var(--renglon)}
+.pasos span.hecho{background:var(--tinta)} .pasos span.ahora{background:var(--naranja)}
+
+/* Renglones del libro */
+.renglones{list-style:none;margin:0;padding:0;border-top:1px solid var(--renglon-fuerte)}
+.renglon{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;min-height:64px;padding:10px 0;border-bottom:1px solid var(--renglon)}
+.renglon .nom{font-weight:600}
+.renglon .cifra{font:700 22px var(--f-ui);font-variant-numeric:tabular-nums;text-align:right}
+.renglon .det{grid-column:1/-1;font-size:16px;color:var(--tinta-2);display:flex;gap:8px;align-items:center}
+.renglon.tachado .cifra,.renglon.tachado .nom{text-decoration:line-through;text-decoration-thickness:2px;color:var(--tinta-2)}
+.renglon.reverso .cifra{color:var(--err)}
+.falta{color:var(--tinta-2);font-weight:600}
+
+/* Componente de dinero */
+.dinero{border:2px solid var(--tinta);border-radius:var(--r-md);padding:16px;margin:16px 0}
+.dinero .quien{font-size:16px;color:var(--tinta-2);font-weight:600}
+.dinero .valor{font:800 44px/1.1 var(--f-ui);font-variant-numeric:tabular-nums;margin:4px 0}
+.dinero .letras{font-size:18px;color:var(--tinta)}
+.alerta-monto{display:flex;gap:10px;align-items:flex-start;background:var(--valid-t);color:var(--valid);border-radius:var(--r-sm);padding:10px 12px;font-weight:600;font-size:16px;margin-top:12px}
+.teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tecla{min-height:56px;font:700 24px var(--f-ui);background:var(--papel-bo);color:var(--tinta);border:1px solid var(--renglon-fuerte);border-radius:var(--r-md);cursor:pointer}
+.tecla:active{background:var(--renglon)}
+.tecla.atajo{font-size:18px}
+
+/* Botones */
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:0 20px;font:700 20px var(--f-ui);border-radius:var(--r-md);border:2px solid transparent;cursor:pointer}
+.btn-primario{background:var(--naranja);color:var(--naranja-texto)}
+.btn-primario:active{background:#D96A15}
+.btn-secundario{background:var(--papel);color:var(--tinta);border-color:var(--tinta)}
+.btn-fantasma{background:transparent;color:var(--navy);text-decoration:underline;text-underline-offset:4px}
+.btn[disabled]{background:var(--prov-t);color:var(--tinta-2);border-color:var(--renglon-fuerte);cursor:not-allowed}
+.acciones{display:grid;gap:12px;margin-top:20px}
+.fila-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:900px}
+
+/* Arqueo con billetes */
+.billetes{display:grid;gap:8px}
+.billete{display:grid;grid-template-columns:14px 1fr auto;align-items:center;border:1px solid var(--renglon-fuerte);border-radius:var(--r-sm);overflow:hidden;min-height:64px}
+.billete .franja{align-self:stretch}
+.billete .den{padding:8px 12px;font:800 22px var(--f-ui)}
+.billete .den small{display:block;font:400 15px var(--f-ui);color:var(--tinta-2)}
+.contador{display:flex;align-items:center;gap:4px;padding-right:8px}
+.contador button{width:56px;height:56px;font:700 26px var(--f-ui);border-radius:var(--r-md);border:1px solid var(--renglon-fuerte);background:var(--papel-bo);color:var(--tinta);cursor:pointer}
+.contador output{min-width:40px;text-align:center;font:800 24px var(--f-ui)}
+.total-arqueo{display:flex;justify-content:space-between;align-items:baseline;border-top:3px double var(--tinta);margin-top:12px;padding-top:12px}
+.total-arqueo b{font:800 34px var(--f-ui)}
+
+/* Cierre y sello */
+.cuadre{border:2px solid var(--tinta);border-radius:var(--r-md)}
+.cuadre div{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--renglon)}
+.cuadre div:last-child{border-bottom:0;font-weight:800;font-size:22px}
+.firmas{display:grid;gap:8px;margin-top:16px}
+.firma{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--renglon-fuerte);border-radius:var(--r-sm)}
+.firma .cargo{font-size:15px;color:var(--tinta-2)}
+.sello{position:relative;margin:20px auto 4px;width:200px;height:200px;border-radius:50%;border:5px solid var(--ok);color:var(--ok);display:grid;place-items:center;text-align:center;transform:rotate(-8deg);opacity:0}
+.sello::before{content:"";position:absolute;inset:8px;border:2px solid var(--ok);border-radius:50%}
+.sello b{display:block;font:800 22px/1.1 var(--f-ui);text-transform:uppercase;letter-spacing:.04em}
+.sello span{display:block;font:600 14px/1.3 var(--f-ui)}
+.sello.puesto{animation:sellar .32s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes sellar{from{opacity:0;transform:rotate(-8deg) scale(1.25)}to{opacity:1;transform:rotate(-8deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.sello.puesto{animation:none;opacity:1}}
+
+/* Back-office */
+.bo{display:grid;grid-template-columns:232px 1fr;background:var(--papel);border:1px solid var(--renglon);border-radius:var(--r-lg);overflow:hidden;min-height:560px;font-size:16px}
+.bo nav{background:var(--navy);color:#fff;padding:20px 12px}
+.bo nav .marca{color:#fff;margin:0 8px 24px;font-size:18px}
+.bo nav .sello-mini{border-color:#fff}
+.bo nav a{display:flex;justify-content:space-between;align-items:center;color:#DCE4F0;text-decoration:none;padding:10px 12px;border-radius:var(--r-sm);font-weight:600}
+.bo nav a.activo{background:#fff;color:var(--navy)}
+.bo nav a .n{font:700 14px var(--f-ui);background:var(--naranja);color:var(--naranja-texto);border-radius:var(--r-sm);padding:1px 8px}
+.bo main{padding:24px 28px;min-width:0}
+.bo-cab{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end;margin-bottom:20px}
+.bo-cab h3{font-size:28px;margin:0}
+.bo-cab p{margin:4px 0 0;color:var(--tinta-2)}
+.cifras{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--renglon);border-radius:var(--r-md);margin-bottom:20px}
+.cifras div{flex:1 1 160px;padding:14px 18px;border-right:1px solid var(--renglon)}
+.cifras div:last-child{border-right:0}
+.cifras span{display:block;color:var(--tinta-2);font-size:14px;font-weight:600}
+.cifras b{font:800 26px var(--f-ui)}
+.tabla-wrap{overflow-x:auto}
+.tabla{width:100%;border-collapse:collapse;min-width:640px}
+.tabla th{font:600 14px var(--f-ui);color:var(--tinta-2);text-align:left;padding:10px 12px;border-bottom:2px solid var(--tinta)}
+.tabla td{padding:12px;border-bottom:1px solid var(--renglon)}
+.tabla td.num,.tabla th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tabla .estado{font-size:14px;padding:3px 10px 3px 6px}
+.tabla .estado svg{width:18px;height:18px}
+.tabla code{font:400 14px var(--f-mono);color:var(--tinta-2);white-space:nowrap}
+.tabla td.num,.cifra,.valor,.cuadre span,.total-arqueo b,.cifras b{white-space:nowrap}
+.btn-bo{min-height:40px;font-size:15px;padding:0 14px;width:auto;display:inline-flex}
+@media (max-width:760px){.bo{grid-template-columns:1fr}.bo nav{display:flex;overflow-x:auto;gap:4px;padding:12px}.bo nav .marca{display:none}.bo nav a{white-space:nowrap}}
+</style>
+</head>
+<body>
+<div class="envoltura">
+  <div class="barra">
+    <div class="marca"><span class="sello-mini" aria-hidden="true">C</span>Credimpacto</div>
+    <button class="toggle" id="sol" aria-pressed="false">Simular celular barato al sol</button>
+  </div>
+
+  <h1>Credimpacto: nuestro dinero, bien contado</h1>
+  <p class="lead">Este es el sistema de diseño del libro contable de las ACAP. Se ve en la reunión, desde el celular del Registrador, y en la oficina de la Fundación. Esta página muestra las fuentes, los colores y tres pantallas reales con estas reglas aplicadas.</p>
+  <p class="nota">No hay modo oscuro, y es una decisión: la reunión pasa al aire libre o en un salón comunal, con el sol de frente. Usa el botón de arriba para ver cómo se lee la pantalla en un celular de gama baja con brillo bajo.</p>
+
+  <h2>Tipografía</h2>
+  <p class="nota">Las tres familias son de Google Fonts, con licencia OFL y peso variable. Las tres tienen cifras tabulares (<code>tnum</code>), verificadas en el archivo.</p>
+  <div class="especimen">
+    <div>
+      <div class="rol">Títulos de la oficina · Bitter 700</div>
+      <div class="esp-tit">Consolidado de 27 ACAP</div>
+      <p class="nota" style="margin-top:8px">Es una serif slab de Sol Matas, diseñadora formada en la UBA. Hereda la serif del mockup sin el contraste alto de una serif de revista. Parece el encabezado de un libro de cuentas. En la reunión no se usa.</p>
+    </div>
+    <div>
+      <div class="rol">Interfaz y texto · Atkinson Hyperlegible Next</div>
+      <div class="esp-ui">Marque los aportes de hoy. Toque el nombre de cada socia y escriba lo que entregó.</div>
+      <div class="distinguir" style="margin-top:12px">0 O · 1 l I · 6 8 · 5 S</div>
+      <p class="nota" style="margin-top:8px">El Braille Institute la diseñó para personas con baja visión. Cada carácter que se confunde con otro tiene una forma propia. Es la única familia de la superficie de reunión.</p>
+    </div>
+    <div>
+      <div class="rol">Cifras clave · Atkinson Next 800, tabulares</div>
+      <div class="esp-cifra">$ 1.250.000</div>
+      <div class="esp-ui" style="margin-top:6px">un millón doscientos cincuenta mil pesos</div>
+      <div class="rol" style="margin-top:20px">Códigos y huellas · Atkinson Hyperlegible Mono</div>
+      <div class="esp-mono">REU-2026-10-04 · 9f3a…c21e</div>
+    </div>
+  </div>
+
+  <h2>Color</h2>
+  <p class="nota">Tinta azul oscuro sobre papel blanco. El naranja solo aparece en la acción principal de cada pantalla. Todo texto supera 7:1 de contraste. La única excepción es el botón naranja: su etiqueta en negrita de 20 px está a 5,8:1, que cumple AAA para texto grande.</p>
+  <div class="muestras">
+    <div class="muestra"><i style="background:#10213D"></i><div><b>Tinta</b><code>#10213D · 16:1</code></div></div>
+    <div class="muestra"><i style="background:#3D4A60"></i><div><b>Tinta suave</b><code>#3D4A60 · 9:1</code></div></div>
+    <div class="muestra"><i style="background:#1B3A6B"></i><div><b>Azul marca</b><code>#1B3A6B · 11:1</code></div></div>
+    <div class="muestra"><i style="background:#F07B22"></i><div><b>Naranja acción</b><code>#F07B22</code></div></div>
+    <div class="muestra"><i style="background:#FFFFFF;border-bottom:1px solid #D5DCE6"></i><div><b>Papel</b><code>#FFFFFF</code></div></div>
+    <div class="muestra"><i style="background:#F2F4F7"></i><div><b>Papel oficina</b><code>#F2F4F7</code></div></div>
+    <div class="muestra"><i style="background:#D5DCE6"></i><div><b>Renglón</b><code>#D5DCE6</code></div></div>
+  </div>
+  <h3 style="margin-top:28px">Franjas de billete (arqueo)</h3>
+  <p class="nota">Son el color real de cada billete de la familia nueva del Banco de la República. Solo van como franja de identificación: el número del billete siempre está escrito al lado, en tinta.</p>
+  <div class="muestras">
+    <div class="muestra"><i style="background:var(--b2)"></i><div><b>$ 2.000</b><code>azul</code></div></div>
+    <div class="muestra"><i style="background:var(--b5)"></i><div><b>$ 5.000</b><code>café</code></div></div>
+    <div class="muestra"><i style="background:var(--b10)"></i><div><b>$ 10.000</b><code>rojo</code></div></div>
+    <div class="muestra"><i style="background:var(--b20)"></i><div><b>$ 20.000</b><code>naranja</code></div></div>
+    <div class="muestra"><i style="background:var(--b50)"></i><div><b>$ 50.000</b><code>violeta</code></div></div>
+    <div class="muestra"><i style="background:var(--b100)"></i><div><b>$ 100.000</b><code>verde</code></div></div>
+  </div>
+
+  <h2>Estados de un movimiento</h2>
+  <p class="nota">Esta tabla es fija. Cada estado tiene un ícono, una palabra, un color y una frase. El color nunca va solo.</p>
+  <table class="tabla-estados">
+    <thead><tr><th>Estado</th><th>Qué le decimos a la junta</th></tr></thead>
+    <tbody>
+      <tr><td><span class="estado e-prov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Guardado aquí</span></td><td>Está en este celular. Se envía cuando haya señal.</td></tr>
+      <tr><td><span class="estado e-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Confirmado</span></td><td>La Fundación ya lo tiene. Está en el libro.</td></tr>
+      <tr><td><span class="estado e-valid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Por revisar</span></td><td>Una persona de la Fundación lo va a mirar.</td></tr>
+      <tr><td><span class="estado e-obs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 5h16v11H9l-5 4z"/></svg>Con nota</span></td><td>Está en el libro, con un comentario para la junta.</td></tr>
+      <tr><td><span class="estado e-conf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/></svg>Hay que aclarar</span></td><td>Depende de algo que se rechazó. La junta lo revisa.</td></tr>
+      <tr><td><span class="estado e-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>Rechazado</span></td><td>No entró al libro. Dice por qué y qué hacer.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Botones</h2>
+  <p class="nota">Cada pantalla tiene una sola acción principal, en naranja. Ningún botón mide menos de 56 px de alto.</p>
+  <div class="fila-btns">
+    <button class="btn btn-primario">Guardar aporte</button>
+    <button class="btn btn-secundario">Corregir</button>
+    <button class="btn btn-fantasma">Ver el cuaderno</button>
+    <button class="btn" disabled>Faltan 2 firmas</button>
+  </div>
+
+  <h2>La reunión, paso a paso</h2>
+  <p class="nota">Tres de los nueve pasos de la reunión. Una columna, renglones como los del cuaderno, nada de tarjetas dentro de tarjetas. Una corrección no borra nada: tacha el renglón y escribe debajo el movimiento que lo reversa.</p>
+  <div class="telefonos">
+    <!-- Paso 2: aportes -->
+    <div>
+      <div class="telefono">
+        <div class="cab"><span class="paso">Paso 2 de 9</span><span class="red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><path d="M3 3l18 18"/></svg>Sin señal · guardando aquí</span></div>
+        <div class="pasos" style="padding-top:12px"><span class="hecho"></span><span class="ahora"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="tel-cuerpo">
+          <p class="tel-tit">Aportes de hoy</p>
+          <p class="tel-sub">ACAP Las Brisas · 12 de 14 presentes</p>
+          <div class="dinero">
+            <div class="quien">Aporte de María Cuesta</div>
+            <div class="valor">$ 250.000</div>
+            <div class="letras">doscientos cincuenta mil pesos</div>
+            <div class="alerta-monto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="flex:none"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/></svg>Es 5 veces lo que María aporta siempre ($ 50.000). ¿Está bien?</div>
+          </div>
+          <div class="teclado">
+            <button class="tecla">1</button><button class="tecla">2</button><button class="tecla">3</button>
+            <button class="tecla">4</button><button class="tecla">5</button><button class="tecla">6</button>
+            <button class="tecla">7</button><button class="tecla">8</button><button class="tecla">9</button>
+            <button class="tecla atajo">000</button><button class="tecla">0</button><button class="tecla atajo" aria-label="Borrar">⌫</button>
+          </div>
+          <div class="acciones"><button class="btn btn-primario">Guardar aporte</button></div>
+          <ul class="renglones" style="margin-top:20px">
+            <li class="renglon"><span class="nom">Rosa Mosquera</span><span class="cifra">$ 50.000</span><span class="det"><span class="estado e-prov" style="font-size:14px;padding:2px 8px 2px 4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="width:16px;height:16px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Guardado aquí</span></span></li>
+            <li class="renglon tachado"><span class="nom">Ana Palacios</span><span class="cifra">$ 500.000</span><span class="det">Tachado por el Registrador: «sobraba un cero»</span></li>
+            <li class="renglon reverso"><span class="nom">Ana Palacios · reverso</span><span class="cifra">− $ 500.000</span></li>
+            <li class="renglon"><span class="nom">Ana Palacios</span><span class="cifra">$ 50.000</span></li>
+            <li class="renglon"><span class="nom falta">Luz Rentería</span><span class="cifra falta">sin aporte</span></li>
+          </ul>
+        </div>
+      </div>
+      <p class="pie-tel">Monto grande, con el valor en letras y un aviso si es 5 veces lo usual.</p>
+    </div>
+
+    <!-- Paso 7: arqueo -->
+    <div>
+      <div class="telefono">
+        <div class="cab"><span class="paso">Paso 7 de 9</span><span class="red">Sin señal · guardando aquí</span></div>
+        <div class="pasos" style="padding-top:12px"><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="ahora"></span><span></span><span></span></div>
+        <div class="tel-cuerpo">
+          <p class="tel-tit">Contemos la caja</p>
+          <p class="tel-sub">Toque + por cada billete que ponga sobre la mesa. Todavía no le mostramos lo que debería haber.</p>
+          <div class="billetes" id="billetes"></div>
+          <div class="total-arqueo"><span>En la caja</span><b id="total">$ 0</b></div>
+          <div class="letras" id="letras" style="color:var(--tinta-2);text-align:right">cero pesos</div>
+          <div class="acciones"><button class="btn btn-primario">Terminé de contar</button><button class="btn btn-secundario">Contar monedas</button></div>
+        </div>
+      </div>
+      <p class="pie-tel">Arqueo a ciegas. Cada billete se reconoce por su color real y su número.</p>
+    </div>
+
+    <!-- Paso 9: cierre -->
+    <div>
+      <div class="telefono">
+        <div class="cab"><span class="paso">Paso 9 de 9</span><span class="red">Sin señal · guardando aquí</span></div>
+        <div class="pasos" style="padding-top:12px"><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="hecho"></span><span class="ahora"></span></div>
+        <div class="tel-cuerpo">
+          <p class="tel-tit">Cerrar la reunión</p>
+          <p class="tel-sub">La caja cuadra con el libro.</p>
+          <div class="cuadre">
+            <div><span>Había al empezar</span><span>$ 3.420.000</span></div>
+            <div><span>Entró hoy</span><span>$ 860.000</span></div>
+            <div><span>Salió en préstamos</span><span>− $ 600.000</span></div>
+            <div><span>Debe haber</span><span>$ 3.680.000</span></div>
+          </div>
+          <div class="firmas">
+            <div class="firma"><span>Carmen Asprilla<br><span class="cargo">Presidenta</span></span><span class="estado e-ok" style="font-size:15px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Firmó</span></div>
+            <div class="firma"><span>Jhon Hinestroza<br><span class="cargo">Portador de Caja</span></span><span class="estado e-ok" style="font-size:15px" id="firma2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Firmó</span></div>
+          </div>
+          <div class="sello" id="sello" aria-live="polite"><div><b>Bien<br>contado</b><span>ACAP Las Brisas<br>4 oct 2026</span></div></div>
+          <div class="acciones"><button class="btn btn-primario" id="cerrar">Cerrar y sellar</button></div>
+        </div>
+      </div>
+      <p class="pie-tel">El momento de la app: el sello «Bien contado» cae sobre la página.</p>
+    </div>
+  </div>
+
+  <h2>La oficina de la Fundación</h2>
+  <p class="nota">Misma tinta, mismo papel. Aquí sí hay densidad: tablas con cifras alineadas a la derecha, y la barra lateral azul que viene del mockup.</p>
+  <div class="bo">
+    <nav>
+      <div class="marca"><span class="sello-mini" aria-hidden="true">C</span>Credimpacto</div>
+      <a href="#" class="activo">Pendientes <span class="n">7</span></a>
+      <a href="#">ACAP</a><a href="#">Personas</a><a href="#">Indicadores</a><a href="#">Configuración</a>
+    </nav>
+    <main>
+      <div class="bo-cab">
+        <div><h3>Pendientes</h3><p>Reuniones que llegaron con algo por revisar. Las más antiguas, primero.</p></div>
+        <button class="btn btn-secundario btn-bo">Exportar a Excel</button>
+      </div>
+      <div class="cifras">
+        <div><span>Ahorro en las 27 ACAP</span><b>$ 184.320.000</b></div>
+        <div><span>Prestado entre socios</span><b>$ 61.750.000</b></div>
+        <div><span>Reuniones este mes</span><b>22 de 27</b></div>
+      </div>
+      <div class="tabla-wrap">
+      <table class="tabla">
+        <thead><tr><th>ACAP</th><th>Reunión</th><th>Qué pasa</th><th class="num">Diferencia de caja</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Las Brisas · Quibdó</td><td><code>REU-2026-10-04</code></td><td><span class="estado e-valid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Por revisar</span> Aporte 5× lo usual</td><td class="num">$ 0</td><td><button class="btn btn-primario btn-bo">Revisar</button></td></tr>
+          <tr><td>Resguardo Alto Andágueda</td><td><code>REU-2026-09-28</code></td><td><span class="estado e-conf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.5"/></svg>Hay que aclarar</span> Abono a préstamo rechazado</td><td class="num">− $ 20.000</td><td><button class="btn btn-secundario btn-bo">Revisar</button></td></tr>
+          <tr><td>JAC Villa Hermosa</td><td><code>REU-2026-09-27</code></td><td><span class="estado e-obs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 5h16v11H9l-5 4z"/></svg>Con nota</span> Digitada del cuaderno</td><td class="num">$ 0</td><td><button class="btn btn-secundario btn-bo">Revisar</button></td></tr>
+          <tr><td>Consejo Comunitario Bahía Solano</td><td><code>REU-2026-09-21</code></td><td><span class="estado e-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M6 6l12 12M18 6L6 18"/></svg>Rechazado</span> Firmó dos veces la misma persona</td><td class="num">$ 5.000</td><td><button class="btn btn-secundario btn-bo">Revisar</button></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </main>
+  </div>
+</div>
+<script>
+const den=[[2000,'--b2','azul'],[5000,'--b5','café'],[10000,'--b10','rojo'],[20000,'--b20','naranja'],[50000,'--b50','violeta'],[100000,'--b100','verde']];
+const cnt=den.map(()=>0), fmt=n=>'$ '+n.toLocaleString('es-CO');
+function letras(n){
+  if(n===0)return 'cero pesos';
+  const u=['','un','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte','veintiún','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve'];
+  const d=['','','','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
+  const c=['','ciento','doscientos','trescientos','cuatrocientos','quinientos','seiscientos','setecientos','ochocientos','novecientos'];
+  const m100=x=>x<30?u[x]:d[Math.floor(x/10)]+(x%10?' y '+u[x%10]:'');
+  const m1000=x=>x===100?'cien':(c[Math.floor(x/100)]+(x%100?' '+m100(x%100):'')).trim();
+  const mil=x=>{const a=Math.floor(x/1000),b=x%1000;return ((a?(a===1?'mil':m1000(a)+' mil'):'')+(b?' '+m1000(b):'')).trim()};
+  const mm=Math.floor(n/1e6),r=n%1e6;
+  let s=(mm?(mm===1?'un millón':mil(mm)+' millones'):'')+(r?' '+mil(r):'');
+  s=s.trim();return s+(mm&&!r?' de pesos':' pesos');
+}
+const cont=document.getElementById('billetes');
+den.forEach(([v,col,nom],i)=>{
+  const el=document.createElement('div');el.className='billete';
+  el.innerHTML=`<span class="franja" style="background:var(${col})"></span><span class="den">${fmt(v)}<small>${nom}</small></span><span class="contador"><button aria-label="Quitar un billete de ${fmt(v)}">−</button><output>0</output><button aria-label="Sumar un billete de ${fmt(v)}">+</button></span>`;
+  const [menos,mas]=el.querySelectorAll('button'),out=el.querySelector('output');
+  const pinta=()=>{out.textContent=cnt[i];const t=cnt.reduce((s,c,j)=>s+c*den[j][0],0);document.getElementById('total').textContent=fmt(t);document.getElementById('letras').textContent=letras(t)};
+  mas.onclick=()=>{cnt[i]++;pinta()};menos.onclick=()=>{if(cnt[i]>0){cnt[i]--;pinta()}};
+  cont.appendChild(el);
+});
+document.getElementById('cerrar').onclick=e=>{const s=document.getElementById('sello');s.classList.remove('puesto');void s.offsetWidth;s.classList.add('puesto');e.currentTarget.textContent='Reunión cerrada';e.currentTarget.className='btn btn-secundario';navigator.vibrate&&navigator.vibrate(40)};
+const t=document.getElementById('sol');t.onclick=()=>{const on=document.body.classList.toggle('sol');t.setAttribute('aria-pressed',on)};
+</script>
+</body>
+</html>
