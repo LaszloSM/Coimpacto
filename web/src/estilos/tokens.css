@@ -1,0 +1,123 @@
+/* GENERADO por scripts/generar-tokens.mjs desde DESIGN.md. No editar a mano. */
+/* Para cambiar el diseño: editar DESIGN.md y correr `npm run tokens`. */
+:root {
+  /* Color */
+  --color-tinta: #10213D;
+  --color-tinta-suave: #3D4A60;
+  --color-navy: #1B3A6B;
+  --color-navy-tinte: #E4EAF3;
+  --color-naranja: #F07B22;
+  --color-naranja-presionado: #D96A15;
+  --color-on-naranja: #10213D;
+  --color-papel: #FFFFFF;
+  --color-papel-oficina: #F2F4F7;
+  --color-renglon: #D5DCE6;
+  --color-renglon-fuerte: #AEB9C8;
+  --color-confirmado: #124B2E;
+  --color-confirmado-tinte: #E8F4EC;
+  --color-provisional: #3D4A60;
+  --color-provisional-tinte: #ECEFF4;
+  --color-rechazado: #7E1712;
+  --color-rechazado-tinte: #FCE8E6;
+  --color-en-conflicto: #5A2D82;
+  --color-en-conflicto-tinte: #F1EAF8;
+  --color-por-validar: #5E3C00;
+  --color-por-validar-tinte: #FCF2DD;
+  --color-con-observaciones: #1B3A6B;
+  --color-con-observaciones-tinte: #E4EAF3;
+  --color-billete-2000: #2E7FC1;
+  --color-billete-5000: #8A5A3B;
+  --color-billete-10000: #C8332B;
+  --color-billete-20000: #E9822F;
+  --color-billete-50000: #7D4A9E;
+  --color-billete-100000: #3C8C4A;
+
+  /* Tipografía (las familias las define next/font en layout.tsx) */
+  --tipo-display-familia: var(--fuente-bitter);
+  --tipo-display-weight: 700;
+  --tipo-display-size: clamp(2rem, 4vw, 3rem);
+  --tipo-display-letter-spacing: -0.01em;
+  --tipo-heading-familia: var(--fuente-bitter);
+  --tipo-heading-weight: 600;
+  --tipo-heading-size: 1.75rem;
+  --tipo-body-familia: var(--fuente-atkinson-next);
+  --tipo-body-weight: 400;
+  --tipo-body-size: 1.125rem;
+  --tipo-body-line-height: 1.5;
+  --tipo-body-oficina-familia: var(--fuente-atkinson-next);
+  --tipo-body-oficina-weight: 400;
+  --tipo-body-oficina-size: 1rem;
+  --tipo-body-oficina-line-height: 1.5;
+  --tipo-campo-titulo-familia: var(--fuente-atkinson-next);
+  --tipo-campo-titulo-weight: 700;
+  --tipo-campo-titulo-size: 1.625rem;
+  --tipo-campo-titulo-line-height: 1.2;
+  --tipo-cifra-clave-familia: var(--fuente-atkinson-next);
+  --tipo-cifra-clave-weight: 800;
+  --tipo-cifra-clave-size: 2.75rem;
+  --tipo-cifra-clave-line-height: 1.1;
+  --tipo-cifra-clave-rasgos: "tnum";
+  --tipo-cifra-renglon-familia: var(--fuente-atkinson-next);
+  --tipo-cifra-renglon-weight: 700;
+  --tipo-cifra-renglon-size: 1.375rem;
+  --tipo-cifra-renglon-rasgos: "tnum";
+  --tipo-label-familia: var(--fuente-atkinson-next);
+  --tipo-label-weight: 600;
+  --tipo-label-size: 0.875rem;
+  --tipo-label-letter-spacing: 0em;
+  --tipo-mono-familia: var(--fuente-atkinson-mono);
+  --tipo-mono-weight: 400;
+  --tipo-mono-size: 0.875rem;
+  --tipo-mono-rasgos: "tnum";
+
+  /* Radios */
+  --rounded-sm: 4px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-sello: 9999px;
+
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-toque-min: 56px;
+
+  /* Componentes */
+  --button-primary-background-color: var(--color-naranja);
+  --button-primary-text-color: var(--color-on-naranja);
+  --button-primary-rounded: var(--rounded-md);
+  --button-primary-height: var(--spacing-toque-min);
+  --button-primary-active-background-color: var(--color-naranja-presionado);
+  --button-secondary-background-color: var(--color-papel);
+  --button-secondary-text-color: var(--color-tinta);
+  --button-secondary-border-color: var(--color-tinta);
+  --button-secondary-rounded: var(--rounded-md);
+  --button-secondary-height: var(--spacing-toque-min);
+  --button-disabled-background-color: var(--color-provisional-tinte);
+  --button-disabled-text-color: var(--color-tinta-suave);
+  --button-disabled-border-color: var(--color-renglon-fuerte);
+  --tecla-background-color: var(--color-papel-oficina);
+  --tecla-text-color: var(--color-tinta);
+  --tecla-border-color: var(--color-renglon-fuerte);
+  --tecla-rounded: var(--rounded-md);
+  --tecla-height: var(--spacing-toque-min);
+  --renglon-border-color: var(--color-renglon);
+  --renglon-height: 64px;
+  --dinero-border-color: var(--color-tinta);
+  --dinero-rounded: var(--rounded-md);
+  --estado-rounded: var(--rounded-sm);
+  --billete-border-color: var(--color-renglon-fuerte);
+  --billete-rounded: var(--rounded-sm);
+  --sello-border-color: var(--color-confirmado);
+  --sello-text-color: var(--color-confirmado);
+  --sello-rounded: var(--rounded-sello);
+  --sidebar-oficina-background-color: var(--color-navy);
+  --sidebar-oficina-text-color: var(--color-papel);
+  --nav-link-activo-background-color: var(--color-papel);
+  --nav-link-activo-text-color: var(--color-navy);
+  --nav-link-activo-rounded: var(--rounded-sm);
+}

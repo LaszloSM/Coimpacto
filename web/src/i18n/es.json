@@ -1,0 +1,21 @@
+{
+  "app": {
+    "nombre": "Credimpacto",
+    "descripcion": "El libro contable de las ACAP. Credimpacto no custodia ni capta dinero."
+  },
+  "inicio": {
+    "titulo": "Nuestro dinero, bien contado",
+    "reunion": "Abrir la reunión",
+    "reunionDetalle": "Para la junta, desde el celular. Funciona sin señal.",
+    "fundacion": "Entrar a la oficina",
+    "fundacionDetalle": "Para el equipo de la Fundación."
+  },
+  "reunion": {
+    "titulo": "Reunión de la ACAP",
+    "enConstruccion": "Aquí va el asistente de 9 pasos de la reunión."
+  },
+  "fundacion": {
+    "titulo": "Pendientes",
+    "enConstruccion": "Aquí va la cola de reuniones por revisar."
+  }
+}

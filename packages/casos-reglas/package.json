@@ -1,0 +1,11 @@
+{
+  "name": "@credimpacto/casos-reglas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Casos de prueba compartidos de las reglas de dinero: los leen pytest (backend) y Vitest (web).",
+  "type": "module",
+  "exports": {
+    "./casos/*": "./casos/*"
+  },
+  "files": ["casos"]
+}

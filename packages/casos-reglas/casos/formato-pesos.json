@@ -1,0 +1,12 @@
+{
+  "regla": "formato-pesos",
+  "descripcion": "Pesos enteros en formato es-CO: punto de miles, espacio no separable tras $, signo menos tipográfico.",
+  "casos": [
+    { "nombre": "cero", "entrada": 0, "esperado": "$\u00a00" },
+    { "nombre": "menos de mil", "entrada": 950, "esperado": "$\u00a0950" },
+    { "nombre": "aporte tipico", "entrada": 50000, "esperado": "$\u00a050.000" },
+    { "nombre": "millones", "entrada": 1250000, "esperado": "$\u00a01.250.000" },
+    { "nombre": "consolidado", "entrada": 184320000, "esperado": "$\u00a0184.320.000" },
+    { "nombre": "reverso negativo", "entrada": -500000, "esperado": "\u2212 $\u00a0500.000" }
+  ]
+}

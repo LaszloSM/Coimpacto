@@ -1,0 +1,23 @@
+{
+  "name": "credimpacto",
+  "private": true,
+  "description": "Monorepo de Credimpacto: backend Django (backend/), web Next.js (web/) y paquetes compartidos (packages/).",
+  "workspaces": [
+    "web",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "tokens": "node scripts/generar-tokens.mjs",
+    "tokens:check": "node scripts/generar-tokens.mjs --check",
+    "web:dev": "npm run dev -w web",
+    "web:test": "npm run test -w web",
+    "web:e2e": "npm run e2e -w web",
+    "api:tipos": "npm run generar -w @credimpacto/api-client"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.1"
+  }
+}
