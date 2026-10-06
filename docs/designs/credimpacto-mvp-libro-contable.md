@@ -1511,10 +1511,10 @@ Conflict flags: packages/casos-reglas lo tocan S3 y S5 (S3 es dueño); el contra
 Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship. Ratios assumed: scaffolding ~100x, features ~30x, security/crypto ~10x, ops ~5x.
 
 - [x] ~~T1 — Seguridad del bot~~ **Sin efecto (2026-10-06):** el chatbot y n8n quedan fuera del proyecto por decisión del usuario.
-- [ ] **T2 (P1, human: ~2d / CC: ~1h)** — monorepo — Estructura de 6 apps Django + Next.js + paquetes, CI con pytest/Vitest/Playwright
+- [x] **T2 (P1, human: ~2d / CC: ~1h)** — monorepo — Estructura de 6 apps Django + Next.js + paquetes, CI con pytest/Vitest/Playwright
   - Surfaced by: Scope D4; Test review E18 (D23)
   - Files: backend/, web/, packages/casos-reglas/, packages/api-client/, .github/workflows/
-  - Verify: CI verde con una prueba de cada suite
+  - Verify: CI verde con una prueba de cada suite — **hecho 2026-10-06** (rama t2-monorepo, CI #3 verde: contrato, backend sobre PostgreSQL, web y E2E)
 - [ ] **T3 (P1, human: ~1w / CC: ~4h)** — libro — Reglas de dinero en Python y TS con casos compartidos y JCS
   - Surfaced by: Section 2 C1; Section 1 A3 (D19); regression contract
   - Files: backend/libro/reglas.py, web/src/reglas/, packages/casos-reglas/
