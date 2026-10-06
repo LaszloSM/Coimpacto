@@ -35,6 +35,7 @@ function resolver(valor, tokens) {
   });
 }
 
+// Variables definidas en web/src/estilos/fuentes.css.
 const FUENTES = {
   "Atkinson Hyperlegible Next": "var(--fuente-atkinson-next)",
   "Atkinson Hyperlegible Mono": "var(--fuente-atkinson-mono)",
@@ -48,12 +49,12 @@ function generar(tokens) {
   sec("Color");
   for (const [k, v] of Object.entries(tokens.colors ?? {})) lineas.push(`  --color-${k}: ${v};`);
 
-  sec("Tipografía (las familias las define next/font en layout.tsx)");
+  sec("Tipografía (las familias están en fuentes.css)");
   for (const [rol, props] of Object.entries(tokens.typography ?? {})) {
     for (const [p, v] of Object.entries(props)) {
       if (p === "fontFamily") {
         const variable = FUENTES[v];
-        if (!variable) throw new Error(`Fuente sin cargar en web: ${v}. Agregarla a FUENTES y a layout.tsx.`);
+        if (!variable) throw new Error(`Fuente sin cargar en web: ${v}. Agregarla a FUENTES y a web/src/estilos/fuentes.css.`);
         lineas.push(`  --tipo-${rol}-familia: ${variable};`);
       } else if (p === "fontFeature") {
         lineas.push(`  --tipo-${rol}-rasgos: "${v}";`);

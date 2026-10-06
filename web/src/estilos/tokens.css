@@ -32,7 +32,7 @@
   --color-billete-50000: #7D4A9E;
   --color-billete-100000: #3C8C4A;
 
-  /* Tipografía (las familias las define next/font en layout.tsx) */
+  /* Tipografía (las familias están en fuentes.css) */
   --tipo-display-familia: var(--fuente-bitter);
   --tipo-display-weight: 700;
   --tipo-display-size: clamp(2rem, 4vw, 3rem);

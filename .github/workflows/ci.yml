@@ -20,12 +20,12 @@ jobs:
     name: Tokens de diseño y contrato de API al día
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - run: npm ci
@@ -62,8 +62,8 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v5
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - name: Clave aleatoria solo para esta corrida
@@ -81,8 +81,8 @@ jobs:
     name: Web (eslint + tsc + vitest + build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -96,8 +96,8 @@ jobs:
     name: E2E Playwright (celular y escritorio)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -106,7 +106,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
         working-directory: web
       - run: npm run e2e -w @credimpacto/web
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: reporte-playwright

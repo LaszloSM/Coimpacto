@@ -18,3 +18,22 @@ test("la reunión sigue en pantalla cuando se pierde la señal", async ({ page, 
   await expect(page.getByRole("heading", { name: "Reunión de la ACAP" })).toBeVisible();
   await context.setOffline(false);
 });
+
+test("las fuentes de DESIGN.md se cargan desde la app", async ({ page }) => {
+  const pedidosDeFuentes: string[] = [];
+  page.on("request", (pedido) => {
+    if (pedido.resourceType() === "font") pedidosDeFuentes.push(new URL(pedido.url()).host);
+  });
+
+  await page.goto("/");
+  const cargadas = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return ["Atkinson Hyperlegible Next", "Bitter"].map((familia) =>
+      document.fonts.check(`700 18px "${familia}"`),
+    );
+  });
+
+  expect(cargadas).toEqual([true, true]);
+  // Ninguna fuente sale de Google ni de otro dominio: en campo no hay red.
+  expect(pedidosDeFuentes.every((host) => host.startsWith("localhost"))).toBe(true);
+});
