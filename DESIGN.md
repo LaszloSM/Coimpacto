@@ -196,7 +196,7 @@ Las tres familias vienen de Google Fonts, con licencia OFL y eje de peso variabl
 - **Bitter** (Sol Matas, formada en la UBA), pesos 100–900. Solo se usa en los títulos de la oficina. Es una slab de contraste bajo: hereda la serif del mockup sin caer en la serif de revista, y se lee como el encabezado de un libro de cuentas. **No se usa en la superficie de reunión.**
 - **Atkinson Hyperlegible Mono**, pesos 200–800. Solo para códigos, huellas (hash) e identificadores en la oficina. No se usa para dinero: el dinero va en Next con `tnum`, que se lee mejor.
 
-**Carga:** se publica un solo `<link>` a `fonts.googleapis.com/css2` con `display=swap`, y estos pesos: Next 400/600/700/800, Bitter 600/700, Mono 400. En la PWA, el service worker guarda las fuentes en caché en la primera visita para que funcionen sin señal. Al montar el monorepo conviene pasarlas a `next/font` (autoalojadas), así no depende de Google en campo.
+**Carga:** los `.woff2` variables (subconjuntos latin y latin-ext) se sirven desde la propia app, en `web/public/fuentes/` con su licencia OFL, declarados en `web/src/estilos/fuentes.css` con el mismo `unicode-range` de Google. Se precargan Next y Bitter latin. El build y la reunión no dependen de Google Fonts, y el service worker de la PWA las guarda para usarlas sin señal.
 
 **Escala:**
 - Reunión: cuerpo 18 px mínimo; títulos de paso 26 px/700; cifra en renglón 22 px/700; cifra clave 44 px/800 (mínimo 32 px); valor en letras 18 px.

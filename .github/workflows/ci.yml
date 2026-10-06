@@ -1,0 +1,114 @@
+name: CI
+
+# Corre en cada push a cualquier rama (las ramas de trabajo también quedan verificadas).
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  contrato:
+    name: Tokens de diseño y contrato de API al día
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+      - run: npm ci
+      - name: tokens.css coincide con DESIGN.md
+        run: npm run tokens:check
+      - name: Regenerar OpenAPI y tipos del cliente
+        env:
+          DJANGO_DEBUG: "1"
+        run: npm run api:tipos
+      - name: El contrato commiteado coincide con el backend
+        run: git diff --exit-code -- packages/api-client
+
+  backend:
+    name: Backend (ruff + pytest)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: credimpacto
+          POSTGRES_PASSWORD: credimpacto
+          POSTGRES_DB: credimpacto
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U credimpacto"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://credimpacto:credimpacto@localhost:5432/credimpacto
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+      - name: Clave aleatoria solo para esta corrida
+        run: echo "DJANGO_SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(50))')" >> "$GITHUB_ENV"
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - name: Sin migraciones pendientes
+        run: uv run python manage.py makemigrations --check --dry-run
+      - name: Chequeo de despliegue de Django
+        run: uv run python manage.py check --deploy --fail-level WARNING
+      - run: uv run pytest
+
+  web:
+    name: Web (eslint + tsc + vitest + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w @credimpacto/web
+      - run: npm run typecheck -w @credimpacto/web
+      - run: npm run test -w @credimpacto/web
+      - run: npm run build -w @credimpacto/web
+
+  e2e:
+    name: E2E Playwright (celular y escritorio)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build -w @credimpacto/web
+      - run: npx playwright install --with-deps chromium
+        working-directory: web
+      - run: npm run e2e -w @credimpacto/web
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: reporte-playwright
+          path: web/playwright-report
+          retention-days: 7

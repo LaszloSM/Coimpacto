@@ -1,0 +1,56 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Credimpacto API",
+    "version": "0.1.0",
+    "description": "Libro contable de las ACAP. Credimpacto no custodia ni capta dinero."
+  },
+  "paths": {
+    "/api/salud": {
+      "get": {
+        "operationId": "core_api_salud",
+        "summary": "Estado del servicio",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Salud"
+                }
+              }
+            }
+          }
+        },
+        "description": "Responde si el servicio y la base de datos están arriba. No expone datos.",
+        "tags": [
+          "core"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Salud": {
+        "properties": {
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "base_de_datos": {
+            "title": "Base De Datos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "estado",
+          "base_de_datos"
+        ],
+        "title": "Salud",
+        "type": "object"
+      }
+    }
+  },
+  "servers": []
+}

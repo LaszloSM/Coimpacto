@@ -39,3 +39,6 @@ playwright-report/
 Thumbs.db
 .idea/
 .vscode/
+
+# Django
+backend/staticfiles/
