@@ -1,0 +1,41 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/settings.local.json
+
+# Binario de Impeccable (17 MB, específico de la plataforma).
+# Se reinstala con: npx impeccable install --providers=claude --scope=project
+.claude/skills/impeccable/scripts/bin/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+.turbo/
+
+# Playwright
+test-results/
+playwright-report/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
