@@ -1518,7 +1518,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
 - [ ] **T3 (P1, human: ~1w / CC: ~4h)** — libro — Reglas de dinero en Python y TS con casos compartidos y JCS
   - Surfaced by: Section 2 C1; Section 1 A3 (D19); regression contract
   - Files: backend/libro/reglas.py, web/src/reglas/, packages/casos-reglas/
-  - Verify: pytest + Vitest con los mismos casos; Hypothesis en redondeo; 2 ciclos curados al peso
+  - Verify: pytest + Vitest con los mismos casos; Hypothesis en redondeo; 2 ciclos curados al peso — **reglas y casos hechos 2026-10-06 (PR LaszloSM/Coimpacto#2); falta la prueba con 2 ciclos curados que valide CoimpactoB**
 - [ ] **T4 (P1, human: ~1d / CC: ~45min)** — libro — Libro solo-agregar en PostgreSQL con eventos de estado
   - Surfaced by: Section 2 C2 (D22)
   - Files: backend/libro/migrations/, backend/libro/servicio.py
