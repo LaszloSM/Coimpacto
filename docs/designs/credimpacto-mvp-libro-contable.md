@@ -2489,10 +2489,10 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX1 (D2), EP1 (D11); D5, D17, D18
   - Files: movil/src/seguridad/, backend/cuentas/
   - Verify: firma verificada por el servidor; firma alterada rechazada; 5 PIN → en pausa; calibración en el celular de referencia — **hecho 2026-10-07 salvo la medición en el celular de referencia** (la app calibra N al registrar cada celular, con piso 2^15 y techo 2^17; falta elegir el celular de gama baja y medir). Pantallas de PIN y de lectura del QR van con TD1/TD5
-- [ ] **TX4 (P1, human: ~3d / CC: ~1.5h)** — movil/datos — SQLite con SQLCipher (llave cruda), migraciones versionadas, caducidad de 60 días, pendientes nunca se borran
+- [x] **TX4 (P1, human: ~3d / CC: ~1.5h)** — movil/datos — SQLite con SQLCipher (llave cruda), migraciones versionadas, caducidad de 60 días, pendientes nunca se borran
   - Surfaced by: EX2 (D3); D5, D9
   - Files: movil/src/datos/
-  - Verify: la base no abre sin secreto y PIN; migración con pendientes conserva la cola
+  - Verify: la base no abre sin secreto y PIN; migración con pendientes conserva la cola — **hecho 2026-10-07** (Jest con node:sqlite; el cifrado real se comprueba al abrir: sin `cipher_version` la base no se abre)
 - [ ] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
   - Surfaced by: EX5 (D6); D24, D10 (eng)
   - Files: movil/src/cola/, backend/sync/
@@ -2810,6 +2810,7 @@ Approval readiness: PASS — EF1 (D1 = A); N5, N6 y N17 aprobados por el usuario
   - Surfaced by: EF1 (D1); N6
   - Files: .github/workflows/, docs/operacion/llaves.md
   - Verify: una versión que pasa CI aparece en la pista interna; la cuenta de servicio no puede publicar en producción
+  - Nota (2026-10-07): el CI de cada PR construye solo x86_64 para el emulador; el AAB de TF1 debe incluir arm64-v8a (y armeabi-v7a si el celular de referencia es de 32 bits)
 
 ### Completion summary (validación)
 - Step 0: Scope Challenge — scope accepted as-is (3 hallazgos; 1 decisión)
