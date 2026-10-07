@@ -1,0 +1,2884 @@
+{
+  "regla": "abono",
+  "descripcion": "División del abono en capital e interés. Generado por scripts/generar_casos.py (semilla 20261006). No editar a mano.",
+  "casos": [
+    {
+      "nombre": "una cuota",
+      "monto": 353333,
+      "saldo": 1060000,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      },
+      "esperado": {
+        "capital": 333333,
+        "interes": 20000
+      }
+    },
+    {
+      "nombre": "pago total",
+      "monto": 1060000,
+      "saldo": 1060000,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      },
+      "esperado": {
+        "capital": 1000000,
+        "interes": 60000
+      }
+    },
+    {
+      "nombre": "medio préstamo",
+      "monto": 530000,
+      "saldo": 1060000,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      },
+      "esperado": {
+        "capital": 500000,
+        "interes": 30000
+      }
+    },
+    {
+      "nombre": "un peso va todo a capital",
+      "monto": 1,
+      "saldo": 1060000,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      },
+      "esperado": {
+        "capital": 1,
+        "interes": 0
+      }
+    },
+    {
+      "nombre": "aleatorio 0",
+      "monto": 703327,
+      "saldo": 2389764,
+      "prestamo": {
+        "interes_mensual": 94622,
+        "num_cuotas": 2,
+        "total_pagar": 2389764
+      },
+      "esperado": {
+        "capital": 647631,
+        "interes": 55696
+      }
+    },
+    {
+      "nombre": "aleatorio 1",
+      "monto": 621030,
+      "saldo": 1864951,
+      "prestamo": {
+        "interes_mensual": 26770,
+        "num_cuotas": 3,
+        "total_pagar": 1864951
+      },
+      "esperado": {
+        "capital": 594287,
+        "interes": 26743
+      }
+    },
+    {
+      "nombre": "aleatorio 2",
+      "monto": 262147,
+      "saldo": 312509,
+      "prestamo": {
+        "interes_mensual": 3985,
+        "num_cuotas": 7,
+        "total_pagar": 312509
+      },
+      "esperado": {
+        "capital": 238747,
+        "interes": 23400
+      }
+    },
+    {
+      "nombre": "aleatorio 3",
+      "monto": 3784801,
+      "saldo": 4953238,
+      "prestamo": {
+        "interes_mensual": 70259,
+        "num_cuotas": 8,
+        "total_pagar": 4953238
+      },
+      "esperado": {
+        "capital": 3355318,
+        "interes": 429483
+      }
+    },
+    {
+      "nombre": "aleatorio 4",
+      "monto": 884896,
+      "saldo": 3049970,
+      "prestamo": {
+        "interes_mensual": 134908,
+        "num_cuotas": 3,
+        "total_pagar": 3049970
+      },
+      "esperado": {
+        "capital": 767472,
+        "interes": 117424
+      }
+    },
+    {
+      "nombre": "aleatorio 5",
+      "monto": 146107,
+      "saldo": 178239,
+      "prestamo": {
+        "interes_mensual": 5986,
+        "num_cuotas": 2,
+        "total_pagar": 178239
+      },
+      "esperado": {
+        "capital": 136293,
+        "interes": 9814
+      }
+    },
+    {
+      "nombre": "aleatorio 6",
+      "monto": 3398034,
+      "saldo": 5601858,
+      "prestamo": {
+        "interes_mensual": 154500,
+        "num_cuotas": 4,
+        "total_pagar": 5601858
+      },
+      "esperado": {
+        "capital": 3023161,
+        "interes": 374873
+      }
+    },
+    {
+      "nombre": "aleatorio 7",
+      "monto": 189066,
+      "saldo": 3406140,
+      "prestamo": {
+        "interes_mensual": 96448,
+        "num_cuotas": 9,
+        "total_pagar": 3406140
+      },
+      "esperado": {
+        "capital": 140884,
+        "interes": 48182
+      }
+    },
+    {
+      "nombre": "aleatorio 8",
+      "monto": 2647998,
+      "saldo": 3412165,
+      "prestamo": {
+        "interes_mensual": 109004,
+        "num_cuotas": 1,
+        "total_pagar": 3412165
+      },
+      "esperado": {
+        "capital": 2563406,
+        "interes": 84592
+      }
+    },
+    {
+      "nombre": "aleatorio 9",
+      "monto": 225885,
+      "saldo": 502428,
+      "prestamo": {
+        "interes_mensual": 10588,
+        "num_cuotas": 2,
+        "total_pagar": 502428
+      },
+      "esperado": {
+        "capital": 216365,
+        "interes": 9520
+      }
+    },
+    {
+      "nombre": "aleatorio 10",
+      "monto": 2515412,
+      "saldo": 4346937,
+      "prestamo": {
+        "interes_mensual": 132490,
+        "num_cuotas": 9,
+        "total_pagar": 4346937
+      },
+      "esperado": {
+        "capital": 1825408,
+        "interes": 690004
+      }
+    },
+    {
+      "nombre": "aleatorio 11",
+      "monto": 1394364,
+      "saldo": 2126221,
+      "prestamo": {
+        "interes_mensual": 67896,
+        "num_cuotas": 5,
+        "total_pagar": 2126221
+      },
+      "esperado": {
+        "capital": 1171735,
+        "interes": 222629
+      }
+    },
+    {
+      "nombre": "aleatorio 12",
+      "monto": 34880,
+      "saldo": 3754657,
+      "prestamo": {
+        "interes_mensual": 59948,
+        "num_cuotas": 10,
+        "total_pagar": 3754657
+      },
+      "esperado": {
+        "capital": 29311,
+        "interes": 5569
+      }
+    },
+    {
+      "nombre": "aleatorio 13",
+      "monto": 1476407,
+      "saldo": 2667580,
+      "prestamo": {
+        "interes_mensual": 81384,
+        "num_cuotas": 5,
+        "total_pagar": 2667580
+      },
+      "esperado": {
+        "capital": 1251192,
+        "interes": 225215
+      }
+    },
+    {
+      "nombre": "aleatorio 14",
+      "monto": 2620291,
+      "saldo": 4473331,
+      "prestamo": {
+        "interes_mensual": 237222,
+        "num_cuotas": 1,
+        "total_pagar": 4473331
+      },
+      "esperado": {
+        "capital": 2481336,
+        "interes": 138955
+      }
+    },
+    {
+      "nombre": "aleatorio 15",
+      "monto": 1585099,
+      "saldo": 6598921,
+      "prestamo": {
+        "interes_mensual": 242333,
+        "num_cuotas": 8,
+        "total_pagar": 6598921
+      },
+      "esperado": {
+        "capital": 1119421,
+        "interes": 465678
+      }
+    },
+    {
+      "nombre": "aleatorio 16",
+      "monto": 3189031,
+      "saldo": 3432220,
+      "prestamo": {
+        "interes_mensual": 42674,
+        "num_cuotas": 9,
+        "total_pagar": 3432220
+      },
+      "esperado": {
+        "capital": 2832178,
+        "interes": 356853
+      }
+    },
+    {
+      "nombre": "aleatorio 17",
+      "monto": 1014722,
+      "saldo": 1053477,
+      "prestamo": {
+        "interes_mensual": 24810,
+        "num_cuotas": 4,
+        "total_pagar": 1053477
+      },
+      "esperado": {
+        "capital": 919133,
+        "interes": 95589
+      }
+    },
+    {
+      "nombre": "aleatorio 18",
+      "monto": 1021932,
+      "saldo": 2415186,
+      "prestamo": {
+        "interes_mensual": 80434,
+        "num_cuotas": 3,
+        "total_pagar": 2415186
+      },
+      "esperado": {
+        "capital": 919830,
+        "interes": 102102
+      }
+    },
+    {
+      "nombre": "aleatorio 19",
+      "monto": 2072708,
+      "saldo": 4497431,
+      "prestamo": {
+        "interes_mensual": 181278,
+        "num_cuotas": 1,
+        "total_pagar": 4497431
+      },
+      "esperado": {
+        "capital": 1989163,
+        "interes": 83545
+      }
+    },
+    {
+      "nombre": "aleatorio 20",
+      "monto": 2140896,
+      "saldo": 5955269,
+      "prestamo": {
+        "interes_mensual": 213696,
+        "num_cuotas": 9,
+        "total_pagar": 5955269
+      },
+      "esperado": {
+        "capital": 1449490,
+        "interes": 691406
+      }
+    },
+    {
+      "nombre": "aleatorio 21",
+      "monto": 314972,
+      "saldo": 1394513,
+      "prestamo": {
+        "interes_mensual": 41940,
+        "num_cuotas": 2,
+        "total_pagar": 1394513
+      },
+      "esperado": {
+        "capital": 296026,
+        "interes": 18946
+      }
+    },
+    {
+      "nombre": "aleatorio 22",
+      "monto": 5346093,
+      "saldo": 6011295,
+      "prestamo": {
+        "interes_mensual": 244284,
+        "num_cuotas": 5,
+        "total_pagar": 6011295
+      },
+      "esperado": {
+        "capital": 4259834,
+        "interes": 1086259
+      }
+    },
+    {
+      "nombre": "aleatorio 23",
+      "monto": 4960275,
+      "saldo": 6276658,
+      "prestamo": {
+        "interes_mensual": 163814,
+        "num_cuotas": 12,
+        "total_pagar": 6276658
+      },
+      "esperado": {
+        "capital": 3406781,
+        "interes": 1553494
+      }
+    },
+    {
+      "nombre": "aleatorio 24",
+      "monto": 4896580,
+      "saldo": 5161410,
+      "prestamo": {
+        "interes_mensual": 224906,
+        "num_cuotas": 6,
+        "total_pagar": 5161410
+      },
+      "esperado": {
+        "capital": 3616383,
+        "interes": 1280197
+      }
+    },
+    {
+      "nombre": "aleatorio 25",
+      "monto": 76423,
+      "saldo": 976265,
+      "prestamo": {
+        "interes_mensual": 11633,
+        "num_cuotas": 7,
+        "total_pagar": 976265
+      },
+      "esperado": {
+        "capital": 70048,
+        "interes": 6375
+      }
+    },
+    {
+      "nombre": "aleatorio 26",
+      "monto": 3339942,
+      "saldo": 3467177,
+      "prestamo": {
+        "interes_mensual": 0,
+        "num_cuotas": 9,
+        "total_pagar": 3467177
+      },
+      "esperado": {
+        "capital": 3339942,
+        "interes": 0
+      }
+    },
+    {
+      "nombre": "aleatorio 27",
+      "monto": 3647804,
+      "saldo": 3818030,
+      "prestamo": {
+        "interes_mensual": 97275,
+        "num_cuotas": 8,
+        "total_pagar": 3818030
+      },
+      "esperado": {
+        "capital": 2904300,
+        "interes": 743504
+      }
+    },
+    {
+      "nombre": "aleatorio 28",
+      "monto": 3742393,
+      "saldo": 3956476,
+      "prestamo": {
+        "interes_mensual": 37325,
+        "num_cuotas": 6,
+        "total_pagar": 3956476
+      },
+      "esperado": {
+        "capital": 3530561,
+        "interes": 211832
+      }
+    },
+    {
+      "nombre": "aleatorio 29",
+      "monto": 2565685,
+      "saldo": 5366719,
+      "prestamo": {
+        "interes_mensual": 101992,
+        "num_cuotas": 5,
+        "total_pagar": 5366719
+      },
+      "esperado": {
+        "capital": 2321887,
+        "interes": 243798
+      }
+    },
+    {
+      "nombre": "aleatorio 30",
+      "monto": 1903202,
+      "saldo": 3670281,
+      "prestamo": {
+        "interes_mensual": 113807,
+        "num_cuotas": 1,
+        "total_pagar": 3670281
+      },
+      "esperado": {
+        "capital": 1844188,
+        "interes": 59014
+      }
+    },
+    {
+      "nombre": "aleatorio 31",
+      "monto": 678177,
+      "saldo": 2500212,
+      "prestamo": {
+        "interes_mensual": 0,
+        "num_cuotas": 4,
+        "total_pagar": 2500212
+      },
+      "esperado": {
+        "capital": 678177,
+        "interes": 0
+      }
+    },
+    {
+      "nombre": "aleatorio 32",
+      "monto": 2039273,
+      "saldo": 5873706,
+      "prestamo": {
+        "interes_mensual": 107864,
+        "num_cuotas": 9,
+        "total_pagar": 5873706
+      },
+      "esperado": {
+        "capital": 1702232,
+        "interes": 337041
+      }
+    },
+    {
+      "nombre": "aleatorio 33",
+      "monto": 938202,
+      "saldo": 2404051,
+      "prestamo": {
+        "interes_mensual": 6982,
+        "num_cuotas": 11,
+        "total_pagar": 2404051
+      },
+      "esperado": {
+        "capital": 908229,
+        "interes": 29973
+      }
+    },
+    {
+      "nombre": "aleatorio 34",
+      "monto": 695912,
+      "saldo": 4820758,
+      "prestamo": {
+        "interes_mensual": 14123,
+        "num_cuotas": 8,
+        "total_pagar": 4820758
+      },
+      "esperado": {
+        "capital": 679602,
+        "interes": 16310
+      }
+    },
+    {
+      "nombre": "aleatorio 35",
+      "monto": 70406,
+      "saldo": 2190297,
+      "prestamo": {
+        "interes_mensual": 21493,
+        "num_cuotas": 11,
+        "total_pagar": 2190297
+      },
+      "esperado": {
+        "capital": 62806,
+        "interes": 7600
+      }
+    },
+    {
+      "nombre": "aleatorio 36",
+      "monto": 2846659,
+      "saldo": 3048840,
+      "prestamo": {
+        "interes_mensual": 50814,
+        "num_cuotas": 10,
+        "total_pagar": 3048840
+      },
+      "esperado": {
+        "capital": 2372216,
+        "interes": 474443
+      }
+    },
+    {
+      "nombre": "aleatorio 37",
+      "monto": 531129,
+      "saldo": 2914183,
+      "prestamo": {
+        "interes_mensual": 80034,
+        "num_cuotas": 7,
+        "total_pagar": 2914183
+      },
+      "esperado": {
+        "capital": 429022,
+        "interes": 102107
+      }
+    },
+    {
+      "nombre": "aleatorio 38",
+      "monto": 259591,
+      "saldo": 1188288,
+      "prestamo": {
+        "interes_mensual": 48033,
+        "num_cuotas": 3,
+        "total_pagar": 1188288
+      },
+      "esperado": {
+        "capital": 228111,
+        "interes": 31480
+      }
+    },
+    {
+      "nombre": "aleatorio 39",
+      "monto": 2818642,
+      "saldo": 4199935,
+      "prestamo": {
+        "interes_mensual": 70446,
+        "num_cuotas": 12,
+        "total_pagar": 4199935
+      },
+      "esperado": {
+        "capital": 2251313,
+        "interes": 567329
+      }
+    },
+    {
+      "nombre": "aleatorio 40",
+      "monto": 267742,
+      "saldo": 3351711,
+      "prestamo": {
+        "interes_mensual": 107073,
+        "num_cuotas": 1,
+        "total_pagar": 3351711
+      },
+      "esperado": {
+        "capital": 259189,
+        "interes": 8553
+      }
+    },
+    {
+      "nombre": "aleatorio 41",
+      "monto": 190758,
+      "saldo": 271878,
+      "prestamo": {
+        "interes_mensual": 9926,
+        "num_cuotas": 3,
+        "total_pagar": 271878
+      },
+      "esperado": {
+        "capital": 169865,
+        "interes": 20893
+      }
+    },
+    {
+      "nombre": "aleatorio 42",
+      "monto": 103818,
+      "saldo": 5563561,
+      "prestamo": {
+        "interes_mensual": 87434,
+        "num_cuotas": 11,
+        "total_pagar": 5563561
+      },
+      "esperado": {
+        "capital": 85871,
+        "interes": 17947
+      }
+    },
+    {
+      "nombre": "aleatorio 43",
+      "monto": 161974,
+      "saldo": 1058222,
+      "prestamo": {
+        "interes_mensual": 44825,
+        "num_cuotas": 4,
+        "total_pagar": 1058222
+      },
+      "esperado": {
+        "capital": 134530,
+        "interes": 27444
+      }
+    },
+    {
+      "nombre": "aleatorio 44",
+      "monto": 778545,
+      "saldo": 2401339,
+      "prestamo": {
+        "interes_mensual": 43165,
+        "num_cuotas": 3,
+        "total_pagar": 2401339
+      },
+      "esperado": {
+        "capital": 736561,
+        "interes": 41984
+      }
+    },
+    {
+      "nombre": "aleatorio 45",
+      "monto": 1122217,
+      "saldo": 1453038,
+      "prestamo": {
+        "interes_mensual": 31105,
+        "num_cuotas": 11,
+        "total_pagar": 1453038
+      },
+      "esperado": {
+        "capital": 857962,
+        "interes": 264255
+      }
+    },
+    {
+      "nombre": "aleatorio 46",
+      "monto": 3402157,
+      "saldo": 5751709,
+      "prestamo": {
+        "interes_mensual": 175683,
+        "num_cuotas": 11,
+        "total_pagar": 5751709
+      },
+      "esperado": {
+        "capital": 2259068,
+        "interes": 1143089
+      }
+    },
+    {
+      "nombre": "aleatorio 47",
+      "monto": 209675,
+      "saldo": 439173,
+      "prestamo": {
+        "interes_mensual": 19426,
+        "num_cuotas": 3,
+        "total_pagar": 439173
+      },
+      "esperado": {
+        "capital": 181851,
+        "interes": 27824
+      }
+    },
+    {
+      "nombre": "aleatorio 48",
+      "monto": 8495,
+      "saldo": 19522,
+      "prestamo": {
+        "interes_mensual": 379,
+        "num_cuotas": 8,
+        "total_pagar": 19522
+      },
+      "esperado": {
+        "capital": 7176,
+        "interes": 1319
+      }
+    },
+    {
+      "nombre": "aleatorio 49",
+      "monto": 4593139,
+      "saldo": 5530799,
+      "prestamo": {
+        "interes_mensual": 178413,
+        "num_cuotas": 11,
+        "total_pagar": 5530799
+      },
+      "esperado": {
+        "capital": 2963314,
+        "interes": 1629825
+      }
+    },
+    {
+      "nombre": "aleatorio 50",
+      "monto": 37906,
+      "saldo": 72755,
+      "prestamo": {
+        "interes_mensual": 1929,
+        "num_cuotas": 2,
+        "total_pagar": 72755
+      },
+      "esperado": {
+        "capital": 35896,
+        "interes": 2010
+      }
+    },
+    {
+      "nombre": "aleatorio 51",
+      "monto": 526304,
+      "saldo": 994830,
+      "prestamo": {
+        "interes_mensual": 33465,
+        "num_cuotas": 7,
+        "total_pagar": 994830
+      },
+      "esperado": {
+        "capital": 402374,
+        "interes": 123930
+      }
+    },
+    {
+      "nombre": "aleatorio 52",
+      "monto": 2614256,
+      "saldo": 4652840,
+      "prestamo": {
+        "interes_mensual": 89478,
+        "num_cuotas": 2,
+        "total_pagar": 4652840
+      },
+      "esperado": {
+        "capital": 2513707,
+        "interes": 100549
+      }
+    },
+    {
+      "nombre": "aleatorio 53",
+      "monto": 685932,
+      "saldo": 1745825,
+      "prestamo": {
+        "interes_mensual": 70369,
+        "num_cuotas": 1,
+        "total_pagar": 1745825
+      },
+      "esperado": {
+        "capital": 658284,
+        "interes": 27648
+      }
+    },
+    {
+      "nombre": "aleatorio 54",
+      "monto": 1750904,
+      "saldo": 3898758,
+      "prestamo": {
+        "interes_mensual": 67858,
+        "num_cuotas": 12,
+        "total_pagar": 3898758
+      },
+      "esperado": {
+        "capital": 1385210,
+        "interes": 365694
+      }
+    },
+    {
+      "nombre": "aleatorio 55",
+      "monto": 92494,
+      "saldo": 103444,
+      "prestamo": {
+        "interes_mensual": 4549,
+        "num_cuotas": 1,
+        "total_pagar": 103444
+      },
+      "esperado": {
+        "capital": 88427,
+        "interes": 4067
+      }
+    },
+    {
+      "nombre": "aleatorio 56",
+      "monto": 3911780,
+      "saldo": 4772527,
+      "prestamo": {
+        "interes_mensual": 251860,
+        "num_cuotas": 2,
+        "total_pagar": 4772527
+      },
+      "esperado": {
+        "capital": 3498908,
+        "interes": 412872
+      }
+    },
+    {
+      "nombre": "aleatorio 57",
+      "monto": 2255056,
+      "saldo": 2602980,
+      "prestamo": {
+        "interes_mensual": 32771,
+        "num_cuotas": 8,
+        "total_pagar": 2602980
+      },
+      "esperado": {
+        "capital": 2027930,
+        "interes": 227126
+      }
+    },
+    {
+      "nombre": "aleatorio 58",
+      "monto": 770433,
+      "saldo": 882639,
+      "prestamo": {
+        "interes_mensual": 15054,
+        "num_cuotas": 6,
+        "total_pagar": 882639
+      },
+      "esperado": {
+        "capital": 691591,
+        "interes": 78842
+      }
+    },
+    {
+      "nombre": "aleatorio 59",
+      "monto": 220679,
+      "saldo": 3596376,
+      "prestamo": {
+        "interes_mensual": 98770,
+        "num_cuotas": 7,
+        "total_pagar": 3596376
+      },
+      "esperado": {
+        "capital": 178254,
+        "interes": 42425
+      }
+    },
+    {
+      "nombre": "aleatorio 60",
+      "monto": 1550744,
+      "saldo": 2664889,
+      "prestamo": {
+        "interes_mensual": 102496,
+        "num_cuotas": 6,
+        "total_pagar": 2664889
+      },
+      "esperado": {
+        "capital": 1192879,
+        "interes": 357865
+      }
+    },
+    {
+      "nombre": "aleatorio 61",
+      "monto": 117319,
+      "saldo": 278777,
+      "prestamo": {
+        "interes_mensual": 1367,
+        "num_cuotas": 4,
+        "total_pagar": 278777
+      },
+      "esperado": {
+        "capital": 115018,
+        "interes": 2301
+      }
+    },
+    {
+      "nombre": "aleatorio 62",
+      "monto": 2051068,
+      "saldo": 3706157,
+      "prestamo": {
+        "interes_mensual": 118670,
+        "num_cuotas": 12,
+        "total_pagar": 3706157
+      },
+      "esperado": {
+        "capital": 1262973,
+        "interes": 788095
+      }
+    },
+    {
+      "nombre": "aleatorio 63",
+      "monto": 426998,
+      "saldo": 3299517,
+      "prestamo": {
+        "interes_mensual": 6534,
+        "num_cuotas": 5,
+        "total_pagar": 3299517
+      },
+      "esperado": {
+        "capital": 422770,
+        "interes": 4228
+      }
+    },
+    {
+      "nombre": "aleatorio 64",
+      "monto": 3722275,
+      "saldo": 4648559,
+      "prestamo": {
+        "interes_mensual": 95518,
+        "num_cuotas": 7,
+        "total_pagar": 4648559
+      },
+      "esperado": {
+        "capital": 3186881,
+        "interes": 535394
+      }
+    },
+    {
+      "nombre": "aleatorio 65",
+      "monto": 2409521,
+      "saldo": 2593236,
+      "prestamo": {
+        "interes_mensual": 31460,
+        "num_cuotas": 11,
+        "total_pagar": 2593236
+      },
+      "esperado": {
+        "capital": 2087977,
+        "interes": 321544
+      }
+    },
+    {
+      "nombre": "aleatorio 66",
+      "monto": 597702,
+      "saldo": 1267367,
+      "prestamo": {
+        "interes_mensual": 17012,
+        "num_cuotas": 12,
+        "total_pagar": 1267367
+      },
+      "esperado": {
+        "capital": 501426,
+        "interes": 96276
+      }
+    },
+    {
+      "nombre": "aleatorio 67",
+      "monto": 374058,
+      "saldo": 2466089,
+      "prestamo": {
+        "interes_mensual": 49322,
+        "num_cuotas": 10,
+        "total_pagar": 2466089
+      },
+      "esperado": {
+        "capital": 299246,
+        "interes": 74812
+      }
+    },
+    {
+      "nombre": "aleatorio 68",
+      "monto": 1513236,
+      "saldo": 1547597,
+      "prestamo": {
+        "interes_mensual": 29981,
+        "num_cuotas": 4,
+        "total_pagar": 1547597
+      },
+      "esperado": {
+        "capital": 1395975,
+        "interes": 117261
+      }
+    },
+    {
+      "nombre": "aleatorio 69",
+      "monto": 2779727,
+      "saldo": 2888377,
+      "prestamo": {
+        "interes_mensual": 133673,
+        "num_cuotas": 2,
+        "total_pagar": 2888377
+      },
+      "esperado": {
+        "capital": 2522438,
+        "interes": 257289
+      }
+    },
+    {
+      "nombre": "aleatorio 70",
+      "monto": 990428,
+      "saldo": 1906968,
+      "prestamo": {
+        "interes_mensual": 9302,
+        "num_cuotas": 5,
+        "total_pagar": 1906968
+      },
+      "esperado": {
+        "capital": 966272,
+        "interes": 24156
+      }
+    },
+    {
+      "nombre": "aleatorio 71",
+      "monto": 1514100,
+      "saldo": 5684377,
+      "prestamo": {
+        "interes_mensual": 204923,
+        "num_cuotas": 6,
+        "total_pagar": 5684377
+      },
+      "esperado": {
+        "capital": 1186598,
+        "interes": 327502
+      }
+    },
+    {
+      "nombre": "aleatorio 72",
+      "monto": 188201,
+      "saldo": 788688,
+      "prestamo": {
+        "interes_mensual": 33950,
+        "num_cuotas": 4,
+        "total_pagar": 788688
+      },
+      "esperado": {
+        "capital": 155796,
+        "interes": 32405
+      }
+    },
+    {
+      "nombre": "aleatorio 73",
+      "monto": 1448034,
+      "saldo": 2967056,
+      "prestamo": {
+        "interes_mensual": 34938,
+        "num_cuotas": 8,
+        "total_pagar": 2967056
+      },
+      "esperado": {
+        "capital": 1311626,
+        "interes": 136408
+      }
+    },
+    {
+      "nombre": "aleatorio 74",
+      "monto": 2492787,
+      "saldo": 4622708,
+      "prestamo": {
+        "interes_mensual": 33742,
+        "num_cuotas": 12,
+        "total_pagar": 4622708
+      },
+      "esperado": {
+        "capital": 2274443,
+        "interes": 218344
+      }
+    },
+    {
+      "nombre": "aleatorio 75",
+      "monto": 173565,
+      "saldo": 1099529,
+      "prestamo": {
+        "interes_mensual": 26655,
+        "num_cuotas": 10,
+        "total_pagar": 1099529
+      },
+      "esperado": {
+        "capital": 131489,
+        "interes": 42076
+      }
+    },
+    {
+      "nombre": "aleatorio 76",
+      "monto": 1956590,
+      "saldo": 3049941,
+      "prestamo": {
+        "interes_mensual": 53856,
+        "num_cuotas": 4,
+        "total_pagar": 3049941
+      },
+      "esperado": {
+        "capital": 1818392,
+        "interes": 138198
+      }
+    },
+    {
+      "nombre": "aleatorio 77",
+      "monto": 4661391,
+      "saldo": 5723517,
+      "prestamo": {
+        "interes_mensual": 198340,
+        "num_cuotas": 11,
+        "total_pagar": 5723517
+      },
+      "esperado": {
+        "capital": 2884521,
+        "interes": 1776870
+      }
+    },
+    {
+      "nombre": "aleatorio 78",
+      "monto": 1082230,
+      "saldo": 2974681,
+      "prestamo": {
+        "interes_mensual": 24974,
+        "num_cuotas": 8,
+        "total_pagar": 2974681
+      },
+      "esperado": {
+        "capital": 1009543,
+        "interes": 72687
+      }
+    },
+    {
+      "nombre": "aleatorio 79",
+      "monto": 280952,
+      "saldo": 2911021,
+      "prestamo": {
+        "interes_mensual": 76105,
+        "num_cuotas": 7,
+        "total_pagar": 2911021
+      },
+      "esperado": {
+        "capital": 229536,
+        "interes": 51416
+      }
+    },
+    {
+      "nombre": "aleatorio 80",
+      "monto": 2439734,
+      "saldo": 2899783,
+      "prestamo": {
+        "interes_mensual": 20157,
+        "num_cuotas": 1,
+        "total_pagar": 2899783
+      },
+      "esperado": {
+        "capital": 2422775,
+        "interes": 16959
+      }
+    },
+    {
+      "nombre": "aleatorio 81",
+      "monto": 5245491,
+      "saldo": 5821466,
+      "prestamo": {
+        "interes_mensual": 101034,
+        "num_cuotas": 10,
+        "total_pagar": 5821466
+      },
+      "esperado": {
+        "capital": 4335114,
+        "interes": 910377
+      }
+    },
+    {
+      "nombre": "aleatorio 82",
+      "monto": 495744,
+      "saldo": 737669,
+      "prestamo": {
+        "interes_mensual": 8026,
+        "num_cuotas": 1,
+        "total_pagar": 737669
+      },
+      "esperado": {
+        "capital": 490350,
+        "interes": 5394
+      }
+    },
+    {
+      "nombre": "aleatorio 83",
+      "monto": 97353,
+      "saldo": 1591952,
+      "prestamo": {
+        "interes_mensual": 30812,
+        "num_cuotas": 10,
+        "total_pagar": 1591952
+      },
+      "esperado": {
+        "capital": 78510,
+        "interes": 18843
+      }
+    },
+    {
+      "nombre": "aleatorio 84",
+      "monto": 435546,
+      "saldo": 1439916,
+      "prestamo": {
+        "interes_mensual": 50719,
+        "num_cuotas": 4,
+        "total_pagar": 1439916
+      },
+      "esperado": {
+        "capital": 374180,
+        "interes": 61366
+      }
+    },
+    {
+      "nombre": "aleatorio 85",
+      "monto": 433885,
+      "saldo": 652274,
+      "prestamo": {
+        "interes_mensual": 14039,
+        "num_cuotas": 8,
+        "total_pagar": 652274
+      },
+      "esperado": {
+        "capital": 359176,
+        "interes": 74709
+      }
+    },
+    {
+      "nombre": "aleatorio 86",
+      "monto": 2484394,
+      "saldo": 3289420,
+      "prestamo": {
+        "interes_mensual": 72322,
+        "num_cuotas": 11,
+        "total_pagar": 3289420
+      },
+      "esperado": {
+        "capital": 1883547,
+        "interes": 600847
+      }
+    },
+    {
+      "nombre": "aleatorio 87",
+      "monto": 2447363,
+      "saldo": 5566874,
+      "prestamo": {
+        "interes_mensual": 167291,
+        "num_cuotas": 12,
+        "total_pagar": 5566874
+      },
+      "esperado": {
+        "capital": 1564810,
+        "interes": 882553
+      }
+    },
+    {
+      "nombre": "aleatorio 88",
+      "monto": 1302679,
+      "saldo": 1522255,
+      "prestamo": {
+        "interes_mensual": 32764,
+        "num_cuotas": 8,
+        "total_pagar": 1522255
+      },
+      "esperado": {
+        "capital": 1078375,
+        "interes": 224304
+      }
+    },
+    {
+      "nombre": "aleatorio 89",
+      "monto": 15579,
+      "saldo": 454930,
+      "prestamo": {
+        "interes_mensual": 15518,
+        "num_cuotas": 3,
+        "total_pagar": 454930
+      },
+      "esperado": {
+        "capital": 13985,
+        "interes": 1594
+      }
+    },
+    {
+      "nombre": "aleatorio 90",
+      "monto": 1727779,
+      "saldo": 1842404,
+      "prestamo": {
+        "interes_mensual": 48063,
+        "num_cuotas": 5,
+        "total_pagar": 1842404
+      },
+      "esperado": {
+        "capital": 1502415,
+        "interes": 225364
+      }
+    },
+    {
+      "nombre": "aleatorio 91",
+      "monto": 2632652,
+      "saldo": 5416792,
+      "prestamo": {
+        "interes_mensual": 247705,
+        "num_cuotas": 3,
+        "total_pagar": 5416792
+      },
+      "esperado": {
+        "capital": 2271486,
+        "interes": 361166
+      }
+    },
+    {
+      "nombre": "aleatorio 92",
+      "monto": 113332,
+      "saldo": 894922,
+      "prestamo": {
+        "interes_mensual": 36367,
+        "num_cuotas": 5,
+        "total_pagar": 894922
+      },
+      "esperado": {
+        "capital": 90305,
+        "interes": 23027
+      }
+    },
+    {
+      "nombre": "aleatorio 93",
+      "monto": 361254,
+      "saldo": 3665034,
+      "prestamo": {
+        "interes_mensual": 17453,
+        "num_cuotas": 10,
+        "total_pagar": 3665034
+      },
+      "esperado": {
+        "capital": 344051,
+        "interes": 17203
+      }
+    },
+    {
+      "nombre": "aleatorio 94",
+      "monto": 259721,
+      "saldo": 626906,
+      "prestamo": {
+        "interes_mensual": 24895,
+        "num_cuotas": 7,
+        "total_pagar": 626906
+      },
+      "esperado": {
+        "capital": 187525,
+        "interes": 72196
+      }
+    },
+    {
+      "nombre": "aleatorio 95",
+      "monto": 51074,
+      "saldo": 2633593,
+      "prestamo": {
+        "interes_mensual": 91638,
+        "num_cuotas": 7,
+        "total_pagar": 2633593
+      },
+      "esperado": {
+        "capital": 38634,
+        "interes": 12440
+      }
+    },
+    {
+      "nombre": "aleatorio 96",
+      "monto": 733076,
+      "saldo": 884378,
+      "prestamo": {
+        "interes_mensual": 40199,
+        "num_cuotas": 2,
+        "total_pagar": 884378
+      },
+      "esperado": {
+        "capital": 666433,
+        "interes": 66643
+      }
+    },
+    {
+      "nombre": "aleatorio 97",
+      "monto": 2989873,
+      "saldo": 4910783,
+      "prestamo": {
+        "interes_mensual": 190270,
+        "num_cuotas": 2,
+        "total_pagar": 4910783
+      },
+      "esperado": {
+        "capital": 2758186,
+        "interes": 231687
+      }
+    },
+    {
+      "nombre": "aleatorio 98",
+      "monto": 1031098,
+      "saldo": 4360064,
+      "prestamo": {
+        "interes_mensual": 96890,
+        "num_cuotas": 5,
+        "total_pagar": 4360064
+      },
+      "esperado": {
+        "capital": 916532,
+        "interes": 114566
+      }
+    },
+    {
+      "nombre": "aleatorio 99",
+      "monto": 1327238,
+      "saldo": 2913917,
+      "prestamo": {
+        "interes_mensual": 51465,
+        "num_cuotas": 9,
+        "total_pagar": 2913917
+      },
+      "esperado": {
+        "capital": 1116265,
+        "interes": 210973
+      }
+    },
+    {
+      "nombre": "aleatorio 100",
+      "monto": 17591,
+      "saldo": 22175,
+      "prestamo": {
+        "interes_mensual": 739,
+        "num_cuotas": 10,
+        "total_pagar": 22175
+      },
+      "esperado": {
+        "capital": 11729,
+        "interes": 5862
+      }
+    },
+    {
+      "nombre": "aleatorio 101",
+      "monto": 4811586,
+      "saldo": 6744484,
+      "prestamo": {
+        "interes_mensual": 166237,
+        "num_cuotas": 12,
+        "total_pagar": 6744484
+      },
+      "esperado": {
+        "capital": 3388443,
+        "interes": 1423143
+      }
+    },
+    {
+      "nombre": "aleatorio 102",
+      "monto": 2506587,
+      "saldo": 6033125,
+      "prestamo": {
+        "interes_mensual": 242712,
+        "num_cuotas": 7,
+        "total_pagar": 6033125
+      },
+      "esperado": {
+        "capital": 1800709,
+        "interes": 705878
+      }
+    },
+    {
+      "nombre": "aleatorio 103",
+      "monto": 141720,
+      "saldo": 449651,
+      "prestamo": {
+        "interes_mensual": 4011,
+        "num_cuotas": 1,
+        "total_pagar": 449651
+      },
+      "esperado": {
+        "capital": 140456,
+        "interes": 1264
+      }
+    },
+    {
+      "nombre": "aleatorio 104",
+      "monto": 1517584,
+      "saldo": 4244929,
+      "prestamo": {
+        "interes_mensual": 142739,
+        "num_cuotas": 8,
+        "total_pagar": 4244929
+      },
+      "esperado": {
+        "capital": 1109345,
+        "interes": 408239
+      }
+    },
+    {
+      "nombre": "aleatorio 105",
+      "monto": 2420012,
+      "saldo": 2998393,
+      "prestamo": {
+        "interes_mensual": 86216,
+        "num_cuotas": 7,
+        "total_pagar": 2998393
+      },
+      "esperado": {
+        "capital": 1932916,
+        "interes": 487096
+      }
+    },
+    {
+      "nombre": "aleatorio 106",
+      "monto": 827712,
+      "saldo": 3459641,
+      "prestamo": {
+        "interes_mensual": 83870,
+        "num_cuotas": 10,
+        "total_pagar": 3459641
+      },
+      "esperado": {
+        "capital": 627055,
+        "interes": 200657
+      }
+    },
+    {
+      "nombre": "aleatorio 107",
+      "monto": 971795,
+      "saldo": 1064697,
+      "prestamo": {
+        "interes_mensual": 31290,
+        "num_cuotas": 7,
+        "total_pagar": 1064697
+      },
+      "esperado": {
+        "capital": 771877,
+        "interes": 199918
+      }
+    },
+    {
+      "nombre": "aleatorio 108",
+      "monto": 2247519,
+      "saldo": 4608198,
+      "prestamo": {
+        "interes_mensual": 198366,
+        "num_cuotas": 4,
+        "total_pagar": 4608198
+      },
+      "esperado": {
+        "capital": 1860529,
+        "interes": 386990
+      }
+    },
+    {
+      "nombre": "aleatorio 109",
+      "monto": 2487958,
+      "saldo": 3280849,
+      "prestamo": {
+        "interes_mensual": 145696,
+        "num_cuotas": 4,
+        "total_pagar": 3280849
+      },
+      "esperado": {
+        "capital": 2046017,
+        "interes": 441941
+      }
+    },
+    {
+      "nombre": "aleatorio 110",
+      "monto": 554981,
+      "saldo": 2410551,
+      "prestamo": {
+        "interes_mensual": 33636,
+        "num_cuotas": 5,
+        "total_pagar": 2410551
+      },
+      "esperado": {
+        "capital": 516261,
+        "interes": 38720
+      }
+    },
+    {
+      "nombre": "aleatorio 111",
+      "monto": 24185,
+      "saldo": 54553,
+      "prestamo": {
+        "interes_mensual": 2399,
+        "num_cuotas": 1,
+        "total_pagar": 54553
+      },
+      "esperado": {
+        "capital": 23121,
+        "interes": 1064
+      }
+    },
+    {
+      "nombre": "aleatorio 112",
+      "monto": 3695414,
+      "saldo": 3858617,
+      "prestamo": {
+        "interes_mensual": 3832,
+        "num_cuotas": 7,
+        "total_pagar": 3858617
+      },
+      "esperado": {
+        "capital": 3669725,
+        "interes": 25689
+      }
+    },
+    {
+      "nombre": "aleatorio 113",
+      "monto": 2372939,
+      "saldo": 3725098,
+      "prestamo": {
+        "interes_mensual": 124170,
+        "num_cuotas": 5,
+        "total_pagar": 3725098
+      },
+      "esperado": {
+        "capital": 1977449,
+        "interes": 395490
+      }
+    },
+    {
+      "nombre": "aleatorio 114",
+      "monto": 2691081,
+      "saldo": 3397772,
+      "prestamo": {
+        "interes_mensual": 16414,
+        "num_cuotas": 7,
+        "total_pagar": 3397772
+      },
+      "esperado": {
+        "capital": 2600080,
+        "interes": 91001
+      }
+    },
+    {
+      "nombre": "aleatorio 115",
+      "monto": 725771,
+      "saldo": 2053774,
+      "prestamo": {
+        "interes_mensual": 53246,
+        "num_cuotas": 10,
+        "total_pagar": 2053774
+      },
+      "esperado": {
+        "capital": 537608,
+        "interes": 188163
+      }
+    },
+    {
+      "nombre": "aleatorio 116",
+      "monto": 192497,
+      "saldo": 3617455,
+      "prestamo": {
+        "interes_mensual": 97113,
+        "num_cuotas": 6,
+        "total_pagar": 3617455
+      },
+      "esperado": {
+        "capital": 161491,
+        "interes": 31006
+      }
+    },
+    {
+      "nombre": "aleatorio 117",
+      "monto": 2409351,
+      "saldo": 4069020,
+      "prestamo": {
+        "interes_mensual": 93184,
+        "num_cuotas": 2,
+        "total_pagar": 4069020
+      },
+      "esperado": {
+        "capital": 2298999,
+        "interes": 110352
+      }
+    },
+    {
+      "nombre": "aleatorio 118",
+      "monto": 1326551,
+      "saldo": 1549554,
+      "prestamo": {
+        "interes_mensual": 45133,
+        "num_cuotas": 1,
+        "total_pagar": 1549554
+      },
+      "esperado": {
+        "capital": 1287913,
+        "interes": 38638
+      }
+    },
+    {
+      "nombre": "aleatorio 119",
+      "monto": 3096657,
+      "saldo": 4197605,
+      "prestamo": {
+        "interes_mensual": 122558,
+        "num_cuotas": 3,
+        "total_pagar": 4197605
+      },
+      "esperado": {
+        "capital": 2825417,
+        "interes": 271240
+      }
+    },
+    {
+      "nombre": "aleatorio 120",
+      "monto": 206367,
+      "saldo": 1201857,
+      "prestamo": {
+        "interes_mensual": 34527,
+        "num_cuotas": 11,
+        "total_pagar": 1201857
+      },
+      "esperado": {
+        "capital": 141153,
+        "interes": 65214
+      }
+    },
+    {
+      "nombre": "aleatorio 121",
+      "monto": 218046,
+      "saldo": 1212157,
+      "prestamo": {
+        "interes_mensual": 29221,
+        "num_cuotas": 7,
+        "total_pagar": 1212157
+      },
+      "esperado": {
+        "capital": 181252,
+        "interes": 36794
+      }
+    },
+    {
+      "nombre": "aleatorio 122",
+      "monto": 2456774,
+      "saldo": 3817251,
+      "prestamo": {
+        "interes_mensual": 157856,
+        "num_cuotas": 6,
+        "total_pagar": 3817251
+      },
+      "esperado": {
+        "capital": 1847199,
+        "interes": 609575
+      }
+    },
+    {
+      "nombre": "aleatorio 123",
+      "monto": 821658,
+      "saldo": 2424989,
+      "prestamo": {
+        "interes_mensual": 61452,
+        "num_cuotas": 1,
+        "total_pagar": 2424989
+      },
+      "esperado": {
+        "capital": 800836,
+        "interes": 20822
+      }
+    },
+    {
+      "nombre": "aleatorio 124",
+      "monto": 5067,
+      "saldo": 2592770,
+      "prestamo": {
+        "interes_mensual": 51381,
+        "num_cuotas": 12,
+        "total_pagar": 2592770
+      },
+      "esperado": {
+        "capital": 3862,
+        "interes": 1205
+      }
+    },
+    {
+      "nombre": "aleatorio 125",
+      "monto": 1054802,
+      "saldo": 2482137,
+      "prestamo": {
+        "interes_mensual": 99952,
+        "num_cuotas": 4,
+        "total_pagar": 2482137
+      },
+      "esperado": {
+        "capital": 884901,
+        "interes": 169901
+      }
+    },
+    {
+      "nombre": "aleatorio 126",
+      "monto": 1095988,
+      "saldo": 1938354,
+      "prestamo": {
+        "interes_mensual": 20641,
+        "num_cuotas": 3,
+        "total_pagar": 1938354
+      },
+      "esperado": {
+        "capital": 1060975,
+        "interes": 35013
+      }
+    },
+    {
+      "nombre": "aleatorio 127",
+      "monto": 396857,
+      "saldo": 1241435,
+      "prestamo": {
+        "interes_mensual": 24342,
+        "num_cuotas": 11,
+        "total_pagar": 1241435
+      },
+      "esperado": {
+        "capital": 311260,
+        "interes": 85597
+      }
+    },
+    {
+      "nombre": "aleatorio 128",
+      "monto": 2596801,
+      "saldo": 2674494,
+      "prestamo": {
+        "interes_mensual": 75040,
+        "num_cuotas": 10,
+        "total_pagar": 2674494
+      },
+      "esperado": {
+        "capital": 1868200,
+        "interes": 728601
+      }
+    },
+    {
+      "nombre": "aleatorio 129",
+      "monto": 2819504,
+      "saldo": 6302328,
+      "prestamo": {
+        "interes_mensual": 243635,
+        "num_cuotas": 7,
+        "total_pagar": 6302328
+      },
+      "esperado": {
+        "capital": 2056531,
+        "interes": 762973
+      }
+    },
+    {
+      "nombre": "aleatorio 130",
+      "monto": 824896,
+      "saldo": 951552,
+      "prestamo": {
+        "interes_mensual": 26944,
+        "num_cuotas": 9,
+        "total_pagar": 951552
+      },
+      "esperado": {
+        "capital": 614677,
+        "interes": 210219
+      }
+    },
+    {
+      "nombre": "aleatorio 131",
+      "monto": 2887800,
+      "saldo": 3838119,
+      "prestamo": {
+        "interes_mensual": 144248,
+        "num_cuotas": 7,
+        "total_pagar": 3838119
+      },
+      "esperado": {
+        "capital": 2128075,
+        "interes": 759725
+      }
+    },
+    {
+      "nombre": "aleatorio 132",
+      "monto": 2497192,
+      "saldo": 4685997,
+      "prestamo": {
+        "interes_mensual": 121769,
+        "num_cuotas": 4,
+        "total_pagar": 4685997
+      },
+      "esperado": {
+        "capital": 2237627,
+        "interes": 259565
+      }
+    },
+    {
+      "nombre": "aleatorio 133",
+      "monto": 1735131,
+      "saldo": 2064034,
+      "prestamo": {
+        "interes_mensual": 69241,
+        "num_cuotas": 6,
+        "total_pagar": 2064034
+      },
+      "esperado": {
+        "capital": 1385886,
+        "interes": 349245
+      }
+    },
+    {
+      "nombre": "aleatorio 134",
+      "monto": 2649311,
+      "saldo": 5749410,
+      "prestamo": {
+        "interes_mensual": 157993,
+        "num_cuotas": 12,
+        "total_pagar": 5749410
+      },
+      "esperado": {
+        "capital": 1775679,
+        "interes": 873632
+      }
+    },
+    {
+      "nombre": "aleatorio 135",
+      "monto": 2374835,
+      "saldo": 5019905,
+      "prestamo": {
+        "interes_mensual": 72229,
+        "num_cuotas": 7,
+        "total_pagar": 5019905
+      },
+      "esperado": {
+        "capital": 2135642,
+        "interes": 239193
+      }
+    },
+    {
+      "nombre": "aleatorio 136",
+      "monto": 85545,
+      "saldo": 271078,
+      "prestamo": {
+        "interes_mensual": 6815,
+        "num_cuotas": 12,
+        "total_pagar": 271078
+      },
+      "esperado": {
+        "capital": 59737,
+        "interes": 25808
+      }
+    },
+    {
+      "nombre": "aleatorio 137",
+      "monto": 53700,
+      "saldo": 367379,
+      "prestamo": {
+        "interes_mensual": 6141,
+        "num_cuotas": 1,
+        "total_pagar": 367379
+      },
+      "esperado": {
+        "capital": 52802,
+        "interes": 898
+      }
+    },
+    {
+      "nombre": "aleatorio 138",
+      "monto": 2554356,
+      "saldo": 3018277,
+      "prestamo": {
+        "interes_mensual": 65562,
+        "num_cuotas": 9,
+        "total_pagar": 3018277
+      },
+      "esperado": {
+        "capital": 2054992,
+        "interes": 499364
+      }
+    },
+    {
+      "nombre": "aleatorio 139",
+      "monto": 52496,
+      "saldo": 6723547,
+      "prestamo": {
+        "interes_mensual": 224118,
+        "num_cuotas": 10,
+        "total_pagar": 6723547
+      },
+      "esperado": {
+        "capital": 34997,
+        "interes": 17499
+      }
+    },
+    {
+      "nombre": "aleatorio 140",
+      "monto": 1742947,
+      "saldo": 2722869,
+      "prestamo": {
+        "interes_mensual": 107873,
+        "num_cuotas": 8,
+        "total_pagar": 2722869
+      },
+      "esperado": {
+        "capital": 1190539,
+        "interes": 552408
+      }
+    },
+    {
+      "nombre": "aleatorio 141",
+      "monto": 278708,
+      "saldo": 372131,
+      "prestamo": {
+        "interes_mensual": 17833,
+        "num_cuotas": 2,
+        "total_pagar": 372131
+      },
+      "esperado": {
+        "capital": 251996,
+        "interes": 26712
+      }
+    },
+    {
+      "nombre": "aleatorio 142",
+      "monto": 333912,
+      "saldo": 3391291,
+      "prestamo": {
+        "interes_mensual": 176250,
+        "num_cuotas": 2,
+        "total_pagar": 3391291
+      },
+      "esperado": {
+        "capital": 299204,
+        "interes": 34708
+      }
+    },
+    {
+      "nombre": "aleatorio 143",
+      "monto": 3501732,
+      "saldo": 3517223,
+      "prestamo": {
+        "interes_mensual": 10215,
+        "num_cuotas": 11,
+        "total_pagar": 3517223
+      },
+      "esperado": {
+        "capital": 3389862,
+        "interes": 111870
+      }
+    },
+    {
+      "nombre": "aleatorio 144",
+      "monto": 343512,
+      "saldo": 1444605,
+      "prestamo": {
+        "interes_mensual": 48791,
+        "num_cuotas": 10,
+        "total_pagar": 1444605
+      },
+      "esperado": {
+        "capital": 227492,
+        "interes": 116020
+      }
+    },
+    {
+      "nombre": "aleatorio 145",
+      "monto": 1009367,
+      "saldo": 1100630,
+      "prestamo": {
+        "interes_mensual": 6265,
+        "num_cuotas": 9,
+        "total_pagar": 1100630
+      },
+      "esperado": {
+        "capital": 957657,
+        "interes": 51710
+      }
+    },
+    {
+      "nombre": "aleatorio 146",
+      "monto": 78529,
+      "saldo": 2659281,
+      "prestamo": {
+        "interes_mensual": 92306,
+        "num_cuotas": 5,
+        "total_pagar": 2659281
+      },
+      "esperado": {
+        "capital": 64900,
+        "interes": 13629
+      }
+    },
+    {
+      "nombre": "aleatorio 147",
+      "monto": 2645552,
+      "saldo": 4054239,
+      "prestamo": {
+        "interes_mensual": 135739,
+        "num_cuotas": 11,
+        "total_pagar": 4054239
+      },
+      "esperado": {
+        "capital": 1671226,
+        "interes": 974326
+      }
+    },
+    {
+      "nombre": "aleatorio 148",
+      "monto": 3985726,
+      "saldo": 5539935,
+      "prestamo": {
+        "interes_mensual": 162810,
+        "num_cuotas": 7,
+        "total_pagar": 5539935
+      },
+      "esperado": {
+        "capital": 3165786,
+        "interes": 819940
+      }
+    },
+    {
+      "nombre": "aleatorio 149",
+      "monto": 1640445,
+      "saldo": 2452647,
+      "prestamo": {
+        "interes_mensual": 44594,
+        "num_cuotas": 5,
+        "total_pagar": 2452647
+      },
+      "esperado": {
+        "capital": 1491312,
+        "interes": 149133
+      }
+    },
+    {
+      "nombre": "aleatorio 150",
+      "monto": 26345,
+      "saldo": 349626,
+      "prestamo": {
+        "interes_mensual": 5589,
+        "num_cuotas": 7,
+        "total_pagar": 349626
+      },
+      "esperado": {
+        "capital": 23397,
+        "interes": 2948
+      }
+    },
+    {
+      "nombre": "aleatorio 151",
+      "monto": 3106676,
+      "saldo": 4404736,
+      "prestamo": {
+        "interes_mensual": 174578,
+        "num_cuotas": 6,
+        "total_pagar": 4404736
+      },
+      "esperado": {
+        "capital": 2367893,
+        "interes": 738783
+      }
+    },
+    {
+      "nombre": "aleatorio 152",
+      "monto": 1995013,
+      "saldo": 3778919,
+      "prestamo": {
+        "interes_mensual": 3753,
+        "num_cuotas": 7,
+        "total_pagar": 3778919
+      },
+      "esperado": {
+        "capital": 1981144,
+        "interes": 13869
+      }
+    },
+    {
+      "nombre": "aleatorio 153",
+      "monto": 780700,
+      "saldo": 6215947,
+      "prestamo": {
+        "interes_mensual": 189863,
+        "num_cuotas": 11,
+        "total_pagar": 6215947
+      },
+      "esperado": {
+        "capital": 518393,
+        "interes": 262307
+      }
+    },
+    {
+      "nombre": "aleatorio 154",
+      "monto": 1739745,
+      "saldo": 4347737,
+      "prestamo": {
+        "interes_mensual": 165591,
+        "num_cuotas": 3,
+        "total_pagar": 4347737
+      },
+      "esperado": {
+        "capital": 1540962,
+        "interes": 198783
+      }
+    },
+    {
+      "nombre": "aleatorio 155",
+      "monto": 129489,
+      "saldo": 3524021,
+      "prestamo": {
+        "interes_mensual": 96177,
+        "num_cuotas": 11,
+        "total_pagar": 3524021
+      },
+      "esperado": {
+        "capital": 90615,
+        "interes": 38874
+      }
+    },
+    {
+      "nombre": "aleatorio 156",
+      "monto": 825388,
+      "saldo": 7233434,
+      "prestamo": {
+        "interes_mensual": 262615,
+        "num_cuotas": 10,
+        "total_pagar": 7233434
+      },
+      "esperado": {
+        "capital": 525725,
+        "interes": 299663
+      }
+    },
+    {
+      "nombre": "aleatorio 157",
+      "monto": 1727791,
+      "saldo": 2342191,
+      "prestamo": {
+        "interes_mensual": 107276,
+        "num_cuotas": 1,
+        "total_pagar": 2342191
+      },
+      "esperado": {
+        "capital": 1648655,
+        "interes": 79136
+      }
+    },
+    {
+      "nombre": "aleatorio 158",
+      "monto": 1175046,
+      "saldo": 1988493,
+      "prestamo": {
+        "interes_mensual": 55530,
+        "num_cuotas": 12,
+        "total_pagar": 1988493
+      },
+      "esperado": {
+        "capital": 781279,
+        "interes": 393767
+      }
+    },
+    {
+      "nombre": "aleatorio 159",
+      "monto": 1937020,
+      "saldo": 2540365,
+      "prestamo": {
+        "interes_mensual": 85906,
+        "num_cuotas": 1,
+        "total_pagar": 2540365
+      },
+      "esperado": {
+        "capital": 1871517,
+        "interes": 65503
+      }
+    },
+    {
+      "nombre": "aleatorio 160",
+      "monto": 726603,
+      "saldo": 1086911,
+      "prestamo": {
+        "interes_mensual": 28354,
+        "num_cuotas": 5,
+        "total_pagar": 1086911
+      },
+      "esperado": {
+        "capital": 631829,
+        "interes": 94774
+      }
+    },
+    {
+      "nombre": "aleatorio 161",
+      "monto": 2075513,
+      "saldo": 4903825,
+      "prestamo": {
+        "interes_mensual": 127926,
+        "num_cuotas": 5,
+        "total_pagar": 4903825
+      },
+      "esperado": {
+        "capital": 1804794,
+        "interes": 270719
+      }
+    },
+    {
+      "nombre": "aleatorio 162",
+      "monto": 2327833,
+      "saldo": 3144240,
+      "prestamo": {
+        "interes_mensual": 81856,
+        "num_cuotas": 9,
+        "total_pagar": 3144240
+      },
+      "esperado": {
+        "capital": 1782415,
+        "interes": 545418
+      }
+    },
+    {
+      "nombre": "aleatorio 163",
+      "monto": 359978,
+      "saldo": 1215877,
+      "prestamo": {
+        "interes_mensual": 28924,
+        "num_cuotas": 5,
+        "total_pagar": 1215877
+      },
+      "esperado": {
+        "capital": 317161,
+        "interes": 42817
+      }
+    },
+    {
+      "nombre": "aleatorio 164",
+      "monto": 1153972,
+      "saldo": 1840530,
+      "prestamo": {
+        "interes_mensual": 27200,
+        "num_cuotas": 1,
+        "total_pagar": 1840530
+      },
+      "esperado": {
+        "capital": 1136918,
+        "interes": 17054
+      }
+    },
+    {
+      "nombre": "aleatorio 165",
+      "monto": 1379908,
+      "saldo": 3000417,
+      "prestamo": {
+        "interes_mensual": 143781,
+        "num_cuotas": 2,
+        "total_pagar": 3000417
+      },
+      "esperado": {
+        "capital": 1247657,
+        "interes": 132251
+      }
+    },
+    {
+      "nombre": "aleatorio 166",
+      "monto": 2651592,
+      "saldo": 4816158,
+      "prestamo": {
+        "interes_mensual": 23961,
+        "num_cuotas": 1,
+        "total_pagar": 4816158
+      },
+      "esperado": {
+        "capital": 2638400,
+        "interes": 13192
+      }
+    },
+    {
+      "nombre": "aleatorio 167",
+      "monto": 64103,
+      "saldo": 960917,
+      "prestamo": {
+        "interes_mensual": 27209,
+        "num_cuotas": 9,
+        "total_pagar": 960917
+      },
+      "esperado": {
+        "capital": 47767,
+        "interes": 16336
+      }
+    },
+    {
+      "nombre": "aleatorio 168",
+      "monto": 802395,
+      "saldo": 1593685,
+      "prestamo": {
+        "interes_mensual": 78966,
+        "num_cuotas": 2,
+        "total_pagar": 1593685
+      },
+      "esperado": {
+        "capital": 722879,
+        "interes": 79516
+      }
+    },
+    {
+      "nombre": "aleatorio 169",
+      "monto": 1064885,
+      "saldo": 2262117,
+      "prestamo": {
+        "interes_mensual": 27280,
+        "num_cuotas": 6,
+        "total_pagar": 2262117
+      },
+      "esperado": {
+        "capital": 987833,
+        "interes": 77052
+      }
+    },
+    {
+      "nombre": "aleatorio 170",
+      "monto": 58670,
+      "saldo": 2266068,
+      "prestamo": {
+        "interes_mensual": 8682,
+        "num_cuotas": 11,
+        "total_pagar": 2266068
+      },
+      "esperado": {
+        "capital": 56197,
+        "interes": 2473
+      }
+    },
+    {
+      "nombre": "aleatorio 171",
+      "monto": 1144173,
+      "saldo": 1481137,
+      "prestamo": {
+        "interes_mensual": 18885,
+        "num_cuotas": 7,
+        "total_pagar": 1481137
+      },
+      "esperado": {
+        "capital": 1042053,
+        "interes": 102120
+      }
+    },
+    {
+      "nombre": "aleatorio 172",
+      "monto": 3190015,
+      "saldo": 3793585,
+      "prestamo": {
+        "interes_mensual": 99734,
+        "num_cuotas": 1,
+        "total_pagar": 3793585
+      },
+      "esperado": {
+        "capital": 3106149,
+        "interes": 83866
+      }
+    },
+    {
+      "nombre": "aleatorio 173",
+      "monto": 1604,
+      "saldo": 918200,
+      "prestamo": {
+        "interes_mensual": 0,
+        "num_cuotas": 4,
+        "total_pagar": 918200
+      },
+      "esperado": {
+        "capital": 1604,
+        "interes": 0
+      }
+    },
+    {
+      "nombre": "aleatorio 174",
+      "monto": 2334002,
+      "saldo": 4346947,
+      "prestamo": {
+        "interes_mensual": 129216,
+        "num_cuotas": 8,
+        "total_pagar": 4346947
+      },
+      "esperado": {
+        "capital": 1778963,
+        "interes": 555039
+      }
+    },
+    {
+      "nombre": "aleatorio 175",
+      "monto": 1652664,
+      "saldo": 5839750,
+      "prestamo": {
+        "interes_mensual": 150595,
+        "num_cuotas": 11,
+        "total_pagar": 5839750
+      },
+      "esperado": {
+        "capital": 1183858,
+        "interes": 468806
+      }
+    },
+    {
+      "nombre": "aleatorio 176",
+      "monto": 2879994,
+      "saldo": 5567336,
+      "prestamo": {
+        "interes_mensual": 195218,
+        "num_cuotas": 10,
+        "total_pagar": 5567336
+      },
+      "esperado": {
+        "capital": 1870127,
+        "interes": 1009867
+      }
+    },
+    {
+      "nombre": "aleatorio 177",
+      "monto": 3482083,
+      "saldo": 4403750,
+      "prestamo": {
+        "interes_mensual": 16808,
+        "num_cuotas": 12,
+        "total_pagar": 4403750
+      },
+      "esperado": {
+        "capital": 3322600,
+        "interes": 159483
+      }
+    },
+    {
+      "nombre": "aleatorio 178",
+      "monto": 418006,
+      "saldo": 2431458,
+      "prestamo": {
+        "interes_mensual": 68962,
+        "num_cuotas": 3,
+        "total_pagar": 2431458
+      },
+      "esperado": {
+        "capital": 382439,
+        "interes": 35567
+      }
+    },
+    {
+      "nombre": "aleatorio 179",
+      "monto": 2144373,
+      "saldo": 2202648,
+      "prestamo": {
+        "interes_mensual": 65149,
+        "num_cuotas": 10,
+        "total_pagar": 2202648
+      },
+      "esperado": {
+        "capital": 1510119,
+        "interes": 634254
+      }
+    },
+    {
+      "nombre": "aleatorio 180",
+      "monto": 725506,
+      "saldo": 1835129,
+      "prestamo": {
+        "interes_mensual": 97317,
+        "num_cuotas": 1,
+        "total_pagar": 1835129
+      },
+      "esperado": {
+        "capital": 687032,
+        "interes": 38474
+      }
+    },
+    {
+      "nombre": "aleatorio 181",
+      "monto": 93012,
+      "saldo": 120870,
+      "prestamo": {
+        "interes_mensual": 3555,
+        "num_cuotas": 9,
+        "total_pagar": 120870
+      },
+      "esperado": {
+        "capital": 68391,
+        "interes": 24621
+      }
+    },
+    {
+      "nombre": "aleatorio 182",
+      "monto": 3799265,
+      "saldo": 4984760,
+      "prestamo": {
+        "interes_mensual": 14477,
+        "num_cuotas": 11,
+        "total_pagar": 4984760
+      },
+      "esperado": {
+        "capital": 3677891,
+        "interes": 121374
+      }
+    },
+    {
+      "nombre": "aleatorio 183",
+      "monto": 708295,
+      "saldo": 1725041,
+      "prestamo": {
+        "interes_mensual": 8415,
+        "num_cuotas": 5,
+        "total_pagar": 1725041
+      },
+      "esperado": {
+        "capital": 691019,
+        "interes": 17276
+      }
+    },
+    {
+      "nombre": "aleatorio 184",
+      "monto": 1008615,
+      "saldo": 1091520,
+      "prestamo": {
+        "interes_mensual": 23001,
+        "num_cuotas": 2,
+        "total_pagar": 1091520
+      },
+      "esperado": {
+        "capital": 966107,
+        "interes": 42508
+      }
+    },
+    {
+      "nombre": "aleatorio 185",
+      "monto": 2530234,
+      "saldo": 5291661,
+      "prestamo": {
+        "interes_mensual": 90253,
+        "num_cuotas": 6,
+        "total_pagar": 5291661
+      },
+      "esperado": {
+        "capital": 2271304,
+        "interes": 258930
+      }
+    },
+    {
+      "nombre": "aleatorio 186",
+      "monto": 3519385,
+      "saldo": 3548603,
+      "prestamo": {
+        "interes_mensual": 60146,
+        "num_cuotas": 9,
+        "total_pagar": 3548603
+      },
+      "esperado": {
+        "capital": 2982528,
+        "interes": 536857
+      }
+    },
+    {
+      "nombre": "aleatorio 187",
+      "monto": 1477245,
+      "saldo": 2981768,
+      "prestamo": {
+        "interes_mensual": 54757,
+        "num_cuotas": 9,
+        "total_pagar": 2981768
+      },
+      "esperado": {
+        "capital": 1233093,
+        "interes": 244152
+      }
+    },
+    {
+      "nombre": "aleatorio 188",
+      "monto": 534406,
+      "saldo": 1690196,
+      "prestamo": {
+        "interes_mensual": 1685,
+        "num_cuotas": 3,
+        "total_pagar": 1690196
+      },
+      "esperado": {
+        "capital": 532808,
+        "interes": 1598
+      }
+    },
+    {
+      "nombre": "aleatorio 189",
+      "monto": 4761636,
+      "saldo": 4785488,
+      "prestamo": {
+        "interes_mensual": 4752,
+        "num_cuotas": 7,
+        "total_pagar": 4785488
+      },
+      "esperado": {
+        "capital": 4728538,
+        "interes": 33098
+      }
+    },
+    {
+      "nombre": "aleatorio 190",
+      "monto": 4536321,
+      "saldo": 4548981,
+      "prestamo": {
+        "interes_mensual": 50921,
+        "num_cuotas": 6,
+        "total_pagar": 4548981
+      },
+      "esperado": {
+        "capital": 4231645,
+        "interes": 304676
+      }
+    },
+    {
+      "nombre": "aleatorio 191",
+      "monto": 2590428,
+      "saldo": 7525372,
+      "prestamo": {
+        "interes_mensual": 251955,
+        "num_cuotas": 11,
+        "total_pagar": 7525372
+      },
+      "esperado": {
+        "capital": 1636404,
+        "interes": 954024
+      }
+    },
+    {
+      "nombre": "aleatorio 192",
+      "monto": 2372085,
+      "saldo": 2886556,
+      "prestamo": {
+        "interes_mensual": 114445,
+        "num_cuotas": 3,
+        "total_pagar": 2886556
+      },
+      "esperado": {
+        "capital": 2089943,
+        "interes": 282142
+      }
+    },
+    {
+      "nombre": "aleatorio 193",
+      "monto": 937562,
+      "saldo": 1197599,
+      "prestamo": {
+        "interes_mensual": 39085,
+        "num_cuotas": 5,
+        "total_pagar": 1197599
+      },
+      "esperado": {
+        "capital": 784570,
+        "interes": 152992
+      }
+    },
+    {
+      "nombre": "aleatorio 194",
+      "monto": 175297,
+      "saldo": 3711276,
+      "prestamo": {
+        "interes_mensual": 155492,
+        "num_cuotas": 5,
+        "total_pagar": 3711276
+      },
+      "esperado": {
+        "capital": 138575,
+        "interes": 36722
+      }
+    },
+    {
+      "nombre": "aleatorio 195",
+      "monto": 699474,
+      "saldo": 3121662,
+      "prestamo": {
+        "interes_mensual": 92986,
+        "num_cuotas": 5,
+        "total_pagar": 3121662
+      },
+      "esperado": {
+        "capital": 595297,
+        "interes": 104177
+      }
+    },
+    {
+      "nombre": "aleatorio 196",
+      "monto": 886461,
+      "saldo": 943041,
+      "prestamo": {
+        "interes_mensual": 26753,
+        "num_cuotas": 4,
+        "total_pagar": 943041
+      },
+      "esperado": {
+        "capital": 785869,
+        "interes": 100592
+      }
+    },
+    {
+      "nombre": "aleatorio 197",
+      "monto": 2321991,
+      "saldo": 4730390,
+      "prestamo": {
+        "interes_mensual": 204056,
+        "num_cuotas": 5,
+        "total_pagar": 4730390
+      },
+      "esperado": {
+        "capital": 1821170,
+        "interes": 500821
+      }
+    },
+    {
+      "nombre": "aleatorio 198",
+      "monto": 1952924,
+      "saldo": 2123019,
+      "prestamo": {
+        "interes_mensual": 74780,
+        "num_cuotas": 4,
+        "total_pagar": 2123019
+      },
+      "esperado": {
+        "capital": 1677769,
+        "interes": 275155
+      }
+    },
+    {
+      "nombre": "aleatorio 199",
+      "monto": 2665685,
+      "saldo": 4044521,
+      "prestamo": {
+        "interes_mensual": 74899,
+        "num_cuotas": 4,
+        "total_pagar": 4044521
+      },
+      "esperado": {
+        "capital": 2468226,
+        "interes": 197459
+      }
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "abono mayor que el saldo",
+      "monto": 101,
+      "saldo": 100,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      }
+    },
+    {
+      "nombre": "abono cero",
+      "monto": 0,
+      "saldo": 100,
+      "prestamo": {
+        "interes_mensual": 20000,
+        "num_cuotas": 3,
+        "total_pagar": 1060000
+      }
+    }
+  ]
+}

@@ -35,8 +35,8 @@ jobs:
         env:
           DJANGO_DEBUG: "1"
         run: npm run api:tipos
-      - name: Regenerar casos aleatorios de interés
-        run: python3 packages/casos-reglas/scripts/generar_interes_aleatorio.py
+      - name: Regenerar los casos compartidos de dinero
+        run: python3 packages/casos-reglas/scripts/generar_casos.py
       - name: El contrato y los casos commiteados coinciden con su generador
         run: git diff --exit-code -- packages/api-client packages/casos-reglas
 

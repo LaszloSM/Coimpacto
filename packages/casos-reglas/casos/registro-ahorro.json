@@ -1,0 +1,80 @@
+{
+  "regla": "registro-ahorro",
+  "descripcion": "Montos del registro de ahorro desde los precios congelados de la reunión.",
+  "casos": [
+    {
+      "nombre": "aporte típico",
+      "entrada": {
+        "acciones": 3,
+        "cantidad_multas": 1,
+        "valor_accion": 10000,
+        "valor_multa": 2000,
+        "max_acciones": 5
+      },
+      "esperado": {
+        "ahorro": 30000,
+        "multas": 2000
+      }
+    },
+    {
+      "nombre": "no asistió: sin acciones",
+      "entrada": {
+        "acciones": 0,
+        "cantidad_multas": 0,
+        "valor_accion": 10000,
+        "valor_multa": 2000,
+        "max_acciones": 5
+      },
+      "esperado": {
+        "ahorro": 0,
+        "multas": 0
+      }
+    },
+    {
+      "nombre": "justo en el máximo",
+      "entrada": {
+        "acciones": 5,
+        "cantidad_multas": 2,
+        "valor_accion": 5000,
+        "valor_multa": 1000,
+        "max_acciones": 5
+      },
+      "esperado": {
+        "ahorro": 25000,
+        "multas": 2000
+      }
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "más acciones que el máximo",
+      "entrada": {
+        "acciones": 6,
+        "cantidad_multas": 0,
+        "valor_accion": 10000,
+        "valor_multa": 2000,
+        "max_acciones": 5
+      }
+    },
+    {
+      "nombre": "acciones negativas",
+      "entrada": {
+        "acciones": -1,
+        "cantidad_multas": 0,
+        "valor_accion": 10000,
+        "valor_multa": 2000,
+        "max_acciones": 5
+      }
+    },
+    {
+      "nombre": "multas negativas",
+      "entrada": {
+        "acciones": 1,
+        "cantidad_multas": -1,
+        "valor_accion": 10000,
+        "valor_multa": 2000,
+        "max_acciones": 5
+      }
+    }
+  ]
+}

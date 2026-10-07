@@ -9,7 +9,7 @@ describe("canonico (casos compartidos con el backend)", () => {
   });
 
   it.each(casos.rechazos)("rechaza: $nombre", ({ entrada }) => {
-    expect(() => canonico(entrada as ValorJson)).toThrow(ValorNoCanonico);
+    expect(() => canonico(entrada as unknown as ValorJson)).toThrow(ValorNoCanonico);
   });
 
   it("no depende del orden de inserción", () => {
