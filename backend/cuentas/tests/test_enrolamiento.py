@@ -208,6 +208,7 @@ class TestApi:
             "/api/enrolamiento/codigos",
             {"acap_id": str(ciclo.acap.id)},
             content_type="application/json",
+            secure=True,
         )
         assert emitido.status_code == 200, emitido.content
         codigo = emitido.json()["codigo"]
@@ -218,6 +219,7 @@ class TestApi:
             "/api/enrolamiento/canjear",
             {"codigo": codigo, "llave_publica": LlaveDePrueba().publica},
             content_type="application/json",
+            secure=True,
         )
         assert respuesta.status_code == 200
         assert respuesta.json()["acap_nombre"] == "ACAP Las Brisas"
@@ -226,6 +228,7 @@ class TestApi:
             "/api/enrolamiento/canjear",
             {"codigo": codigo, "llave_publica": LlaveDePrueba().publica},
             content_type="application/json",
+            secure=True,
         )
         assert repetido.status_code == 400
         assert repetido.json() == {
@@ -240,6 +243,7 @@ class TestApi:
                 "/api/enrolamiento/codigos",
                 {"acap_id": str(ciclo.acap.id)},
                 content_type="application/json",
+                secure=True,
             )
             .status_code
             == 401
@@ -250,6 +254,7 @@ class TestApi:
             "/api/enrolamiento/codigos",
             {"acap_id": str(ciclo.acap.id)},
             content_type="application/json",
+            secure=True,
         )
         assert respuesta.status_code == 403
         assert not CodigoEnrolamiento.objects.exists()
