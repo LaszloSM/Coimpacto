@@ -2750,17 +2750,93 @@ Ninguna.
   +====================================================================+
 ```
 
+## Eng Review (validación de N5, N6 y N17) — /plan-eng-review (2026-10-07)
+
+Objetivo fijo: este plan, cambios N5, N6 y N17 de la revisión de diseño nativo. Complejidad baja (menos de 8 archivos y de 2 servicios nuevos): sin selector de estructura. Evidencia: la política de Google Play permite actualizar JavaScript por fuera de la tienda si la actualización no cambia el propósito de la app (https://support.google.com/googleplay/android-developer/answer/16559646); subir a la pista interna desde CI usa una cuenta de servicio de Play y la primera subida es manual (https://github.com/r0adkll/upload-google-play).
+
+Implementación necesaria, sin pregunta:
+- N5: la subida lleva `formato: <n>`; el servidor mantiene un decodificador por formato publicado; `packages/casos-reglas/cola/` guarda una cola de muestra por versión publicada y CI la vuelve a enviar contra el servidor. Una versión vieja con una falla se frena revocando el dispositivo (E3): lo que suba queda "por validar".
+- N17: una cargo que también es socia ve su propio ahorro desde su almacén de socia; los almacenes de socio son copias que se vuelven a bajar y no entran al respaldo (EA1).
+- N6 y EX6: el servidor de actualizaciones propio se usa solo para correcciones y mejoras de JavaScript, nunca para cambiar el propósito de la app (política de Google Play).
+
+### EF1: Quién sube la app a la pista interna de Google Play
+Finding: EF1, P2, confidence 8/10, N6 aprobado "el piloto se instala desde la pista de prueba interna de Google Play" y EX6 "construye y firma en GitHub Actions"; reviewer plan-eng-review.
+Plan baseline: EX6 (build y firma en GitHub Actions, sin cuenta de Expo), EA3 (misma llave en Play App Signing, llave de subida aparte), N6 (pista interna para el piloto). La forma de subir el paquete a Play no está definida.
+Runtime evidence: Google Play recibe paquetes AAB; la subida automática usa la API de Play con una cuenta de servicio (JSON) guardada como secreto de GitHub; la primera subida es manual en la consola.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EF1 subida a la pista interna | no definida | CI construye el AAB firmado con la llave de subida y lo sube a la pista interna con una cuenta de servicio de Play de permisos mínimos (solo publicar en pruebas), guardada como secreto de GitHub; la primera subida es manual | CI construye el AAB firmado y lo deja como artefacto; una persona de Credimpacto lo sube a mano en la consola de Play |
+| Build y firma en GitHub Actions; misma llave en Play App Signing | aprobados (EX6, EA3) | sin cambio | sin cambio |
+Question D1:
+D1: ¿Quién sube cada versión de la app a la pista de prueba interna de Google Play?
+Proyecto: Coimpacto, rama docs/revision-expo, validación de N6.
+Explicación simple: ahora el piloto se instala desde Google Play. Cada versión nueva hay que subirla a la consola de Play. CI puede hacerlo solo con una llave especial de Play (una cuenta de servicio) guardada como secreto, o una persona puede bajar el archivo de CI y subirlo a mano.
+Qué está en juego si elegimos mal: con subida a mano, una corrección urgente para las ACAP espera a que alguien tenga tiempo y puede subirse la versión equivocada; con subida automática, hay una llave más que custodiar.
+Recomendación: A, porque cada versión sale igual y probada desde CI, y la llave de Play solo puede publicar en pruebas, así que su daño posible es limitado.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: publicación automática con una llave más de permisos mínimos, o publicación a mano sin llave extra.
+Header: Subida Play
+Options:
+A) Subida desde CI (Recommended)
+✅ Cada versión que pasa CI (incluido el E2E de Maestro) llega a la pista interna igual y sin pasos a mano. ✅ La cuenta de servicio solo puede publicar en pistas de prueba, no en producción (humano: ~1 día / CC: ~45 min). ❌ Es un secreto más en GitHub que custodiar y rotar, y la primera subida igual es manual.
+B) Subida a mano
+✅ No hay cuenta de servicio de Play ni secreto extra en GitHub. ✅ Una persona revisa cada versión antes de que llegue a los celulares. ❌ Cada versión depende de que alguien la suba, y es fácil subir el archivo equivocado o tardar en una corrección urgente (humano: ~30 min por versión).
+
+State: approved
+Actual answer: A) Subida desde CI (Recommended), respuesta a D1 de esta revisión (2026-10-07)
+Accepted scope: CI construye el AAB firmado con la llave de subida y, si pasan todas las pruebas (incluido el E2E de Maestro), lo sube a la pista interna con una cuenta de servicio de Play limitada a publicar en pistas de prueba, guardada como secreto de GitHub y con copia en la custodia de llaves de EA3; la primera subida es manual; con su prueba (el flujo de CI publica una versión de prueba en la pista interna).
+History: none
+
+Secciones 1–4 (validación):
+- Arquitectura: sin hallazgos nuevos más allá de los tres del Scope Challenge.
+```
+ Subida de la cola (N5)                       Llaves del socio (N17)
+ app vN ──{formato: n, lote firmado}──► /sync   PIN del socio ─KDF─► KEK_socio ─┐
+                                   │            secreto Keystore ───────────────┼─► llave del perfil ─► SQLCipher del socio
+              decodificador formato n            (nunca la DEK de la reunión)     │
+                                   ▼
+                       libro/servicio.py (sin cambio)
+```
+- Calidad de código: sin hallazgos.
+- Pruebas: nuevas pruebas ya incluidas en las tareas: colas de muestra por versión (N5, TD3), aislamiento del almacén del socio (N17, TD5) y publicación de prueba en la pista interna (EF1, TF1). Plan de pruebas actualizado.
+- Rendimiento: sin hallazgos (un archivo pequeño por perfil, se abre solo el del perfil activo).
+- Outside voice: Codex no instalado; reemplazo nativo no disponible (sin TaskOutput). Cobertura externa: unavailable.
+
+Approval readiness: PASS — EF1 (D1 = A); N5, N6 y N17 aprobados por el usuario en la revisión de diseño (D7, D8, D20); mapeos como implementación necesaria.
+
+## Implementation Tasks (validación N5, N6, N17)
+- [ ] **TF1 (P2, human: ~1d / CC: ~45min)** — CI — Construir el AAB firmado y subirlo a la pista interna de Play con una cuenta de servicio limitada a pruebas
+  - Surfaced by: EF1 (D1); N6
+  - Files: .github/workflows/, docs/operacion/llaves.md
+  - Verify: una versión que pasa CI aparece en la pista interna; la cuenta de servicio no puede publicar en producción
+
+### Completion summary (validación)
+- Step 0: Scope Challenge — scope accepted as-is (3 hallazgos; 1 decisión)
+- Architecture Review: 0 issues found (además de los 3 del Scope Challenge)
+- Code Quality Review: 0 issues found
+- Test Review: diagram produced (arriba), 0 gaps nuevos fuera de las tareas
+- Performance Review: 0 issues found
+- NOT in scope: sin cambios
+- What already exists: libro/servicio.py, EA3, D9
+- TODOS.md updates: 0
+- Failure modes: 0 critical gaps flagged
+- Unresolved decisions: 0
+- Outside voice: codex unavailable
+- Parallelization: Sequential implementation, no parallelization opportunity.
+- Lake Score: N/A (sin preguntas con puntaje de completitud)
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 5 | unavailable | Codex not installed; native fallback unavailable in eng reviews; design phases used a native Claude subagent [single-model] (latest: 18 findings on the native app) |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 3 | issues_open | 26 issues, 0 critical gaps (latest: cambio a Expo, 11 decisiones, mapeado a TX1–TX11) |
-| Design Review | `/plan-design-review` | UI/UX gaps | 2 | clean | score: 3/10 → 9/10, 18 decisions (latest: app nativa, N1–N17 y N7a, mapeado a TD1–TD8) |
+| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 6 | unavailable | Codex not installed; native fallback unavailable in eng reviews; design phases used a native Claude subagent [single-model] |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 4 | issues_open | 3 issues, 0 critical gaps (latest: validación de N5, N6 y N17; 1 decisión, mapeado a TD3, TD5 y TF1) |
+| Design Review | `/plan-design-review` | UI/UX gaps | 2 | clean | score: 3/10 → 9/10, 18 decisions |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **OUTSIDE COVERAGE:** codex, plan-review phase (3 runs), unavailable; codex, design phase (2 runs), unavailable (native Claude subagent completed both times; not outside coverage).
-- **VERDICT:** DESIGN CLEARED (app nativa, 9/10). Eng Review not CLEAR: findings mapped to TX1–TX11 and to the design tasks TD1–TD8; N5, N6 and N17 changed details of D9, EX6 and EX4, so eng review required before implementing those parts.
+- **OUTSIDE COVERAGE:** codex, plan-review phase (4 runs), unavailable; codex, design phase (2 runs), unavailable (native Claude subagent completed; not outside coverage).
+- **VERDICT:** DESIGN CLEARED. Eng Review not CLEAR only because its findings are mapped work not yet built (TX1–TX11, TD1–TD7, TF1); all decisions are resolved, so implementation can start with TX1; eng review required.
 
 NO UNRESOLVED DECISIONS
