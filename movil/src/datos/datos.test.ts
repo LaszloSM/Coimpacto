@@ -131,7 +131,7 @@ describe("caducidad de 60 días", () => {
   async function conDatos() {
     const base = await baseLista();
     await base.correr("INSERT INTO grupo (id, datos, descargado_en) VALUES ('acap', '{}', ?);", dia(0).toISOString());
-    await base.correr("INSERT INTO miembros VALUES ('m7', 7, 'M. C.', 1);");
+    await base.correr("INSERT INTO miembros (membresia_id, numero, iniciales, activo) VALUES ('m7', 7, 'M. C.', 1);");
     await base.correr(...pendiente("p1"));
     await registrarSincronizacion(base, dia(0));
     return base;
