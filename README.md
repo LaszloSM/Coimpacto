@@ -52,5 +52,5 @@ del entorno virtual.
 - Los tokens (CSS y React Native) coinciden con DESIGN.md y el cliente de API coincide con el backend.
 - Backend: ruff, sin migraciones pendientes, `check --deploy` sin advertencias y pytest sobre PostgreSQL.
 - Web y paquetes: eslint, tsc, Vitest y build.
-- App: eslint, tsc, Jest, APK de release firmado y Maestro en un emulador Android con modo avión.
+- App: eslint, tsc, Jest, APK de release firmado (x86_64) y Maestro en un emulador Android con modo avión.
 - E2E: Playwright en celular (Pixel 5) y escritorio.

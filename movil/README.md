@@ -19,8 +19,8 @@ No corre en Expo Go: usa módulos nativos (SQLCipher, quick-crypto desde TX3).
 ## Pruebas
 
 - `npm run movil:test`: Jest + React Native Testing Library.
-- `.maestro/`: flujos E2E. CI los corre en un emulador con el APK de release, incluido el
-  modo avión. Local: `maestro test movil/.maestro` con un emulador abierto.
+- `.maestro/`: flujos E2E. CI los corre en un emulador con el APK de release (solo x86_64,
+  para que el build tarde menos; el AAB para celulares sale de TF1), incluido el modo avión. Local: `maestro test movil/.maestro` con un emulador abierto.
 
 ## Firma
 

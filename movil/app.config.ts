@@ -43,6 +43,8 @@ const config: ExpoConfig = {
   },
   plugins: [
     ["expo-font", { fonts: FUENTES }],
+    // Todo el archivo de la base cifrado con la DEK (EX2); sin esto la app no abre la base.
+    ["expo-sqlite", { useSQLCipher: true }],
     ["expo-build-properties", { android: { minSdkVersion: 26 } }],
     "./plugins/firma-android",
   ],
