@@ -98,7 +98,7 @@ jobs:
       - run: npm run build -w @credimpacto/web
 
   movil:
-    name: App Android (eslint + tsc + jest + APK de release)
+    name: App Android (eslint + tsc + jest + APK de release x86_64)
     runs-on: ubuntu-latest
     env:
       # La llave de subida vive en secretos de GitHub (EX6, EA3); ver movil/plugins/firma-android.js.
@@ -149,9 +149,12 @@ jobs:
             echo "FIRMA=desechable" >> "$GITHUB_ENV"
           fi
           echo "CREDIMPACTO_FIRMA_ARCHIVO=$archivo" >> "$GITHUB_ENV"
-      - name: APK de release firmado
+      - name: APK de release firmado (x86_64, solo para el emulador)
         working-directory: movil/android
-        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64,arm64-v8a
+        # Solo la arquitectura del emulador: compilar el C++ nativo (quick-crypto, SQLCipher)
+        # para dos arquitecturas duplica el tiempo. El AAB para celulares (arm64) lo construye
+        # el flujo de publicación (TF1).
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
       - run: mv movil/android/app/build/outputs/apk/release/app-release.apk "credimpacto-${FIRMA}.apk"
       - uses: actions/upload-artifact@v7
         with:
