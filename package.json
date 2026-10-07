@@ -1,7 +1,7 @@
 {
   "name": "credimpacto",
   "private": true,
-  "description": "Monorepo de Credimpacto: backend Django (backend/), web Next.js (web/) y paquetes compartidos (packages/).",
+  "description": "Monorepo de Credimpacto: backend Django (backend/), web Next.js de la Fundación (web/), app Android Expo (movil/, desde TX2) y paquetes compartidos (packages/).",
   "workspaces": [
     "web",
     "packages/*"
@@ -10,14 +10,12 @@
     "node": ">=24"
   },
   "scripts": {
-    "tokens": "node scripts/generar-tokens.mjs",
-    "tokens:check": "node scripts/generar-tokens.mjs --check",
+    "tokens": "npm run generar -w @credimpacto/tokens",
+    "tokens:check": "npm run check -w @credimpacto/tokens",
     "web:dev": "npm run dev -w web",
     "web:test": "npm run test -w web",
     "web:e2e": "npm run e2e -w web",
-    "api:tipos": "npm run generar -w @credimpacto/api-client"
-  },
-  "devDependencies": {
-    "yaml": "^2.9.1"
+    "api:tipos": "npm run generar -w @credimpacto/api-client",
+    "reglas:test": "npm run test -w @credimpacto/reglas"
   }
 }

@@ -4,7 +4,7 @@ Cada archivo de `casos/` es un JSON con casos de entrada y salida esperada para 
 Los mismos casos los ejecutan:
 
 - el backend: `backend/core/tests/` y `backend/libro/tests/` (pytest);
-- la web: `web/src/reglas/*.test.ts` (Vitest).
+- TypeScript (app Android y web): `packages/reglas/src/*.test.ts` (Vitest).
 
 Si Python y TypeScript no dan lo mismo para un caso, falla CI. Así se evita que el celular y el
 servidor calculen distinto (D19 del diseño aprobado).

@@ -1,7 +1,7 @@
 # Reglas de dinero
 
 Especificación portada de las RPC de Supabase (proyecto `[proyecto-supabase]`, leídas en solo lectura el
-2026-10-06). Es el contrato de `backend/libro/reglas.py` (autoridad) y `web/src/reglas/` (celular, D19). Los dos
+2026-10-06). Es el contrato de `backend/libro/reglas.py` (autoridad) y `packages/reglas/` (app Android y web, D19). Los dos
 ejecutan los casos de `packages/casos-reglas/casos/`.
 
 Convenciones:
@@ -86,5 +86,5 @@ decir préstamos sin pagar y no plata sobrante. Se mantiene igual que en Supabas
 
 ## 5. Firmas y canonicalización
 
-El hash de firma es SHA-256 sobre JSON canónico RFC 8785 (`core/canonico.py`, `web/src/reglas/canonico.ts`).
+El hash de firma es SHA-256 sobre JSON canónico RFC 8785 (`core/canonico.py`, `packages/reglas/src/canonico.ts`).
 Solo admite enteros seguros: el dinero nunca viaja como número con decimales.

@@ -1,8 +1,8 @@
 """Reglas puras de dinero del libro de la ACAP.
 
-Sin base de datos ni Django: entran enteros y tasas, salen enteros. El celular corre la misma
-lógica en TypeScript (web/src/reglas/) para la reunión sin señal y el cierre de ciclo (D19); los dos
-ejecutan los casos de packages/casos-reglas, y el servidor es la autoridad.
+Sin base de datos ni Django: entran enteros y tasas, salen enteros. La app Android corre la misma
+lógica en TypeScript (packages/reglas/) para la reunión sin señal y el cierre de ciclo (D19);
+los dos ejecutan los casos de packages/casos-reglas, y el servidor es la autoridad.
 
 Especificación: docs/reglas/reglas-de-dinero.md (portada de las RPC fn_* de Supabase).
 - Todo monto es un entero de pesos colombianos.

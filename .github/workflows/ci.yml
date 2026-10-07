@@ -80,7 +80,7 @@ jobs:
       - run: uv run pytest
 
   web:
-    name: Web (eslint + tsc + vitest + build)
+    name: Web y paquetes (reglas + eslint + tsc + vitest + build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -89,6 +89,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - name: Reglas de dinero en TypeScript (casos compartidos)
+        run: npm run test -w @credimpacto/reglas
+      - run: npm run typecheck -w @credimpacto/reglas
       - run: npm run lint -w @credimpacto/web
       - run: npm run typecheck -w @credimpacto/web
       - run: npm run test -w @credimpacto/web
