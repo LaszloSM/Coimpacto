@@ -97,6 +97,106 @@ jobs:
       - run: npm run test -w @credimpacto/web
       - run: npm run build -w @credimpacto/web
 
+  movil:
+    name: App Android (eslint + tsc + jest + APK de release)
+    runs-on: ubuntu-latest
+    env:
+      # La llave de subida vive en secretos de GitHub (EX6, EA3); ver movil/plugins/firma-android.js.
+      FIRMA_JKS_BASE64: ${{ secrets.CREDIMPACTO_FIRMA_JKS_BASE64 }}
+      CREDIMPACTO_VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w @credimpacto/movil
+      - run: npm run typecheck -w @credimpacto/movil
+      - run: npm run test -w @credimpacto/movil
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Generar el proyecto Android (CNG)
+        working-directory: movil
+        run: npx expo prebuild --platform android --clean --no-install
+      - name: Llave de subida (secreto) o llave desechable solo para CI
+        env:
+          CLAVE: ${{ secrets.CREDIMPACTO_FIRMA_CLAVE }}
+          ALIAS: ${{ secrets.CREDIMPACTO_FIRMA_ALIAS }}
+          CLAVE_LLAVE: ${{ secrets.CREDIMPACTO_FIRMA_CLAVE_LLAVE }}
+        run: |
+          archivo="$RUNNER_TEMP/subida.jks"
+          if [ -n "$FIRMA_JKS_BASE64" ]; then
+            echo "$FIRMA_JKS_BASE64" | base64 -d > "$archivo"
+            {
+              echo "CREDIMPACTO_FIRMA_CLAVE=$CLAVE"
+              echo "CREDIMPACTO_FIRMA_ALIAS=$ALIAS"
+              echo "CREDIMPACTO_FIRMA_CLAVE_LLAVE=$CLAVE_LLAVE"
+            } >> "$GITHUB_ENV"
+            echo "FIRMA=subida" >> "$GITHUB_ENV"
+          else
+            # Sin secretos (ramas de trabajo, forks): APK solo para el emulador, nunca para celulares.
+            clave="$(openssl rand -hex 24)"
+            echo "::add-mask::$clave"
+            keytool -genkeypair -keystore "$archivo" -storepass "$clave" -keypass "$clave"               -alias ci -keyalg RSA -keysize 2048 -validity 1 -dname "CN=CI desechable" -noprompt
+            {
+              echo "CREDIMPACTO_FIRMA_CLAVE=$clave"
+              echo "CREDIMPACTO_FIRMA_ALIAS=ci"
+            } >> "$GITHUB_ENV"
+            echo "FIRMA=desechable" >> "$GITHUB_ENV"
+          fi
+          echo "CREDIMPACTO_FIRMA_ARCHIVO=$archivo" >> "$GITHUB_ENV"
+      - name: APK de release firmado
+        working-directory: movil/android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64,arm64-v8a
+      - run: mv movil/android/app/build/outputs/apk/release/app-release.apk "credimpacto-${FIRMA}.apk"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: apk-release
+          path: credimpacto-*.apk
+          retention-days: 14
+
+  maestro:
+    name: E2E Maestro (emulador Android, modo avión)
+    needs: movil
+    runs-on: ubuntu-latest
+    env:
+      MAESTRO_VERSION: "2.11.0"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v7
+        with:
+          name: apk-release
+      - name: Habilitar KVM para el emulador
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Instalar Maestro
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+      - uses: reactivecircus/android-emulator-runner@v2.38.0
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: |
+            adb install credimpacto-*.apk
+            maestro test movil/.maestro --format junit --output maestro-reporte.xml
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: reporte-maestro
+          path: |
+            maestro-reporte.xml
+            ~/.maestro/tests
+          retention-days: 7
+
   e2e:
     name: E2E Playwright (celular y escritorio)
     runs-on: ubuntu-latest

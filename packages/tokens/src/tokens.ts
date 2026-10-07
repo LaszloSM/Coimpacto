@@ -36,37 +36,31 @@ export const tokens = {
   },
   "tipo": {
     "display": {
-      "fontFamily": "Bitter",
-      "fontWeight": "700",
+      "fontFamily": "Bitter-700",
       "fontSize": 32,
       "letterSpacing": -0.32
     },
     "heading": {
-      "fontFamily": "Bitter",
-      "fontWeight": "600",
+      "fontFamily": "Bitter-600",
       "fontSize": 28
     },
     "body": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "400",
+      "fontFamily": "AtkinsonHyperlegibleNext-400",
       "fontSize": 18,
       "lineHeight": 27
     },
     "body-oficina": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "400",
+      "fontFamily": "AtkinsonHyperlegibleNext-400",
       "fontSize": 16,
       "lineHeight": 24
     },
     "campo-titulo": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "700",
+      "fontFamily": "AtkinsonHyperlegibleNext-700",
       "fontSize": 26,
       "lineHeight": 31
     },
     "cifra-clave": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "800",
+      "fontFamily": "AtkinsonHyperlegibleNext-800",
       "fontSize": 44,
       "lineHeight": 48,
       "fontVariant": [
@@ -74,22 +68,19 @@ export const tokens = {
       ]
     },
     "cifra-renglon": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "700",
+      "fontFamily": "AtkinsonHyperlegibleNext-700",
       "fontSize": 22,
       "fontVariant": [
         "tabular-nums"
       ]
     },
     "label": {
-      "fontFamily": "AtkinsonHyperlegibleNext",
-      "fontWeight": "600",
+      "fontFamily": "AtkinsonHyperlegibleNext-600",
       "fontSize": 14,
       "letterSpacing": 0
     },
     "mono": {
-      "fontFamily": "AtkinsonHyperlegibleMono",
-      "fontWeight": "400",
+      "fontFamily": "AtkinsonHyperlegibleMono-400",
       "fontSize": 14,
       "fontVariant": [
         "tabular-nums"
