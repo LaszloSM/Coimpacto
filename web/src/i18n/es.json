@@ -5,14 +5,9 @@
   },
   "inicio": {
     "titulo": "Nuestro dinero, bien contado",
-    "reunion": "Abrir la reunión",
-    "reunionDetalle": "Para la junta, desde el celular. Funciona sin señal.",
     "fundacion": "Entrar a la oficina",
-    "fundacionDetalle": "Para el equipo de la Fundación."
-  },
-  "reunion": {
-    "titulo": "Reunión de la ACAP",
-    "enConstruccion": "Aquí va el asistente de 9 pasos de la reunión."
+    "fundacionDetalle": "Para el equipo de la Fundación.",
+    "app": "La reunión de la junta se lleva en la app Credimpacto para Android."
   },
   "fundacion": {
     "titulo": "Pendientes",

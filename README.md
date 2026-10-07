@@ -11,10 +11,12 @@ Credimpacto es software: no custodia ni capta dinero.
 | Carpeta | Qué hay |
 |---|---|
 | `backend/` | Django + Django Ninja sobre PostgreSQL. Apps: `core`, `cuentas`, `acap`, `libro`, `sync`, `migracion`. |
-| `web/` | Next.js. Superficie de reunión (`(reunion)`, PWA offline) y oficina de la Fundación (`(fundacion)`). |
+| `web/` | Next.js: plataforma de administración y monitoreo de la Fundación. |
+| `movil/` | App Android con Expo para la reunión offline y la vista del socio (desde TX2). |
+| `packages/reglas/` | Reglas de dinero en TypeScript (app y web), espejo de `backend/libro/reglas.py`. |
 | `packages/casos-reglas/` | Casos JSON de las reglas de dinero, ejecutados por pytest y por Vitest. |
+| `packages/tokens/` | Tokens de DESIGN.md (CSS para la web, módulo TS para la app) y fuentes OFL. |
 | `packages/api-client/` | Tipos y cliente generados desde el OpenAPI del backend. |
-| `scripts/generar-tokens.mjs` | Convierte los tokens de DESIGN.md en `web/src/estilos/tokens.css`. |
 
 ## Requisitos
 
@@ -35,6 +37,7 @@ cd backend && uv sync            # dependencias del backend
 | Lint del backend | `cd backend && uv run python -m ruff check . && uv run python -m ruff format --check .` |
 | Web en desarrollo | `npm run web:dev` |
 | Pruebas unitarias web | `npm run web:test` |
+| Pruebas de las reglas en TypeScript | `npm run reglas:test` |
 | E2E (necesita `npm run build -w @credimpacto/web`) | `npm run web:e2e` (local con Edge: `PLAYWRIGHT_CANAL=msedge`) |
 | Regenerar tokens tras editar DESIGN.md | `npm run tokens` |
 | Regenerar el cliente tras cambiar la API | `npm run api:tipos` |

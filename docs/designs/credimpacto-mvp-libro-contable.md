@@ -2477,7 +2477,7 @@ Conflict flags: X5 y X6 comparten movil/ (navegación y datos); X4 y X6 comparte
 ## Implementation Tasks (cambio a Expo)
 Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship. Reemplazan la parte de celular de T5, T6 y T7 (el backend de esas tareas sigue igual).
 
-- [ ] **TX1 (P1, human: ~1d / CC: ~45min)** — packages — Crear packages/reglas y packages/tokens; mover web/src/reglas y las fuentes; quitar la ruta (reunion) y Serwist de la web
+- [x] **TX1 (P1, human: ~1d / CC: ~45min)** — packages — Crear packages/reglas y packages/tokens; mover web/src/reglas y las fuentes; quitar la ruta (reunion) y Serwist de la web
   - Surfaced by: Scope Challenge B (estructura A, D1)
   - Files: packages/reglas/, packages/tokens/, scripts/generar-tokens.mjs, web/
   - Verify: Vitest de packages con los casos compartidos; build de la web; tokens:check

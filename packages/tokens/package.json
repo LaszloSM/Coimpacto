@@ -1,0 +1,20 @@
+{
+  "name": "@credimpacto/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tokens de diseño generados desde DESIGN.md: CSS para la web y un módulo TS para la app Android. Incluye las fuentes OFL.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./css/tokens.css": "./css/tokens.css",
+    "./css/fuentes.css": "./css/fuentes.css",
+    "./fuentes/*": "./fuentes/*"
+  },
+  "scripts": {
+    "generar": "node scripts/generar.mjs",
+    "check": "node scripts/generar.mjs --check"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.1"
+  }
+}
