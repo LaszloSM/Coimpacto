@@ -49,7 +49,7 @@ Mezcla: cuaderno de papel en la reunión (el esquema actual es "espejo de la tab
 ## Premises
 
 1. El MVP es el libro contable de la reunión ACAP; los dashboards de la Fundación salen de esos datos.
-2. La plataforma web del MVP es una PWA instalable y offline-first, usable en la reunión sin señal; la app nativa (Expo) viene después.
+2. ~~La plataforma web del MVP es una PWA instalable y offline-first, usable en la reunión sin señal; la app nativa (Expo) viene después.~~ **Reemplazada por D2 de alcance (2026-10-06):** la reunión offline y la vista del socio están en la app nativa Expo (Android) desde el MVP; la web es el back-office de la Fundación.
 3. **(revisada)** En cada reunión escribe **un dispositivo principal**; otros dispositivos de la ACAP quedan como respaldo o solo lectura, con traspaso explícito si el principal falla. Evita conflictos de caja sin depender de un solo celular.
 4. **(revisada)** Código y base de datos nuevos. El esquema y las RPC `fn_*` del Supabase actual son la **especificación** de las reglas de negocio (abrir/cerrar reunión, ahorro, préstamo, abono, preview/confirmación de cierre, permisos, auditoría). Las reglas de dinero se portan con pruebas contra **casos curados** (ver "Oráculo de reglas"), no contra la base cruda. Los datos de las 27 ACAP se migran. El chatbot se apaga según el criterio de salida de "Migración y convivencia".
 5. **(precisada)** Al cerrar la reunión, offline, el dispositivo muestra en pantalla un **resumen provisional por miembro** (número de miembro + iniciales, acciones, aportes, multas, abonos, saldo provisional) que la junta lee en voz alta o el miembro mira. Tras sincronizar, el servidor emite el **comprobante confirmado**: enlace firmado de un solo miembro, con vencimiento, revocable y sin cédula ni nombre completo, que se entrega por el canal elegido en la pregunta abierta 2b.
@@ -79,7 +79,7 @@ Segunda opinión independiente (subagente de Claude, sin contexto de la conversa
 - **Backend:** Python, **Django + Django Ninja** (API tipada con OpenAPI). Auth, permisos, ORM, migraciones y panel de administración de Django para el back-office. Tareas en segundo plano (Celery o Dramatiq) **solo para flujos del MVP**: emisión y envío de comprobantes, migración desde Supabase y generación de reportes. La arquitectura deja a ML y agentes en el mismo Python, pero **no hay caso de uso de IA en el MVP**.
 - **Base de datos:** PostgreSQL gestionado en la nube (proveedor por decidir).
 - **Web:** Next.js. La **superficie de la reunión** (todo lo que debe funcionar sin señal) es un **shell 100% de cliente** bajo una ruta propia: sin renderizado en servidor ni rutas que dependan de red, precacheado por un service worker (Serwist/Workbox) con la app completa versionada. La sesión offline no depende de cookies del servidor (ver "Identidad y firmas offline"). Back-office y consolidado de la Fundación pueden usar renderizado normal porque se usan con conexión.
-- **Móvil (fase posterior):** Expo / React Native consumiendo la misma API.
+- **Móvil (MVP, D2 de alcance):** Expo / React Native, Android, consumiendo la misma API.
 - **Contrato:** tipos del cliente generados desde el OpenAPI del backend.
 - **Libro contable solo-agregar:** cada aporte, multa, desembolso o abono es un movimiento inmutable; las correcciones son contramovimientos con motivo. Auditoría completa (actor, dispositivo, antes y después).
 - **Autoridad:** el servidor recalcula y confirma. El cliente muestra cálculos provisionales (efectivo esperado, cuota del préstamo) con un módulo pequeño, validado contra los **mismos casos de prueba** que el backend, derivados de datos reales del sistema actual.
@@ -190,7 +190,7 @@ Reglas (el número de firmas y de llaveros es **configurable por ACAP**, con 2 p
 6. Migración desde Supabase (27 ACAP, miembros, ciclos, reuniones) con reporte de calidad.
 7. Seguridad base: autenticación, permisos por rol y cargo, auditoría, cifrado en tránsito y en reposo, sin secretos en código.
 
-**Fuera (fases posteriores):** scoring e IA predictiva, cartera externa, proyectos productivos, Academia y capacitaciones, evaluaciones, logros, crédito colectivo Credimpacto, crédito en especie, marketplace, BaaS, vista de aliado o inversionista y app nativa Expo.
+**Fuera (fases posteriores):** scoring e IA predictiva, cartera externa, proyectos productivos, Academia y capacitaciones, evaluaciones, logros, crédito colectivo Credimpacto, crédito en especie, marketplace, BaaS, vista de aliado o inversionista. (La app nativa Expo entró al MVP por D2 de alcance.)
 
 ## Open Questions
 
@@ -221,10 +221,10 @@ Piloto con 3-5 ACAP durante un ciclo de reuniones (mínimo 1 mes). Durante el pi
 
 ## Distribution Plan
 
-- **Web/PWA:** servicio web en la nube elegida; los usuarios la instalan desde el navegador ("Agregar a pantalla de inicio"), sin tienda de apps.
+- **Web (back-office):** servicio web en la nube elegida para el equipo de la Fundación.
 - **Backend:** contenedor Docker desplegado en la nube elegida.
 - **CI/CD:** repositorio en GitHub con GitHub Actions (pruebas, lint, revisión de seguridad, build y despliegue a staging en cada merge y a producción con aprobación).
-- **App Expo (posterior):** EAS Build hacia Google Play (Android primero).
+- **App Expo (MVP, Android):** build y firma en GitHub Actions; piloto y luego Google Play (EX6, EA3 de la revisión del 2026-10-07).
 
 ## Dependencies
 
@@ -2540,17 +2540,227 @@ Ninguna en esta revisión.
 - Parallelization: 4 lanes, 2 parallel / 2 sequential
 - Lake Score: 5/5 = D3, D4, D8, D9 y D10 eligieron la opción 10/10; D1, D2, D5, D6, D7 y D11 diferían en tipo, sin puntaje
 
+## Design Review (app nativa) — /plan-design-review (2026-10-07)
+
+Target: este documento, alcance de la app nativa Expo (reunión, vista del socio, enrolamiento, PIN, respaldo, actualizaciones). DESIGN.md existe pero está escrito para la web. Generador de mockups no disponible (requiere OpenAI; el usuario lo descartó): revisión en texto. Voz externa: subagente de Claude [single-model]; Codex no instalado.
+Step 0: completitud de diseño 5/10; enfoque: las 7 pasadas (D1 de esta revisión).
+Corrección sin pregunta (reutiliza D2 de alcance): la premisa 2, el enfoque, "Fuera (fases posteriores)" y el plan de distribución ya no dicen PWA ni "Expo después".
+
+### Pasada 1 — Arquitectura de información (inicial 4/10)
+
+**N1 aprobado (A, D3 de esta revisión): inicio por prioridad.**
+```
+ ┌──────────────────────────────────────┐
+ │ Credimpacto · ACAP Las Brisas         │  franja: ACAP y estado de guardado
+ │ ──────────────────────────────────── │
+ │ [ Seguir la reunión del 4 oct ]       │  1. solo si hay reunión abierta (botón naranja)
+ │ Para revisar (2)                       │  2. rechazados y "Hay que aclarar" de la junta
+ │   ⚠ Abono de #12 · Hay que aclarar    │
+ │ Perfiles en este celular               │  3. una fila por perfil: número + iniciales
+ │   #03 C. A.   (cargo: Presidenta)     │     nunca nombres completos
+ │   #07 M. C.   (socia)                 │
+ │ [ Abrir reunión ]  [ Enviar a la Fundación ] │ acciones según el estado
+ └──────────────────────────────────────┘
+```
+El único botón naranja es lo que toca ahora: "Seguir la reunión" si hay una abierta; si no, "Abrir reunión" para un cargo o el perfil para un socio. Sin perfiles todavía: estado vacío de enrolamiento ("Este celular aún no está registrado…").
+
+**N2 aprobado (A, D4 de esta revisión): vista del socio con la fecha primero.**
+```
+ ┌──────────────────────────────────────┐
+ │ #07 M. C.               [Salir]       │  perfil activo
+ │ Datos hasta la reunión del 12 sep     │  1. qué tan viejos son los datos
+ │ Lo que he ahorrado este ciclo         │  2. cifra clave {typography.cifra-clave}
+ │ $ 380.000                             │
+ │ trescientos ochenta mil pesos         │
+ │ ──────────────────────────────────── │
+ │ Me falta pagar   $ 240.000            │  3. solo si tiene préstamo
+ │ Próxima cuota    $ 120.000 · 9 oct    │
+ │ ──────────────────────────────────── │
+ │ Mis aportes                            │  4. renglones del cuaderno
+ │ 12 sep  3 acciones        $ 30.000    │
+ │ 29 ago  2 acciones        $ 20.000    │
+ │ ──────────────────────────────────── │
+ │ El dinero lo guarda la caja del grupo  │  fija, al pie
+ └──────────────────────────────────────┘
+```
+Vocabulario: "Lo que he ahorrado", "Me falta pagar", "Mis aportes". Nunca "saldo", "saldo disponible" ni "cuenta" (DESIGN.md, Don'ts). Cada cifra lleva su estado de la tabla fija (D4 de diseño): "Guardado aquí" o "Confirmado".
+
+Pasada 1 re-calificada: 4/10 → 9/10. Falta el comportamiento del gesto "atrás" de Android (pasada 6).
+
+### Pasada 2 — Estados de interacción (inicial 5/10)
+
+**N3 aprobado (A, D5 de esta revisión): datos del socio con fecha y avisos.** Siempre visible "Datos hasta la reunión del [fecha]". Con más de 30 días sin señal, franja ámbar ({colors.por-validar} sobre {colors.por-validar-tinte}): "Estos datos son de hace N días. Lleve el celular a señal para actualizarlos." A los 60 días (caducidad de EX2) no se muestran cifras: "Sus datos se actualizan cuando el celular tenga señal" + fecha de la última actualización. Nunca una pantalla en blanco ni una cifra vieja sin fecha.
+
+**N4 aprobado (A, D6 de esta revisión): tabla de estados de los flujos nativos.** Textos sujetos a validación con facilitadores (tarea existente de D4/D8 de diseño).
+
+| Función | Cargando | Vacío | Error | Éxito | Parcial |
+|---|---|---|---|---|---|
+| Enrolamiento por QR | "Leyendo el código…" | celular sin registrar: "Este celular aún no está registrado. Pida el código al facilitador." | cámara denegada: "La app necesita la cámara solo para leer el código" + botón a Ajustes; QR vencido u otra ACAP: "Este código ya no sirve. Pida uno nuevo al facilitador."; sin señal: "Necesita señal solo para este paso." | "Celular registrado para [ACAP]" | lista del grupo descargándose: "Bajando la lista del grupo…" |
+| PIN (cargo o socio) | "Verificando…" ~1 s (EP1), los puntos quedan quietos, sin barra de progreso | — | "PIN no coincide · quedan N intentos"; 5.º error de un cargo → "En pausa" (D13 de diseño); socio → N7 | entra o firma | — |
+| Respaldo | "Preparando copia…" | — | no se pudo compartir: "No se envió. Intente de nuevo." | tras compartir: "¿Ya la mandó? Sí / No"; luego "Copia pendiente de llegar a la Fundación" hasta que el servidor la importe, y entonces "Copia recibida" | — |
+| Actualización | "Bajando la versión nueva…" | — | "No se pudo bajar. Se intenta con la próxima señal." | "Versión nueva lista. Se instala cuando todo esté enviado y no haya reunión abierta." | — |
+| Keystore perdido (restablecimiento del celular) | — | — | "Este celular perdió su llave. Lo guardado aquí se recupera con la copia de seguridad o con el cuaderno." + "Registrar de nuevo este celular" | — | — |
+
+**N5 aprobado (A, D7 de esta revisión): el envío de lo guardado nunca caduca.** Reabre un detalle de D9 (N-1 por 90 días) por un riesgo nuevo: un celular más de 90 días sin señal y con pendientes quedaba trancado. El formato de subida de la cola es un contrato versionado y estable que el servidor acepta de cualquier versión de la app, para siempre; la regla N-1 de 90 días sigue para descargas y pantallas. La app vieja primero envía y después se actualiza: "Primero enviamos lo guardado, después se instala la versión nueva." Con su prueba: una cola generada por la versión más antigua soportada se acepta sin pérdidas.
+
+Pasada 2 re-calificada: 5/10 → 9/10. Falta validar los textos con facilitadores (tarea existente) y el bloqueo del perfil del socio (N7, pasada 3).
+
+### Pasada 3 — Recorrido y arco emocional (inicial 6/10)
+
+**N6 aprobado (A, D8 de esta revisión): el piloto se instala desde la pista de prueba interna de Google Play.** Cambia el canal del piloto de EX6 ("APK firmado instalado directo") por un riesgo nuevo: la advertencia de "orígenes desconocidos" y de Play Protect como primera impresión. Se invitan los correos de los cargos; el APK directo queda solo para emergencias. La firma sigue igual (EA3, misma llave en Play App Signing). La cuenta de desarrollador de Google Play (25 USD, pago único) se abre antes del piloto.
+
+**N7a aprobado (A, D9 de esta revisión): alta del socio en un flujo aparte, después del cierre.** "Dar acceso a socios" aparece tras el sello "Bien contado" y también desde el inicio fuera de la reunión. Un cargo elige al socio y firma el alta (EX4); la pantalla dice "Voltee el celular hacia [nombre corto]"; el socio escribe su PIN dos veces con el filtro de PIN obvios y la práctica de D26 de diseño. El alta nunca va dentro de los 9 pasos de la reunión.
+
+**N7 aprobado (A, D10 de esta revisión): espera creciente para perfiles de socio.** Tras 5 errores: "Espere 1 minuto para intentar de nuevo"; la espera se duplica en cada tanda (1, 2, 4, 8 min… hasta 1 hora) y nunca hay bloqueo total. Los cargos siguen con la pausa de D13 de diseño. La espera persiste en el almacenamiento cifrado (cerrar la app no la reinicia).
+
+Storyboard de la app nativa (requisito; transcrito de N1–N7 y las decisiones de ingeniería):
+
+| Paso | La persona hace | Siente | Qué lo sostiene en el plan |
+|---|---|---|---|
+| 0 | El facilitador instala la app desde Play | confianza: "es una app de verdad" | pista interna de Play, sin advertencias (N6) |
+| 1 | Registra el celular con el QR | duda → control | estados del enrolamiento (N4) |
+| 2 | Cada cargo crea su PIN | seriedad | PIN doble, filtro y práctica (D26); "Verificando…" ~1 s (EP1) |
+| 3 | Abre la app semanas después, sin señal | calma | inicio por prioridad (N1); franja "Guardado aquí" (D5 de diseño) |
+| 4 | Lleva la reunión | ritmo | asistente de 9 pasos (D1–D14 de diseño) |
+| 5 | Cierra con el sello | orgullo | "Bien contado" (DESIGN.md) |
+| 6 | Da acceso a los socios | cuidado | flujo aparte, celular volteado (N7a) |
+| 7 | Un socio mira su ahorro en casa | tranquilidad | fecha primero, "Lo que he ahorrado" (N2, N3) |
+| 8 | Un vecino falla su PIN | molestia, sin daño | espera creciente, sin bloqueo total (N7) |
+| meses | Vuelve a señal con la app vieja | alivio | primero envía, después actualiza (N5) |
+
+Pasada 3 re-calificada: 6/10 → 9/10. Falta validar el ritmo del alta de socios en el piloto.
+
+### Pasada 4 — Riesgo de "AI slop" (inicial 8/10)
+
+Modo: OPERATE (app de tareas). Sin rechazos duros (cuaderno de renglones, sin grilla de tarjetas, sin degradados). Litmus: 1 marca en la primera pantalla: NO especificada (resuelto en N8) · 2 ancla visual: SÍ (cifra clave y sello) · 3 escaneable: SÍ · 4 una tarea por pantalla: SÍ · 5 tarjetas: NO hacen falta · 6 movimiento: SÍ (sello) · 7 sin sombras decorativas: SÍ.
+
+**N8 aprobado (A, D11 de esta revisión): ícono del cuaderno con sello.** Nombre bajo el ícono: "Credimpacto". Ícono adaptativo y monocromático de Android: cuaderno con renglones y el sello, en {colors.tinta} sobre {colors.papel}; nada de alcancías, monedas ni bancos. Pantalla de arranque: fondo {colors.papel} con el sello pequeño; el inicio (N1) aparece en menos de 2 s en el celular de referencia con renglones de espera mientras se abre la base cifrada.
+
+Pasada 4 re-calificada: 8/10 → 10/10.
+
+### Pasada 5 — Sistema de diseño (inicial 4/10)
+
+**N9 aprobado (A, D12 de esta revisión): DESIGN.md con sección "Superficie nativa (Android)".** Aplicado en DESIGN.md (2026-10-07): 1 px = 1 dp; packages/tokens genera CSS y un módulo TS para React Native desde el mismo YAML; fuentes OFL con expo-font; solo claro forzado (ignora el oscuro del sistema y el forzado de Android 10+); barras de estado y navegación en {colors.papel}; dinero y PIN siempre con el teclado propio (componente `tecla`), el del sistema solo para texto libre; ícono y arranque de N8; el sello con háptica corta. Se quitó la mención a la PWA y al service worker. Validado: `gstack-design-md check` → spec; `tokens:check` al día.
+
+Pasada 5 re-calificada: 4/10 → 9/10. Falta la regla de escala de letra del sistema (N10, pasada 6).
+
+### Pasada 6 — Responsive y accesibilidad (inicial 3/10)
+
+**N10 aprobado (A, D13 de esta revisión): texto libre, cifras con tope.** El texto sigue la escala de letra de Android sin límite. Cifras clave, teclado `tecla` y botones de 56 dp crecen hasta 1,3× como máximo (`maxFontSizeMultiplier`). La barra de 9 segmentos pasa a texto "Paso 4 de 9" cuando el ancho es < 360 dp o la escala > 1,3. Prueba obligatoria a 100%, 130% y 200% en un celular de 320 dp y en el de referencia.
+
+**N11 aprobado (A, D14 de esta revisión): "atrás" de Android guiado según el momento.** En el asistente: atrás = paso anterior (D1 de diseño, nunca pierde datos). En el paso 1: "¿Salir de la reunión? Todo queda guardado aquí." Durante "Verificando…": sin efecto. En un grupo de firmas: "¿Cancelar estas firmas? No se guarda ninguna de este grupo" (nunca firmas a medias). En la vista del socio: cierra el perfil y vuelve al inicio (N1).
+
+**N12 aprobado (A, D15 de esta revisión): privacidad en celulares compartidos.** Pantallas de PIN y vista del socio con FLAG_SECURE (sin capturas; en blanco en apps recientes). El perfil del socio se cierra al pasar la app a segundo plano o tras 60 s sin tocar. Los avisos nunca muestran montos ni nombres ("Credimpacto: hay algo pendiente"). La reunión no se bloquea por inactividad.
+
+**N13 aprobado (A, D16 de esta revisión): TalkBack desde el MVP.** Cada ícono y botón con etiqueta de accesibilidad; las cifras se leen con su valor en letras ("cincuenta mil pesos"); los estados se leen con su palabra de la tabla fija; el orden de lectura sigue la jerarquía de N1 y N2; el sello anuncia "Reunión cerrada". Prueba con TalkBack en la vista del socio y en un paso de aportes.
+
+Pasada 6 re-calificada: 3/10 → 9/10. Falta la prueba en un Android real de gama baja (ya en el plan de pruebas).
+
+### Pasada 7 — Decisiones sin resolver
+
+**N14 aprobado (A, D17 de esta revisión): recordatorios locales en el MVP.** La app programa avisos locales desde el calendario del ciclo guardado: un día antes de la reunión ("Mañana hay reunión de [ACAP]") y, para el socio con préstamo, antes de su cuota ("Se acerca su cuota", sin monto, N12). El permiso de avisos (Android 13+) se pide después del primer enrolamiento explicando para qué; si se niega, la app funciona igual y lo ofrece de nuevo en Configuración. Los cambios de calendario llegan al sincronizar. Resuelve la contradicción con el punto 5 del segundo cambio de alcance; el TODO "Recordatorios del ciclo" sale de TODOS.md y pasa a tarea del plan.
+
+**N15 aprobado (A, D18 de esta revisión): envío visible y automático en primer plano.** El inicio (N1) muestra "Enviar a la Fundación · N pendientes". Al abrir la app con señal, el envío arranca solo y se ve en pantalla ("Subiendo 2 de 4 reuniones…", D2 de diseño) y sigue donde quedó si se corta. El envío en segundo plano es solo un intento extra, nunca el único camino.
+
+**N16 aprobado (A, D19 de esta revisión): actualizaciones con datos móviles solo preguntando.** Con Wi-Fi bajan solas. Con datos móviles: "Hay una versión nueva de [N] MB. ¿Bajarla ahora con sus datos?" Sí / Más tarde. El envío de la cola nunca pide permiso y siempre sale primero (N5 garantiza que una versión vieja igual puede enviar).
+
+**N17 aprobado (A, D20 de esta revisión): almacén cifrado aparte por perfil de socio.** Reabre el detalle "esquema de EX2" de EX4 por un riesgo nuevo: el aislamiento entre socios dependía solo de la app. Cada perfil de socio tiene su propio archivo SQLCipher pequeño con solo sus filas, cifrado con una llave aleatoria envuelta por su PIN y por el secreto del Keystore. El PIN de un socio nunca desenvuelve la DEK de la reunión. La API del socio (EX4) llena solo ese archivo; borrar el perfil es borrar su archivo. Con su prueba: con el PIN de un socio no se abre la base de la reunión.
+
+Registro de decisiones de la pasada 7:
+
+| Decisión pendiente | Resultado |
+|---|---|
+| Recordatorios en el MVP | N14 |
+| Cómo se dispara el envío | N15 |
+| Actualizaciones con datos móviles | N16 |
+| Almacén del socio | N17 |
+
+### NOT in scope (diseño nativo)
+- iOS: Android primero (sin cambio).
+- Pedir y votar préstamos desde el celular del socio: fase 2 (D3 de alcance).
+- Avisos push desde un servidor o SMS: los recordatorios del MVP son locales (N14).
+- Maquetas visuales con IA: el usuario no usa OpenAI; revisión en texto.
+
+### What already exists (diseño nativo)
+- DESIGN.md (ahora con "Superficie nativa"), la vista previa HTML y los tokens generados; la app los consume vía packages/tokens.
+- Decisiones de diseño D1–D28 de la revisión del 2026-10-06: siguen vigentes para la reunión (asistente, estados, firmas, arqueo, sello, resumen por miembro).
+- Componentes definidos en DESIGN.md (`tecla`, `dinero`, `renglon`, `estado`, `billete`, `sello`) que la app reutiliza.
+
+## Implementation Tasks (diseño nativo)
+Synthesized from this review's findings. Each task derives from a specific finding above. Ratios assumed: features ~30x, design systems ~10x.
+
+- [ ] **TD1 (P1, human: ~3d / CC: ~1.5h)** — movil/inicio — Inicio por prioridad, envío visible, ícono y arranque
+  - Surfaced by: Pasada 1 N1; Pasada 7 N15; Pasada 4 N8
+  - Files: movil/src/inicio/, movil/app.json, movil/assets/
+  - Verify: Maestro: con reunión abierta el botón naranja es "Seguir la reunión"; filas de perfil sin nombres completos; arranque < 2 s en el celular de referencia
+- [ ] **TD2 (P1, human: ~3d / CC: ~1.5h)** — movil — Tabla de estados nativos y "atrás" guiado
+  - Surfaced by: Pasada 2 N4; Pasada 6 N11
+  - Files: movil/src/, packages/ (textos i18n)
+  - Verify: Jest + Maestro: cámara denegada, QR vencido, 5.º PIN, respaldo pendiente, actualización lista, Keystore perdido; atrás en paso 1 pide confirmación y en firmas cancela el grupo completo
+- [ ] **TD3 (P1, human: ~2d / CC: ~1h)** — backend/sync + movil/cola — Contrato de subida estable para cualquier versión
+  - Surfaced by: Pasada 2 N5
+  - Files: backend/sync/, movil/src/cola/, packages/api-client/
+  - Verify: prueba de contrato: una cola de la versión más antigua soportada se acepta sin pérdidas
+- [ ] **TD4 (P1, human: ~1d / CC: ~30min)** — operación — Cuenta de Google Play y pista de prueba interna para el piloto
+  - Surfaced by: Pasada 3 N6
+  - Files: docs/operacion/llaves.md, .github/workflows/
+  - Verify: un cargo invitado instala desde Play sin advertencias de origen desconocido
+- [ ] **TD5 (P2, human: ~4d / CC: ~2h)** — movil/socio — Vista del socio (N2, N3), alta aparte con celular volteado (N7a), espera creciente (N7), almacén aparte (N17), privacidad (N12)
+  - Surfaced by: Pasadas 1, 2, 3, 6 y 7
+  - Files: movil/src/socio/, movil/src/datos/, backend/cuentas/
+  - Verify: con el PIN de un socio no se abre la base de la reunión; FLAG_SECURE activo; datos de más de 60 días no muestran cifras
+- [ ] **TD6 (P2, human: ~2d / CC: ~1h)** — movil — Escala de letra con tope y TalkBack
+  - Surfaced by: Pasada 6 N10, N13
+  - Files: movil/src/
+  - Verify: pantallas a 100%, 130% y 200% en 320 dp sin cifras partidas; recorrido con TalkBack en la vista del socio y un paso de aportes
+- [ ] **TD7 (P2, human: ~2d / CC: ~1h)** — movil — Recordatorios locales y actualizaciones con datos móviles
+  - Surfaced by: Pasada 7 N14, N16
+  - Files: movil/src/avisos/, movil/src/actualizaciones/
+  - Verify: aviso programado un día antes de la reunión, sin montos; con datos móviles se pregunta antes de bajar
+- [x] **TD8 (P2, human: ~2h / CC: ~10min)** — DESIGN.md — Sección "Superficie nativa (Android)"
+  - Surfaced by: Pasada 5 N9
+  - Files: DESIGN.md
+  - Verify: gstack-design-md check → spec; tokens:check al día (hecho 2026-10-07)
+
+### Unresolved Decisions (diseño nativo)
+Ninguna.
+
+### Completion Summary (diseño nativo)
+```
+  +====================================================================+
+  |         DESIGN PLAN REVIEW — COMPLETION SUMMARY                    |
+  +====================================================================+
+  | System Audit         | DESIGN.md existía (web); UI: app Android      |
+  | Step 0               | 5/10; las 7 pasadas (D1)                     |
+  | Pass 1  (Info Arch)  | 4/10 → 9/10 after fixes                      |
+  | Pass 2  (States)     | 5/10 → 9/10 after fixes                      |
+  | Pass 3  (Journey)    | 6/10 → 9/10 after fixes                      |
+  | Pass 4  (AI Slop)    | 8/10 → 10/10 after fixes                     |
+  | Pass 5  (Design Sys) | 4/10 → 9/10 after fixes                      |
+  | Pass 6  (Responsive) | 3/10 → 9/10 after fixes                      |
+  | Pass 7  (Decisions)  | 4 resolved, 0 deferred                       |
+  +--------------------------------------------------------------------+
+  | NOT in scope         | written (4 items)                            |
+  | What already exists  | written                                      |
+  | TODOS.md updates     | 0 items proposed (1 TODO pasa al plan, N14)  |
+  | Approved Mockups     | 0 generated (sin OpenAI), 0 approved         |
+  | Decisions made       | 18 added to plan (N1–N17 y N7a)              |
+  | Decisions deferred   | 0                                            |
+  | Overall design score | 3/10 → 9/10                                  |
+  +====================================================================+
+```
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 4 | unavailable | Codex not installed; native fallback unavailable in eng reviews (no TaskOutput in this session); design phase used a native Claude subagent [single-model] |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 3 | issues_open | 26 issues, 0 critical gaps (latest: cambio a Expo, 11 decisiones aprobadas, todo mapeado a TX1–TX11; prior runs: 10 and 46 issues) |
-| Design Review | `/plan-design-review` | UI/UX gaps | 1 | issues_open | score: 0/10 → 7/10, 28 decisions |
+| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 5 | unavailable | Codex not installed; native fallback unavailable in eng reviews; design phases used a native Claude subagent [single-model] (latest: 18 findings on the native app) |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 3 | issues_open | 26 issues, 0 critical gaps (latest: cambio a Expo, 11 decisiones, mapeado a TX1–TX11) |
+| Design Review | `/plan-design-review` | UI/UX gaps | 2 | clean | score: 3/10 → 9/10, 18 decisions (latest: app nativa, N1–N17 y N7a, mapeado a TD1–TD8) |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **OUTSIDE COVERAGE:** codex, plan-review phase (3 runs), unavailable; codex, design phase, unavailable (native Claude subagent completed; not outside coverage).
-- **VERDICT:** No reviews CLEAR yet. All findings have approved remedies mapped to tasks (T1–T11, DT1–DT10, ET1–ET4, TX1–TX11); design review predates the move to Expo (the meeting UI now lives in movil/); eng review required.
+- **OUTSIDE COVERAGE:** codex, plan-review phase (3 runs), unavailable; codex, design phase (2 runs), unavailable (native Claude subagent completed both times; not outside coverage).
+- **VERDICT:** DESIGN CLEARED (app nativa, 9/10). Eng Review not CLEAR: findings mapped to TX1–TX11 and to the design tasks TD1–TD8; N5, N6 and N17 changed details of D9, EX6 and EX4, so eng review required before implementing those parts.
 
 NO UNRESOLVED DECISIONS

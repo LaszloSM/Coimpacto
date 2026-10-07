@@ -28,20 +28,6 @@
 **Priority:** P2
 **Depends on:** vista de solo lectura del socio en producción.
 
-## Notificaciones
-
-### Recordatorios del ciclo
-
-**What:** Recordar a la junta y a los socios la próxima reunión y las cuotas de préstamo, como hacía el chatbot.
-
-**Why:** Es una función del chatbot que se retira; sin ella la plataforma no lo reemplaza del todo.
-
-**Context:** Segundo cambio de alcance (2026-10-06). Notificaciones push de Expo cuando haya señal; definir si se necesita SMS para quien no tiene datos.
-
-**Effort:** S
-**Priority:** P2
-**Depends on:** app Expo con sesión.
-
 ## Integraciones
 
 ### Aliado financiero (BaaS / SEDPE)
