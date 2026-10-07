@@ -149,7 +149,7 @@ components:
 **Lo memorable:** «Nuestro dinero está bien contado.» Cada decisión de este documento sirve a esa frase. Las cifras son grandes y están alineadas, nada se borra, la caja se cuenta billete por billete y la reunión termina con un sello.
 
 **Product context:** es el libro contable de los grupos de ahorro y crédito comunitario (ACAP) de la Fundación CoimpactoB, en Colombia: Juntas de Acción Comunal, Consejos Comunitarios étnicos y grupos no formalizados. Tiene dos superficies con una sola marca:
-- **Reunión (PWA de campo, offline).** La usa la junta (Presidente, Registrador, Portador de Caja, Contadores) en un Android de gama baja, al aire libre o en un salón comunal, muchas veces sin señal. Son usuarios con baja alfabetización digital y buena aritmética. Es un asistente de 9 pasos que se maneja con toques.
+- **Reunión (app Android nativa con Expo, offline).** La usa la junta (Presidente, Registrador, Portador de Caja, Contadores) en un Android de gama baja, al aire libre o en un salón comunal, muchas veces sin señal. Son usuarios con baja alfabetización digital y buena aritmética. Es un asistente de 9 pasos que se maneja con toques.
 - **Oficina (web de la Fundación).** La usan Admin, Dirección, coordinadores, facilitadores y analistas, en un portátil. Tiene 5 secciones: Pendientes, ACAP, Personas, Indicadores y Configuración.
 
 **Mode per surface:**
@@ -196,7 +196,7 @@ Las tres familias vienen de Google Fonts, con licencia OFL y eje de peso variabl
 - **Bitter** (Sol Matas, formada en la UBA), pesos 100–900. Solo se usa en los títulos de la oficina. Es una slab de contraste bajo: hereda la serif del mockup sin caer en la serif de revista, y se lee como el encabezado de un libro de cuentas. **No se usa en la superficie de reunión.**
 - **Atkinson Hyperlegible Mono**, pesos 200–800. Solo para códigos, huellas (hash) e identificadores en la oficina. No se usa para dinero: el dinero va en Next con `tnum`, que se lee mejor.
 
-**Carga:** los `.woff2` variables (subconjuntos latin y latin-ext) se sirven desde la propia app, en `web/public/fuentes/` con su licencia OFL, declarados en `web/src/estilos/fuentes.css` con el mismo `unicode-range` de Google. Se precargan Next y Bitter latin. El build y la reunión no dependen de Google Fonts, y el service worker de la PWA las guarda para usarlas sin señal.
+**Carga:** los `.woff2`/`.ttf` variables (latin y latin-ext) con su licencia OFL viven en `packages/tokens`. La web los declara con `@font-face` y el mismo `unicode-range` de Google; la app Android los carga con `expo-font` dentro del binario. Ni el build ni la reunión dependen de Google Fonts.
 
 **Escala:**
 - Reunión: cuerpo 18 px mínimo; títulos de paso 26 px/700; cifra en renglón 22 px/700; cifra clave 44 px/800 (mínimo 32 px); valor en letras 18 px.
@@ -270,6 +270,17 @@ Los íconos son de trazo de 2,4 px, de 22 px en campo y 18 px en tablas. La etiq
 - *Error:* dice qué pasó y qué hacer, y nunca culpa a la persona.
 - *Contenido largo:* los nombres largos pasan a la línea siguiente; las cifras no se parten nunca (`white-space: nowrap`).
 
+## Superficie nativa (Android)
+
+La reunión y la vista del socio corren en una app Expo para Android. Esta sección traduce el sistema a la app; los tokens son los mismos (`packages/tokens` genera CSS para la web y un módulo TS para React Native desde el YAML de arriba).
+
+- **Medidas:** 1 px de este documento = 1 dp en Android. Los toques de 56 px son 56 dp; los textos en px se aplican como tamaño de fuente en dp, con la escala del sistema según la sección de accesibilidad del plan (N10).
+- **Fuentes:** Atkinson Hyperlegible Next, Mono y Bitter cargadas con `expo-font`; nunca la fuente del sistema como voz principal. Las cifras usan `fontVariant: ['tabular-nums']`.
+- **Solo claro, forzado:** la app ignora el modo oscuro del sistema y el oscuro forzado de Android 10+ (`userInterfaceStyle: light`, sin permitir inversión). La barra de estado y la de navegación van en {colors.papel} con íconos oscuros.
+- **Teclado:** dinero y PIN usan siempre el teclado propio (componente `tecla`, 56 dp, atajo `000`); nunca el teclado del sistema, que trae sugerencias, tapa la pantalla y cambia el diseño. El teclado del sistema solo aparece para motivos en texto libre, y la pantalla se acomoda al abrirse.
+- **Ícono y arranque:** ícono adaptativo y monocromático de un cuaderno con renglones y el sello ({colors.tinta} sobre {colors.papel}); arranque en {colors.papel} con el sello pequeño y renglones de espera mientras abre la base cifrada.
+- **Movimiento:** las mismas duraciones y curvas de la sección Motion; el sello usa el mismo momento (escala 1,25 → 1 en 320 ms) con vibración háptica corta; con "Quitar animaciones" de Android, sin animación.
+
 ## Do's and Don'ts
 
 **Do:**
@@ -305,4 +316,5 @@ Los íconos son de trazo de 2,4 px, de 22 px en campo y 18 px en tablas. La etiq
 | 2026-10-06 | Atkinson Hyperlegible Next para toda la superficie de reunión, con `tnum` | Distingue los caracteres que se confunden y tiene cifras tabulares, verificadas en el archivo. Las dos voces coincidieron. Se descartó Mono para dinero porque es más ancha y se lee peor. |
 | 2026-10-06 | Bitter (en vez de Bespoke Slab) para los títulos de la oficina | Hereda la serif del mockup con contraste bajo. Está verificada en Google Fonts (OFL) y la diseñó una diseñadora latinoamericana. Bespoke Slab, propuesta del subagente, no se verificó en esta sesión. |
 | 2026-10-06 | Solo modo claro | La escena de uso es sol y pantallas baratas (D del diseño aprobado). La vista previa trae un simulador de «celular barato al sol» en lugar del interruptor de modo oscuro. |
+| 2026-10-07 | Sección "Superficie nativa (Android)" | La reunión y la vista del socio pasaron a app Expo (D2 de alcance); N9 de la revisión de diseño nativo. |
 | 2026-10-06 | Excepción de contraste en el botón naranja: 5,8:1 | La etiqueta va siempre en negrita de 20 px o más, que es AAA para texto grande. Se conserva el naranja de marca. |
