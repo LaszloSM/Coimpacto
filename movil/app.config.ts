@@ -18,6 +18,7 @@ const versionCode = Number(process.env.CREDIMPACTO_VERSION_CODE ?? 1);
 const config: ExpoConfig = {
   name: "Credimpacto",
   slug: "credimpacto",
+  scheme: "credimpacto",
   version: "0.1.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -42,6 +43,7 @@ const config: ExpoConfig = {
     allowBackup: false,
   },
   plugins: [
+    "expo-router",
     ["expo-font", { fonts: FUENTES }],
     // Todo el archivo de la base cifrado con la DEK (EX2); sin esto la app no abre la base.
     ["expo-sqlite", { useSQLCipher: true }],

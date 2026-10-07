@@ -63,16 +63,12 @@ export const tokens = {
       "fontFamily": "AtkinsonHyperlegibleNext-800",
       "fontSize": 44,
       "lineHeight": 48,
-      "fontVariant": [
-        "tabular-nums"
-      ]
+      "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     },
     "cifra-renglon": {
       "fontFamily": "AtkinsonHyperlegibleNext-700",
       "fontSize": 22,
-      "fontVariant": [
-        "tabular-nums"
-      ]
+      "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     },
     "label": {
       "fontFamily": "AtkinsonHyperlegibleNext-600",
@@ -82,9 +78,7 @@ export const tokens = {
     "mono": {
       "fontFamily": "AtkinsonHyperlegibleMono-400",
       "fontSize": 14,
-      "fontVariant": [
-        "tabular-nums"
-      ]
+      "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     }
   },
   "rounded": {

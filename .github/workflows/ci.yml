@@ -151,6 +151,10 @@ jobs:
           echo "CREDIMPACTO_FIRMA_ARCHIVO=$archivo" >> "$GITHUB_ENV"
       - name: APK de release firmado (x86_64, solo para el emulador)
         working-directory: movil/android
+        env:
+          # Grupo y PIN de muestra para Maestro (src/sesion/modoPrueba.ts). Solo este APK; el
+          # AAB para Google Play se construye sin esta variable (TF1).
+          EXPO_PUBLIC_MODO_PRUEBA: "1"
         # Solo la arquitectura del emulador: compilar el C++ nativo (quick-crypto, SQLCipher)
         # para dos arquitecturas duplica el tiempo. El AAB para celulares (arm64) lo construye
         # el flujo de publicación (TF1).
@@ -190,7 +194,7 @@ jobs:
           disable-animations: true
           script: |
             adb install credimpacto-*.apk
-            maestro test movil/.maestro --format junit --output maestro-reporte.xml
+            maestro test movil/.maestro --exclude-tags=subflujo --format junit --output maestro-reporte.xml
       - uses: actions/upload-artifact@v7
         if: always()
         with:

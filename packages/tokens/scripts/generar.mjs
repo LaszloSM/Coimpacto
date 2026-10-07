@@ -153,7 +153,12 @@ function generarRn(tokens) {
     componentes[comp] = Object.fromEntries(Object.entries(props).map(([p, v]) => [p, valorRn(v)]));
   }
 
-  const cuerpo = JSON.stringify({ color, tipo, rounded, spacing, componentes }, null, 2);
+  // `as const` vuelve readonly el arreglo de fontVariant y React Native pide uno mutable: esa
+  // propiedad lleva su propio tipo.
+  const cuerpo = JSON.stringify({ color, tipo, rounded, spacing, componentes }, null, 2).replace(
+    /"fontVariant": \[\s*"tabular-nums"\s*\]/g,
+    '"fontVariant": ["tabular-nums"] as "tabular-nums"[]',
+  );
   return [
     "// GENERADO por packages/tokens/scripts/generar.mjs desde DESIGN.md. No editar a mano.",
     "// Para cambiar el diseño: editar DESIGN.md y correr `npm run tokens`.",

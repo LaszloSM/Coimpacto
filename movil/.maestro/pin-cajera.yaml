@@ -1,0 +1,17 @@
+# PIN de la Portadora de Caja del grupo de prueba (src/sesion/modoPrueba.ts).
+appId: com.coimpactob.credimpacto
+tags:
+  - subflujo
+---
+- tapOn:
+    id: "tecla-7"
+- tapOn:
+    id: "tecla-3"
+- tapOn:
+    id: "tecla-0"
+- tapOn:
+    id: "tecla-1"
+- tapOn:
+    id: "tecla-8"
+- tapOn:
+    id: "tecla-5"

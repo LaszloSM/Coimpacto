@@ -22,6 +22,13 @@ No corre en Expo Go: usa módulos nativos (SQLCipher, quick-crypto desde TX3).
 - `.maestro/`: flujos E2E. CI los corre en un emulador con el APK de release (solo x86_64,
   para que el build tarde menos; el AAB para celulares sale de TF1), incluido el modo avión. Local: `maestro test movil/.maestro` con un emulador abierto.
 
+## Modo de prueba
+
+El APK que CI construye para el emulador lleva `EXPO_PUBLIC_MODO_PRUEBA=1`: al abrir siembra un
+grupo de 20 miembros y dos cargos con PIN conocidos (`src/sesion/modoPrueba.ts`) para que Maestro
+recorra la reunión sin enrolamiento ni servidor. El AAB para Google Play se construye sin esa
+variable (TF1). Localmente: `EXPO_PUBLIC_MODO_PRUEBA=1 npm run android -w @credimpacto/movil`.
+
 ## Firma
 
 El release se firma solo con la llave de subida (`plugins/firma-android.js`), que CI lee de

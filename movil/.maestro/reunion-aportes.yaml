@@ -1,0 +1,61 @@
+# Reunión sin señal, pasos 1 a 4 (TX6a): PIN, abrir, asistencia, aportes por miembro y
+# retomar en el mismo miembro después de cerrar la app (D14). Base del E2E de reunión completa
+# (EX3, D23), que se completa con TX6b y TX6c.
+appId: com.coimpactob.credimpacto
+name: Reunión sin señal hasta los aportes
+---
+- launchApp:
+    clearState: true
+- setAirplaneMode: enabled
+- extendedWaitUntil:
+    visible:
+      id: "perfil-portador_caja"
+    timeout: 30000
+- tapOn:
+    id: "perfil-portador_caja"
+- tapOn:
+    id: "ir-a-reunion"
+- assertVisible: "Portador de Caja"
+- runFlow: pin-cajera.yaml
+- extendedWaitUntil:
+    visible:
+      id: "abrir-reunion"
+    timeout: 30000
+- tapOn:
+    id: "abrir-reunion"
+- extendedWaitUntil:
+    visible: "Paso 3 de 9"
+    timeout: 15000
+- tapOn:
+    id: "asistencia-2"
+- assertVisible: ".*Hoy están 19 de 20.*"
+- tapOn:
+    id: "seguir-aportes"
+- assertVisible: "#01"
+- tapOn:
+    id: "acciones-mas"
+- tapOn:
+    id: "acciones-mas"
+- assertVisible: "veintidós mil pesos"
+- tapOn:
+    id: "guardar-siguiente"
+- assertVisible: "#02"
+- assertVisible: "dos mil pesos"
+- assertVisible: "Guardado en este celular · 3 por subir"
+# La app se cierra a mitad de la reunión: al volver, sigue en el mismo miembro.
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible:
+      id: "perfil-portador_caja"
+    timeout: 15000
+- tapOn:
+    id: "perfil-portador_caja"
+- tapOn:
+    id: "ir-a-reunion"
+- runFlow: pin-cajera.yaml
+- extendedWaitUntil:
+    visible: "#02"
+    timeout: 30000
+- assertVisible: "Paso 4 de 9"
+- setAirplaneMode: disabled

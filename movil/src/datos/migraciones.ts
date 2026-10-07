@@ -70,6 +70,42 @@ export const MIGRACIONES: readonly Migracion[] = [
       ALTER TABLE miembros ADD COLUMN ahorro_ciclo INTEGER NOT NULL DEFAULT 0;
     `,
   },
+  {
+    // Reunión en curso (TX6a): un solo escritor, posición del asistente para retomar en el
+    // punto exacto (D14), asistencia y lo registrado por miembro (para corregir, D9).
+    version: 4,
+    sql: `
+      CREATE TABLE reunion_local (
+        id TEXT PRIMARY KEY,
+        ciclo_id TEXT NOT NULL,
+        numero INTEGER NOT NULL,
+        fecha TEXT NOT NULL,
+        abierta_por TEXT NOT NULL,
+        paso INTEGER NOT NULL DEFAULT 1 CHECK (paso BETWEEN 1 AND 9),
+        miembro INTEGER NOT NULL DEFAULT 0,
+        estado TEXT NOT NULL DEFAULT 'abierta' CHECK (estado IN ('abierta', 'cerrada'))
+      ) STRICT;
+      CREATE UNIQUE INDEX una_reunion_abierta ON reunion_local (estado) WHERE estado = 'abierta';
+
+      CREATE TABLE asistencia (
+        reunion_id TEXT NOT NULL REFERENCES reunion_local (id),
+        membresia_id TEXT NOT NULL,
+        presente INTEGER NOT NULL CHECK (presente IN (0, 1)),
+        PRIMARY KEY (reunion_id, membresia_id)
+      ) STRICT;
+
+      CREATE TABLE registro_miembro (
+        reunion_id TEXT NOT NULL REFERENCES reunion_local (id),
+        titular_id TEXT NOT NULL,
+        version INTEGER NOT NULL,
+        acciones INTEGER NOT NULL,
+        fondo_social INTEGER NOT NULL CHECK (fondo_social IN (0, 1)),
+        multas TEXT NOT NULL,
+        elementos TEXT NOT NULL,
+        PRIMARY KEY (reunion_id, titular_id)
+      ) STRICT;
+    `,
+  },
 ];
 
 export const VERSION_ACTUAL = MIGRACIONES[MIGRACIONES.length - 1].version;

@@ -1,36 +1,74 @@
+// Inicio (N1, versión de TX6a): sin perfiles, el estado vacío de enrolamiento; con perfiles,
+// quién lleva la reunión y un solo botón naranja. El inicio por prioridad completo llega con TD1.
+
 import { tokens } from "@credimpacto/tokens";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+import { NOMBRE_CARGO, type Perfil } from "../seguridad/perfiles";
+import { BotonPrincipal, estilos as base } from "../ui/componentes";
 
 const { color, tipo, spacing } = tokens;
 
-// Esqueleto de TX2: el estado vacío de enrolamiento (N1, tabla de estados). El inicio por
-// prioridad (reunión abierta, para revisar, perfiles) llega con TD1.
-export function Inicio() {
+export function Inicio(props: {
+  perfiles?: Perfil[];
+  elegido?: string;
+  alElegir?: (cargoId: string) => void;
+  alAbrir?: () => void;
+}) {
+  const perfiles = props.perfiles ?? [];
   return (
     <View style={estilos.pagina} testID="inicio">
-      <Text style={estilos.marca} accessibilityRole="header">
-        Credimpacto
-      </Text>
-      <View style={estilos.renglon} />
-      <Text style={estilos.mensaje}>
-        Este celular aún no está registrado. Pida el código al facilitador.
-      </Text>
+      <View style={estilos.cuerpo}>
+        <Text style={estilos.marca} accessibilityRole="header">
+          Credimpacto
+        </Text>
+        <View style={estilos.renglon} />
+        {perfiles.length === 0 ? (
+          <Text style={estilos.mensaje}>Este celular aún no está registrado. Pida el código al facilitador.</Text>
+        ) : (
+          <>
+            <Text style={estilos.mensaje}>¿Quién lleva la reunión?</Text>
+            {perfiles.map((p) => {
+              const elegido = p.cargoId === props.elegido;
+              return (
+                <Pressable
+                  key={p.cargoId}
+                  testID={`perfil-${p.tipo}`}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: elegido }}
+                  onPress={() => props.alElegir?.(p.cargoId)}
+                  style={base.renglon}
+                >
+                  <View style={[estilos.radio, elegido && estilos.radioElegido]} />
+                  <Text style={[base.parrafo, { flex: 1 }]}>{NOMBRE_CARGO[p.tipo] ?? p.tipo}</Text>
+                  <Text style={base.cifraRenglonPequena}>#{String(p.numero).padStart(2, "0")}</Text>
+                </Pressable>
+              );
+            })}
+          </>
+        )}
+      </View>
+      {perfiles.length > 0 ? (
+        <View style={base.acciones}>
+          <BotonPrincipal
+            testID="ir-a-reunion"
+            texto="Abrir reunión"
+            falta={props.elegido ? undefined : "Elija quién lleva la reunión"}
+            alTocar={() => props.alAbrir?.()}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
-  pagina: {
-    flex: 1,
-    backgroundColor: color.papel,
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing["3xl"],
-  },
+  pagina: { flex: 1, backgroundColor: color.papel },
+  cuerpo: { flex: 1, paddingHorizontal: 20, paddingTop: spacing["3xl"] },
   marca: { ...tipo["campo-titulo"], color: color.tinta },
-  renglon: {
-    height: StyleSheet.hairlineWidth * 2,
-    backgroundColor: color.renglon,
-    marginVertical: spacing.md,
-  },
-  mensaje: { ...tipo.body, color: color.tinta },
+  renglon: { height: 2, backgroundColor: color.renglon, marginVertical: spacing.md },
+  mensaje: { ...tipo.body, color: color.tinta, marginBottom: spacing.sm },
+  // Cuadrado: el sello es el único elemento redondo del sistema (DESIGN.md, Shapes).
+  radio: { width: 28, height: 28, borderRadius: 4, borderWidth: 2, borderColor: color.tinta },
+  radioElegido: { borderWidth: 9 },
 });
