@@ -55,6 +55,12 @@ export const MIGRACIONES: readonly Migracion[] = [
       BEGIN SELECT RAISE(ABORT, 'el contenido de un pendiente no cambia'); END;
     `,
   },
+  {
+    // Cola de envío (TX5): el código del servidor (motivo del rechazo o de la espera). El
+    // orden de envío es el de inserción (rowid).
+    version: 2,
+    sql: `ALTER TABLE pendientes ADD COLUMN codigo TEXT NOT NULL DEFAULT '';`,
+  },
 ];
 
 export const VERSION_ACTUAL = MIGRACIONES[MIGRACIONES.length - 1].version;

@@ -2493,10 +2493,10 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX2 (D3); D5, D9
   - Files: movil/src/datos/
   - Verify: la base no abre sin secreto y PIN; migración con pendientes conserva la cola — **hecho 2026-10-07** (Jest con node:sqlite; el cifrado real se comprueba al abrir: sin `cipher_version` la base no se abre)
-- [ ] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
+- [x] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
   - Surfaced by: EX5 (D6); D24, D10 (eng)
   - Files: movil/src/cola/, backend/sync/
-  - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar
+  - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar — **hecho 2026-10-07 en servidor (pytest, 28 casos sobre PostgreSQL) y en la cola (Jest: corte de señal, app cerrada entre envío y guardado, en espera sin tapar la cola)**; el E2E con Maestro contra un servidor real pasa a TX6, que trae las pantallas de la reunión
 - [ ] **TX6 (P1, human: ~2w / CC: ~1d)** — movil/reunion — Asistente de 9 pasos, firmas agrupadas, arqueo, cierre y E2E de reunión completa sin red obligatorio para fusionar
   - Surfaced by: EX3 (D4); T7 reinterpretado
   - Files: movil/src/reunion/, movil/.maestro/
