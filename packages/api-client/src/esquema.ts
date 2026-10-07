@@ -24,6 +24,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/enrolamiento/codigos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Emitir un código QR de un solo uso para registrar un celular
+         * @description Solo para facilitadores con permiso. El código vence a los 15 minutos.
+         */
+        post: operations["cuentas_api_emitir_codigo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/enrolamiento/canjear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registrar este celular con el código del facilitador
+         * @description El celular envía el código leído y su llave pública de dispositivo.
+         */
+        post: operations["cuentas_api_canjear_codigo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -34,6 +74,55 @@ export interface components {
             estado: string;
             /** Base De Datos */
             base_de_datos: string;
+        };
+        /** CodigoEmitido */
+        CodigoEmitido: {
+            /** Codigo */
+            codigo: string;
+            /** Qr */
+            qr: string;
+            /**
+             * Vence En
+             * Format: date-time
+             */
+            vence_en: string;
+        };
+        /** PedidoCodigo */
+        PedidoCodigo: {
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+        };
+        /** DispositivoRegistrado */
+        DispositivoRegistrado: {
+            /**
+             * Dispositivo Id
+             * Format: uuid
+             */
+            dispositivo_id: string;
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+            /** Acap Nombre */
+            acap_nombre: string;
+        };
+        /** Rechazo */
+        Rechazo: {
+            /** Motivo */
+            motivo: string;
+            /** Mensaje */
+            mensaje: string;
+        };
+        /** PedidoCanje */
+        PedidoCanje: {
+            /** Codigo */
+            codigo: string;
+            /** Llave Publica */
+            llave_publica: string;
         };
     };
     responses: never;
@@ -60,6 +149,63 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Salud"];
+                };
+            };
+        };
+    };
+    cuentas_api_emitir_codigo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoCodigo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CodigoEmitido"];
+                };
+            };
+        };
+    };
+    cuentas_api_canjear_codigo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoCanje"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DispositivoRegistrado"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
                 };
             };
         };

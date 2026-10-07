@@ -1,0 +1,80 @@
+{
+  "regla": "firmas-p256",
+  "descripcion": "ECDSA P-256 con SHA-256 sobre el JCS del valor; firma IEEE P1363 (64 bytes) y llave SPKI DER, en base64url sin relleno. Generado una vez con WebCrypto (Node); la llave privada no se guarda.",
+  "llave_publica": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWwbsGOCr4rt-CztKYwicAKY_FC6Ul25VxAusnbBUgXQOebez27xzjqIIivjsvJyr10Q86vuo_7iTr6ljuepBNw",
+  "casos": [
+    {
+      "nombre": "aporte firmado",
+      "valor": {
+        "tipo": "aporte",
+        "pesos": 50000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7,
+        "texto": "Peña ñandú"
+      },
+      "firma": "dJ8orf1Wck-FeXyOJyoYfhBNq6lE5OLaQ5NFT2Url-Eltqskbhnd-taFCkMU3U-6jMHlD1j-SPOnD60IS0e2Qw",
+      "valida": true
+    },
+    {
+      "nombre": "alta de llave de cargo",
+      "valor": {
+        "tipo": "alta_llave_cargo",
+        "v": 1,
+        "llave": "0b6f0c5e-1d2a-4c3b-9a8f-000000000002",
+        "cargo": "0b6f0c5e-1d2a-4c3b-9a8f-000000000003",
+        "dispositivo": "0b6f0c5e-1d2a-4c3b-9a8f-000000000004",
+        "llave_publica": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWwbsGOCr4rt-CztKYwicAKY_FC6Ul25VxAusnbBUgXQOebez27xzjqIIivjsvJyr10Q86vuo_7iTr6ljuepBNw"
+      },
+      "firma": "u-l3uXToN8WZlEgeixpov60HnY_w13XszsDSTHgFHGFtXxgqWK6t92di-eekyR9-JPqh6gxpEx2Lqr7vxRk-yQ",
+      "valida": true
+    },
+    {
+      "nombre": "firma alterada en un bit",
+      "valor": {
+        "tipo": "aporte",
+        "pesos": 50000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7,
+        "texto": "Peña ñandú"
+      },
+      "firma": "dJ8orf1Wck-FeX2OJyoYfhBNq6lE5OLaQ5NFT2Url-Eltqskbhnd-taFCkMU3U-6jMHlD1j-SPOnD60IS0e2Qw",
+      "valida": false
+    },
+    {
+      "nombre": "monto cambiado",
+      "valor": {
+        "tipo": "aporte",
+        "pesos": 500000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7,
+        "texto": "Peña ñandú"
+      },
+      "firma": "dJ8orf1Wck-FeXyOJyoYfhBNq6lE5OLaQ5NFT2Url-Eltqskbhnd-taFCkMU3U-6jMHlD1j-SPOnD60IS0e2Qw",
+      "valida": false
+    },
+    {
+      "nombre": "firmada con otra llave",
+      "valor": {
+        "tipo": "aporte",
+        "pesos": 50000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7,
+        "texto": "Peña ñandú"
+      },
+      "firma": "rGGMl40Uk2jBdfWJSY6hsSnnCHOgra5RIJkWZwRmcZSTyMDZngyNk7AIUR0mm0ggwLaUw9tJdOkVryh8A4VMKw",
+      "valida": false
+    },
+    {
+      "nombre": "firma truncada",
+      "valor": {
+        "tipo": "aporte",
+        "pesos": 50000,
+        "id": "6f1c2a7e-0000-5000-8000-000000000001",
+        "miembro": 7,
+        "texto": "Peña ñandú"
+      },
+      "firma": "dJ8orf1Wck-FeXyOJyoYfhBNq6lE5OLaQ5NFT2Ur",
+      "valida": false
+    }
+  ]
+}

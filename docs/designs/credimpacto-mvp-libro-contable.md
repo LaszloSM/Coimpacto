@@ -2481,14 +2481,14 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Scope Challenge B (estructura A, D1)
   - Files: packages/reglas/, packages/tokens/, scripts/generar-tokens.mjs, web/
   - Verify: Vitest de packages con los casos compartidos; build de la web; tokens:check
-- [ ] **TX2 (P1, human: ~3d / CC: ~2h)** — movil — Esqueleto Expo (build de desarrollo, Android), Metro del monorepo, Jest + RNTL, CI con Gradle, firma por secretos y Maestro en emulador
+- [x] **TX2 (P1, human: ~3d / CC: ~2h)** — movil — Esqueleto Expo (build de desarrollo, Android), Metro del monorepo, Jest + RNTL, CI con Gradle, firma por secretos y Maestro en emulador
   - Surfaced by: EX3 (D4), EX6 (D7)
   - Files: movil/, .github/workflows/
-  - Verify: CI construye el APK firmado y corre un flujo Maestro con modo avión
-- [ ] **TX3 (P1, human: ~1w / CC: ~4h)** — movil/seguridad — quick-crypto: PIN con derivación de ~1 s y piso, DEK doblemente envuelta (Keystore), llaves ECDSA P-256, bloqueo de 5 intentos, enrolamiento QR
+  - Verify: CI construye el APK firmado y corre un flujo Maestro con modo avión — **hecho 2026-10-07** (PR LaszloSM/Coimpacto#6, CI #19 verde)
+- [x] **TX3 (P1, human: ~1w / CC: ~4h)** — movil/seguridad — quick-crypto: PIN con derivación de ~1 s y piso, DEK doblemente envuelta (Keystore), llaves ECDSA P-256, bloqueo de 5 intentos, enrolamiento QR
   - Surfaced by: EX1 (D2), EP1 (D11); D5, D17, D18
   - Files: movil/src/seguridad/, backend/cuentas/
-  - Verify: firma verificada por el servidor; firma alterada rechazada; 5 PIN → en pausa; calibración en el celular de referencia
+  - Verify: firma verificada por el servidor; firma alterada rechazada; 5 PIN → en pausa; calibración en el celular de referencia — **hecho 2026-10-07 salvo la medición en el celular de referencia** (la app calibra N al registrar cada celular, con piso 2^15 y techo 2^17; falta elegir el celular de gama baja y medir). Pantallas de PIN y de lectura del QR van con TD1/TD5
 - [ ] **TX4 (P1, human: ~3d / CC: ~1.5h)** — movil/datos — SQLite con SQLCipher (llave cruda), migraciones versionadas, caducidad de 60 días, pendientes nunca se borran
   - Surfaced by: EX2 (D3); D5, D9
   - Files: movil/src/datos/

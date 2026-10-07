@@ -1,7 +1,7 @@
 """ACAP, ciclo, membresía y reunión: la configuración sobre la que se apoya el libro.
 
-Versión mínima para T4 (el libro necesita a quién y en qué reunión). Cargos por ciclo, política de
-firmas y quórum llegan en T5, ET2 y T8. Estas tablas sí se editan; las del libro no.
+Versión mínima para T4 (el libro necesita a quién y en qué reunión) más los cargos por ciclo de
+TX3. Política de firmas y quórum llegan después. Estas tablas sí se editan; las del libro no.
 """
 
 import uuid
@@ -73,6 +73,49 @@ class Membresia(models.Model):
 
     def __str__(self) -> str:
         return f"{self.acap} · miembro {self.numero_miembro}"
+
+
+class Cargo(models.Model):
+    """Cargo de junta de una membresía en un ciclo. Cada cargo firma con su propia llave (D17)."""
+
+    class Tipo(models.TextChoices):
+        PRESIDENTE = "presidente", "Presidente"
+        PORTADOR_CAJA = "portador_caja", "Portador de Caja"
+        REGISTRADOR = "registrador", "Registrador"
+        CONTADOR_1 = "contador_1", "Contador 1"
+        CONTADOR_2 = "contador_2", "Contador 2"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ciclo = models.ForeignKey(Ciclo, on_delete=models.PROTECT, related_name="cargos")
+    membresia = models.ForeignKey(Membresia, on_delete=models.PROTECT, related_name="cargos")
+    tipo = models.CharField(max_length=20, choices=Tipo.choices)
+    vigente = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["ciclo", "tipo"],
+                condition=models.Q(vigente=True),
+                name="un_cargo_vigente_por_tipo_y_ciclo",
+            ),
+            models.UniqueConstraint(
+                fields=["ciclo", "membresia"],
+                condition=models.Q(vigente=True),
+                name="un_cargo_vigente_por_persona_y_ciclo",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.ciclo} · {self.get_tipo_display()}"
+
+    @property
+    def es_vigente(self) -> bool:
+        """Firma solo un cargo vigente de un ciclo activo, en la ACAP de su membresía."""
+        return (
+            self.vigente
+            and self.ciclo.estado == Ciclo.Estado.ACTIVO
+            and self.membresia.acap_id == self.ciclo.acap_id
+        )
 
 
 class Reunion(models.Model):
