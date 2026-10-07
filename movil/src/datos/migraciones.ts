@@ -61,6 +61,15 @@ export const MIGRACIONES: readonly Migracion[] = [
     version: 2,
     sql: `ALTER TABLE pendientes ADD COLUMN codigo TEXT NOT NULL DEFAULT '';`,
   },
+  {
+    // Bajada del grupo (TX6.0): id seudónimo del titular y ahorro del ciclo confirmado por
+    // el servidor, para la tarjeta de cada miembro en la reunión.
+    version: 3,
+    sql: `
+      ALTER TABLE miembros ADD COLUMN titular_id TEXT NOT NULL DEFAULT '';
+      ALTER TABLE miembros ADD COLUMN ahorro_ciclo INTEGER NOT NULL DEFAULT 0;
+    `,
+  },
 ];
 
 export const VERSION_ACTUAL = MIGRACIONES[MIGRACIONES.length - 1].version;

@@ -142,6 +142,83 @@
           "sincronizacion"
         ]
       }
+    },
+    "/api/sync/reto": {
+      "post": {
+        "operationId": "sync_api_pedir_reto",
+        "summary": "Pedir un número de un solo uso para bajar los datos del grupo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sincronizacion"
+        ]
+      }
+    },
+    "/api/sync/grupo": {
+      "post": {
+        "operationId": "sync_api_bajar_grupo",
+        "summary": "Bajar los datos del grupo para llevar la reunión sin señal",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "El celular firma {\"pedido\": \"grupo\", \"reto\": …}. Un celular retirado recibe 410 y borra\nsus datos locales después de subir su cola (E3).",
+        "tags": [
+          "sincronizacion"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoGrupo"
+              }
+            }
+          },
+          "required": true
+        }
+      }
     }
   },
   "components": {
@@ -295,6 +372,37 @@
           "resultados"
         ],
         "title": "ResultadoLote",
+        "type": "object"
+      },
+      "Reto": {
+        "properties": {
+          "reto": {
+            "title": "Reto",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reto"
+        ],
+        "title": "Reto",
+        "type": "object"
+      },
+      "PedidoGrupo": {
+        "properties": {
+          "reto": {
+            "title": "Reto",
+            "type": "string"
+          },
+          "firma": {
+            "title": "Firma",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reto",
+          "firma"
+        ],
+        "title": "PedidoGrupo",
         "type": "object"
       }
     },
