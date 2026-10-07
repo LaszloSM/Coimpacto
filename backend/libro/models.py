@@ -115,8 +115,21 @@ class Movimiento(models.Model):
     motivo = models.TextField(blank=True)
     # SHA-256 del contenido canónico (JCS): detecta una recaptura distinta con el mismo UUID.
     hash = models.CharField(max_length=64)
+    # Quién lo registró: un usuario de la plataforma (back-office) o la llave del cargo que lo
+    # firmó en el celular de la reunión (D17). Siempre exactamente uno.
     registrado_por = models.ForeignKey(
-        "cuentas.Usuario", on_delete=models.PROTECT, related_name="movimientos_registrados"
+        "cuentas.Usuario",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="movimientos_registrados",
+    )
+    registrado_por_llave = models.ForeignKey(
+        "cuentas.LlaveCargo",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="movimientos_registrados",
     )
     dispositivo = models.CharField(max_length=64, blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
@@ -139,6 +152,11 @@ class Movimiento(models.Model):
                 condition=models.Q(tipo__in=["faltante", "sobrante", "reverso"])
                 | models.Q(titular__isnull=False),
                 name="movimiento_con_titular",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(registrado_por__isnull=False, registrado_por_llave__isnull=True)
+                | models.Q(registrado_por__isnull=True, registrado_por_llave__isnull=False),
+                name="movimiento_un_solo_registrador",
             ),
             models.CheckConstraint(
                 condition=~models.Q(tipo__in=["desembolso", "abono"])

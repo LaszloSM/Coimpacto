@@ -17,6 +17,7 @@ from django.db.models import Sum
 
 from acap.models import Membresia, Reunion
 from core.canonico import hash_canonico
+from cuentas.models import LlaveCargo
 from libro import reglas
 from libro.models import Auditoria, EstadoMovimiento, EventoEstado, Movimiento, Prestamo
 
@@ -56,7 +57,17 @@ def _hash(mov: dict) -> str:
     )
 
 
+def _quien(actor) -> dict:
+    """`actor` es un Usuario (back-office) o la LlaveCargo que firmó en el celular."""
+    if isinstance(actor, LlaveCargo):
+        return {"registrado_por": None, "registrado_por_llave": actor}
+    return {"registrado_por": actor, "registrado_por_llave": None}
+
+
 def _auditar(tabla, pk, accion, actor, dispositivo="", despues=None):
+    if isinstance(actor, LlaveCargo):
+        despues = {**(despues or {}), "llave_cargo": str(actor.id)}
+        actor = None
     Auditoria.objects.create(
         tabla=tabla,
         pk_registro=str(pk),
@@ -91,9 +102,11 @@ def _crear(campos: dict, *, actor, dispositivo: str) -> Movimiento:
 
     with transaction.atomic():
         mov = Movimiento.objects.create(
-            **campos, hash=huella, registrado_por=actor, dispositivo=dispositivo
+            **campos, hash=huella, **_quien(actor), dispositivo=dispositivo
         )
-        EventoEstado.objects.create(movimiento=mov, estado=E.PROVISIONAL, actor=actor)
+        EventoEstado.objects.create(
+            movimiento=mov, estado=E.PROVISIONAL, actor=_quien(actor)["registrado_por"]
+        )
         _auditar(
             "libro_movimiento",
             mov.id,

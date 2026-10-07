@@ -2493,10 +2493,10 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX2 (D3); D5, D9
   - Files: movil/src/datos/
   - Verify: la base no abre sin secreto y PIN; migración con pendientes conserva la cola — **hecho 2026-10-07** (Jest con node:sqlite; el cifrado real se comprueba al abrir: sin `cipher_version` la base no se abre)
-- [ ] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
+- [x] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
   - Surfaced by: EX5 (D6); D24, D10 (eng)
   - Files: movil/src/cola/, backend/sync/
-  - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar
+  - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar — **hecho 2026-10-07 en servidor (pytest, 28 casos sobre PostgreSQL) y en la cola (Jest: corte de señal, app cerrada entre envío y guardado, en espera sin tapar la cola)**; el E2E con Maestro contra un servidor real pasa a TX6, que trae las pantallas de la reunión
 - [ ] **TX6 (P1, human: ~2w / CC: ~1d)** — movil/reunion — Asistente de 9 pasos, firmas agrupadas, arqueo, cierre y E2E de reunión completa sin red obligatorio para fusionar
   - Surfaced by: EX3 (D4); T7 reinterpretado
   - Files: movil/src/reunion/, movil/.maestro/
@@ -2693,6 +2693,8 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Pasada 1 N1; Pasada 7 N15; Pasada 4 N8
   - Files: movil/src/inicio/, movil/app.json, movil/assets/
   - Verify: Maestro: con reunión abierta el botón naranja es "Seguir la reunión"; filas de perfil sin nombres completos; arranque < 2 s en el celular de referencia
+  - Agregado 2026-10-07 (falta de TX3/TX5): alta del primer Presidente en el enrolamiento. Con el facilitador presente, después de canjear el QR el celular baja la lista de cargos del ciclo activo, el Presidente crea su PIN y su llave, y el alta sube autorizada por el facilitador que emitió el código (D18) dentro de los mismos 15 minutos. Sin esto ningún celular puede sincronizar: todo elemento lleva la firma de un cargo con llave registrada, y las demás llaves las autoriza el Presidente por la cola
+  - Files (agregado): backend/cuentas/ (canje con alta del Presidente y bajada de cargos), movil/src/seguridad/enrolamiento.ts
 - [ ] **TD2 (P1, human: ~3d / CC: ~1.5h)** — movil — Tabla de estados nativos y "atrás" guiado
   - Surfaced by: Pasada 2 N4; Pasada 6 N11
   - Files: movil/src/, packages/ (textos i18n)
