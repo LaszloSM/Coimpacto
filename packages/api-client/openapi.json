@@ -28,6 +28,87 @@
           "core"
         ]
       }
+    },
+    "/api/enrolamiento/codigos": {
+      "post": {
+        "operationId": "cuentas_api_emitir_codigo",
+        "summary": "Emitir un código QR de un solo uso para registrar un celular",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CodigoEmitido"
+                }
+              }
+            }
+          }
+        },
+        "description": "Solo para facilitadores con permiso. El código vence a los 15 minutos.",
+        "tags": [
+          "enrolamiento"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoCodigo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/enrolamiento/canjear": {
+      "post": {
+        "operationId": "cuentas_api_canjear_codigo",
+        "summary": "Registrar este celular con el código del facilitador",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispositivoRegistrado"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "El celular envía el código leído y su llave pública de dispositivo.",
+        "tags": [
+          "enrolamiento"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoCanje"
+              }
+            }
+          },
+          "required": true
+        }
+      }
     }
   },
   "components": {
@@ -49,6 +130,112 @@
         ],
         "title": "Salud",
         "type": "object"
+      },
+      "CodigoEmitido": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "qr": {
+            "title": "Qr",
+            "type": "string"
+          },
+          "vence_en": {
+            "format": "date-time",
+            "title": "Vence En",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "qr",
+          "vence_en"
+        ],
+        "title": "CodigoEmitido",
+        "type": "object"
+      },
+      "PedidoCodigo": {
+        "properties": {
+          "acap_id": {
+            "format": "uuid",
+            "title": "Acap Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acap_id"
+        ],
+        "title": "PedidoCodigo",
+        "type": "object"
+      },
+      "DispositivoRegistrado": {
+        "properties": {
+          "dispositivo_id": {
+            "format": "uuid",
+            "title": "Dispositivo Id",
+            "type": "string"
+          },
+          "acap_id": {
+            "format": "uuid",
+            "title": "Acap Id",
+            "type": "string"
+          },
+          "acap_nombre": {
+            "title": "Acap Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dispositivo_id",
+          "acap_id",
+          "acap_nombre"
+        ],
+        "title": "DispositivoRegistrado",
+        "type": "object"
+      },
+      "Rechazo": {
+        "properties": {
+          "motivo": {
+            "title": "Motivo",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "motivo",
+          "mensaje"
+        ],
+        "title": "Rechazo",
+        "type": "object"
+      },
+      "PedidoCanje": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "llave_publica": {
+            "title": "Llave Publica",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "llave_publica"
+        ],
+        "title": "PedidoCanje",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "SessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid"
       }
     }
   },

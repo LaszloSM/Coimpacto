@@ -23,6 +23,7 @@ Los montos son siempre pesos enteros. `\u00a0` es el espacio no separable entre 
 |---|---|---|
 | `formato-pesos.json` | Formato es-CO de un monto | a mano |
 | `canonico-jcs.json` | JSON canónico RFC 8785 para firmas | a mano |
+| `firmas-p256.json` | Firmas ECDSA P-256 (P1363) sobre el JCS: válidas, alteradas y de otra llave | WebCrypto, una vez (la privada no se guarda) |
 | `registro-ahorro.json`, `prestamo.json`, `abono.json`, `cierre-ciclo.json` | Reglas de [docs/reglas/reglas-de-dinero.md](../../docs/reglas/reglas-de-dinero.md) | `scripts/generar_casos.py` |
 
 Los archivos generados no se editan a mano: se cambia el script y se corre

@@ -3,6 +3,7 @@
 from ninja import NinjaAPI
 
 from core.api import router as core_router
+from cuentas.api import router as cuentas_router
 
 api = NinjaAPI(
     title="Credimpacto API",
@@ -12,3 +13,4 @@ api = NinjaAPI(
 )
 
 api.add_router("/", core_router)
+api.add_router("/", cuentas_router)
