@@ -1,0 +1,2321 @@
+{
+  "regla": "prestamo",
+  "descripcion": "Interés fijo sobre el capital (tasa en % mensual). Generado por scripts/generar_casos.py (semilla 20261006). No editar a mano.",
+  "casos": [
+    {
+      "nombre": "ejemplo del documento: 1.000.000 al 2 % en 3",
+      "capital": 1000000,
+      "tasa": "2",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 20000,
+        "total_pagar": 1060000,
+        "cuota_mensual": 353333
+      }
+    },
+    {
+      "nombre": "tasa con decimal",
+      "capital": 500000,
+      "tasa": "2.5",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 12500,
+        "total_pagar": 575000,
+        "cuota_mensual": 95833
+      }
+    },
+    {
+      "nombre": "9.999,99 de interés sube a 10.000",
+      "capital": 333333,
+      "tasa": "3",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 10000,
+        "total_pagar": 373333,
+        "cuota_mensual": 93333
+      }
+    },
+    {
+      "nombre": "tasa cero",
+      "capital": 150000,
+      "tasa": "0",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 150000,
+        "cuota_mensual": 75000
+      }
+    },
+    {
+      "nombre": "una sola cuota",
+      "capital": 100001,
+      "tasa": "1.5",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 1500,
+        "total_pagar": 101501,
+        "cuota_mensual": 101501
+      }
+    },
+    {
+      "nombre": "medio peso de interés sube a 1",
+      "capital": 50,
+      "tasa": "1",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 1,
+        "total_pagar": 53,
+        "cuota_mensual": 18
+      }
+    },
+    {
+      "nombre": "cuota 18,5 sube a 19",
+      "capital": 70,
+      "tasa": "1",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 1,
+        "total_pagar": 74,
+        "cuota_mensual": 19
+      }
+    },
+    {
+      "nombre": "aleatorio 0",
+      "capital": 683169,
+      "tasa": "8",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 54654,
+        "total_pagar": 1065747,
+        "cuota_mensual": 152250
+      }
+    },
+    {
+      "nombre": "aleatorio 1",
+      "capital": 802,
+      "tasa": "8",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 64,
+        "total_pagar": 2274,
+        "cuota_mensual": 99
+      }
+    },
+    {
+      "nombre": "aleatorio 2",
+      "capital": 558,
+      "tasa": "1.10",
+      "num_cuotas": 24,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 702,
+        "cuota_mensual": 29
+      }
+    },
+    {
+      "nombre": "aleatorio 3",
+      "capital": 3873910,
+      "tasa": "3.00",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 116217,
+        "total_pagar": 4222561,
+        "cuota_mensual": 1407520
+      }
+    },
+    {
+      "nombre": "aleatorio 4",
+      "capital": 168,
+      "tasa": "2.93",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 5,
+        "total_pagar": 273,
+        "cuota_mensual": 13
+      }
+    },
+    {
+      "nombre": "aleatorio 5",
+      "capital": 469,
+      "tasa": "6",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 28,
+        "total_pagar": 553,
+        "cuota_mensual": 184
+      }
+    },
+    {
+      "nombre": "aleatorio 6",
+      "capital": 188,
+      "tasa": "3.20",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 260,
+        "cuota_mensual": 22
+      }
+    },
+    {
+      "nombre": "aleatorio 7",
+      "capital": 323877,
+      "tasa": "10.31",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 33392,
+        "total_pagar": 1025109,
+        "cuota_mensual": 48815
+      }
+    },
+    {
+      "nombre": "aleatorio 8",
+      "capital": 215,
+      "tasa": "6",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 13,
+        "total_pagar": 423,
+        "cuota_mensual": 26
+      }
+    },
+    {
+      "nombre": "aleatorio 9",
+      "capital": 840,
+      "tasa": "9.44",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 79,
+        "total_pagar": 2578,
+        "cuota_mensual": 117
+      }
+    },
+    {
+      "nombre": "aleatorio 10",
+      "capital": 4452326,
+      "tasa": "4",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 178093,
+        "total_pagar": 6233256,
+        "cuota_mensual": 623326
+      }
+    },
+    {
+      "nombre": "aleatorio 11",
+      "capital": 1552786,
+      "tasa": "8",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 124223,
+        "total_pagar": 1801232,
+        "cuota_mensual": 900616
+      }
+    },
+    {
+      "nombre": "aleatorio 12",
+      "capital": 938356,
+      "tasa": "1.63",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 15295,
+        "total_pagar": 1259551,
+        "cuota_mensual": 59979
+      }
+    },
+    {
+      "nombre": "aleatorio 13",
+      "capital": 4054828,
+      "tasa": "8.09",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 328036,
+        "total_pagar": 5038936,
+        "cuota_mensual": 1679645
+      }
+    },
+    {
+      "nombre": "aleatorio 14",
+      "capital": 551461,
+      "tasa": "9",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 49631,
+        "total_pagar": 749985,
+        "cuota_mensual": 187496
+      }
+    },
+    {
+      "nombre": "aleatorio 15",
+      "capital": 478,
+      "tasa": "1",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 5,
+        "total_pagar": 578,
+        "cuota_mensual": 29
+      }
+    },
+    {
+      "nombre": "aleatorio 16",
+      "capital": 914,
+      "tasa": "2.02",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 18,
+        "total_pagar": 1148,
+        "cuota_mensual": 88
+      }
+    },
+    {
+      "nombre": "aleatorio 17",
+      "capital": 9,
+      "tasa": "7.79",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 1,
+        "total_pagar": 12,
+        "cuota_mensual": 4
+      }
+    },
+    {
+      "nombre": "aleatorio 18",
+      "capital": 958,
+      "tasa": "7.29",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 70,
+        "total_pagar": 2218,
+        "cuota_mensual": 123
+      }
+    },
+    {
+      "nombre": "aleatorio 19",
+      "capital": 629156,
+      "tasa": "8.68",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 54611,
+        "total_pagar": 1448321,
+        "cuota_mensual": 96555
+      }
+    },
+    {
+      "nombre": "aleatorio 20",
+      "capital": 646,
+      "tasa": "4",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 26,
+        "total_pagar": 1010,
+        "cuota_mensual": 72
+      }
+    },
+    {
+      "nombre": "aleatorio 21",
+      "capital": 1768107,
+      "tasa": "8.64",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 152764,
+        "total_pagar": 4823387,
+        "cuota_mensual": 241169
+      }
+    },
+    {
+      "nombre": "aleatorio 22",
+      "capital": 3396367,
+      "tasa": "7",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 237746,
+        "total_pagar": 6724811,
+        "cuota_mensual": 480344
+      }
+    },
+    {
+      "nombre": "aleatorio 23",
+      "capital": 117,
+      "tasa": "7.00",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 8,
+        "total_pagar": 237,
+        "cuota_mensual": 16
+      }
+    },
+    {
+      "nombre": "aleatorio 24",
+      "capital": 4703282,
+      "tasa": "10.12",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 475972,
+        "total_pagar": 15650638,
+        "cuota_mensual": 680463
+      }
+    },
+    {
+      "nombre": "aleatorio 25",
+      "capital": 1325688,
+      "tasa": "0.70",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 9280,
+        "total_pagar": 1455608,
+        "cuota_mensual": 103972
+      }
+    },
+    {
+      "nombre": "aleatorio 26",
+      "capital": 2241998,
+      "tasa": "8",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 179360,
+        "total_pagar": 4932398,
+        "cuota_mensual": 328827
+      }
+    },
+    {
+      "nombre": "aleatorio 27",
+      "capital": 518,
+      "tasa": "9",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 47,
+        "total_pagar": 706,
+        "cuota_mensual": 177
+      }
+    },
+    {
+      "nombre": "aleatorio 28",
+      "capital": 1191867,
+      "tasa": "1",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 11919,
+        "total_pagar": 1263381,
+        "cuota_mensual": 210564
+      }
+    },
+    {
+      "nombre": "aleatorio 29",
+      "capital": 3618742,
+      "tasa": "4.62",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 167186,
+        "total_pagar": 4789044,
+        "cuota_mensual": 684149
+      }
+    },
+    {
+      "nombre": "aleatorio 30",
+      "capital": 534518,
+      "tasa": "3.80",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 20312,
+        "total_pagar": 900134,
+        "cuota_mensual": 50007
+      }
+    },
+    {
+      "nombre": "aleatorio 31",
+      "capital": 4811184,
+      "tasa": "3",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 144336,
+        "total_pagar": 6254544,
+        "cuota_mensual": 625454
+      }
+    },
+    {
+      "nombre": "aleatorio 32",
+      "capital": 807096,
+      "tasa": "6",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 48426,
+        "total_pagar": 1291356,
+        "cuota_mensual": 129136
+      }
+    },
+    {
+      "nombre": "aleatorio 33",
+      "capital": 643609,
+      "tasa": "0.66",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 4248,
+        "total_pagar": 741313,
+        "cuota_mensual": 32231
+      }
+    },
+    {
+      "nombre": "aleatorio 34",
+      "capital": 1354510,
+      "tasa": "2",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 27090,
+        "total_pagar": 1815040,
+        "cuota_mensual": 106767
+      }
+    },
+    {
+      "nombre": "aleatorio 35",
+      "capital": 921,
+      "tasa": "2",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 18,
+        "total_pagar": 1191,
+        "cuota_mensual": 79
+      }
+    },
+    {
+      "nombre": "aleatorio 36",
+      "capital": 2007904,
+      "tasa": "3",
+      "num_cuotas": 19,
+      "esperado": {
+        "interes_mensual": 60237,
+        "total_pagar": 3152407,
+        "cuota_mensual": 165916
+      }
+    },
+    {
+      "nombre": "aleatorio 37",
+      "capital": 3591316,
+      "tasa": "7.14",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 256420,
+        "total_pagar": 8976136,
+        "cuota_mensual": 427435
+      }
+    },
+    {
+      "nombre": "aleatorio 38",
+      "capital": 462,
+      "tasa": "6.68",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 31,
+        "total_pagar": 493,
+        "cuota_mensual": 493
+      }
+    },
+    {
+      "nombre": "aleatorio 39",
+      "capital": 45,
+      "tasa": "3",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 1,
+        "total_pagar": 62,
+        "cuota_mensual": 4
+      }
+    },
+    {
+      "nombre": "aleatorio 40",
+      "capital": 3062218,
+      "tasa": "2",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 61244,
+        "total_pagar": 3429682,
+        "cuota_mensual": 571614
+      }
+    },
+    {
+      "nombre": "aleatorio 41",
+      "capital": 409,
+      "tasa": "3",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 12,
+        "total_pagar": 433,
+        "cuota_mensual": 217
+      }
+    },
+    {
+      "nombre": "aleatorio 42",
+      "capital": 119,
+      "tasa": "3",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 4,
+        "total_pagar": 151,
+        "cuota_mensual": 19
+      }
+    },
+    {
+      "nombre": "aleatorio 43",
+      "capital": 930015,
+      "tasa": "8.83",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 82120,
+        "total_pagar": 2408175,
+        "cuota_mensual": 133788
+      }
+    },
+    {
+      "nombre": "aleatorio 44",
+      "capital": 3368116,
+      "tasa": "5",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 168406,
+        "total_pagar": 4546958,
+        "cuota_mensual": 649565
+      }
+    },
+    {
+      "nombre": "aleatorio 45",
+      "capital": 757,
+      "tasa": "3",
+      "num_cuotas": 24,
+      "esperado": {
+        "interes_mensual": 23,
+        "total_pagar": 1309,
+        "cuota_mensual": 55
+      }
+    },
+    {
+      "nombre": "aleatorio 46",
+      "capital": 2864841,
+      "tasa": "3.03",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 86805,
+        "total_pagar": 4427331,
+        "cuota_mensual": 245963
+      }
+    },
+    {
+      "nombre": "aleatorio 47",
+      "capital": 313,
+      "tasa": "9",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 28,
+        "total_pagar": 341,
+        "cuota_mensual": 341
+      }
+    },
+    {
+      "nombre": "aleatorio 48",
+      "capital": 921,
+      "tasa": "3",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 28,
+        "total_pagar": 1201,
+        "cuota_mensual": 120
+      }
+    },
+    {
+      "nombre": "aleatorio 49",
+      "capital": 235,
+      "tasa": "0",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 235,
+        "cuota_mensual": 21
+      }
+    },
+    {
+      "nombre": "aleatorio 50",
+      "capital": 897944,
+      "tasa": "7",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 62856,
+        "total_pagar": 1086512,
+        "cuota_mensual": 362171
+      }
+    },
+    {
+      "nombre": "aleatorio 51",
+      "capital": 857,
+      "tasa": "4",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 34,
+        "total_pagar": 1605,
+        "cuota_mensual": 73
+      }
+    },
+    {
+      "nombre": "aleatorio 52",
+      "capital": 4268740,
+      "tasa": "5.73",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 244599,
+        "total_pagar": 5002537,
+        "cuota_mensual": 1667512
+      }
+    },
+    {
+      "nombre": "aleatorio 53",
+      "capital": 19595,
+      "tasa": "1",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 196,
+        "total_pagar": 22143,
+        "cuota_mensual": 1703
+      }
+    },
+    {
+      "nombre": "aleatorio 54",
+      "capital": 915123,
+      "tasa": "8",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 73210,
+        "total_pagar": 1134753,
+        "cuota_mensual": 378251
+      }
+    },
+    {
+      "nombre": "aleatorio 55",
+      "capital": 505,
+      "tasa": "4",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 20,
+        "total_pagar": 945,
+        "cuota_mensual": 43
+      }
+    },
+    {
+      "nombre": "aleatorio 56",
+      "capital": 2073087,
+      "tasa": "1",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 20731,
+        "total_pagar": 2321859,
+        "cuota_mensual": 193488
+      }
+    },
+    {
+      "nombre": "aleatorio 57",
+      "capital": 798,
+      "tasa": "6.57",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 52,
+        "total_pagar": 1942,
+        "cuota_mensual": 88
+      }
+    },
+    {
+      "nombre": "aleatorio 58",
+      "capital": 2466512,
+      "tasa": "2",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 49330,
+        "total_pagar": 2614502,
+        "cuota_mensual": 871501
+      }
+    },
+    {
+      "nombre": "aleatorio 59",
+      "capital": 292,
+      "tasa": "9",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 26,
+        "total_pagar": 578,
+        "cuota_mensual": 53
+      }
+    },
+    {
+      "nombre": "aleatorio 60",
+      "capital": 981,
+      "tasa": "3.10",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 30,
+        "total_pagar": 1641,
+        "cuota_mensual": 75
+      }
+    },
+    {
+      "nombre": "aleatorio 61",
+      "capital": 130,
+      "tasa": "5",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 7,
+        "total_pagar": 151,
+        "cuota_mensual": 50
+      }
+    },
+    {
+      "nombre": "aleatorio 62",
+      "capital": 3581202,
+      "tasa": "10.28",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 368148,
+        "total_pagar": 7630830,
+        "cuota_mensual": 693712
+      }
+    },
+    {
+      "nombre": "aleatorio 63",
+      "capital": 3348417,
+      "tasa": "8.82",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 295330,
+        "total_pagar": 3643747,
+        "cuota_mensual": 3643747
+      }
+    },
+    {
+      "nombre": "aleatorio 64",
+      "capital": 2935997,
+      "tasa": "1.02",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 29947,
+        "total_pagar": 3385202,
+        "cuota_mensual": 225680
+      }
+    },
+    {
+      "nombre": "aleatorio 65",
+      "capital": 432,
+      "tasa": "9",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 39,
+        "total_pagar": 1056,
+        "cuota_mensual": 66
+      }
+    },
+    {
+      "nombre": "aleatorio 66",
+      "capital": 587,
+      "tasa": "4.17",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 24,
+        "total_pagar": 947,
+        "cuota_mensual": 63
+      }
+    },
+    {
+      "nombre": "aleatorio 67",
+      "capital": 514,
+      "tasa": "2",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 10,
+        "total_pagar": 684,
+        "cuota_mensual": 40
+      }
+    },
+    {
+      "nombre": "aleatorio 68",
+      "capital": 1677586,
+      "tasa": "8",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 134207,
+        "total_pagar": 1946000,
+        "cuota_mensual": 973000
+      }
+    },
+    {
+      "nombre": "aleatorio 69",
+      "capital": 278880,
+      "tasa": "5.17",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 14418,
+        "total_pagar": 307716,
+        "cuota_mensual": 153858
+      }
+    },
+    {
+      "nombre": "aleatorio 70",
+      "capital": 854,
+      "tasa": "3",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 26,
+        "total_pagar": 880,
+        "cuota_mensual": 880
+      }
+    },
+    {
+      "nombre": "aleatorio 71",
+      "capital": 201,
+      "tasa": "1.07",
+      "num_cuotas": 19,
+      "esperado": {
+        "interes_mensual": 2,
+        "total_pagar": 239,
+        "cuota_mensual": 13
+      }
+    },
+    {
+      "nombre": "aleatorio 72",
+      "capital": 148,
+      "tasa": "4.20",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 172,
+        "cuota_mensual": 43
+      }
+    },
+    {
+      "nombre": "aleatorio 73",
+      "capital": 344,
+      "tasa": "7.25",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 25,
+        "total_pagar": 844,
+        "cuota_mensual": 42
+      }
+    },
+    {
+      "nombre": "aleatorio 74",
+      "capital": 242,
+      "tasa": "0",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 242,
+        "cuota_mensual": 12
+      }
+    },
+    {
+      "nombre": "aleatorio 75",
+      "capital": 105,
+      "tasa": "5.43",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 177,
+        "cuota_mensual": 15
+      }
+    },
+    {
+      "nombre": "aleatorio 76",
+      "capital": 3274077,
+      "tasa": "2.63",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 86108,
+        "total_pagar": 5082345,
+        "cuota_mensual": 242016
+      }
+    },
+    {
+      "nombre": "aleatorio 77",
+      "capital": 2108015,
+      "tasa": "1",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 21080,
+        "total_pagar": 2171255,
+        "cuota_mensual": 723752
+      }
+    },
+    {
+      "nombre": "aleatorio 78",
+      "capital": 3357035,
+      "tasa": "4",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 134281,
+        "total_pagar": 5774093,
+        "cuota_mensual": 320783
+      }
+    },
+    {
+      "nombre": "aleatorio 79",
+      "capital": 130674,
+      "tasa": "2",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 2613,
+        "total_pagar": 169869,
+        "cuota_mensual": 11325
+      }
+    },
+    {
+      "nombre": "aleatorio 80",
+      "capital": 114,
+      "tasa": "7.64",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 9,
+        "total_pagar": 123,
+        "cuota_mensual": 123
+      }
+    },
+    {
+      "nombre": "aleatorio 81",
+      "capital": 38,
+      "tasa": "8",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 3,
+        "total_pagar": 56,
+        "cuota_mensual": 9
+      }
+    },
+    {
+      "nombre": "aleatorio 82",
+      "capital": 646,
+      "tasa": "8.17",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 53,
+        "total_pagar": 1335,
+        "cuota_mensual": 103
+      }
+    },
+    {
+      "nombre": "aleatorio 83",
+      "capital": 869,
+      "tasa": "6",
+      "num_cuotas": 19,
+      "esperado": {
+        "interes_mensual": 52,
+        "total_pagar": 1857,
+        "cuota_mensual": 98
+      }
+    },
+    {
+      "nombre": "aleatorio 84",
+      "capital": 451137,
+      "tasa": "5.55",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 25038,
+        "total_pagar": 626403,
+        "cuota_mensual": 89486
+      }
+    },
+    {
+      "nombre": "aleatorio 85",
+      "capital": 1519418,
+      "tasa": "9",
+      "num_cuotas": 9,
+      "esperado": {
+        "interes_mensual": 136748,
+        "total_pagar": 2750150,
+        "cuota_mensual": 305572
+      }
+    },
+    {
+      "nombre": "aleatorio 86",
+      "capital": 3893683,
+      "tasa": "2",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 77874,
+        "total_pagar": 4906045,
+        "cuota_mensual": 377388
+      }
+    },
+    {
+      "nombre": "aleatorio 87",
+      "capital": 607,
+      "tasa": "1.11",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 7,
+        "total_pagar": 663,
+        "cuota_mensual": 83
+      }
+    },
+    {
+      "nombre": "aleatorio 88",
+      "capital": 1249704,
+      "tasa": "2",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 24994,
+        "total_pagar": 1824566,
+        "cuota_mensual": 79329
+      }
+    },
+    {
+      "nombre": "aleatorio 89",
+      "capital": 435,
+      "tasa": "6.90",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 30,
+        "total_pagar": 885,
+        "cuota_mensual": 59
+      }
+    },
+    {
+      "nombre": "aleatorio 90",
+      "capital": 844,
+      "tasa": "6.25",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 53,
+        "total_pagar": 1480,
+        "cuota_mensual": 123
+      }
+    },
+    {
+      "nombre": "aleatorio 91",
+      "capital": 3702892,
+      "tasa": "8",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 296231,
+        "total_pagar": 9923743,
+        "cuota_mensual": 472559
+      }
+    },
+    {
+      "nombre": "aleatorio 92",
+      "capital": 606,
+      "tasa": "1.00",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 726,
+        "cuota_mensual": 36
+      }
+    },
+    {
+      "nombre": "aleatorio 93",
+      "capital": 318,
+      "tasa": "10",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 32,
+        "total_pagar": 702,
+        "cuota_mensual": 59
+      }
+    },
+    {
+      "nombre": "aleatorio 94",
+      "capital": 798,
+      "tasa": "7.89",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 63,
+        "total_pagar": 1806,
+        "cuota_mensual": 113
+      }
+    },
+    {
+      "nombre": "aleatorio 95",
+      "capital": 538,
+      "tasa": "2.48",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 13,
+        "total_pagar": 707,
+        "cuota_mensual": 54
+      }
+    },
+    {
+      "nombre": "aleatorio 96",
+      "capital": 3,
+      "tasa": "7.59",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 3,
+        "cuota_mensual": 2
+      }
+    },
+    {
+      "nombre": "aleatorio 97",
+      "capital": 3931573,
+      "tasa": "6.53",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 256732,
+        "total_pagar": 9066213,
+        "cuota_mensual": 453311
+      }
+    },
+    {
+      "nombre": "aleatorio 98",
+      "capital": 97,
+      "tasa": "3",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 3,
+        "total_pagar": 118,
+        "cuota_mensual": 17
+      }
+    },
+    {
+      "nombre": "aleatorio 99",
+      "capital": 949,
+      "tasa": "5.48",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 52,
+        "total_pagar": 1001,
+        "cuota_mensual": 1001
+      }
+    },
+    {
+      "nombre": "aleatorio 100",
+      "capital": 725,
+      "tasa": "10",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 73,
+        "total_pagar": 1455,
+        "cuota_mensual": 146
+      }
+    },
+    {
+      "nombre": "aleatorio 101",
+      "capital": 698905,
+      "tasa": "8.78",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 61364,
+        "total_pagar": 1496637,
+        "cuota_mensual": 115126
+      }
+    },
+    {
+      "nombre": "aleatorio 102",
+      "capital": 147,
+      "tasa": "3.76",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 213,
+        "cuota_mensual": 19
+      }
+    },
+    {
+      "nombre": "aleatorio 103",
+      "capital": 98,
+      "tasa": "8.14",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 8,
+        "total_pagar": 266,
+        "cuota_mensual": 13
+      }
+    },
+    {
+      "nombre": "aleatorio 104",
+      "capital": 4389974,
+      "tasa": "10.76",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 472361,
+        "total_pagar": 12892472,
+        "cuota_mensual": 716248
+      }
+    },
+    {
+      "nombre": "aleatorio 105",
+      "capital": 467,
+      "tasa": "6",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 28,
+        "total_pagar": 859,
+        "cuota_mensual": 61
+      }
+    },
+    {
+      "nombre": "aleatorio 106",
+      "capital": 91,
+      "tasa": "0",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 91,
+        "cuota_mensual": 18
+      }
+    },
+    {
+      "nombre": "aleatorio 107",
+      "capital": 557,
+      "tasa": "10",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 56,
+        "total_pagar": 1173,
+        "cuota_mensual": 107
+      }
+    },
+    {
+      "nombre": "aleatorio 108",
+      "capital": 1005711,
+      "tasa": "0",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 1005711,
+        "cuota_mensual": 43727
+      }
+    },
+    {
+      "nombre": "aleatorio 109",
+      "capital": 481,
+      "tasa": "0",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 481,
+        "cuota_mensual": 30
+      }
+    },
+    {
+      "nombre": "aleatorio 110",
+      "capital": 528,
+      "tasa": "10.69",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 56,
+        "total_pagar": 808,
+        "cuota_mensual": 162
+      }
+    },
+    {
+      "nombre": "aleatorio 111",
+      "capital": 990,
+      "tasa": "3",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 30,
+        "total_pagar": 1200,
+        "cuota_mensual": 171
+      }
+    },
+    {
+      "nombre": "aleatorio 112",
+      "capital": 747,
+      "tasa": "9",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 67,
+        "total_pagar": 881,
+        "cuota_mensual": 441
+      }
+    },
+    {
+      "nombre": "aleatorio 113",
+      "capital": 641,
+      "tasa": "5.34",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 34,
+        "total_pagar": 981,
+        "cuota_mensual": 98
+      }
+    },
+    {
+      "nombre": "aleatorio 114",
+      "capital": 369,
+      "tasa": "5.28",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 19,
+        "total_pagar": 692,
+        "cuota_mensual": 41
+      }
+    },
+    {
+      "nombre": "aleatorio 115",
+      "capital": 4663587,
+      "tasa": "8",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 373087,
+        "total_pagar": 11379153,
+        "cuota_mensual": 632175
+      }
+    },
+    {
+      "nombre": "aleatorio 116",
+      "capital": 696,
+      "tasa": "8",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 56,
+        "total_pagar": 1928,
+        "cuota_mensual": 88
+      }
+    },
+    {
+      "nombre": "aleatorio 117",
+      "capital": 438099,
+      "tasa": "9",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 39429,
+        "total_pagar": 1344966,
+        "cuota_mensual": 58477
+      }
+    },
+    {
+      "nombre": "aleatorio 118",
+      "capital": 1744175,
+      "tasa": "9",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 156976,
+        "total_pagar": 2529055,
+        "cuota_mensual": 505811
+      }
+    },
+    {
+      "nombre": "aleatorio 119",
+      "capital": 136,
+      "tasa": "10.04",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 14,
+        "total_pagar": 234,
+        "cuota_mensual": 33
+      }
+    },
+    {
+      "nombre": "aleatorio 120",
+      "capital": 4560133,
+      "tasa": "9",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 410412,
+        "total_pagar": 9074665,
+        "cuota_mensual": 824970
+      }
+    },
+    {
+      "nombre": "aleatorio 121",
+      "capital": 178,
+      "tasa": "6.08",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 11,
+        "total_pagar": 354,
+        "cuota_mensual": 22
+      }
+    },
+    {
+      "nombre": "aleatorio 122",
+      "capital": 496,
+      "tasa": "9.52",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 47,
+        "total_pagar": 1530,
+        "cuota_mensual": 70
+      }
+    },
+    {
+      "nombre": "aleatorio 123",
+      "capital": 369,
+      "tasa": "0.53",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 2,
+        "total_pagar": 385,
+        "cuota_mensual": 48
+      }
+    },
+    {
+      "nombre": "aleatorio 124",
+      "capital": 64,
+      "tasa": "9",
+      "num_cuotas": 19,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 178,
+        "cuota_mensual": 9
+      }
+    },
+    {
+      "nombre": "aleatorio 125",
+      "capital": 200,
+      "tasa": "10.88",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 22,
+        "total_pagar": 464,
+        "cuota_mensual": 39
+      }
+    },
+    {
+      "nombre": "aleatorio 126",
+      "capital": 287,
+      "tasa": "3",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 9,
+        "total_pagar": 404,
+        "cuota_mensual": 31
+      }
+    },
+    {
+      "nombre": "aleatorio 127",
+      "capital": 2449125,
+      "tasa": "6.60",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 161642,
+        "total_pagar": 4065545,
+        "cuota_mensual": 406555
+      }
+    },
+    {
+      "nombre": "aleatorio 128",
+      "capital": 132,
+      "tasa": "10.50",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 14,
+        "total_pagar": 328,
+        "cuota_mensual": 23
+      }
+    },
+    {
+      "nombre": "aleatorio 129",
+      "capital": 4412805,
+      "tasa": "1",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 44128,
+        "total_pagar": 5074725,
+        "cuota_mensual": 338315
+      }
+    },
+    {
+      "nombre": "aleatorio 130",
+      "capital": 626,
+      "tasa": "8",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 50,
+        "total_pagar": 926,
+        "cuota_mensual": 154
+      }
+    },
+    {
+      "nombre": "aleatorio 131",
+      "capital": 3360053,
+      "tasa": "3",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 100802,
+        "total_pagar": 4569677,
+        "cuota_mensual": 380806
+      }
+    },
+    {
+      "nombre": "aleatorio 132",
+      "capital": 984,
+      "tasa": "5",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 49,
+        "total_pagar": 1278,
+        "cuota_mensual": 213
+      }
+    },
+    {
+      "nombre": "aleatorio 133",
+      "capital": 3606824,
+      "tasa": "6",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 216409,
+        "total_pagar": 8584231,
+        "cuota_mensual": 373227
+      }
+    },
+    {
+      "nombre": "aleatorio 134",
+      "capital": 828289,
+      "tasa": "10.62",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 87964,
+        "total_pagar": 2587569,
+        "cuota_mensual": 129378
+      }
+    },
+    {
+      "nombre": "aleatorio 135",
+      "capital": 290156,
+      "tasa": "2.59",
+      "num_cuotas": 24,
+      "esperado": {
+        "interes_mensual": 7515,
+        "total_pagar": 470516,
+        "cuota_mensual": 19605
+      }
+    },
+    {
+      "nombre": "aleatorio 136",
+      "capital": 975,
+      "tasa": "6.88",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 67,
+        "total_pagar": 1913,
+        "cuota_mensual": 137
+      }
+    },
+    {
+      "nombre": "aleatorio 137",
+      "capital": 2289114,
+      "tasa": "9.01",
+      "num_cuotas": 24,
+      "esperado": {
+        "interes_mensual": 206249,
+        "total_pagar": 7239090,
+        "cuota_mensual": 301629
+      }
+    },
+    {
+      "nombre": "aleatorio 138",
+      "capital": 3434438,
+      "tasa": "6",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 206066,
+        "total_pagar": 7555758,
+        "cuota_mensual": 377788
+      }
+    },
+    {
+      "nombre": "aleatorio 139",
+      "capital": 900213,
+      "tasa": "1",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 9002,
+        "total_pagar": 1053247,
+        "cuota_mensual": 61956
+      }
+    },
+    {
+      "nombre": "aleatorio 140",
+      "capital": 3858653,
+      "tasa": "2.20",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 84890,
+        "total_pagar": 4707553,
+        "cuota_mensual": 470755
+      }
+    },
+    {
+      "nombre": "aleatorio 141",
+      "capital": 185,
+      "tasa": "8",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 15,
+        "total_pagar": 530,
+        "cuota_mensual": 23
+      }
+    },
+    {
+      "nombre": "aleatorio 142",
+      "capital": 4820027,
+      "tasa": "8",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 385602,
+        "total_pagar": 6362435,
+        "cuota_mensual": 1590609
+      }
+    },
+    {
+      "nombre": "aleatorio 143",
+      "capital": 109,
+      "tasa": "7.27",
+      "num_cuotas": 19,
+      "esperado": {
+        "interes_mensual": 8,
+        "total_pagar": 261,
+        "cuota_mensual": 14
+      }
+    },
+    {
+      "nombre": "aleatorio 144",
+      "capital": 589,
+      "tasa": "1",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 619,
+        "cuota_mensual": 124
+      }
+    },
+    {
+      "nombre": "aleatorio 145",
+      "capital": 3544904,
+      "tasa": "1",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 35449,
+        "total_pagar": 3580353,
+        "cuota_mensual": 3580353
+      }
+    },
+    {
+      "nombre": "aleatorio 146",
+      "capital": 970887,
+      "tasa": "2.37",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 23010,
+        "total_pagar": 1270017,
+        "cuota_mensual": 97694
+      }
+    },
+    {
+      "nombre": "aleatorio 147",
+      "capital": 970,
+      "tasa": "5.26",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 51,
+        "total_pagar": 2143,
+        "cuota_mensual": 93
+      }
+    },
+    {
+      "nombre": "aleatorio 148",
+      "capital": 322593,
+      "tasa": "6.96",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 22452,
+        "total_pagar": 367497,
+        "cuota_mensual": 183749
+      }
+    },
+    {
+      "nombre": "aleatorio 149",
+      "capital": 799,
+      "tasa": "9",
+      "num_cuotas": 10,
+      "esperado": {
+        "interes_mensual": 72,
+        "total_pagar": 1519,
+        "cuota_mensual": 152
+      }
+    },
+    {
+      "nombre": "aleatorio 150",
+      "capital": 160,
+      "tasa": "2.98",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 5,
+        "total_pagar": 230,
+        "cuota_mensual": 16
+      }
+    },
+    {
+      "nombre": "aleatorio 151",
+      "capital": 3310764,
+      "tasa": "9",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 297969,
+        "total_pagar": 7780299,
+        "cuota_mensual": 518687
+      }
+    },
+    {
+      "nombre": "aleatorio 152",
+      "capital": 328,
+      "tasa": "0.47",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 2,
+        "total_pagar": 340,
+        "cuota_mensual": 57
+      }
+    },
+    {
+      "nombre": "aleatorio 153",
+      "capital": 4030661,
+      "tasa": "3",
+      "num_cuotas": 2,
+      "esperado": {
+        "interes_mensual": 120920,
+        "total_pagar": 4272501,
+        "cuota_mensual": 2136251
+      }
+    },
+    {
+      "nombre": "aleatorio 154",
+      "capital": 215,
+      "tasa": "9",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 19,
+        "total_pagar": 652,
+        "cuota_mensual": 28
+      }
+    },
+    {
+      "nombre": "aleatorio 155",
+      "capital": 2572364,
+      "tasa": "7",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 180065,
+        "total_pagar": 2752429,
+        "cuota_mensual": 2752429
+      }
+    },
+    {
+      "nombre": "aleatorio 156",
+      "capital": 137,
+      "tasa": "1.11",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 2,
+        "total_pagar": 177,
+        "cuota_mensual": 9
+      }
+    },
+    {
+      "nombre": "aleatorio 157",
+      "capital": 589,
+      "tasa": "6.20",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 37,
+        "total_pagar": 885,
+        "cuota_mensual": 111
+      }
+    },
+    {
+      "nombre": "aleatorio 158",
+      "capital": 2841640,
+      "tasa": "8",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 227331,
+        "total_pagar": 5569612,
+        "cuota_mensual": 464134
+      }
+    },
+    {
+      "nombre": "aleatorio 159",
+      "capital": 4471376,
+      "tasa": "0.22",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 9837,
+        "total_pagar": 4530398,
+        "cuota_mensual": 755066
+      }
+    },
+    {
+      "nombre": "aleatorio 160",
+      "capital": 173,
+      "tasa": "9",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 16,
+        "total_pagar": 237,
+        "cuota_mensual": 59
+      }
+    },
+    {
+      "nombre": "aleatorio 161",
+      "capital": 571051,
+      "tasa": "0.64",
+      "num_cuotas": 13,
+      "esperado": {
+        "interes_mensual": 3655,
+        "total_pagar": 618566,
+        "cuota_mensual": 47582
+      }
+    },
+    {
+      "nombre": "aleatorio 162",
+      "capital": 25,
+      "tasa": "7.41",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 2,
+        "total_pagar": 59,
+        "cuota_mensual": 3
+      }
+    },
+    {
+      "nombre": "aleatorio 163",
+      "capital": 3950862,
+      "tasa": "7.46",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 294734,
+        "total_pagar": 8371872,
+        "cuota_mensual": 558125
+      }
+    },
+    {
+      "nombre": "aleatorio 164",
+      "capital": 627,
+      "tasa": "9.59",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 60,
+        "total_pagar": 1887,
+        "cuota_mensual": 90
+      }
+    },
+    {
+      "nombre": "aleatorio 165",
+      "capital": 3306963,
+      "tasa": "6.60",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 218260,
+        "total_pagar": 5707823,
+        "cuota_mensual": 518893
+      }
+    },
+    {
+      "nombre": "aleatorio 166",
+      "capital": 3345405,
+      "tasa": "1.00",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 33454,
+        "total_pagar": 3847215,
+        "cuota_mensual": 256481
+      }
+    },
+    {
+      "nombre": "aleatorio 167",
+      "capital": 594884,
+      "tasa": "5.53",
+      "num_cuotas": 9,
+      "esperado": {
+        "interes_mensual": 32897,
+        "total_pagar": 890957,
+        "cuota_mensual": 98995
+      }
+    },
+    {
+      "nombre": "aleatorio 168",
+      "capital": 2211369,
+      "tasa": "0.39",
+      "num_cuotas": 18,
+      "esperado": {
+        "interes_mensual": 8624,
+        "total_pagar": 2366601,
+        "cuota_mensual": 131478
+      }
+    },
+    {
+      "nombre": "aleatorio 169",
+      "capital": 3677356,
+      "tasa": "6.64",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 244176,
+        "total_pagar": 4898236,
+        "cuota_mensual": 979647
+      }
+    },
+    {
+      "nombre": "aleatorio 170",
+      "capital": 2120274,
+      "tasa": "9",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 190825,
+        "total_pagar": 2692749,
+        "cuota_mensual": 897583
+      }
+    },
+    {
+      "nombre": "aleatorio 171",
+      "capital": 1592988,
+      "tasa": "4.21",
+      "num_cuotas": 22,
+      "esperado": {
+        "interes_mensual": 67065,
+        "total_pagar": 3068418,
+        "cuota_mensual": 139474
+      }
+    },
+    {
+      "nombre": "aleatorio 172",
+      "capital": 951,
+      "tasa": "9",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 86,
+        "total_pagar": 1037,
+        "cuota_mensual": 1037
+      }
+    },
+    {
+      "nombre": "aleatorio 173",
+      "capital": 3276667,
+      "tasa": "4",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 131067,
+        "total_pagar": 6029074,
+        "cuota_mensual": 287099
+      }
+    },
+    {
+      "nombre": "aleatorio 174",
+      "capital": 298896,
+      "tasa": "2",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 5978,
+        "total_pagar": 304874,
+        "cuota_mensual": 304874
+      }
+    },
+    {
+      "nombre": "aleatorio 175",
+      "capital": 692,
+      "tasa": "0",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 0,
+        "total_pagar": 692,
+        "cuota_mensual": 99
+      }
+    },
+    {
+      "nombre": "aleatorio 176",
+      "capital": 961,
+      "tasa": "4",
+      "num_cuotas": 12,
+      "esperado": {
+        "interes_mensual": 38,
+        "total_pagar": 1417,
+        "cuota_mensual": 118
+      }
+    },
+    {
+      "nombre": "aleatorio 177",
+      "capital": 3443622,
+      "tasa": "5",
+      "num_cuotas": 17,
+      "esperado": {
+        "interes_mensual": 172181,
+        "total_pagar": 6370699,
+        "cuota_mensual": 374747
+      }
+    },
+    {
+      "nombre": "aleatorio 178",
+      "capital": 2153950,
+      "tasa": "2.22",
+      "num_cuotas": 6,
+      "esperado": {
+        "interes_mensual": 47818,
+        "total_pagar": 2440858,
+        "cuota_mensual": 406810
+      }
+    },
+    {
+      "nombre": "aleatorio 179",
+      "capital": 3140024,
+      "tasa": "4.17",
+      "num_cuotas": 5,
+      "esperado": {
+        "interes_mensual": 130939,
+        "total_pagar": 3794719,
+        "cuota_mensual": 758944
+      }
+    },
+    {
+      "nombre": "aleatorio 180",
+      "capital": 435,
+      "tasa": "1.63",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 7,
+        "total_pagar": 491,
+        "cuota_mensual": 61
+      }
+    },
+    {
+      "nombre": "aleatorio 181",
+      "capital": 3393938,
+      "tasa": "3.10",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 105212,
+        "total_pagar": 3814786,
+        "cuota_mensual": 953697
+      }
+    },
+    {
+      "nombre": "aleatorio 182",
+      "capital": 2762663,
+      "tasa": "8",
+      "num_cuotas": 20,
+      "esperado": {
+        "interes_mensual": 221013,
+        "total_pagar": 7182923,
+        "cuota_mensual": 359146
+      }
+    },
+    {
+      "nombre": "aleatorio 183",
+      "capital": 272,
+      "tasa": "7.74",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 21,
+        "total_pagar": 755,
+        "cuota_mensual": 33
+      }
+    },
+    {
+      "nombre": "aleatorio 184",
+      "capital": 4474460,
+      "tasa": "7",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 313212,
+        "total_pagar": 5727308,
+        "cuota_mensual": 1431827
+      }
+    },
+    {
+      "nombre": "aleatorio 185",
+      "capital": 878,
+      "tasa": "1.71",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 15,
+        "total_pagar": 983,
+        "cuota_mensual": 140
+      }
+    },
+    {
+      "nombre": "aleatorio 186",
+      "capital": 602,
+      "tasa": "8",
+      "num_cuotas": 1,
+      "esperado": {
+        "interes_mensual": 48,
+        "total_pagar": 650,
+        "cuota_mensual": 650
+      }
+    },
+    {
+      "nombre": "aleatorio 187",
+      "capital": 257,
+      "tasa": "10",
+      "num_cuotas": 4,
+      "esperado": {
+        "interes_mensual": 26,
+        "total_pagar": 361,
+        "cuota_mensual": 90
+      }
+    },
+    {
+      "nombre": "aleatorio 188",
+      "capital": 478,
+      "tasa": "9.20",
+      "num_cuotas": 23,
+      "esperado": {
+        "interes_mensual": 44,
+        "total_pagar": 1490,
+        "cuota_mensual": 65
+      }
+    },
+    {
+      "nombre": "aleatorio 189",
+      "capital": 55,
+      "tasa": "2",
+      "num_cuotas": 16,
+      "esperado": {
+        "interes_mensual": 1,
+        "total_pagar": 71,
+        "cuota_mensual": 4
+      }
+    },
+    {
+      "nombre": "aleatorio 190",
+      "capital": 726,
+      "tasa": "4.42",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 32,
+        "total_pagar": 1206,
+        "cuota_mensual": 80
+      }
+    },
+    {
+      "nombre": "aleatorio 191",
+      "capital": 538,
+      "tasa": "10.82",
+      "num_cuotas": 7,
+      "esperado": {
+        "interes_mensual": 58,
+        "total_pagar": 944,
+        "cuota_mensual": 135
+      }
+    },
+    {
+      "nombre": "aleatorio 192",
+      "capital": 254,
+      "tasa": "2.46",
+      "num_cuotas": 14,
+      "esperado": {
+        "interes_mensual": 6,
+        "total_pagar": 338,
+        "cuota_mensual": 24
+      }
+    },
+    {
+      "nombre": "aleatorio 193",
+      "capital": 477804,
+      "tasa": "7",
+      "num_cuotas": 15,
+      "esperado": {
+        "interes_mensual": 33446,
+        "total_pagar": 979494,
+        "cuota_mensual": 65300
+      }
+    },
+    {
+      "nombre": "aleatorio 194",
+      "capital": 239,
+      "tasa": "7",
+      "num_cuotas": 9,
+      "esperado": {
+        "interes_mensual": 17,
+        "total_pagar": 392,
+        "cuota_mensual": 44
+      }
+    },
+    {
+      "nombre": "aleatorio 195",
+      "capital": 490,
+      "tasa": "2",
+      "num_cuotas": 21,
+      "esperado": {
+        "interes_mensual": 10,
+        "total_pagar": 700,
+        "cuota_mensual": 33
+      }
+    },
+    {
+      "nombre": "aleatorio 196",
+      "capital": 472,
+      "tasa": "3.58",
+      "num_cuotas": 8,
+      "esperado": {
+        "interes_mensual": 17,
+        "total_pagar": 608,
+        "cuota_mensual": 76
+      }
+    },
+    {
+      "nombre": "aleatorio 197",
+      "capital": 4883867,
+      "tasa": "5.67",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 276915,
+        "total_pagar": 7929932,
+        "cuota_mensual": 720903
+      }
+    },
+    {
+      "nombre": "aleatorio 198",
+      "capital": 4097096,
+      "tasa": "2",
+      "num_cuotas": 11,
+      "esperado": {
+        "interes_mensual": 81942,
+        "total_pagar": 4998458,
+        "cuota_mensual": 454405
+      }
+    },
+    {
+      "nombre": "aleatorio 199",
+      "capital": 4010598,
+      "tasa": "9",
+      "num_cuotas": 3,
+      "esperado": {
+        "interes_mensual": 360954,
+        "total_pagar": 5093460,
+        "cuota_mensual": 1697820
+      }
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "capital cero",
+      "capital": 0,
+      "tasa": "2",
+      "num_cuotas": 3
+    },
+    {
+      "nombre": "sin cuotas",
+      "capital": 1000,
+      "tasa": "2",
+      "num_cuotas": 0
+    },
+    {
+      "nombre": "tasa negativa",
+      "capital": 1000,
+      "tasa": "-1",
+      "num_cuotas": 3
+    },
+    {
+      "nombre": "tasa con coma",
+      "capital": 1000,
+      "tasa": "2,5",
+      "num_cuotas": 3
+    },
+    {
+      "nombre": "tasa como número",
+      "capital": 1000,
+      "tasa": 2,
+      "num_cuotas": 3
+    },
+    {
+      "nombre": "capital con decimales",
+      "capital": 1000.5,
+      "tasa": "2",
+      "num_cuotas": 3
+    }
+  ]
+}

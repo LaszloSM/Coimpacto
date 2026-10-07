@@ -123,8 +123,8 @@ Segunda opinión independiente (subagente de Claude, sin contexto de la conversa
 **Dinero y redondeo**
 - Todo valor monetario es **entero en pesos colombianos** (sin decimales), en Python y en TypeScript.
 - Tasas como decimal exacto (`Decimal` / cadena), nunca en coma flotante.
-- **Interés:** se calcula sobre el saldo de capital y se redondea **al peso, mitad hacia arriba**, en cada cuota.
-- **Reparto del cierre:** se redondea al múltiplo configurado en la política de cierre (hoy 1.000), y el residuo queda registrado como movimiento propio.
+- **Interés:** fijo sobre el capital inicial, con la tasa en porcentaje mensual, redondeado **al peso, mitad hacia arriba** (regla vigente en Supabase; la decisión D1 de T3, del 2026-10-06, corrige el texto anterior, que decía "sobre el saldo"). Fórmulas exactas en [docs/reglas/reglas-de-dinero.md](../reglas/reglas-de-dinero.md).
+- **Reparto del cierre:** se redondea **hacia abajo** al múltiplo configurado en la política de cierre (hoy 1.000), y el residuo queda registrado como movimiento propio.
 - Estos casos forman parte de la suite compartida de pruebas.
 
 **Oráculo de reglas**

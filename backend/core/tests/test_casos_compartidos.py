@@ -1,20 +1,17 @@
 """Ejecuta en Python los mismos casos que Vitest ejecuta en TypeScript."""
 
-import json
-from pathlib import Path
-
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
 from core.dinero import formatear_pesos
-
-CASOS_DIR = Path(__file__).resolve().parents[3] / "packages" / "casos-reglas" / "casos"
+from core.tests.casos import leer
 
 
 def _casos(archivo):
-    datos = json.loads((CASOS_DIR / archivo).read_text(encoding="utf-8"))
-    return [pytest.param(c["entrada"], c["esperado"], id=c["nombre"]) for c in datos["casos"]]
+    return [
+        pytest.param(c["entrada"], c["esperado"], id=c["nombre"]) for c in leer(archivo)["casos"]
+    ]
 
 
 @pytest.mark.parametrize(("entrada", "esperado"), _casos("formato-pesos.json"))

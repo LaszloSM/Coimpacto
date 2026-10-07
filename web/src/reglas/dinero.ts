@@ -1,4 +1,4 @@
-// Dinero en pesos colombianos enteros. Debe dar exactamente lo mismo que backend/core/dinero.py:
+// Formato de pesos colombianos enteros. Debe dar exactamente lo mismo que backend/core/dinero.py:
 // los dos ejecutan los casos de packages/casos-reglas/casos/formato-pesos.json.
 
 const ESPACIO_NO_SEPARABLE = "\u00a0";

@@ -1,0 +1,6175 @@
+{
+  "regla": "cierre-ciclo",
+  "descripcion": "Preview del reparto del cierre de ciclo. Generado por scripts/generar_casos.py (semilla 20261006). No editar a mano.",
+  "casos": [
+    {
+      "nombre": "política actual: fondo no, multas sí, ventas no, billetes de 1.000",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 37500,
+        "ventas": 10000,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 15,
+            "ahorro": 150000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 120000
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 5,
+            "ahorro": 50000,
+            "fondo_social": 20000,
+            "multas": 2000,
+            "deuda": 300000
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 40,
+          "ahorro": 400000,
+          "fondo_social": 60000,
+          "multas": 6000,
+          "ventas": 10000,
+          "interes_prestamos": 37500,
+          "caja_total": 513500,
+          "ganancia": 43500,
+          "monto_repartible": 443500,
+          "residuo_redondeo": 176500,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 21750,
+            "deuda_pendiente": 0,
+            "a_entregar": 221000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 15,
+            "ahorro": 150000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 16312,
+            "deuda_pendiente": 120000,
+            "a_entregar": 46000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 5,
+            "ahorro": 50000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 5437,
+            "deuda_pendiente": 300000,
+            "a_entregar": 0,
+            "deuda_arrastrada": 244563
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "todo repartible y sin redondeo",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 37500,
+        "ventas": 10000,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 15,
+            "ahorro": 150000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 120000
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 5,
+            "ahorro": 50000,
+            "fondo_social": 20000,
+            "multas": 2000,
+            "deuda": 300000
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 40,
+          "ahorro": 400000,
+          "fondo_social": 60000,
+          "multas": 6000,
+          "ventas": 10000,
+          "interes_prestamos": 37500,
+          "caja_total": 513500,
+          "ganancia": 53500,
+          "monto_repartible": 513500,
+          "residuo_redondeo": 196688,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 26750,
+            "deuda_pendiente": 0,
+            "a_entregar": 246750,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 15,
+            "ahorro": 150000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 20062,
+            "deuda_pendiente": 120000,
+            "a_entregar": 70062,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 5,
+            "ahorro": 50000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 6687,
+            "deuda_pendiente": 300000,
+            "a_entregar": 0,
+            "deuda_arrastrada": 223313
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 0",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 1036024,
+        "ventas": 271106,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 16000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 20000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 53,
+            "ahorro": 530000,
+            "fondo_social": 25000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 48,
+            "ahorro": 480000,
+            "fondo_social": 50000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 3,
+            "ahorro": 30000,
+            "fondo_social": 8000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 15000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 26,
+            "ahorro": 260000,
+            "fondo_social": 8000,
+            "multas": 3000,
+            "deuda": 155971
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 46,
+            "ahorro": 460000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 724088
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 8000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 13,
+            "ahorro": 130000,
+            "fondo_social": 6000,
+            "multas": 5000,
+            "deuda": 292171
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 33,
+            "ahorro": 330000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 662347
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 383,
+          "ahorro": 3830000,
+          "fondo_social": 156000,
+          "multas": 31000,
+          "ventas": 271106,
+          "interes_prestamos": 1036024,
+          "caja_total": 5324130,
+          "ganancia": 1067024,
+          "monto_repartible": 5053024,
+          "residuo_redondeo": 1151024,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 153227,
+            "deuda_pendiente": 0,
+            "a_entregar": 719000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 61291,
+            "deuda_pendiente": 0,
+            "a_entregar": 301000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 53,
+            "ahorro": 530000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 147656,
+            "deuda_pendiente": 0,
+            "a_entregar": 702000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 48,
+            "ahorro": 480000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 133726,
+            "deuda_pendiente": 0,
+            "a_entregar": 663000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 3,
+            "ahorro": 30000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 8357,
+            "deuda_pendiente": 0,
+            "a_entregar": 46000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 15000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 55719,
+            "deuda_pendiente": 0,
+            "a_entregar": 270000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 26,
+            "ahorro": 260000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 72435,
+            "deuda_pendiente": 155971,
+            "a_entregar": 184000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 46,
+            "ahorro": 460000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 128154,
+            "deuda_pendiente": 0,
+            "a_entregar": 588000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 86364,
+            "deuda_pendiente": 724088,
+            "a_entregar": 0,
+            "deuda_arrastrada": 327724
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 5571,
+            "deuda_pendiente": 0,
+            "a_entregar": 33000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 13,
+            "ahorro": 130000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 36217,
+            "deuda_pendiente": 292171,
+            "a_entregar": 0,
+            "deuda_arrastrada": 119954
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 33,
+            "ahorro": 330000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 91936,
+            "deuda_pendiente": 662347,
+            "a_entregar": 0,
+            "deuda_arrastrada": 240411
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 86364,
+            "deuda_pendiente": 0,
+            "a_entregar": 396000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 1",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 671316,
+        "ventas": 15463,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 20000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 9,
+            "ahorro": 90000,
+            "fondo_social": 18000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 24,
+            "ahorro": 240000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 47,
+            "ahorro": 470000,
+            "fondo_social": 4000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 21,
+            "ahorro": 210000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 16000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 4000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 10000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 52,
+            "ahorro": 520000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 381699
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 4,
+            "ahorro": 40000,
+            "fondo_social": 45000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 59,
+            "ahorro": 590000,
+            "fondo_social": 30000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 2000,
+            "multas": 4000,
+            "deuda": 440693
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 34,
+            "ahorro": 340000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 508207
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 490,
+          "ahorro": 4900000,
+          "fondo_social": 179000,
+          "multas": 44000,
+          "ventas": 15463,
+          "interes_prestamos": 671316,
+          "caja_total": 5809779,
+          "ganancia": 686779,
+          "monto_repartible": 5586779,
+          "residuo_redondeo": 1003779,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 70079,
+            "deuda_pendiente": 0,
+            "a_entregar": 570000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 57465,
+            "deuda_pendiente": 0,
+            "a_entregar": 467000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 28031,
+            "deuda_pendiente": 0,
+            "a_entregar": 228000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 9,
+            "ahorro": 90000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 12614,
+            "deuda_pendiente": 0,
+            "a_entregar": 102000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 24,
+            "ahorro": 240000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 33638,
+            "deuda_pendiente": 0,
+            "a_entregar": 273000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 47,
+            "ahorro": 470000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 65874,
+            "deuda_pendiente": 0,
+            "a_entregar": 535000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 21,
+            "ahorro": 210000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 29433,
+            "deuda_pendiente": 0,
+            "a_entregar": 239000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 0,
+            "participacion_interes": 43449,
+            "deuda_pendiente": 0,
+            "a_entregar": 353000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 37842,
+            "deuda_pendiente": 0,
+            "a_entregar": 307000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 71481,
+            "deuda_pendiente": 0,
+            "a_entregar": 581000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 52,
+            "ahorro": 520000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 72882,
+            "deuda_pendiente": 381699,
+            "a_entregar": 211000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 4,
+            "ahorro": 40000,
+            "aporte_fondo_social": 45000,
+            "multas_pagadas": 0,
+            "participacion_interes": 5606,
+            "deuda_pendiente": 0,
+            "a_entregar": 45000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 59,
+            "ahorro": 590000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 82693,
+            "deuda_pendiente": 0,
+            "a_entregar": 672000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 28031,
+            "deuda_pendiente": 440693,
+            "a_entregar": 0,
+            "deuda_arrastrada": 212662
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 34,
+            "ahorro": 340000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 47654,
+            "deuda_pendiente": 508207,
+            "a_entregar": 0,
+            "deuda_arrastrada": 120553
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 2",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 1479864,
+        "ventas": 249830,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 4000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 33,
+            "ahorro": 330000,
+            "fondo_social": 8000,
+            "multas": 3000,
+            "deuda": 439437
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 32,
+            "ahorro": 320000,
+            "fondo_social": 10000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 45000,
+            "multas": 3000,
+            "deuda": 201059
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 419631
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 15000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 30000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 2000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 45000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 5,
+            "ahorro": 50000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 303946
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 314,
+          "ahorro": 3140000,
+          "fondo_social": 179000,
+          "multas": 24000,
+          "ventas": 249830,
+          "interes_prestamos": 1479864,
+          "caja_total": 5072694,
+          "ganancia": 1503864,
+          "monto_repartible": 4643864,
+          "residuo_redondeo": 963164,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 138891,
+            "deuda_pendiente": 0,
+            "a_entregar": 428800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 33,
+            "ahorro": 330000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 158049,
+            "deuda_pendiente": 439437,
+            "a_entregar": 48600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 32,
+            "ahorro": 320000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 153260,
+            "deuda_pendiente": 0,
+            "a_entregar": 473200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 45000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 9578,
+            "deuda_pendiente": 201059,
+            "a_entregar": 0,
+            "deuda_arrastrada": 171481
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 148470,
+            "deuda_pendiente": 0,
+            "a_entregar": 458400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 86208,
+            "deuda_pendiente": 0,
+            "a_entregar": 266200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 263415,
+            "deuda_pendiente": 419631,
+            "a_entregar": 393700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 15000,
+            "multas_pagadas": 0,
+            "participacion_interes": 119734,
+            "deuda_pendiente": 0,
+            "a_entregar": 369700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 76630,
+            "deuda_pendiente": 0,
+            "a_entregar": 236600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 105366,
+            "deuda_pendiente": 0,
+            "a_entregar": 325300,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 45000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 76630,
+            "deuda_pendiente": 0,
+            "a_entregar": 236600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 5,
+            "ahorro": 50000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 23946,
+            "deuda_pendiente": 303946,
+            "a_entregar": 0,
+            "deuda_arrastrada": 230000
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 143681,
+            "deuda_pendiente": 0,
+            "a_entregar": 443600,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 3",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 1367018,
+        "ventas": 262862,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 50000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 20000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 44,
+            "ahorro": 440000,
+            "fondo_social": 20000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 35,
+            "ahorro": 350000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 159,
+          "ahorro": 1590000,
+          "fondo_social": 90000,
+          "multas": 10000,
+          "ventas": 262862,
+          "interes_prestamos": 1367018,
+          "caja_total": 3319880,
+          "ganancia": 1639880,
+          "monto_repartible": 3319880,
+          "residuo_redondeo": 280,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 299097,
+            "deuda_pendiente": 0,
+            "a_entregar": 639000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 525999,
+            "deuda_pendiente": 0,
+            "a_entregar": 1055900,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 44,
+            "ahorro": 440000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 453803,
+            "deuda_pendiente": 0,
+            "a_entregar": 913800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 35,
+            "ahorro": 350000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 360979,
+            "deuda_pendiente": 0,
+            "a_entregar": 710900,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 4",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 230537,
+        "ventas": 36930,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 40,
+            "ahorro": 400000,
+            "fondo_social": 35000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 8000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 53,
+            "ahorro": 530000,
+            "fondo_social": 8000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 10,
+            "ahorro": 100000,
+            "fondo_social": 2000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 15,
+            "ahorro": 150000,
+            "fondo_social": 35000,
+            "multas": 1000,
+            "deuda": 535073
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 32,
+            "ahorro": 320000,
+            "fondo_social": 2000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 59,
+            "ahorro": 590000,
+            "fondo_social": 20000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 25000,
+            "multas": 5000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 346,
+          "ahorro": 3460000,
+          "fondo_social": 145000,
+          "multas": 25000,
+          "ventas": 36930,
+          "interes_prestamos": 230537,
+          "caja_total": 3897467,
+          "ganancia": 255537,
+          "monto_repartible": 3715537,
+          "residuo_redondeo": 173537,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 40,
+            "ahorro": 400000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 29541,
+            "deuda_pendiente": 0,
+            "a_entregar": 428000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 22894,
+            "deuda_pendiente": 0,
+            "a_entregar": 332000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 36927,
+            "deuda_pendiente": 0,
+            "a_entregar": 536000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 53,
+            "ahorro": 530000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 39142,
+            "deuda_pendiente": 0,
+            "a_entregar": 568000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 10,
+            "ahorro": 100000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 7385,
+            "deuda_pendiente": 0,
+            "a_entregar": 106000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 15,
+            "ahorro": 150000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 11078,
+            "deuda_pendiente": 535073,
+            "a_entregar": 0,
+            "deuda_arrastrada": 373995
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 21417,
+            "deuda_pendiente": 0,
+            "a_entregar": 310000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 32,
+            "ahorro": 320000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 23633,
+            "deuda_pendiente": 0,
+            "a_entregar": 342000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 59,
+            "ahorro": 590000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 43574,
+            "deuda_pendiente": 0,
+            "a_entregar": 632000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 19940,
+            "deuda_pendiente": 0,
+            "a_entregar": 288000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 5",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 1770263,
+        "ventas": 60715,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 49,
+            "ahorro": 490000,
+            "fondo_social": 35000,
+            "multas": 0,
+            "deuda": 280005
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 289192
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 40000,
+            "multas": 0,
+            "deuda": 222233
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 40000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 14000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 10000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 319001
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 28,
+            "ahorro": 280000,
+            "fondo_social": 50000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 45,
+            "ahorro": 450000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 15,
+            "ahorro": 150000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 12779
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 475,
+          "ahorro": 4750000,
+          "fondo_social": 199000,
+          "multas": 29000,
+          "ventas": 60715,
+          "interes_prestamos": 1770263,
+          "caja_total": 6808978,
+          "ganancia": 1799263,
+          "monto_repartible": 6748263,
+          "residuo_redondeo": 1123217,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 49,
+            "ahorro": 490000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 0,
+            "participacion_interes": 185608,
+            "deuda_pendiente": 280005,
+            "a_entregar": 430603,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 193184,
+            "deuda_pendiente": 0,
+            "a_entregar": 703184,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 75758,
+            "deuda_pendiente": 0,
+            "a_entregar": 275758,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 117425,
+            "deuda_pendiente": 0,
+            "a_entregar": 427425,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 208335,
+            "deuda_pendiente": 289192,
+            "a_entregar": 469143,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 0,
+            "participacion_interes": 94698,
+            "deuda_pendiente": 222233,
+            "a_entregar": 162465,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 189396,
+            "deuda_pendiente": 0,
+            "a_entregar": 729396,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 60606,
+            "deuda_pendiente": 0,
+            "a_entregar": 234606,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 113637,
+            "deuda_pendiente": 0,
+            "a_entregar": 423637,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 109849,
+            "deuda_pendiente": 319001,
+            "a_entregar": 80848,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 28,
+            "ahorro": 280000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 106061,
+            "deuda_pendiente": 0,
+            "a_entregar": 436061,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 117425,
+            "deuda_pendiente": 0,
+            "a_entregar": 437425,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 45,
+            "ahorro": 450000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 170456,
+            "deuda_pendiente": 0,
+            "a_entregar": 620456,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 15,
+            "ahorro": 150000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 56818,
+            "deuda_pendiente": 12779,
+            "a_entregar": 194039,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 6",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 315991,
+        "ventas": 171609,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 56,
+            "ahorro": 560000,
+            "fondo_social": 50000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 45,
+            "ahorro": 450000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 4000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 5,
+            "ahorro": 50000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 43,
+            "ahorro": 430000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 33,
+            "ahorro": 330000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 10000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 50000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 35,
+            "ahorro": 350000,
+            "fondo_social": 12000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 60,
+            "ahorro": 600000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 30000,
+            "multas": 2000,
+            "deuda": 672093
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 34,
+            "ahorro": 340000,
+            "fondo_social": 30000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 446573
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 14000,
+            "multas": 5000,
+            "deuda": 220775
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 44,
+            "ahorro": 440000,
+            "fondo_social": 12000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 34,
+            "ahorro": 340000,
+            "fondo_social": 40000,
+            "multas": 5000,
+            "deuda": 714420
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 571,
+          "ahorro": 5710000,
+          "fondo_social": 252000,
+          "multas": 47000,
+          "ventas": 171609,
+          "interes_prestamos": 315991,
+          "caja_total": 6496600,
+          "ganancia": 534600,
+          "monto_repartible": 6244600,
+          "residuo_redondeo": 1048900,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 56,
+            "ahorro": 560000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 0,
+            "participacion_interes": 52430,
+            "deuda_pendiente": 0,
+            "a_entregar": 612400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 45,
+            "ahorro": 450000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 42131,
+            "deuda_pendiente": 0,
+            "a_entregar": 492100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 16852,
+            "deuda_pendiente": 0,
+            "a_entregar": 196800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 5,
+            "ahorro": 50000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 4681,
+            "deuda_pendiente": 0,
+            "a_entregar": 54600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 43,
+            "ahorro": 430000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 40258,
+            "deuda_pendiente": 0,
+            "a_entregar": 470200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 33,
+            "ahorro": 330000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 30896,
+            "deuda_pendiente": 0,
+            "a_entregar": 360800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 28087,
+            "deuda_pendiente": 0,
+            "a_entregar": 328000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 46812,
+            "deuda_pendiente": 0,
+            "a_entregar": 546800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 0,
+            "participacion_interes": 20597,
+            "deuda_pendiente": 0,
+            "a_entregar": 240500,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 35,
+            "ahorro": 350000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 32768,
+            "deuda_pendiente": 0,
+            "a_entregar": 382700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 60,
+            "ahorro": 600000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 56175,
+            "deuda_pendiente": 0,
+            "a_entregar": 656100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 1872,
+            "deuda_pendiente": 672093,
+            "a_entregar": 0,
+            "deuda_arrastrada": 650221
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 34,
+            "ahorro": 340000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 31832,
+            "deuda_pendiente": 0,
+            "a_entregar": 371800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 38386,
+            "deuda_pendiente": 446573,
+            "a_entregar": 1800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 17788,
+            "deuda_pendiente": 220775,
+            "a_entregar": 0,
+            "deuda_arrastrada": 12987
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 44,
+            "ahorro": 440000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 41195,
+            "deuda_pendiente": 0,
+            "a_entregar": 481100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 34,
+            "ahorro": 340000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 31832,
+            "deuda_pendiente": 714420,
+            "a_entregar": 0,
+            "deuda_arrastrada": 342588
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 7",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 77679,
+        "ventas": 32620,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 24,
+            "ahorro": 240000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 23,
+            "ahorro": 230000,
+            "fondo_social": 30000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 8000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 23,
+            "ahorro": 230000,
+            "fondo_social": 30000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 34,
+            "ahorro": 340000,
+            "fondo_social": 40000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 449621
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 152,
+          "ahorro": 1520000,
+          "fondo_social": 108000,
+          "multas": 17000,
+          "ventas": 32620,
+          "interes_prestamos": 77679,
+          "caja_total": 1755299,
+          "ganancia": 94679,
+          "monto_repartible": 1614679,
+          "residuo_redondeo": 201837,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 24,
+            "ahorro": 240000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 14949,
+            "deuda_pendiente": 0,
+            "a_entregar": 254949,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 23,
+            "ahorro": 230000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 14326,
+            "deuda_pendiente": 0,
+            "a_entregar": 244326,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 18063,
+            "deuda_pendiente": 0,
+            "a_entregar": 308063,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 23,
+            "ahorro": 230000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 14326,
+            "deuda_pendiente": 0,
+            "a_entregar": 244326,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 34,
+            "ahorro": 340000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 21178,
+            "deuda_pendiente": 0,
+            "a_entregar": 361178,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 11834,
+            "deuda_pendiente": 449621,
+            "a_entregar": 0,
+            "deuda_arrastrada": 247787
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 8",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 981133,
+        "ventas": 111099,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 26,
+            "ahorro": 260000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 16000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 12,
+            "ahorro": 120000,
+            "fondo_social": 16000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 21,
+            "ahorro": 210000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 491151
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 53,
+            "ahorro": 530000,
+            "fondo_social": 16000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 5000,
+            "multas": 1000,
+            "deuda": 526872
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 25000,
+            "multas": 3000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 204,
+          "ahorro": 2040000,
+          "fondo_social": 98000,
+          "multas": 24000,
+          "ventas": 111099,
+          "interes_prestamos": 981133,
+          "caja_total": 3254232,
+          "ganancia": 1116232,
+          "monto_repartible": 3156232,
+          "residuo_redondeo": 436232,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 26,
+            "ahorro": 260000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 142264,
+            "deuda_pendiente": 0,
+            "a_entregar": 402000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 224340,
+            "deuda_pendiente": 0,
+            "a_entregar": 634000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 136793,
+            "deuda_pendiente": 0,
+            "a_entregar": 386000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 12,
+            "ahorro": 120000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 65660,
+            "deuda_pendiente": 0,
+            "a_entregar": 185000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 21,
+            "ahorro": 210000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 114906,
+            "deuda_pendiente": 491151,
+            "a_entregar": 0,
+            "deuda_arrastrada": 166245
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 53,
+            "ahorro": 530000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 290001,
+            "deuda_pendiente": 0,
+            "a_entregar": 820000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 38302,
+            "deuda_pendiente": 526872,
+            "a_entregar": 0,
+            "deuda_arrastrada": 418570
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 103962,
+            "deuda_pendiente": 0,
+            "a_entregar": 293000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 9",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 889759,
+        "ventas": 45378,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 37,
+            "ahorro": 370000,
+            "fondo_social": 18000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 47,
+            "ahorro": 470000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 46817
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 10000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 40,
+            "ahorro": 400000,
+            "fondo_social": 8000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 43,
+            "ahorro": 430000,
+            "fondo_social": 2000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 13,
+            "ahorro": 130000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 53,
+            "ahorro": 530000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 52,
+            "ahorro": 520000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 3,
+            "ahorro": 30000,
+            "fondo_social": 20000,
+            "multas": 1000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 370,
+          "ahorro": 3700000,
+          "fondo_social": 78000,
+          "multas": 19000,
+          "ventas": 45378,
+          "interes_prestamos": 889759,
+          "caja_total": 4732137,
+          "ganancia": 908759,
+          "monto_repartible": 4608759,
+          "residuo_redondeo": 52759,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 37,
+            "ahorro": 370000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 0,
+            "participacion_interes": 90875,
+            "deuda_pendiente": 0,
+            "a_entregar": 460000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 47,
+            "ahorro": 470000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 115436,
+            "deuda_pendiente": 46817,
+            "a_entregar": 538000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 73683,
+            "deuda_pendiente": 0,
+            "a_entregar": 373000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 71227,
+            "deuda_pendiente": 0,
+            "a_entregar": 361000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 40,
+            "ahorro": 400000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 0,
+            "participacion_interes": 98244,
+            "deuda_pendiente": 0,
+            "a_entregar": 498000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 43,
+            "ahorro": 430000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 105612,
+            "deuda_pendiente": 0,
+            "a_entregar": 535000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 13,
+            "ahorro": 130000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 31929,
+            "deuda_pendiente": 0,
+            "a_entregar": 161000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 53,
+            "ahorro": 530000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 130173,
+            "deuda_pendiente": 0,
+            "a_entregar": 660000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 52,
+            "ahorro": 520000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 127717,
+            "deuda_pendiente": 0,
+            "a_entregar": 647000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 39297,
+            "deuda_pendiente": 0,
+            "a_entregar": 199000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 17192,
+            "deuda_pendiente": 0,
+            "a_entregar": 87000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 3,
+            "ahorro": 30000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 7368,
+            "deuda_pendiente": 0,
+            "a_entregar": 37000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 10",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 1200151,
+        "ventas": 39725,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 5,
+            "ahorro": 50000,
+            "fondo_social": 20000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 42,
+            "ahorro": 420000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 38,
+            "ahorro": 380000,
+            "fondo_social": 25000,
+            "multas": 4000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 85,
+          "ahorro": 850000,
+          "fondo_social": 45000,
+          "multas": 10000,
+          "ventas": 39725,
+          "interes_prestamos": 1200151,
+          "caja_total": 2144876,
+          "ganancia": 1200151,
+          "monto_repartible": 2050151,
+          "residuo_redondeo": 2151,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 5,
+            "ahorro": 50000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 70597,
+            "deuda_pendiente": 0,
+            "a_entregar": 120000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 42,
+            "ahorro": 420000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 593015,
+            "deuda_pendiente": 0,
+            "a_entregar": 1012000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 38,
+            "ahorro": 380000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 536538,
+            "deuda_pendiente": 0,
+            "a_entregar": 916000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 11",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 584206,
+        "ventas": 219267,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 40000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 16000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 34,
+            "ahorro": 340000,
+            "fondo_social": 18000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 44,
+            "ahorro": 440000,
+            "fondo_social": 8000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 30000,
+            "multas": 0,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 167,
+          "ahorro": 1670000,
+          "fondo_social": 112000,
+          "multas": 10000,
+          "ventas": 219267,
+          "interes_prestamos": 584206,
+          "caja_total": 2595473,
+          "ganancia": 813473,
+          "monto_repartible": 2483473,
+          "residuo_redondeo": 2473,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 77937,
+            "deuda_pendiente": 0,
+            "a_entregar": 237000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 92550,
+            "deuda_pendiente": 0,
+            "a_entregar": 282000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 34,
+            "ahorro": 340000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 165617,
+            "deuda_pendiente": 0,
+            "a_entregar": 505000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 44,
+            "ahorro": 440000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 214328,
+            "deuda_pendiente": 0,
+            "a_entregar": 654000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 0,
+            "participacion_interes": 263039,
+            "deuda_pendiente": 0,
+            "a_entregar": 803000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 12",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 905712,
+        "ventas": 287060,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 293593
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 16000,
+            "multas": 5000,
+            "deuda": 521657
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 17,
+            "ahorro": 170000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 48,
+            "ahorro": 480000,
+            "fondo_social": 5000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 18000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 9,
+            "ahorro": 90000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 28,
+            "ahorro": 280000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 50000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 57,
+            "ahorro": 570000,
+            "fondo_social": 35000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 6000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 129989
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 2000,
+            "multas": 3000,
+            "deuda": 765246
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 24,
+            "ahorro": 240000,
+            "fondo_social": 6000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 46,
+            "ahorro": 460000,
+            "fondo_social": 14000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 469296
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 443,
+          "ahorro": 4430000,
+          "fondo_social": 162000,
+          "multas": 49000,
+          "ventas": 287060,
+          "interes_prestamos": 905712,
+          "caja_total": 5833772,
+          "ganancia": 954712,
+          "monto_repartible": 5546712,
+          "residuo_redondeo": 1813712,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 43102,
+            "deuda_pendiente": 293593,
+            "a_entregar": 0,
+            "deuda_arrastrada": 50491
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 58187,
+            "deuda_pendiente": 521657,
+            "a_entregar": 0,
+            "deuda_arrastrada": 177470
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 17,
+            "ahorro": 170000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 36636,
+            "deuda_pendiente": 0,
+            "a_entregar": 216000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 48,
+            "ahorro": 480000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 103445,
+            "deuda_pendiente": 0,
+            "a_entregar": 588000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 17240,
+            "deuda_pendiente": 0,
+            "a_entregar": 115000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 9,
+            "ahorro": 90000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 19395,
+            "deuda_pendiente": 0,
+            "a_entregar": 109000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 28,
+            "ahorro": 280000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 60342,
+            "deuda_pendiente": 0,
+            "a_entregar": 340000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 17240,
+            "deuda_pendiente": 0,
+            "a_entregar": 147000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 57,
+            "ahorro": 570000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 0,
+            "participacion_interes": 122841,
+            "deuda_pendiente": 0,
+            "a_entregar": 727000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 40947,
+            "deuda_pendiente": 0,
+            "a_entregar": 236000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 58187,
+            "deuda_pendiente": 129989,
+            "a_entregar": 198000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 109910,
+            "deuda_pendiente": 765246,
+            "a_entregar": 0,
+            "deuda_arrastrada": 143336
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 24,
+            "ahorro": 240000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 51722,
+            "deuda_pendiente": 0,
+            "a_entregar": 297000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 46,
+            "ahorro": 460000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 99134,
+            "deuda_pendiente": 0,
+            "a_entregar": 573000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 116375,
+            "deuda_pendiente": 469296,
+            "a_entregar": 187000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 13",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 1286372,
+        "ventas": 155943,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 19,
+            "ahorro": 190000,
+            "fondo_social": 14000,
+            "multas": 1000,
+            "deuda": 628630
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 52,
+            "ahorro": 520000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 260485
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 18000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 37,
+            "ahorro": 370000,
+            "fondo_social": 8000,
+            "multas": 0,
+            "deuda": 628538
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 30000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 6,
+            "ahorro": 60000,
+            "fondo_social": 15000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 35000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 25000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 24,
+            "ahorro": 240000,
+            "fondo_social": 2000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 9,
+            "ahorro": 90000,
+            "fondo_social": 10000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 20000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 23,
+            "ahorro": 230000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 6,
+            "ahorro": 60000,
+            "fondo_social": 5000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 32,
+            "ahorro": 320000,
+            "fondo_social": 5000,
+            "multas": 4000,
+            "deuda": 143715
+          },
+          {
+            "numero_miembro": 18,
+            "acciones": 32,
+            "ahorro": 320000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 459,
+          "ahorro": 4590000,
+          "fondo_social": 197000,
+          "multas": 44000,
+          "ventas": 155943,
+          "interes_prestamos": 1286372,
+          "caja_total": 6273315,
+          "ganancia": 1442315,
+          "monto_repartible": 6229315,
+          "residuo_redondeo": 1162915,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 97411,
+            "deuda_pendiente": 0,
+            "a_entregar": 407400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 19,
+            "ahorro": 190000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 59703,
+            "deuda_pendiente": 628630,
+            "a_entregar": 0,
+            "deuda_arrastrada": 364927
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 52,
+            "ahorro": 520000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 163399,
+            "deuda_pendiente": 260485,
+            "a_entregar": 432900,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 50276,
+            "deuda_pendiente": 0,
+            "a_entregar": 228200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 37,
+            "ahorro": 370000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 0,
+            "participacion_interes": 116265,
+            "deuda_pendiente": 628538,
+            "a_entregar": 0,
+            "deuda_arrastrada": 134273
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 128834,
+            "deuda_pendiente": 0,
+            "a_entregar": 538800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 78557,
+            "deuda_pendiente": 0,
+            "a_entregar": 328500,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 69130,
+            "deuda_pendiente": 0,
+            "a_entregar": 319100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 6,
+            "ahorro": 60000,
+            "aporte_fondo_social": 15000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 18853,
+            "deuda_pendiente": 0,
+            "a_entregar": 93800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 172826,
+            "deuda_pendiente": 0,
+            "a_entregar": 757800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 6284,
+            "deuda_pendiente": 0,
+            "a_entregar": 51200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 24,
+            "ahorro": 240000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 0,
+            "participacion_interes": 75415,
+            "deuda_pendiente": 0,
+            "a_entregar": 317400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 9,
+            "ahorro": 90000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 0,
+            "participacion_interes": 28280,
+            "deuda_pendiente": 0,
+            "a_entregar": 128200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 84842,
+            "deuda_pendiente": 0,
+            "a_entregar": 374800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 23,
+            "ahorro": 230000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 72272,
+            "deuda_pendiente": 0,
+            "a_entregar": 302200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 6,
+            "ahorro": 60000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 18853,
+            "deuda_pendiente": 0,
+            "a_entregar": 83800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 32,
+            "ahorro": 320000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 100553,
+            "deuda_pendiente": 143715,
+            "a_entregar": 281800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 18,
+            "acciones": 32,
+            "ahorro": 320000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 100553,
+            "deuda_pendiente": 0,
+            "a_entregar": 420500,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 14",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 731388,
+        "ventas": 191749,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 16000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 6000,
+            "multas": 0,
+            "deuda": 652694
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 11,
+            "ahorro": 110000,
+            "fondo_social": 25000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 48,
+            "ahorro": 480000,
+            "fondo_social": 16000,
+            "multas": 4000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 169,
+          "ahorro": 1690000,
+          "fondo_social": 63000,
+          "multas": 14000,
+          "ventas": 191749,
+          "interes_prestamos": 731388,
+          "caja_total": 2690137,
+          "ganancia": 937137,
+          "monto_repartible": 2627137,
+          "residuo_redondeo": 109037,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 138629,
+            "deuda_pendiente": 0,
+            "a_entregar": 388600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 282804,
+            "deuda_pendiente": 0,
+            "a_entregar": 792800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 0,
+            "participacion_interes": 38816,
+            "deuda_pendiente": 652694,
+            "a_entregar": 0,
+            "deuda_arrastrada": 543878
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 11,
+            "ahorro": 110000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 60997,
+            "deuda_pendiente": 0,
+            "a_entregar": 170900,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 149720,
+            "deuda_pendiente": 0,
+            "a_entregar": 419700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 48,
+            "ahorro": 480000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 266169,
+            "deuda_pendiente": 0,
+            "a_entregar": 746100,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 15",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 373973,
+        "ventas": 294855,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 1,
+            "ahorro": 10000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 50884
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 14,
+            "ahorro": 140000,
+            "fondo_social": 18000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 623394
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 42,
+            "ahorro": 420000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 12000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 44,
+            "ahorro": 440000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 545978
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 35,
+            "ahorro": 350000,
+            "fondo_social": 18000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 40,
+            "ahorro": 400000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 4000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 12000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 26,
+            "ahorro": 260000,
+            "fondo_social": 8000,
+            "multas": 0,
+            "deuda": 529079
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 8000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 35,
+            "ahorro": 350000,
+            "fondo_social": 40000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 475,
+          "ahorro": 4750000,
+          "fondo_social": 140000,
+          "multas": 40000,
+          "ventas": 294855,
+          "interes_prestamos": 373973,
+          "caja_total": 5598828,
+          "ganancia": 413973,
+          "monto_repartible": 5163973,
+          "residuo_redondeo": 1121973,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 1,
+            "ahorro": 10000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 871,
+            "deuda_pendiente": 50884,
+            "a_entregar": 0,
+            "deuda_arrastrada": 40013
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 14,
+            "ahorro": 140000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 12201,
+            "deuda_pendiente": 0,
+            "a_entregar": 152000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 27017,
+            "deuda_pendiente": 623394,
+            "a_entregar": 0,
+            "deuda_arrastrada": 286377
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 42,
+            "ahorro": 420000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 36603,
+            "deuda_pendiente": 0,
+            "a_entregar": 456000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 15687,
+            "deuda_pendiente": 0,
+            "a_entregar": 194000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 44,
+            "ahorro": 440000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 38346,
+            "deuda_pendiente": 545978,
+            "a_entregar": 0,
+            "deuda_arrastrada": 67632
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 47062,
+            "deuda_pendiente": 0,
+            "a_entregar": 586000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 35,
+            "ahorro": 350000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 30503,
+            "deuda_pendiente": 0,
+            "a_entregar": 380000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 40,
+            "ahorro": 400000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 34860,
+            "deuda_pendiente": 0,
+            "a_entregar": 434000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 44447,
+            "deuda_pendiente": 0,
+            "a_entregar": 554000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 1743,
+            "deuda_pendiente": 0,
+            "a_entregar": 20000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 26,
+            "ahorro": 260000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 0,
+            "participacion_interes": 22659,
+            "deuda_pendiente": 529079,
+            "a_entregar": 0,
+            "deuda_arrastrada": 246420
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 15687,
+            "deuda_pendiente": 0,
+            "a_entregar": 194000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 26145,
+            "deuda_pendiente": 0,
+            "a_entregar": 326000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 35,
+            "ahorro": 350000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 30503,
+            "deuda_pendiente": 0,
+            "a_entregar": 380000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 13944,
+            "deuda_pendiente": 0,
+            "a_entregar": 172000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 15687,
+            "deuda_pendiente": 0,
+            "a_entregar": 194000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 16",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 1246778,
+        "ventas": 12231,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 16000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 14000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 36,
+            "ahorro": 360000,
+            "fondo_social": 10000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 42,
+            "ahorro": 420000,
+            "fondo_social": 16000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 48,
+            "ahorro": 480000,
+            "fondo_social": 45000,
+            "multas": 0,
+            "deuda": 477877
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 2199
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 6000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 15000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 48,
+            "ahorro": 480000,
+            "fondo_social": 14000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 43,
+            "ahorro": 430000,
+            "fondo_social": 12000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 49,
+            "ahorro": 490000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 340783
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 39,
+            "ahorro": 390000,
+            "fondo_social": 6000,
+            "multas": 4000,
+            "deuda": 697584
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 468,
+          "ahorro": 4680000,
+          "fondo_social": 154000,
+          "multas": 38000,
+          "ventas": 12231,
+          "interes_prestamos": 1246778,
+          "caja_total": 6131009,
+          "ganancia": 1284778,
+          "monto_repartible": 6118778,
+          "residuo_redondeo": 1324378,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 0,
+            "participacion_interes": 21962,
+            "deuda_pendiente": 0,
+            "a_entregar": 117900,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 85102,
+            "deuda_pendiente": 0,
+            "a_entregar": 409100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 36,
+            "ahorro": 360000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 98829,
+            "deuda_pendiente": 0,
+            "a_entregar": 468800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 42,
+            "ahorro": 420000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 115300,
+            "deuda_pendiente": 0,
+            "a_entregar": 551300,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 48,
+            "ahorro": 480000,
+            "aporte_fondo_social": 45000,
+            "multas_pagadas": 0,
+            "participacion_interes": 131772,
+            "deuda_pendiente": 477877,
+            "a_entregar": 178800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 43924,
+            "deuda_pendiente": 2199,
+            "a_entregar": 201700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 85102,
+            "deuda_pendiente": 0,
+            "a_entregar": 401100,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 15000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 19216,
+            "deuda_pendiente": 0,
+            "a_entregar": 104200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 54905,
+            "deuda_pendiente": 0,
+            "a_entregar": 254900,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 48,
+            "ahorro": 480000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 131772,
+            "deuda_pendiente": 0,
+            "a_entregar": 625700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 43,
+            "ahorro": 430000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 118045,
+            "deuda_pendiente": 0,
+            "a_entregar": 560000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 49,
+            "ahorro": 490000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 134517,
+            "deuda_pendiente": 340783,
+            "a_entregar": 283700,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 137262,
+            "deuda_pendiente": 0,
+            "a_entregar": 637200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 39,
+            "ahorro": 390000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 107064,
+            "deuda_pendiente": 697584,
+            "a_entregar": 0,
+            "deuda_arrastrada": 194520
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 17",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 100
+        },
+        "interes_cobrado": 181255,
+        "ventas": 77492,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 42,
+            "ahorro": 420000,
+            "fondo_social": 5000,
+            "multas": 1000,
+            "deuda": 346115
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 45,
+            "ahorro": 450000,
+            "fondo_social": 35000,
+            "multas": 3000,
+            "deuda": 285377
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 35,
+            "ahorro": 350000,
+            "fondo_social": 14000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 25000,
+            "multas": 3000,
+            "deuda": 785046
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 37,
+            "ahorro": 370000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 798310
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 16,
+            "ahorro": 160000,
+            "fondo_social": 2000,
+            "multas": 3000,
+            "deuda": 323316
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 15000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 5000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 6,
+            "ahorro": 60000,
+            "fondo_social": 20000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 42,
+            "ahorro": 420000,
+            "fondo_social": 12000,
+            "multas": 0,
+            "deuda": 248497
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 17,
+            "ahorro": 170000,
+            "fondo_social": 12000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 21,
+            "ahorro": 210000,
+            "fondo_social": 45000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 58,
+            "ahorro": 580000,
+            "fondo_social": 50000,
+            "multas": 3000,
+            "deuda": 660380
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 453,
+          "ahorro": 4530000,
+          "fondo_social": 260000,
+          "multas": 39000,
+          "ventas": 77492,
+          "interes_prestamos": 181255,
+          "caja_total": 5087747,
+          "ganancia": 181255,
+          "monto_repartible": 4711255,
+          "residuo_redondeo": 2263355,
+          "multiplo_redondeo": 100
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 42,
+            "ahorro": 420000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 16805,
+            "deuda_pendiente": 346115,
+            "a_entregar": 90600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 45,
+            "ahorro": 450000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 18005,
+            "deuda_pendiente": 285377,
+            "a_entregar": 182600,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 35,
+            "ahorro": 350000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 14004,
+            "deuda_pendiente": 0,
+            "a_entregar": 364000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 3200,
+            "deuda_pendiente": 0,
+            "a_entregar": 83200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 8802,
+            "deuda_pendiente": 785046,
+            "a_entregar": 0,
+            "deuda_arrastrada": 556244
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 37,
+            "ahorro": 370000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 14804,
+            "deuda_pendiente": 798310,
+            "a_entregar": 0,
+            "deuda_arrastrada": 413506
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 16,
+            "ahorro": 160000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 6401,
+            "deuda_pendiente": 323316,
+            "a_entregar": 0,
+            "deuda_arrastrada": 156915
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 15000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 12403,
+            "deuda_pendiente": 0,
+            "a_entregar": 322400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 0,
+            "participacion_interes": 7202,
+            "deuda_pendiente": 0,
+            "a_entregar": 187200,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 6,
+            "ahorro": 60000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 2400,
+            "deuda_pendiente": 0,
+            "a_entregar": 62400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 42,
+            "ahorro": 420000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 0,
+            "participacion_interes": 16805,
+            "deuda_pendiente": 248497,
+            "a_entregar": 188300,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 17,
+            "ahorro": 170000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 0,
+            "participacion_interes": 6802,
+            "deuda_pendiente": 0,
+            "a_entregar": 176800,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 22006,
+            "deuda_pendiente": 0,
+            "a_entregar": 572000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 21,
+            "ahorro": 210000,
+            "aporte_fondo_social": 45000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 8402,
+            "deuda_pendiente": 0,
+            "a_entregar": 218400,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 58,
+            "ahorro": 580000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 23207,
+            "deuda_pendiente": 660380,
+            "a_entregar": 0,
+            "deuda_arrastrada": 57173
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 18",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 1265285,
+        "ventas": 80308,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 16000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 57,
+            "ahorro": 570000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 2,
+            "ahorro": 20000,
+            "fondo_social": 6000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 14,
+            "ahorro": 140000,
+            "fondo_social": 25000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 31,
+            "ahorro": 310000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 45,
+            "ahorro": 450000,
+            "fondo_social": 30000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 23,
+            "ahorro": 230000,
+            "fondo_social": 0,
+            "multas": 0,
+            "deuda": 585098
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 38,
+            "ahorro": 380000,
+            "fondo_social": 14000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 47,
+            "ahorro": 470000,
+            "fondo_social": 40000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 46,
+            "ahorro": 460000,
+            "fondo_social": 4000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 56,
+            "ahorro": 560000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 39,
+            "ahorro": 390000,
+            "fondo_social": 20000,
+            "multas": 2000,
+            "deuda": 649102
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 433,
+          "ahorro": 4330000,
+          "fondo_social": 155000,
+          "multas": 34000,
+          "ventas": 80308,
+          "interes_prestamos": 1265285,
+          "caja_total": 5864593,
+          "ganancia": 1299285,
+          "monto_repartible": 5784285,
+          "residuo_redondeo": 826046,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 16000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 24005,
+            "deuda_pendiente": 0,
+            "a_entregar": 120005,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 57,
+            "ahorro": 570000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 171037,
+            "deuda_pendiente": 0,
+            "a_entregar": 741037,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 6001,
+            "deuda_pendiente": 0,
+            "a_entregar": 26001,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 2,
+            "ahorro": 20000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 6001,
+            "deuda_pendiente": 0,
+            "a_entregar": 32001,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 14,
+            "ahorro": 140000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 42009,
+            "deuda_pendiente": 0,
+            "a_entregar": 207009,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 31,
+            "ahorro": 310000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 93020,
+            "deuda_pendiente": 0,
+            "a_entregar": 403020,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 75016,
+            "deuda_pendiente": 0,
+            "a_entregar": 325016,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 45,
+            "ahorro": 450000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 135029,
+            "deuda_pendiente": 0,
+            "a_entregar": 615029,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 23,
+            "ahorro": 230000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 0,
+            "participacion_interes": 69015,
+            "deuda_pendiente": 585098,
+            "a_entregar": 0,
+            "deuda_arrastrada": 286083
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 38,
+            "ahorro": 380000,
+            "aporte_fondo_social": 14000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 114025,
+            "deuda_pendiente": 0,
+            "a_entregar": 508025,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 47,
+            "ahorro": 470000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 141030,
+            "deuda_pendiente": 0,
+            "a_entregar": 651030,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 46,
+            "ahorro": 460000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 0,
+            "participacion_interes": 138030,
+            "deuda_pendiente": 0,
+            "a_entregar": 602030,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 56,
+            "ahorro": 560000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 168036,
+            "deuda_pendiente": 0,
+            "a_entregar": 728036,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 39,
+            "ahorro": 390000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 117025,
+            "deuda_pendiente": 649102,
+            "a_entregar": 0,
+            "deuda_arrastrada": 122077
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 19",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 1284838,
+        "ventas": 92913,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 5000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 17,
+            "ahorro": 170000,
+            "fondo_social": 30000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 58,
+            "ahorro": 580000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 93,
+          "ahorro": 930000,
+          "fondo_social": 35000,
+          "multas": 7000,
+          "ventas": 92913,
+          "interes_prestamos": 1284838,
+          "caja_total": 2349751,
+          "ganancia": 1384751,
+          "monto_repartible": 2314751,
+          "residuo_redondeo": 2751,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 268016,
+            "deuda_pendiente": 0,
+            "a_entregar": 448000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 17,
+            "ahorro": 170000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 0,
+            "participacion_interes": 253126,
+            "deuda_pendiente": 0,
+            "a_entregar": 422000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 58,
+            "ahorro": 580000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 863608,
+            "deuda_pendiente": 0,
+            "a_entregar": 1442000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 20",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 763706,
+        "ventas": 203038,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 26,
+            "ahorro": 260000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 6,
+            "ahorro": 60000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 11,
+            "ahorro": 110000,
+            "fondo_social": 2000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 27,
+            "ahorro": 270000,
+            "fondo_social": 12000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 664281
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 24,
+            "ahorro": 240000,
+            "fondo_social": 50000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 12000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 51,
+            "ahorro": 510000,
+            "fondo_social": 25000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 35000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 55,
+            "ahorro": 550000,
+            "fondo_social": 50000,
+            "multas": 2000,
+            "deuda": 236318
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 261637
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 6,
+            "ahorro": 60000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 37,
+            "ahorro": 370000,
+            "fondo_social": 40000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 56,
+            "ahorro": 560000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 529,
+          "ahorro": 5290000,
+          "fondo_social": 266000,
+          "multas": 39000,
+          "ventas": 203038,
+          "interes_prestamos": 763706,
+          "caja_total": 6561744,
+          "ganancia": 966744,
+          "monto_repartible": 6256744,
+          "residuo_redondeo": 1143744,
+          "multiplo_redondeo": 1000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 26,
+            "ahorro": 260000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 47514,
+            "deuda_pendiente": 0,
+            "a_entregar": 307000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 100512,
+            "deuda_pendiente": 0,
+            "a_entregar": 650000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 6,
+            "ahorro": 60000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 10964,
+            "deuda_pendiente": 0,
+            "a_entregar": 70000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 11,
+            "ahorro": 110000,
+            "aporte_fondo_social": 2000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 20102,
+            "deuda_pendiente": 0,
+            "a_entregar": 130000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 27,
+            "ahorro": 270000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 49342,
+            "deuda_pendiente": 0,
+            "a_entregar": 319000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 98684,
+            "deuda_pendiente": 664281,
+            "a_entregar": 0,
+            "deuda_arrastrada": 25597
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 24,
+            "ahorro": 240000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 43859,
+            "deuda_pendiente": 0,
+            "a_entregar": 283000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 0,
+            "participacion_interes": 93202,
+            "deuda_pendiente": 0,
+            "a_entregar": 603000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 51,
+            "ahorro": 510000,
+            "aporte_fondo_social": 25000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 93202,
+            "deuda_pendiente": 0,
+            "a_entregar": 603000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 74927,
+            "deuda_pendiente": 0,
+            "a_entregar": 484000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 55,
+            "ahorro": 550000,
+            "aporte_fondo_social": 50000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 100512,
+            "deuda_pendiente": 236318,
+            "a_entregar": 414000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 52997,
+            "deuda_pendiente": 261637,
+            "a_entregar": 81000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 6,
+            "ahorro": 60000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 10964,
+            "deuda_pendiente": 0,
+            "a_entregar": 70000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 37,
+            "ahorro": 370000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 67617,
+            "deuda_pendiente": 0,
+            "a_entregar": 437000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 56,
+            "ahorro": 560000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 102339,
+            "deuda_pendiente": 0,
+            "a_entregar": 662000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 21",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 1653166,
+        "ventas": 11351,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 18,
+            "ahorro": 180000,
+            "fondo_social": 5000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 29,
+            "ahorro": 290000,
+            "fondo_social": 4000,
+            "multas": 4000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 47,
+          "ahorro": 470000,
+          "fondo_social": 9000,
+          "multas": 9000,
+          "ventas": 11351,
+          "interes_prestamos": 1653166,
+          "caja_total": 2152517,
+          "ganancia": 1662166,
+          "monto_repartible": 2141166,
+          "residuo_redondeo": 1,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 18,
+            "ahorro": 180000,
+            "aporte_fondo_social": 5000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 636574,
+            "deuda_pendiente": 0,
+            "a_entregar": 821574,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 29,
+            "ahorro": 290000,
+            "aporte_fondo_social": 4000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 1025591,
+            "deuda_pendiente": 0,
+            "a_entregar": 1319591,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 22",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": false,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 915147,
+        "ventas": 198957,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 3,
+            "ahorro": 30000,
+            "fondo_social": 18000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 10000,
+            "multas": 2000,
+            "deuda": 430040
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 30,
+            "ahorro": 300000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 415910
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 25,
+            "ahorro": 250000,
+            "fondo_social": 35000,
+            "multas": 2000,
+            "deuda": 197946
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 28,
+            "ahorro": 280000,
+            "fondo_social": 30000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 57,
+            "ahorro": 570000,
+            "fondo_social": 40000,
+            "multas": 4000,
+            "deuda": 379703
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 1,
+            "ahorro": 10000,
+            "fondo_social": 30000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 39,
+            "ahorro": 390000,
+            "fondo_social": 8000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 49,
+            "ahorro": 490000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 54,
+            "ahorro": 540000,
+            "fondo_social": 10000,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 41,
+            "ahorro": 410000,
+            "fondo_social": 0,
+            "multas": 3000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 40000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 57,
+            "ahorro": 570000,
+            "fondo_social": 20000,
+            "multas": 2000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 7,
+            "ahorro": 70000,
+            "fondo_social": 12000,
+            "multas": 2000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 531,
+          "ahorro": 5310000,
+          "fondo_social": 253000,
+          "multas": 56000,
+          "ventas": 198957,
+          "interes_prestamos": 915147,
+          "caja_total": 6733104,
+          "ganancia": 915147,
+          "monto_repartible": 6225147,
+          "residuo_redondeo": 755147,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 93065,
+            "deuda_pendiente": 0,
+            "a_entregar": 632000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 3,
+            "ahorro": 30000,
+            "aporte_fondo_social": 18000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 5170,
+            "deuda_pendiente": 0,
+            "a_entregar": 34000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 12064,
+            "deuda_pendiente": 430040,
+            "a_entregar": 0,
+            "deuda_arrastrada": 347976
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 30,
+            "ahorro": 300000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 51703,
+            "deuda_pendiente": 0,
+            "a_entregar": 350000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 12064,
+            "deuda_pendiente": 415910,
+            "a_entregar": 0,
+            "deuda_arrastrada": 333846
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 25,
+            "ahorro": 250000,
+            "aporte_fondo_social": 35000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 43086,
+            "deuda_pendiente": 197946,
+            "a_entregar": 94000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 28,
+            "ahorro": 280000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 48256,
+            "deuda_pendiente": 0,
+            "a_entregar": 328000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 57,
+            "ahorro": 570000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 98236,
+            "deuda_pendiente": 379703,
+            "a_entregar": 288000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 9,
+            "acciones": 1,
+            "ahorro": 10000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 1723,
+            "deuda_pendiente": 0,
+            "a_entregar": 10000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 10,
+            "acciones": 39,
+            "ahorro": 390000,
+            "aporte_fondo_social": 8000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 67214,
+            "deuda_pendiente": 0,
+            "a_entregar": 456000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 11,
+            "acciones": 49,
+            "ahorro": 490000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 84448,
+            "deuda_pendiente": 0,
+            "a_entregar": 574000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 12,
+            "acciones": 54,
+            "ahorro": 540000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 3000,
+            "participacion_interes": 93065,
+            "deuda_pendiente": 0,
+            "a_entregar": 632000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 13,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 86172,
+            "deuda_pendiente": 0,
+            "a_entregar": 586000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 14,
+            "acciones": 41,
+            "ahorro": 410000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 3000,
+            "participacion_interes": 70661,
+            "deuda_pendiente": 0,
+            "a_entregar": 480000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 15,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 40000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 37915,
+            "deuda_pendiente": 0,
+            "a_entregar": 256000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 16,
+            "acciones": 57,
+            "ahorro": 570000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 98236,
+            "deuda_pendiente": 0,
+            "a_entregar": 668000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 17,
+            "acciones": 7,
+            "ahorro": 70000,
+            "aporte_fondo_social": 12000,
+            "multas_pagadas": 2000,
+            "participacion_interes": 12064,
+            "deuda_pendiente": 0,
+            "a_entregar": 82000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 23",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1
+        },
+        "interes_cobrado": 1011200,
+        "ventas": 231166,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 38,
+            "ahorro": 380000,
+            "fondo_social": 10000,
+            "multas": 4000,
+            "deuda": 585509
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 56,
+            "ahorro": 560000,
+            "fondo_social": 0,
+            "multas": 2000,
+            "deuda": 11540
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 59,
+            "ahorro": 590000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 60,
+            "ahorro": 600000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 47,
+            "ahorro": 470000,
+            "fondo_social": 6000,
+            "multas": 5000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 17,
+            "ahorro": 170000,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 22,
+            "ahorro": 220000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 320493
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 299,
+          "ahorro": 2990000,
+          "fondo_social": 36000,
+          "multas": 22000,
+          "ventas": 231166,
+          "interes_prestamos": 1011200,
+          "caja_total": 4290366,
+          "ganancia": 1033200,
+          "monto_repartible": 4059200,
+          "residuo_redondeo": 828873,
+          "multiplo_redondeo": 1
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 38,
+            "ahorro": 380000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 131309,
+            "deuda_pendiente": 585509,
+            "a_entregar": 0,
+            "deuda_arrastrada": 64200
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 56,
+            "ahorro": 560000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 2000,
+            "participacion_interes": 193509,
+            "deuda_pendiente": 11540,
+            "a_entregar": 741969,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 59,
+            "ahorro": 590000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 203875,
+            "deuda_pendiente": 0,
+            "a_entregar": 793875,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 60,
+            "ahorro": 600000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 207331,
+            "deuda_pendiente": 0,
+            "a_entregar": 807331,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 47,
+            "ahorro": 470000,
+            "aporte_fondo_social": 6000,
+            "multas_pagadas": 5000,
+            "participacion_interes": 162409,
+            "deuda_pendiente": 0,
+            "a_entregar": 638409,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 17,
+            "ahorro": 170000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 0,
+            "participacion_interes": 58743,
+            "deuda_pendiente": 0,
+            "a_entregar": 248743,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 22,
+            "ahorro": 220000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 76021,
+            "deuda_pendiente": 320493,
+            "a_entregar": 0,
+            "deuda_arrastrada": 24472
+          }
+        ]
+      }
+    },
+    {
+      "nombre": "aleatorio 24",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": true,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": true,
+          "multiplo_redondeo": 2000
+        },
+        "interes_cobrado": 442289,
+        "ventas": 19013,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 37,
+            "ahorro": 370000,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 50,
+            "ahorro": 500000,
+            "fondo_social": 0,
+            "multas": 5000,
+            "deuda": 32733
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 8,
+            "ahorro": 80000,
+            "fondo_social": 30000,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 49,
+            "ahorro": 490000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 523918
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 21,
+            "ahorro": 210000,
+            "fondo_social": 10000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 12,
+            "ahorro": 120000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 20,
+            "ahorro": 200000,
+            "fondo_social": 0,
+            "multas": 1000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 60,
+            "ahorro": 600000,
+            "fondo_social": 0,
+            "multas": 4000,
+            "deuda": 0
+          }
+        ]
+      },
+      "esperado": {
+        "totales": {
+          "acciones": 257,
+          "ahorro": 2570000,
+          "fondo_social": 60000,
+          "multas": 27000,
+          "ventas": 19013,
+          "interes_prestamos": 442289,
+          "caja_total": 3118302,
+          "ganancia": 488302,
+          "monto_repartible": 3118302,
+          "residuo_redondeo": 562302,
+          "multiplo_redondeo": 2000
+        },
+        "detalle": [
+          {
+            "numero_miembro": 1,
+            "acciones": 37,
+            "ahorro": 370000,
+            "aporte_fondo_social": 20000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 70300,
+            "deuda_pendiente": 0,
+            "a_entregar": 460000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 50,
+            "ahorro": 500000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 5000,
+            "participacion_interes": 95000,
+            "deuda_pendiente": 32733,
+            "a_entregar": 562000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 8,
+            "ahorro": 80000,
+            "aporte_fondo_social": 30000,
+            "multas_pagadas": 1000,
+            "participacion_interes": 15200,
+            "deuda_pendiente": 0,
+            "a_entregar": 124000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 4,
+            "acciones": 49,
+            "ahorro": 490000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 93100,
+            "deuda_pendiente": 523918,
+            "a_entregar": 58000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 5,
+            "acciones": 21,
+            "ahorro": 210000,
+            "aporte_fondo_social": 10000,
+            "multas_pagadas": 4000,
+            "participacion_interes": 39900,
+            "deuda_pendiente": 0,
+            "a_entregar": 258000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 6,
+            "acciones": 12,
+            "ahorro": 120000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 22800,
+            "deuda_pendiente": 0,
+            "a_entregar": 142000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 7,
+            "acciones": 20,
+            "ahorro": 200000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 1000,
+            "participacion_interes": 38000,
+            "deuda_pendiente": 0,
+            "a_entregar": 238000,
+            "deuda_arrastrada": 0
+          },
+          {
+            "numero_miembro": 8,
+            "acciones": 60,
+            "ahorro": 600000,
+            "aporte_fondo_social": 0,
+            "multas_pagadas": 4000,
+            "participacion_interes": 114000,
+            "deuda_pendiente": 0,
+            "a_entregar": 714000,
+            "deuda_arrastrada": 0
+          }
+        ]
+      }
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "ciclo sin acciones",
+      "entrada": {
+        "politica": {
+          "reparte_fondo_social": false,
+          "multas_a_repartible": true,
+          "ventas_a_repartible": false,
+          "multiplo_redondeo": 1000
+        },
+        "interes_cobrado": 37500,
+        "ventas": 10000,
+        "miembros": [
+          {
+            "numero_miembro": 1,
+            "acciones": 0,
+            "ahorro": 0,
+            "fondo_social": 20000,
+            "multas": 4000,
+            "deuda": 0
+          },
+          {
+            "numero_miembro": 2,
+            "acciones": 0,
+            "ahorro": 0,
+            "fondo_social": 20000,
+            "multas": 0,
+            "deuda": 120000
+          },
+          {
+            "numero_miembro": 3,
+            "acciones": 0,
+            "ahorro": 0,
+            "fondo_social": 20000,
+            "multas": 2000,
+            "deuda": 300000
+          }
+        ]
+      },
+      "codigo": "SIN_MOVIMIENTOS"
+    }
+  ]
+}
