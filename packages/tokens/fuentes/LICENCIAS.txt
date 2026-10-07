@@ -191,3 +191,7 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+
+Los archivos de nativas/ son instancias estáticas por peso de estas mismas fuentes (generadas
+con scripts/fuentes_nativas.py) y se distribuyen bajo la misma SIL Open Font License 1.1.
+Ninguna de las tres fuentes declara un Reserved Font Name.

@@ -7,7 +7,7 @@
 // espaciado se edita DESIGN.md y se corre `npm run tokens`; nunca se editan las salidas a mano.
 // `npm run tokens:check` falla si alguna salida no coincide con DESIGN.md (lo corre CI).
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
@@ -95,7 +95,9 @@ function generarCss(tokens) {
 
 // --- React Native (app) --------------------------------------------------------------------
 
-// Nombres con que la app registra las fuentes en expo-font (TX2).
+// Android necesita un archivo estático por peso (fuentes/nativas/, generadas por
+// scripts/fuentes_nativas.py). Cada peso es su propia familia, p. ej. "Bitter-700", y la app
+// no pasa fontWeight: así Android no engrosa la letra por su cuenta.
 const FUENTES_RN = {
   "Atkinson Hyperlegible Next": "AtkinsonHyperlegibleNext",
   "Atkinson Hyperlegible Mono": "AtkinsonHyperlegibleMono",
@@ -121,9 +123,12 @@ function generarRn(tokens) {
     const t = {};
     if (props.fontFamily) {
       if (!FUENTES_RN[props.fontFamily]) throw new Error(`Fuente sin nombre RN: ${props.fontFamily}`);
-      t.fontFamily = FUENTES_RN[props.fontFamily];
+      const familia = `${FUENTES_RN[props.fontFamily]}-${props.fontWeight ?? 400}`;
+      if (!existsSync(join(paquete, "fuentes", "nativas", `${familia}.ttf`))) {
+        throw new Error(`Falta fuentes/nativas/${familia}.ttf. Agregar el peso en scripts/fuentes_nativas.py y correrlo.`);
+      }
+      t.fontFamily = familia;
     }
-    if (props.fontWeight !== undefined) t.fontWeight = String(props.fontWeight);
     const tam = medida(props.fontSize);
     if (tam !== undefined) t.fontSize = tam;
     if (props.lineHeight !== undefined && tam !== undefined) t.lineHeight = Math.round(Number(props.lineHeight) * tam);

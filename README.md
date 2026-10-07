@@ -12,7 +12,7 @@ Credimpacto es software: no custodia ni capta dinero.
 |---|---|
 | `backend/` | Django + Django Ninja sobre PostgreSQL. Apps: `core`, `cuentas`, `acap`, `libro`, `sync`, `migracion`. |
 | `web/` | Next.js: plataforma de administración y monitoreo de la Fundación. |
-| `movil/` | App Android con Expo para la reunión offline y la vista del socio (desde TX2). |
+| `movil/` | App Android con Expo (SDK 57) para la reunión offline y la vista del socio. Ver `movil/README.md`. |
 | `packages/reglas/` | Reglas de dinero en TypeScript (app y web), espejo de `backend/libro/reglas.py`. |
 | `packages/casos-reglas/` | Casos JSON de las reglas de dinero, ejecutados por pytest y por Vitest. |
 | `packages/tokens/` | Tokens de DESIGN.md (CSS para la web, módulo TS para la app) y fuentes OFL. |
@@ -25,7 +25,7 @@ Node 24+, [uv](https://docs.astral.sh/uv/) (instala Python 3.13) y PostgreSQL 17
 ## Comandos
 
 ```bash
-npm install                      # dependencias de web y paquetes
+npm install                      # dependencias de web, app y paquetes
 cd backend && uv sync            # dependencias del backend
 ```
 
@@ -39,7 +39,9 @@ cd backend && uv sync            # dependencias del backend
 | Pruebas unitarias web | `npm run web:test` |
 | Pruebas de las reglas en TypeScript | `npm run reglas:test` |
 | E2E (necesita `npm run build -w @credimpacto/web`) | `npm run web:e2e` (local con Edge: `PLAYWRIGHT_CANAL=msedge`) |
+| Pruebas de la app (Jest) | `npm run movil:test` |
 | Regenerar tokens tras editar DESIGN.md | `npm run tokens` |
+| Regenerar las fuentes .ttf de la app | `npm run fuentes` |
 | Regenerar el cliente tras cambiar la API | `npm run api:tipos` |
 
 En Windows con Control de aplicaciones, usar `uv run python -m <herramienta>` en vez de los `.exe`
@@ -47,7 +49,8 @@ del entorno virtual.
 
 ## Reglas que CI hace cumplir
 
-- `tokens.css` coincide con DESIGN.md y el cliente de API coincide con el backend.
+- Los tokens (CSS y React Native) coinciden con DESIGN.md y el cliente de API coincide con el backend.
 - Backend: ruff, sin migraciones pendientes, `check --deploy` sin advertencias y pytest sobre PostgreSQL.
-- Web: eslint, tsc, Vitest y build.
+- Web y paquetes: eslint, tsc, Vitest y build.
+- App: eslint, tsc, Jest, APK de release firmado y Maestro en un emulador Android con modo avión.
 - E2E: Playwright en celular (Pixel 5) y escritorio.
