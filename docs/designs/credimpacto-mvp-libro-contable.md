@@ -9,6 +9,11 @@ Mode: Startup
 > **Cambio de alcance (2026-10-06, decisión del usuario).** Esto tiene prioridad sobre cualquier sección o decisión posterior de este documento.
 > 1. **Fuera del proyecto: el chatbot y n8n/Chatwoot.** No se modifica, bloquea, rota ni coordina nada del bot. Quedan sin efecto: la tarea T1 (seguridad del bot), la parte de n8n y del bloqueo de Supabase en T9 y E12/D16 de ingeniería, E20/D25 y la convivencia bot-plataforma. Supabase se usa solo como **fuente de lectura para importar los datos** de cada ACAP cuando entra a la plataforma.
 > 2. **Sin servicios pagos de OpenAI.** No se generan maquetas con IA. El diseño visual se hace con `/design-consultation` por su ruta de vista previa en HTML y con las skills de diseño instaladas (Impeccable, Taste, Emil).
+>
+> **Segundo cambio de alcance (2026-10-06, decisiones D2 y D3 del usuario tras releer el PDF de contexto).** También tiene prioridad sobre el resto del documento.
+> 3. **La app móvil es nativa con Expo desde el MVP (D2).** Las comunidades usan una app de Google Play (Android primero). La superficie de reunión offline (asistente de 9 pasos, firmas, arqueo, cierre, cola de sincronización) se construye en Expo con almacenamiento local cifrado (SQLite), no como PWA de Next.js. La web Next.js queda como **plataforma de administración y monitoreo de la Fundación** (back-office). Las reglas de dinero en TypeScript, los casos compartidos, el cliente de API y los tokens de DESIGN.md se mueven a paquetes compartidos que usan la web y la app. Las decisiones de cifrado, llaves y cola (T5, T6, E1, D17, D18, D24) se reinterpretan para el almacenamiento y la criptografía nativos; requieren revisión de ingeniería antes de implementarse.
+> 4. **El socio entra a la app con vista de solo lectura en el MVP (D3).** Con su cédula y un PIN ve su ahorro del ciclo, sus aportes y su préstamo (saldo y cuotas). No mueve dinero: pedir y votar préstamos sigue haciéndose en la reunión y pasa a la fase 2. La identificación en celulares compartidos (pregunta abierta 2) se resuelve como parte de esta vista.
+> 5. **Recordatorios.** El chatbot enviaba recordatorios del ciclo; la plataforma debe cubrirlos (notificaciones de la app). Se agrega como tarea pendiente de diseño.
 
 ## Problem Statement
 
@@ -1518,11 +1523,11 @@ Synthesized from this review's findings. Each task derives from a specific findi
 - [ ] **T3 (P1, human: ~1w / CC: ~4h)** — libro — Reglas de dinero en Python y TS con casos compartidos y JCS
   - Surfaced by: Section 2 C1; Section 1 A3 (D19); regression contract
   - Files: backend/libro/reglas.py, web/src/reglas/, packages/casos-reglas/
-  - Verify: pytest + Vitest con los mismos casos; Hypothesis en redondeo; 2 ciclos curados al peso
-- [ ] **T4 (P1, human: ~1d / CC: ~45min)** — libro — Libro solo-agregar en PostgreSQL con eventos de estado
+  - Verify: pytest + Vitest con los mismos casos; Hypothesis en redondeo; 2 ciclos curados al peso — **reglas y casos hechos 2026-10-06 (PR LaszloSM/Coimpacto#2); falta la prueba con 2 ciclos curados que valide CoimpactoB**
+- [x] **T4 (P1, human: ~1d / CC: ~45min)** — libro — Libro solo-agregar en PostgreSQL con eventos de estado
   - Surfaced by: Section 2 C2 (D22)
   - Files: backend/libro/migrations/, backend/libro/servicio.py
-  - Verify: UPDATE/DELETE del rol app falla; admin en solo lectura
+  - Verify: UPDATE/DELETE del rol app falla; admin en solo lectura — **hecho 2026-10-06** (rama t4-libro-solo-agregar, CI verde con PostgreSQL)
 - [ ] **T5 (P1, human: ~1w / CC: ~4h)** — cuentas — DEK por PIN, llaves de firma ECDSA, enrolamiento por QR
   - Surfaced by: Scope E1 (D5); Section 1 A1 (D17), A2 (D18)
   - Files: backend/cuentas/, web/src/seguridad/
