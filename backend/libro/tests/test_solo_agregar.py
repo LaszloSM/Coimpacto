@@ -5,6 +5,7 @@ import uuid
 import pytest
 from django.contrib.admin.sites import site
 from django.db import connection, transaction
+from django.db.models import ProtectedError
 from django.db.utils import IntegrityError, ProgrammingError
 from django.test import RequestFactory
 
@@ -36,14 +37,31 @@ def test_save_de_un_movimiento_existente_rechazado(movimiento):
     _rechazado_por_trigger(movimiento.save)
 
 
-def test_delete_rechazado(movimiento):
-    _rechazado_por_trigger(lambda: Movimiento.objects.filter(id=movimiento.id).delete())
+def test_delete_por_sql_rechazado(movimiento):
+    def borrar():
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM libro_movimiento WHERE id = %s", [movimiento.id])
+
+    _rechazado_por_trigger(borrar)
+
+
+def test_delete_desde_django_rechazado(movimiento):
+    # Un evento no tiene dependientes, así que el borrado llega hasta PostgreSQL.
+    _rechazado_por_trigger(lambda: EventoEstado.objects.filter(movimiento=movimiento).delete())
+
+
+def test_delete_de_movimiento_desde_django_tambien_falla(movimiento):
+    # Antes del trigger lo frena Django: el movimiento tiene eventos protegidos (PROTECT).
+    with pytest.raises(ProtectedError), transaction.atomic():
+        Movimiento.objects.filter(id=movimiento.id).delete()
 
 
 @pytest.mark.parametrize("tabla", TABLAS_SOLO_AGREGAR)
 def test_truncate_rechazado_en_cada_tabla(movimiento, tabla):
     def truncar():
         with connection.cursor() as cursor:
+            # Las FK de Django son diferidas y TRUNCATE no corre con chequeos pendientes.
+            cursor.execute("SET CONSTRAINTS ALL IMMEDIATE")
             cursor.execute(f"TRUNCATE {tabla} CASCADE")
 
     _rechazado_por_trigger(truncar)
@@ -63,10 +81,11 @@ def test_sql_crudo_tambien_es_rechazado(movimiento):
 
 
 def test_el_monto_queda_igual_tras_los_intentos(movimiento):
-    for intento in (
-        lambda: Movimiento.objects.filter(id=movimiento.id).update(monto=1),
-        lambda: Movimiento.objects.filter(id=movimiento.id).delete(),
-    ):
+    def borrar():
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM libro_movimiento WHERE id = %s", [movimiento.id])
+
+    for intento in (lambda: Movimiento.objects.filter(id=movimiento.id).update(monto=1), borrar):
         _rechazado_por_trigger(intento)
 
     assert Movimiento.objects.get(id=movimiento.id).monto == 30_000
