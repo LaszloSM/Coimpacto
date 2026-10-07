@@ -109,6 +109,39 @@
           "required": true
         }
       }
+    },
+    "/api/sync/lotes": {
+      "post": {
+        "operationId": "sync_api_subir_lote",
+        "summary": "Subir un lote de la cola del celular (formato 1)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoLote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "Cada elemento vuelve con su estado: confirmado, por_validar, rechazado, en_conflicto o\nen_espera (el celular lo reenvía después). Ver sync/servicio.py.",
+        "tags": [
+          "sincronizacion"
+        ]
+      }
     }
   },
   "components": {
@@ -196,18 +229,13 @@
       },
       "Rechazo": {
         "properties": {
-          "motivo": {
-            "title": "Motivo",
-            "type": "string"
-          },
-          "mensaje": {
-            "title": "Mensaje",
+          "codigo": {
+            "title": "Codigo",
             "type": "string"
           }
         },
         "required": [
-          "motivo",
-          "mensaje"
+          "codigo"
         ],
         "title": "Rechazo",
         "type": "object"
@@ -228,6 +256,45 @@
           "llave_publica"
         ],
         "title": "PedidoCanje",
+        "type": "object"
+      },
+      "ResultadoElemento": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "estado": {
+            "title": "Estado",
+            "type": "string"
+          },
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "estado",
+          "codigo"
+        ],
+        "title": "ResultadoElemento",
+        "type": "object"
+      },
+      "ResultadoLote": {
+        "properties": {
+          "resultados": {
+            "items": {
+              "$ref": "#/components/schemas/ResultadoElemento"
+            },
+            "title": "Resultados",
+            "type": "array"
+          }
+        },
+        "required": [
+          "resultados"
+        ],
+        "title": "ResultadoLote",
         "type": "object"
       }
     },
