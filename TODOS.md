@@ -28,18 +28,6 @@
 **Priority:** P2
 **Depends on:** vista de solo lectura del socio en producción.
 
-### Evaluar cola propia vs motor de sincronización
-
-**What:** Comparar la cola de sincronización propia del MVP con un motor como PowerSync antes de construir la app Expo.
-
-**Why:** Si Expo necesita escritura multi-dispositivo sin señal, no reconstruir algo difícil que ya existe.
-
-**Context:** Enfoque C del documento de diseño (descartado para el MVP porque escribe un solo celular por reunión). Decidido en /plan-eng-review D28.
-
-**Effort:** S
-**Priority:** P1 (ahora: la app Expo entra al MVP por D2)
-**Depends on:** revisión de ingeniería del cambio a Expo.
-
 ## Notificaciones
 
 ### Recordatorios del ciclo
@@ -69,3 +57,17 @@
 **Depends on:** contrato con un banco o SEDPE.
 
 ## Completed
+
+### Evaluar cola propia vs motor de sincronización (cerrado 2026-10-07)
+
+**What:** Comparar la cola de sincronización propia del MVP con un motor como PowerSync antes de construir la app Expo.
+
+**Why:** Si Expo necesita escritura multi-dispositivo sin señal, no reconstruir algo difícil que ya existe.
+
+**Context:** Enfoque C del documento de diseño (descartado para el MVP porque escribe un solo celular por reunión). Decidido en /plan-eng-review D28.
+
+**Effort:** S
+**Priority:** P1 (ahora: la app Expo entra al MVP por D2)
+**Depends on:** revisión de ingeniería del cambio a Expo.
+
+**Resolución:** /plan-eng-review del cambio a Expo (EX5, D6): se mantiene la cola propia sobre SQLite cifrada; un escritor por reunión hace que PowerSync aporte poco y sume un servicio que operar.

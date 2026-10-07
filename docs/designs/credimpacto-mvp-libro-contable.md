@@ -2064,17 +2064,493 @@ Task JSONL artifact: not written — jq is not installed.
 - Parallelization: ET1 y ET4 en Lane A (backend); ET2 y ET3 después de ET1; sin conflictos nuevos
 - Lake Score: 1/3 = answers picking a 10/10 option / answers scored for Completeness
 
+## Eng Review (cambio a Expo) — /plan-eng-review (2026-10-07)
+
+Objetivo fijo: este plan, en particular el "Segundo cambio de alcance" (D2: app nativa Expo en el MVP; D3: vista de solo lectura del socio). Se revisan las decisiones aprobadas que asumían navegador (D5/E1, D9/E5, D8/E4, D17/E13, D18/E14, D23/E18, D24) y la identidad del socio.
+
+Evidencia de la búsqueda (2026-10-07):
+- expo-sqlite trae SQLCipher (`useSQLCipher` en app.json, `PRAGMA key`); no corre en Expo Go, sí en builds de desarrollo y EAS. https://docs.expo.dev/versions/latest/sdk/sqlite/
+- react-native-quick-crypto ofrece WebCrypto `subtle` con ECDSA P-256 (firma IEEE P1363), PBKDF2 y scrypt nativos en hilos aparte; no corre en Expo Go. https://blog.margelo.com/four-years-of-react-native-quick-crypto
+- Maestro corre flujos en un emulador Android en GitHub Actions y tiene `setAirplaneMode` (confiable en Android, no en iOS). https://docs.expo.dev/eas/workflows/examples/e2e-tests/ · https://github.com/mobile-dev-inc/Maestro/issues/2895
+- expo-updates admite `checkAutomatically: NEVER` y control manual de cuándo recargar. https://docs.expo.dev/versions/latest/sdk/updates/
+- Expo soporta monorepos con npm workspaces; Metro necesita `watchFolders` y `nodeModulesPaths` del root; los paquetes internos van como TS sin compilar. https://docs.expo.dev/guides/monorepos/
+
+### Registro de alcance (Scope Challenge B)
+
+feature answers: sin recortes propuestos (iOS ya estaba fuera del MVP: "Android primero"); structure: A) Original arrangement (respuesta D1 de esta revisión, 2026-10-07); accepted scope: `movil/` (Expo, Android) + `web/` (Next.js, solo back-office) + paquetes nuevos `packages/reglas` (reglas de dinero TS, JSON canónico, formato de pesos; se mueve desde `web/src/reglas`) y `packages/tokens` (tokens de DESIGN.md generados para CSS y para React Native), además de los existentes `packages/api-client` y `packages/casos-reglas`; la ruta `(reunion)` y Serwist salen de la web; pending remedies: EX1 criptografía, EX2 almacenamiento local, EX3 E2E de reunión sin red, EX4 identidad del socio, EX5 motor de sincronización, EX6 distribución.
+
+Resultado del Scope Challenge: scope accepted as-is.
+
+## Decision ledger (cambio a Expo)
+
+Mapeos que no requieren pregunta (misma regla aprobada, otra plataforma):
+- D9/E5 → `expo-updates` con `checkAutomatically: NEVER`; la app solo aplica una actualización si la cola está vacía y no hay reunión abierta; esquema SQLite versionado con migraciones probadas; servidor acepta N-1 por 90 días (sin cambio).
+- D8/E4 → en la app nativa el almacenamiento es persistente; el aviso de `navigator.storage.persist()` desaparece. Si se desinstala o se borran los datos, el respaldo en archivo (D2) sigue siendo la salida: se comparte con `expo-sharing`.
+- D24 → fotos comprimidas en el celular (`expo-image-manipulator`), mismo envío priorizado.
+
+### EX1: Librería de criptografía para firmas y derivación desde el PIN
+Finding: EX1, P1, confidence 9/10, plan:984 "par de llaves ECDSA P-256 por cargo (WebCrypto)" y plan:528 "clave de dispositivo no extraíble (WebCrypto)"; reviewer plan-eng-review.
+Plan baseline: D17 (ECDSA P-256 por cargo, privada envuelta por el PIN según E1, firma sobre el hash canónico, el servidor verifica) y D5 (DEK envuelta por PIN de 6 dígitos con derivación lenta y por clave de dispositivo), ambos con WebCrypto del navegador.
+Runtime evidence: Hermes (motor JS de React Native) no trae `crypto.subtle`; react-native-quick-crypto expone `subtle` con ECDSA P-256 (P1363), PBKDF2 y scrypt nativos (blog de Margelo); @noble/curves y @noble/hashes son JS puro auditado. No se midió aún el tiempo de derivación en un Android de gama baja.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX1 librería de criptografía | WebCrypto del navegador (D5, D17) | react-native-quick-crypto (subtle nativo: ECDSA P-256, PBKDF2/scrypt en C++) | @noble/curves (p256) + @noble/hashes (scrypt) en JS puro |
+| Contrato D17/D5 (P-256, PIN 6 dígitos, derivación lenta, firma sobre hash JCS, verificación en servidor) | aprobado | sin cambio | sin cambio |
+| EX2 almacenamiento local | pendiente | pendiente | pendiente |
+Question D2:
+D2: ¿Con qué librería firma y deriva llaves la app Expo?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo (D2 de alcance).
+Explicación simple: cada cargo firma los préstamos y el cierre con una llave guardada en el celular y protegida por su PIN. En el navegador eso lo hacía WebCrypto, pero en la app nativa no existe. Hay dos caminos: una librería nativa que imita WebCrypto o una librería escrita en JavaScript puro.
+Qué está en juego si elegimos mal: si derivar la llave desde el PIN tarda mucho en un celular barato, cada firma en la reunión se vuelve una espera de varios segundos; si la librería es débil, una firma podría falsificarse.
+Recomendación: A, porque mantiene la misma interfaz WebCrypto del plan aprobado y hace la derivación lenta en código nativo, que en gama baja es varias veces más rápida que JS puro.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: velocidad nativa con una dependencia nativa, o JS puro sin dependencia nativa pero más lento en gama baja.
+Header: Cripto app
+Options:
+A) quick-crypto nativo (Recommended)
+✅ Usa la misma interfaz WebCrypto (subtle) del plan: ECDSA P-256 y PBKDF2/scrypt corren en C++ sin congelar la pantalla. ✅ Mantiene el formato de firma P1363 que el servidor ya espera verificar. ❌ Es una dependencia nativa: exige build de desarrollo (no Expo Go) y hay que seguir sus actualizaciones (humano: ~2 días / CC: ~1 h).
+B) noble en JS puro
+✅ Librerías pequeñas, auditadas y sin código nativo; funcionan en cualquier build. ✅ Fáciles de probar en Node con los mismos casos. ❌ La derivación lenta (scrypt) en JS puede tardar varios segundos por firma en un Android de gama baja, o obliga a bajar la protección del PIN (humano: ~2 días / CC: ~1 h).
+
+State: approved
+Actual answer: A) quick-crypto nativo (Recommended), respuesta a D2 de esta revisión (2026-10-07)
+Accepted scope: la app firma y deriva llaves con react-native-quick-crypto (subtle): ECDSA P-256 por cargo con firma P1363 sobre el hash JCS, derivación lenta del PIN (PBKDF2 o scrypt nativo) para envolver la privada y la DEK, según D5 y D17 sin cambio de contrato; requiere build de desarrollo y una medición del tiempo de derivación en un Android de gama baja; con sus pruebas.
+History: none
+
+### EX2: Almacenamiento local cifrado de la app
+Finding: EX2, P1, confidence 9/10, plan:113 "cifrado en IndexedDB con una clave derivada del PIN de sesión" y plan:528 (D5); reviewer plan-eng-review.
+Plan baseline: D5 (DEK aleatoria envuelta por el PIN de 6 dígitos de cada cargo, con derivación lenta, y por una clave de dispositivo no extraíble; caché caduca a los 60 días sin sincronizar; los pendientes nunca se borran) sobre IndexedDB del navegador. EX1 aprobado: react-native-quick-crypto.
+Runtime evidence: la app nativa no tiene IndexedDB; expo-sqlite soporta SQLCipher (`useSQLCipher` + `PRAGMA key`), que cifra el archivo completo; expo-secure-store guarda secretos cifrados con el Android Keystore. op-sqlite también ofrece SQLCipher, pero es de un tercero.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX2 almacenamiento local | IndexedDB cifrada (D5) | expo-sqlite con SQLCipher: todo el archivo cifrado con la DEK (fotos como archivos cifrados con la misma DEK); la DEK envuelta por el PIN (quick-crypto) y por un secreto de dispositivo en expo-secure-store (Android Keystore) | expo-sqlite sin SQLCipher, con cifrado AES-GCM campo por campo (quick-crypto) solo en datos personales y montos |
+| Contrato D5 (DEK aleatoria, doble envoltura PIN + dispositivo, caducidad 60 días, pendientes nunca se borran) | aprobado | sin cambio | sin cambio |
+| EX1 librería de criptografía | quick-crypto (respuesta D2) | sin cambio | sin cambio |
+| EX3, EX4, EX5, EX6 | pendientes | pendientes | pendientes |
+Question D3:
+D3: ¿Cómo guarda la app los datos de la reunión en el celular?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo.
+Explicación simple: el celular guarda la lista de socios, los saldos y la cola de movimientos sin enviar. Si alguien roba el celular o copia sus archivos, no debe poder leerlos. Se puede cifrar el archivo entero de la base de datos, o cifrar solo algunos campos uno por uno.
+Qué está en juego si elegimos mal: con cifrado por campos es fácil olvidar un campo sensible (un nombre, un monto) y dejarlo legible; con el archivo entero cifrado, si se pierde la llave se pierde todo lo local, por eso el respaldo (D2) sigue siendo obligatorio.
+Recomendación: A, porque cifrar el archivo completo no depende de recordar qué campos son sensibles y es la opción que Expo soporta oficialmente.
+Completitud: A=10/10, B=7/10
+Net: protección total del archivo con una sola llave, o cifrado selectivo más flexible pero fácil de dejar huecos.
+Header: Datos locales
+Options:
+A) SQLite con SQLCipher (Recommended)
+✅ Todo el archivo de la base queda cifrado con la DEK (socios, saldos y cola) sin elegir campo por campo; las fotos, que son archivos aparte, se cifran con la misma DEK. ✅ La DEK queda envuelta por el PIN y por un secreto del Android Keystore, así que copiar el archivo a otro equipo no sirve (humano: ~3 días / CC: ~1,5 h). ❌ Exige build de desarrollo (no Expo Go) y una prueba de rendimiento en gama baja; sin la DEK los datos locales no se recuperan, solo el respaldo.
+B) Cifrado por campos
+✅ La base abre sin llave para datos no sensibles (configuración, estado de sincronización), lo que simplifica el arranque. ✅ No necesita la variante SQLCipher de SQLite. ❌ Hay que decidir y mantener qué campos cifrar; un campo nuevo sin cifrar deja datos personales o montos legibles en el archivo (humano: ~4 días / CC: ~2 h).
+
+State: approved
+Actual answer: A) SQLite con SQLCipher (Recommended), respuesta a D3 de esta revisión (2026-10-07)
+Accepted scope: almacenamiento local en expo-sqlite con SQLCipher; todo el archivo cifrado con la DEK y las fotos como archivos cifrados con la misma DEK; DEK envuelta por el PIN de cada cargo (quick-crypto, EX1) y por un secreto de dispositivo en expo-secure-store (Android Keystore); contrato D5 sin cambio (caducidad 60 días, pendientes nunca se borran); build de desarrollo y prueba de rendimiento en gama baja; con sus pruebas.
+History: none
+
+### EX3: Contrato de regresión E2E de la reunión sin red en la app nativa
+Finding: EX3, P1, confidence 9/10, plan:1231 (D23) "E2E Playwright con emulación móvil y setOffline (reunión completa + sincronización) … E2E de reunión offline obligatorio para fusionar"; reviewer plan-eng-review. Regla de regresión: Playwright no maneja apps nativas, así que el contrato aprobado queda sin herramienta.
+Plan baseline: D23 aprobado: pytest + Hypothesis, Vitest + fake-indexeddb, E2E Playwright de reunión completa sin red y sincronización, obligatorio para fusionar.
+Runtime evidence: Maestro corre flujos sobre un emulador Android en GitHub Actions y tiene `setAirplaneMode` confiable en Android. El repo es privado: GitHub Actions da 2.000 minutos al mes gratis y un emulador tarda del orden de 10 a 15 minutos por corrida (estimado, no medido). Maestro Cloud es pago y queda descartado.
+Comportamiento a preservar (sin cambio): abrir reunión → registrar al menos 20 socios (ahorro, multas, préstamo con N firmas, abono) → arqueo → cierre con firmas, todo en modo avión → desactivar el modo avión → sincronizar → el servidor confirma cada movimiento.
+Aserciones de aceptación (sin cambio): todos los movimientos quedan confirmados; los totales del servidor son iguales a los del resumen del celular; reenviar la cola no duplica nada; matar la app a mitad de la sincronización y reabrirla reanuda donde quedó.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX3 herramienta y momento del E2E de reunión sin red | Playwright, obligatorio en cada PR (D23) | Maestro en emulador Android en GitHub Actions, obligatorio para fusionar en cada PR que toque movil/, packages/ o backend/sync | Maestro en emulador cada noche y antes de cada versión; en cada PR, una prueba de sincronización sin interfaz (cliente de cola en Node contra la API) obligatoria |
+| Comportamiento y aserciones de aceptación | aprobados (D23) | sin cambio | sin cambio |
+| Pruebas unitarias de la app | Vitest + fake-indexeddb (web) | Jest + React Native Testing Library en movil/; Vitest en packages/ | igual que A |
+| E2E del back-office web | Playwright | se mantiene | se mantiene |
+| EX4, EX5, EX6 | pendientes | pendientes | pendientes |
+Question D4:
+D4: ¿Cómo probamos en CI que una reunión completa funciona sin señal en la app?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo.
+Explicación simple: el plan exigía, antes de fusionar cualquier cambio, una prueba automática que simula una reunión entera sin internet y después sincroniza. Esa prueba usaba Playwright, que solo sirve para el navegador. Para la app nativa la herramienta es Maestro, que maneja un celular Android simulado y puede activar el modo avión. La duda es si esa prueba completa corre en cada cambio o solo cada noche.
+Qué está en juego si elegimos mal: si la prueba completa no bloquea los cambios, un error que pierda o duplique dinero sin señal puede llegar a la app de las comunidades; si bloquea todo, cada cambio espera unos 15 minutos y consume minutos gratis de CI.
+Recomendación: A, porque el riesgo central del MVP es perder o duplicar dinero sin señal, y solo la prueba con la app real lo atrapa antes de fusionar.
+Completitud: A=10/10, B=7/10
+Net: máxima seguridad en cada cambio a cambio de CI más lento, o CI rápido con la prueba completa solo cada noche.
+Header: E2E sin red
+Options:
+A) Maestro en cada PR (Recommended)
+✅ Ningún cambio que toque la app, las reglas o la sincronización se fusiona sin que la reunión completa en modo avión pase de punta a punta. ✅ Mantiene igual el contrato aprobado en D23; solo cambia la herramienta (humano: ~3 días / CC: ~2 h). ❌ Cada PR afectado espera unos 10 a 15 minutos de emulador y consume minutos del plan gratis de GitHub Actions (2.000 al mes en repos privados).
+B) Maestro cada noche
+✅ Los PR quedan rápidos: solo corre la prueba de sincronización sin interfaz, que tarda segundos. ✅ La reunión completa con la app real sigue probándose cada noche y antes de cada versión (humano: ~3 días / CC: ~2 h). ❌ Un error de pantalla o de la cola en el celular puede quedar fusionado hasta un día antes de detectarse, y relaja el "obligatorio para fusionar" de D23.
+
+State: approved
+Actual answer: A) Maestro en cada PR (Recommended), respuesta a D4 de esta revisión (2026-10-07)
+Accepted scope: E2E de reunión completa en modo avión + sincronización con Maestro en emulador Android en GitHub Actions, obligatorio para fusionar cada PR que toque movil/, packages/ o backend/sync, con el comportamiento y las aserciones de aceptación de D23 sin cambio; Jest + React Native Testing Library en movil/; Vitest en packages/; Playwright se mantiene para el back-office web.
+History: none
+
+### EX4: Identidad del socio para su vista de solo lectura (celulares compartidos)
+Finding: EX4, P1, confidence 8/10, segundo cambio de alcance punto 4 (D3) "Con su cédula y un PIN ve su ahorro … La identificación en celulares compartidos (pregunta abierta 2) se resuelve como parte de esta vista"; reviewer plan-eng-review.
+Plan baseline: D3 aprobado (vista de solo lectura del socio: saldo, aportes y préstamo; no mueve dinero). Pregunta abierta 2 sin resolver. Enrolamiento de cargos por QR (D18) aprobado.
+Runtime evidence: no existe aún código de cuentas de socio; `cuentas.Titular` es seudónimo y los datos personales viven aparte (T4). Muchas ACAP comparten celular y sincronizan cada varias semanas (aprendizaje acap-sync-semanas). El envío de SMS tiene costo por mensaje y requiere señal.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX4 cómo obtiene el socio su acceso | pendiente (pregunta abierta 2) | Alta en la reunión: un cargo o el facilitador agrega el perfil del socio en el celular que el socio use (propio o compartido) y lo firma; el socio crea ahí su PIN de 6 dígitos; varios perfiles por celular, cada uno con su PIN; solo se guardan cifrados los datos de ese socio; se olvida el PIN → nueva alta en la siguiente reunión | Autoservicio: el socio escribe su cédula, recibe un código por SMS y crea su PIN; recuperación por SMS |
+| Alcance de la vista (solo lectura: saldo, aportes, préstamo) | aprobado (D3) | sin cambio | sin cambio |
+| Protección de datos locales | aprobada (EX2: SQLCipher + DEK) | perfiles del socio cifrados con su propio PIN dentro del mismo esquema | igual que A |
+| EX5, EX6 | pendientes | pendientes | pendientes |
+Question D5:
+D5: ¿Cómo obtiene cada socio su acceso cuando varios comparten un celular?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo.
+Explicación simple: el socio va a ver su saldo en la app con su cédula y un PIN. Pero en muchas comunidades un mismo celular lo usan varias personas, y la señal llega cada varias semanas. Hay que decidir cómo se crea ese acceso la primera vez: en la reunión, con la junta presente, o solo, con un código por mensaje de texto.
+Qué está en juego si elegimos mal: si cualquiera con el celular puede crear el acceso de otro, alguien ve el saldo ajeno (un problema de Habeas Data); si el acceso exige señal y SMS, buena parte de los socios nunca podrá entrar.
+Recomendación: A, porque funciona sin señal, no cuesta SMS y usa el mismo momento de confianza que ya existe: la reunión con la junta delante.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: identidad validada en persona y sin costo, o autoservicio a distancia que depende de señal y de SMS pagos.
+Header: Acceso socio
+Options:
+A) Alta en la reunión (Recommended)
+✅ Funciona sin señal: un cargo o el facilitador agrega el perfil del socio en el celular que use y firma el alta, y el socio crea su PIN delante de la junta. ✅ Varios socios pueden tener su perfil en un mismo celular, cada uno con su PIN y solo sus datos cifrados (humano: ~3 días / CC: ~1,5 h). ❌ Si un socio olvida su PIN, espera a la siguiente reunión para una nueva alta; no hay recuperación a distancia.
+B) Autoservicio por SMS
+✅ El socio crea su acceso cuando quiera, sin esperar la reunión, y recupera el PIN a distancia. ✅ No ocupa tiempo de la junta durante la reunión. ❌ Necesita señal y paga cada SMS; en un celular compartido el código llega al mismo número de varias personas, así que no prueba quién es (humano: ~4 días / CC: ~2 h).
+
+State: approved
+Actual answer: A) Alta en la reunión (Recommended), respuesta a D5 de esta revisión (2026-10-07)
+Accepted scope: el acceso del socio se crea en la reunión: un cargo o el facilitador agrega su perfil en el celular que use (propio o compartido) y firma el alta; el socio crea su PIN de 6 dígitos; varios perfiles por celular, cada uno con su PIN y solo sus propios datos cifrados (esquema de EX2); si olvida el PIN, nueva alta en la siguiente reunión; sin SMS; resuelve la pregunta abierta 2 para la vista del socio; con sus pruebas.
+History: none
+
+### EX5: Motor de sincronización de la app
+Finding: EX5, P2, confidence 8/10, TODOS.md "Evaluar cola propia vs motor de sincronización … antes de construir la app Expo" (D28, ahora P1 por D2); reviewer plan-eng-review.
+Plan baseline: enfoque B aprobado: cola propia con un solo escritor por reunión (D1), UUID v5 por clave natural, lotes de ~50 con reanudación (D24), estados como eventos (D22), servidor N-1 (D9). Enfoque C (motor de terceros) descartado para el MVP con revisión prevista al llegar Expo.
+Runtime evidence: el backend ya es idempotente por UUID y hash JCS (`libro/servicio.py`, T4, CI verde). PowerSync necesita su propio servicio (nube paga o edición autoalojada) conectado a la replicación de PostgreSQL; su ventaja principal es la escritura en varios dispositivos a la vez, que el MVP no tiene (un escritor por reunión).
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX5 motor de sincronización | cola propia (enfoque B), evaluación pendiente en TODOS | cola propia sobre SQLite cifrada (EX2), con el diseño aprobado; se cierra el TODO con esta evaluación | PowerSync autoalojado: réplica parcial de PostgreSQL en el celular y cola de subida del SDK |
+| Contratos de sync (un escritor, UUID v5, lotes y reanudación, estados como eventos, N-1, servidor como autoridad) | aprobados | sin cambio | se reimplementan sobre el SDK y su servicio |
+| EX6 | pendiente | pendiente | pendiente |
+Question D6:
+D6: ¿Construimos nuestra propia cola de sincronización o usamos un motor como PowerSync?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo.
+Explicación simple: cuando vuelve la señal, la app tiene que subir lo registrado en la reunión y bajar los saldos actualizados. Podemos hacerlo con nuestra propia cola, que ya está diseñada y que el servidor ya soporta, o con un servicio de terceros que sincroniza bases de datos automáticamente.
+Qué está en juego si elegimos mal: con un motor de terceros, la pieza más delicada (el dinero sin señal) queda atada a otro servicio que hay que operar o pagar; con la cola propia hay más código nuestro que probar.
+Recomendación: A, porque el MVP tiene un solo celular escritor por reunión, que es justo el caso en que un motor de terceros aporta poco, y el servidor ya es idempotente.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: control total con código propio ya diseñado, o menos código propio a cambio de otro servicio que operar.
+Header: Sincronización
+Options:
+A) Cola propia (Recommended)
+✅ Usa el diseño aprobado (un escritor, UUID v5, lotes de 50 con reanudación) y el servidor que ya rechaza duplicados por UUID y hash. ✅ No hay servicio extra que operar ni pagar; todo queda en nuestro backend Django (humano: ~1 semana / CC: ~4 h). ❌ La cola, los reintentos y las migraciones locales son código nuestro que hay que probar a fondo, lo que cubre el E2E de EX3.
+B) PowerSync autoalojado
+✅ Trae réplica local, cola de subida y reconexión ya resueltas, y facilita varios escritores en el futuro. ✅ Tiene soporte de SQLCipher en el celular. ❌ Suma un servicio más conectado a la replicación de PostgreSQL que operar, monitorear y respaldar, y obliga a rehacer los contratos de sincronización sobre su SDK (humano: ~2 semanas / CC: ~1 día).
+
+State: approved
+Actual answer: A) Cola propia (Recommended), respuesta a D6 de esta revisión (2026-10-07)
+Accepted scope: sincronización con cola propia sobre la SQLite cifrada (EX2) con los contratos aprobados sin cambio (un escritor por reunión, UUID v5, lotes de ~50 con reanudación, estados como eventos, servidor como autoridad, N-1 por 90 días); se cierra el TODO "Evaluar cola propia vs motor de sincronización" con esta evaluación; con sus pruebas.
+History: none
+
+### EX6: Construcción y distribución de la app
+Finding: EX6, P2, confidence 7/10, plan:222 "App Expo (posterior): EAS Build hacia Google Play (Android primero)"; reviewer plan-eng-review. Falta definir canal del piloto, firma de la app y servidor de actualizaciones.
+Plan baseline: EAS Build hacia Google Play (escrito cuando Expo era fase posterior). EX3 aprobado exige construir un APK de pruebas en GitHub Actions para Maestro. El mapeo de D9 usa expo-updates, que necesita un servidor de actualizaciones (EAS Update o uno propio).
+Runtime evidence: EAS (Build, Submit, Update) tiene plan gratuito con cupos mensuales; Google Play exige una cuenta de desarrollador con pago único de 25 USD; un APK firmado puede instalarse directo en Android para el piloto. No se ha creado cuenta de Expo ni de Play.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EX6 construcción, firma y actualizaciones | EAS Build hacia Google Play (sin detalle) | EAS Build y EAS Submit (plan gratuito) para versiones, con llaves de firma administradas por EAS; EAS Update para actualizaciones (expo-updates en modo manual); el APK de pruebas para Maestro se construye en GitHub Actions | Todo en GitHub Actions: prebuild + Gradle firma el APK con una llave guardada en secretos de GitHub; servidor de actualizaciones propio en el backend |
+| Canal del piloto | no definido | APK de distribución interna, luego pista de prueba interna de Google Play antes de escalar | APK firmado instalado directo, luego Google Play |
+| Cuenta de Google Play (25 USD, pago único) | no prevista | necesaria antes de publicar en Play | necesaria antes de publicar en Play |
+Question D7:
+D7: ¿Cómo se construye, firma y actualiza la app para el piloto y Google Play?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo.
+Explicación simple: para que la app llegue a los celulares hay que construirla, firmarla con una llave digital y poder enviarle actualizaciones. Expo ofrece un servicio (EAS) que hace las tres cosas y guarda la llave por nosotros, con plan gratuito. La otra opción es hacerlo todo en GitHub Actions y en nuestro servidor.
+Qué está en juego si elegimos mal: si se pierde la llave de firma, las actualizaciones ya no se pueden publicar en la misma app de Google Play; si el servidor de actualizaciones falla, las ACAP se quedan con versiones viejas.
+Recomendación: A, porque EAS guarda la llave de firma y da el servidor de actualizaciones que expo-updates necesita, gratis en el volumen del piloto, sin infraestructura propia.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: servicio administrado gratuito con una cuenta más, o control total con más infraestructura nuestra que operar.
+Header: Distribución
+Options:
+A) EAS gratuito (Recommended)
+✅ EAS construye, firma (guarda la llave de forma segura) y envía a Google Play; EAS Update entrega las actualizaciones que expo-updates aplica solo sin pendientes. ✅ El piloto usa APK de distribución interna y luego la pista de prueba interna de Play, sin servidores propios (humano: ~2 días / CC: ~1 h). ❌ Requiere una cuenta de Expo (gratis, con cupos mensuales) y la cuenta de Google Play (25 USD, pago único, la abre Credimpacto).
+B) Todo en GitHub Actions
+✅ No depende de cuentas de Expo: el APK se construye y firma en nuestro CI y las actualizaciones salen de nuestro backend. ✅ Control total del proceso de publicación. ❌ La llave de firma queda bajo nuestra custodia (si se pierde, no se puede actualizar la app en Play) y hay que construir y operar un servidor de actualizaciones (humano: ~5 días / CC: ~3 h); también necesita la cuenta de Play de 25 USD.
+
+State: approved
+Actual answer: B) Todo en GitHub Actions, respuesta a D7 de esta revisión (2026-10-07)
+Accepted scope: la app se construye y firma en GitHub Actions (expo prebuild + Gradle), con la llave de firma en secretos de GitHub; el piloto usa el APK firmado instalado directo y luego Google Play (cuenta de desarrollador de 25 USD, pago único); las actualizaciones las sirve un servidor de actualizaciones propio en el backend, compatible con el protocolo de expo-updates, que la app aplica en modo manual solo sin pendientes ni reunión abierta (mapeo de D9); sin cuenta de Expo; el APK de pruebas para Maestro (EX3) sale del mismo flujo.
+History: none
+
+Resultado del Scope Challenge C: EX1–EX6 aprobados (D2–D7 de esta revisión). Scope accepted as-is.
+
+### EA1: Llave con la que se cifra el archivo de respaldo
+Finding: EA1, P1, confidence 8/10, plan:467 (D2) "respaldo de pendientes solo por archivo cifrado compartible vía Web Share, importación idempotente por UUID" y plan:125 "exportar pendientes (archivo cifrado…)"; reviewer plan-eng-review, Sección 1.
+Plan baseline: D2 aprobado (archivo cifrado, importación idempotente por UUID; sin QR). La llave de cifrado del archivo no está definida. D1 aprobado: no hay traspaso de escritor offline, así que el respaldo no se importa en otro celular durante la reunión.
+Runtime evidence: con EX2 los datos locales dependen de la DEK y de un secreto del Android Keystore; si el celular se daña, se restablece o se borra el Keystore, la DEK no se recupera. Un respaldo cifrado con esa misma DEK quedaría ilegible justo cuando hace falta.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EA1 llave del archivo de respaldo | no definida | sobre para el servidor: una llave aleatoria cifra el archivo y esa llave va cifrada con la llave pública del servidor (incluida en la app); solo el servidor lo abre; el facilitador lo sube desde el back-office y se importa idempotente por UUID; las firmas de los cargos siguen probando que nadie lo alteró | cifrado con la DEK del celular que lo generó; solo ese mismo celular puede importarlo |
+| Formato y canal (archivo compartible con expo-sharing, importación idempotente por UUID) | aprobado (D2) | sin cambio | sin cambio |
+Question D8:
+D8: ¿Con qué llave se cifra el archivo de respaldo de la reunión?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo, sección 1.
+Explicación simple: cuando no hay señal, la junta guarda una copia de la reunión en un archivo y la manda por WhatsApp o Bluetooth a otro celular. Ese archivo va cifrado. Si se cifra con la llave del mismo celular y ese celular se daña, nadie puede abrir la copia, que es justo cuando se necesita. La alternativa es cifrarlo para que solo el servidor de Credimpacto lo pueda abrir.
+Qué está en juego si elegimos mal: con la llave del celular, perder el celular es perder la reunión aunque exista la copia; con la llave del servidor, la copia solo sirve cuando alguien la lleva al facilitador o a un lugar con señal.
+Recomendación: A, porque el respaldo existe para cuando el celular falla, y con la llave del servidor la copia sobrevive a la pérdida del celular sin exponer los datos a quien la reciba.
+Completitud: A=10/10, B=6/10
+Net: copia que sobrevive a la pérdida del celular, o copia que solo sirve si el mismo celular sigue vivo.
+Header: Respaldo
+Options:
+A) Cifrar para el servidor (Recommended)
+✅ Si el celular se pierde o se daña, la copia sigue sirviendo: el facilitador la sube desde el back-office y se importa sin duplicar (por UUID). ✅ Quien recibe el archivo por WhatsApp no puede leerlo, y las firmas de los cargos prueban que nadie lo alteró (humano: ~2 días / CC: ~1 h). ❌ La copia no se puede abrir en otro celular sin señal; solo se recupera al llegar al servidor.
+B) Cifrar con la llave del celular
+✅ Es lo más simple: usa la misma DEK de los datos locales. ✅ Sirve si la base local se daña pero el mismo celular conserva la app y su Keystore (al desinstalar la app, Android borra también sus llaves). ❌ Si el celular se daña, se restablece o pierde su Keystore, el respaldo queda ilegible y la reunión solo se recupera desde el cuaderno (humano: ~1 día / CC: ~30 min).
+
+State: approved
+Actual answer: A) Cifrar para el servidor (Recommended), respuesta a D8 de esta revisión (2026-10-07)
+Accepted scope: el archivo de respaldo se cifra con una llave aleatoria que va envuelta con la llave pública del servidor (incluida en la app); solo el servidor lo abre; el facilitador lo sube desde el back-office y se importa idempotente por UUID; las firmas de los cargos prueban la integridad; formato y canal de D2 sin cambio (archivo compartible con expo-sharing); con sus pruebas (archivo alterado rechazado, importación doble sin duplicados).
+History: none
+
+### EA2: Firma de las actualizaciones que envía el servidor propio
+Finding: EA2, P1, confidence 8/10, EX6 aceptado "las actualizaciones las sirve un servidor de actualizaciones propio en el backend, compatible con el protocolo de expo-updates"; reviewer plan-eng-review, Sección 1 (radio de daño).
+Plan baseline: EX6 aprobado (servidor de actualizaciones propio; la app aplica en modo manual solo sin pendientes ni reunión abierta). La autenticidad del código que llega no está definida.
+Runtime evidence: expo-updates admite firma de código: la app trae un certificado y rechaza manifiestos no firmados con la llave privada correspondiente (documentación de expo-updates). La app guarda llaves de firma de los cargos y el libro de la ACAP: un JavaScript malicioso enviado por el servidor podría leer PIN, firmar movimientos o alterar la cola en todos los celulares a la vez.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EA2 autenticidad de las actualizaciones | no definida (solo HTTPS implícito) | firma de código de expo-updates: la llave privada vive en un secreto de GitHub Actions y firma cada actualización en CI; la app trae el certificado y rechaza cualquier actualización sin firma válida; el servidor solo almacena y entrega | solo HTTPS hacia el servidor propio, sin firma de las actualizaciones |
+| Aplicación manual sin pendientes ni reunión abierta | aprobada (D9/EX6) | sin cambio | sin cambio |
+Question D9:
+D9: ¿Firmamos las actualizaciones de la app antes de enviarlas a los celulares?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo, sección 1.
+Explicación simple: con el servidor de actualizaciones propio que elegiste, podemos mandar mejoras a la app sin pasar por Google Play. Pero si alguien entra a ese servidor, podría mandar una versión falsa a todos los celulares, y la app guarda las llaves con que los cargos firman el dinero. Firmar cada actualización en CI hace que el celular rechace cualquier cosa que no venga de nosotros, aunque el servidor esté comprometido.
+Qué está en juego si elegimos mal: sin firma, quien controle el servidor controla todas las apps de las ACAP: podría robar PIN o firmar préstamos falsos en todas a la vez.
+Recomendación: A, porque el costo es una llave más en CI y el daño evitado es tomar el control de todos los celulares de las ACAP.
+Completitud: A=10/10, B=5/10
+Net: una llave más que custodiar a cambio de que un servidor comprometido no pueda tocar los celulares.
+Header: Firma updates
+Options:
+A) Firmar actualizaciones (Recommended)
+✅ El celular rechaza cualquier actualización que no esté firmada por la llave que guarda nuestro CI, aunque el servidor de actualizaciones sea atacado. ✅ Usa la firma de código que ya trae expo-updates, sin librerías extra (humano: ~1 día / CC: ~45 min). ❌ Hay una llave más que custodiar y respaldar; si se pierde, hay que publicar una versión nueva por Google Play con otro certificado.
+B) Solo HTTPS
+✅ Menos piezas: no hay llave de firma de actualizaciones que custodiar. ✅ El canal sigue cifrado contra quien escuche la red. ❌ Quien entre al servidor o a su almacenamiento puede mandar código a todas las apps de las ACAP, con acceso a llaves de firma y a la cola de dinero (humano: ~0 / CC: ~0).
+
+State: approved
+Actual answer: A) Firmar actualizaciones (Recommended), respuesta a D9 de esta revisión (2026-10-07)
+Accepted scope: firma de código de expo-updates: la llave privada vive en un secreto de GitHub Actions y firma cada actualización en CI; la app trae el certificado y rechaza cualquier actualización sin firma válida; el servidor propio solo almacena y entrega; aplicación manual sin pendientes ni reunión abierta sin cambio; con sus pruebas (actualización sin firma o con firma ajena rechazada).
+History: none
+
+### EA3: Custodia de la llave de firma y paso del piloto (APK) a Google Play
+Finding: EA3, P1, confidence 8/10, EX6 aceptado "llave de firma en secretos de GitHub; el piloto usa el APK firmado instalado directo y luego Google Play"; reviewer plan-eng-review, Sección 1 (falla realista en producción).
+Plan baseline: EX6 aprobado (firma en GitHub Actions, piloto por APK directo, luego Play). EA2 aprobado agrega la llave de firma de actualizaciones.
+Runtime evidence: Android solo instala una actualización si viene firmada con la misma llave que la versión instalada; si cambia la llave, hay que desinstalar, y al desinstalar se borran la base local, la DEK y el Keystore de la app (pendientes sin sincronizar incluidos). Google Play App Signing permite subir una llave de firma existente y usar una llave de subida aparte que se puede restablecer si se pierde.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EA3 llave de firma de la app y paso a Play | llave en secretos de GitHub, sin plan de paso | Play App Signing con la llave del piloto: la misma llave que firma los APK del piloto se sube a Play como llave de firma; se usa una llave de subida aparte (restablecible); copias cifradas de la llave de firma, la de subida y la de actualizaciones (EA2) guardadas fuera de GitHub en dos lugares bajo custodia de Credimpacto | Google genera una llave nueva al publicar en Play: los celulares del piloto sincronizan, desinstalan el APK e instalan la versión de Play |
+| Construcción y firma en GitHub Actions | aprobada (EX6) | sin cambio | sin cambio |
+Question D10:
+D10: ¿Cómo pasan los celulares del piloto a la versión de Google Play sin perder datos?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo, sección 1.
+Explicación simple: Android solo deja actualizar una app si la nueva versión está firmada con la misma llave que la instalada. Si la versión de Google Play usa otra llave, cada ACAP del piloto tendría que desinstalar la app, y al desinstalar se borra todo lo que no se haya sincronizado. Se puede evitar subiendo a Google Play la misma llave del piloto.
+Qué está en juego si elegimos mal: con una llave nueva, cada celular del piloto debe sincronizar antes de desinstalar, y una ACAP que lleva semanas sin señal puede perder su reunión; si se pierde la llave sin copia, no hay forma de actualizar esas apps.
+Recomendación: A, porque los celulares del piloto pasan a Play como una actualización normal, sin desinstalar, y las copias fuera de GitHub cubren la pérdida de llaves.
+Completitud: A=10/10, B=6/10
+Net: paso transparente con llaves bien custodiadas, o reinstalación forzada con riesgo de perder pendientes.
+Header: Llave firma
+Options:
+A) Misma llave en Play (Recommended)
+✅ Los celulares del piloto reciben la versión de Google Play como una actualización normal, sin desinstalar ni arriesgar datos sin sincronizar. ✅ La llave de subida es aparte y Google permite restablecerla si se pierde; las llaves críticas tienen copia cifrada fuera de GitHub en dos lugares (humano: ~1 día / CC: ~30 min). ❌ Credimpacto debe custodiar esas copias cifradas (quién las tiene y dónde) como un activo crítico.
+B) Llave nueva de Google
+✅ Google guarda la llave de firma desde el primer día en Play y nosotros solo una de subida. ✅ Menos llaves propias que custodiar a largo plazo. ❌ Cada celular del piloto debe sincronizar, desinstalar e instalar de nuevo; si una ACAP lleva semanas sin señal, pierde lo que no haya subido (humano: ~1 día / CC: ~30 min, más el trabajo de campo de reinstalar).
+
+State: approved
+Actual answer: A) Misma llave en Play (Recommended), respuesta a D10 de esta revisión (2026-10-07)
+Accepted scope: Play App Signing con la llave del piloto (la misma que firma los APK se sube como llave de firma de la app); llave de subida aparte, restablecible; copias cifradas de la llave de firma, la de subida y la de actualizaciones (EA2) fuera de GitHub en dos lugares bajo custodia de Credimpacto, con registro de quién las tiene; los celulares del piloto pasan a Play como actualización normal; con su prueba (instalar la versión firmada para Play sobre un APK del piloto conserva los datos).
+History: none
+
+Sección 2 (calidad de código): sin decisiones nuevas. Implementación necesaria de lo aprobado: las fuentes OFL pasan de web/public/fuentes a packages/tokens (la web las sirve desde ahí y la app las carga con expo-font); los códigos de error de las reglas viajan con sus frases en español dentro de packages/reglas (D19 de diseño: códigos estables); la API del socio (EX4) devuelve solo los datos del socio atado a su alta firmada.
+
+### EP1: Tiempo objetivo de la derivación de llave desde el PIN
+Finding: EP1, P2, confidence 7/10, plan:528 (D5) "PIN de 6 dígitos de cada cargo autorizado (derivación lenta)" y EX1 aceptado "medición del tiempo de derivación en un Android de gama baja"; reviewer plan-eng-review, Sección 4.
+Plan baseline: D5 exige derivación lenta sin número. D10 de diseño agrupa firmas: cada cargo escribe su PIN una vez por grupo de firmas, unas pocas veces por reunión. EX2 protege el archivo con un secreto del Android Keystore, así que adivinar el PIN fuera del celular no sirve sin ese secreto.
+Runtime evidence: no medido. Con un PIN de 6 dígitos (1.000.000 combinaciones), cada segundo de derivación hace que probar todas tome ~11,6 días por celular dentro del dispositivo; el bloqueo de 5 intentos (aprobado) frena el intento en la interfaz.
+Comparison grid:
+| Choice | Current | A | B |
+|---|---|---|---|
+| EP1 tiempo objetivo de derivación por PIN | sin número | calibrado a ~1 s (entre 0,8 y 1,2 s) en el celular de referencia de gama baja del piloto, con piso: scrypt N=2^15, r=8, p=1, o PBKDF2-SHA256 ≥ 600.000 iteraciones si scrypt no rinde | calibrado a ~0,3 s (entre 0,2 y 0,4 s) en el mismo celular de referencia, con piso: PBKDF2-SHA256 ≥ 200.000 iteraciones |
+| Bloqueo tras 5 intentos y secreto del Keystore | aprobados (D5, EX2) | sin cambio | sin cambio |
+| Momento de la medición | EX1: medir en gama baja | antes del piloto, en el celular de referencia, registrado en el plan | igual que A |
+Question D11:
+D11: ¿Cuánto puede tardar la app en verificar el PIN de un cargo al firmar?
+Proyecto: Coimpacto, main, revisión de ingeniería del cambio a Expo, sección 4.
+Explicación simple: para que nadie pueda adivinar el PIN probando millones de combinaciones, la app hace a propósito un cálculo lento cada vez que se escribe el PIN. Más lento es más seguro, pero en la reunión cada cargo espera ese tiempo al firmar. Como las firmas van agrupadas, cada cargo escribe su PIN pocas veces por reunión.
+Qué está en juego si elegimos mal: muy rápido facilita adivinar el PIN si alguien se lleva el celular; muy lento hace que la junta sienta la app trabada en cada firma.
+Recomendación: A, porque con firmas agrupadas un segundo por PIN casi no se nota en la reunión y triplica el costo de adivinarlo frente a B.
+Nota: las opciones difieren en tipo, no en cobertura, así que no hay puntaje de completitud.
+Net: más protección del PIN a cambio de un segundo de espera por firma, o firma casi instantánea con menos protección.
+Header: Tiempo PIN
+Options:
+A) Alrededor de 1 segundo (Recommended)
+✅ Probar todos los PIN de 6 dígitos en el celular tomaría unos 11 días, y el bloqueo de 5 intentos lo frena aún más. ✅ Con firmas agrupadas son pocas esperas por reunión; la pantalla muestra "Verificando…" mientras tanto (humano: ~1 día de calibración / CC: ~30 min). ❌ En un celular más lento que el de referencia puede pasar de 1,5 s; hay que medir antes del piloto.
+B) Alrededor de 0,3 segundos
+✅ La firma se siente instantánea incluso en celulares muy lentos. ✅ Menos riesgo de que la junta crea que la app se trabó (humano: ~1 día / CC: ~30 min). ❌ Adivinar el PIN en el celular cuesta unas tres veces menos (unos 3 a 4 días para probar todo), y el piso de PBKDF2 de 200.000 iteraciones queda por debajo de la recomendación actual de OWASP.
+
+State: approved
+Actual answer: A) Alrededor de 1 segundo (Recommended), respuesta a D11 de esta revisión (2026-10-07)
+Accepted scope: derivación de llave desde el PIN calibrada a ~1 s (entre 0,8 y 1,2 s) en el celular de referencia de gama baja del piloto, con piso scrypt N=2^15, r=8, p=1, o PBKDF2-SHA256 ≥ 600.000 iteraciones si scrypt no rinde; medición antes del piloto registrada en el plan; la pantalla muestra "Verificando…" durante la derivación; bloqueo de 5 intentos y secreto del Keystore sin cambio; con su prueba de calibración.
+History: none
+
+Sección 4 (rendimiento), implementación necesaria sin pregunta: SQLCipher se abre con la DEK como llave cruda (`PRAGMA key = "x'…'"`), sin la derivación propia de SQLCipher, porque la DEK ya es aleatoria; así abrir la base no suma otro segundo. Lotes de ~50 y fotos de ~200 KB sin cambio (D24).
+
+Sección 3 (pruebas): diagrama de cobertura en el informe de la revisión y plan de pruebas en `~/.gstack/projects/COIMPACTO/laszlosierra-main-eng-review-test-plan-20261006-225328.md`. 21 rutas propuestas sin prueba todavía (6 E2E con Maestro); todas quedan cubiertas por las tareas TX de abajo. Pruebas a retirar: `web/e2e/inicio.spec.ts` (caso de /reunion) y `web/src/lib/almacen.test.ts` (IndexedDB).
+
+Outside voice: Codex no instalado; reemplazo nativo no disponible (la sesión no tiene TaskOutput). Cobertura externa: unavailable.
+
+TODOS.md: sin TODO nuevo. Por EX5 aprobado se cierra el TODO "Evaluar cola propia vs motor de sincronización" (movido a Completed con la evaluación).
+
+Approval readiness: PASS — D1 (estructura A), EX1 (D2 = A), EX2 (D3 = A), EX3 (D4 = A), EX4 (D5 = A), EX5 (D6 = A), EX6 (D7 = B), EA1 (D8 = A), EA2 (D9 = A), EA3 (D10 = A), EP1 (D11 = A); mapeos de D9, D8 y D24 como implementación necesaria de decisiones ya aprobadas; contrato de regresión de D23 conservado en EX3.
+
+### NOT in scope (cambio a Expo)
+- iOS: Android primero; la app iOS espera a que el piloto funcione en Android.
+- EAS (Build, Submit, Update) y cuenta de Expo: descartados por EX6; todo en GitHub Actions y en el backend.
+- PowerSync u otro motor de sincronización: descartado por EX5 (un escritor por reunión).
+- Pedir y votar préstamos desde el celular del socio: fase 2 (D3 de alcance).
+- Recuperación del PIN del socio a distancia y SMS: descartados por EX4 (nueva alta en la reunión).
+- Importar el respaldo en otro celular sin señal: descartado por EA1 (solo el servidor abre el respaldo; no hay traspaso de escritor, D1).
+- Aliado BaaS, recordatorios push: siguen en TODOS.md.
+
+### What already exists
+- `backend/libro/servicio.py` y el trigger solo-agregar (T4): idempotencia por UUID con hash JCS, estados como eventos; la cola de la app se apoya en esto sin cambios.
+- `web/src/reglas/` (T3): reglas de dinero, JSON canónico y formato de pesos en TypeScript con los casos compartidos; se mueven a `packages/reglas` sin reescribir lógica.
+- `scripts/generar-tokens.mjs` y `web/public/fuentes/` (T2): se convierten en `packages/tokens`, que genera CSS para la web y un módulo TS para la app.
+- CI de GitHub Actions (T2): se extiende con el build de Gradle, la firma y el E2E de Maestro.
+
+### Diagramas (cambio a Expo)
+
+Arquitectura:
+```
+ movil/ (Expo, Android)                         backend/ (Django + Ninja)              web/ (Next.js)
+ ┌───────────────────────────────┐   lotes ~50   ┌──────────────────────────────┐   ┌────────────────────┐
+ │ reunión (9 pasos) · socio     │──────────────►│ /sync → libro/servicio.py     │◄──│ back-office        │
+ │ seguridad: quick-crypto       │◄──────────────│ API del socio (solo su titular)│   │ subir respaldo     │
+ │ datos: SQLite + SQLCipher     │   estados     │ importar respaldo (EA1)       │   │ alta socios/cargos │
+ │ cola propia (EX5)             │               │ servidor de updates (EX6)     │   └────────────────────┘
+ │ expo-updates firmado (EA2)    │◄── manifiesto firmado en CI (llave en secretos de GitHub)
+ └──────────────┬────────────────┘
+                │ importa                         packages/reglas (TS) ◄── casos-reglas (JSON) ──► libro/reglas.py
+                ▼                                 packages/tokens (CSS + RN) ◄── DESIGN.md
+     packages/reglas · packages/tokens · packages/api-client
+```
+
+Jerarquía de llaves en el celular (EX1, EX2, EP1):
+```
+ PIN del cargo (6 dígitos) ──scrypt/PBKDF2 (~1 s)──► KEK_pin ─┐
+ secreto del dispositivo (expo-secure-store, Keystore) ───────┼─► desenvuelve ► DEK ─► SQLCipher (PRAGMA key cruda)
+                                                               │                  └─► fotos cifradas (AES-GCM)
+ KEK_pin ─► desenvuelve ► llave privada ECDSA P-256 del cargo ─► firma P1363 del hash JCS
+ Respaldo: llave aleatoria ─► cifra el archivo; la llave va envuelta con la llave pública del servidor (EA1)
+```
+
+### Failure modes (cambio a Expo)
+| Ruta | Falla realista | Prueba | Manejo | ¿Silenciosa? |
+|---|---|---|---|---|
+| Derivación del PIN | celular más lento que el de referencia: >1,5 s | calibración en el celular de referencia | "Verificando…" visible; parámetros con piso | no |
+| SQLCipher | se borra el Keystore (reinicio de fábrica) | prueba de apertura sin secreto | la app avisa y pide el respaldo; la reunión se recupera del respaldo en el servidor (EA1) o del cuaderno | no |
+| Cola propia | la app muere a mitad de un lote | E2E Maestro (matar y reabrir) | cursor por lote, reenvío idempotente | no |
+| Actualización | llega con reunión abierta | prueba de aplicación manual | se pospone hasta vaciar la cola | no |
+| Actualización | servidor de updates comprometido | prueba de firma ajena | el celular rechaza manifiestos sin firma válida (EA2) | no |
+| Respaldo | archivo alterado al pasar por WhatsApp | prueba de archivo alterado | el servidor rechaza; las firmas de cargos no verifican | no |
+| Paso a Play | llave distinta a la del piloto | prueba de instalación sobre APK piloto | misma llave en Play App Signing (EA3) | no |
+| Vista del socio | otro perfil intenta leer datos ajenos | prueba de aislamiento y alcance de la API | PIN por perfil; la API filtra por titular | no |
+Critical gaps: 0.
+
+### Worktree parallelization strategy (cambio a Expo)
+| Step | Modules touched | Depends on |
+|---|---|---|
+| X1 Paquetes compartidos | packages/, web/ | — |
+| X2 Esqueleto de la app y CI móvil | movil/, .github/ | X1 |
+| X3 Seguridad y datos locales | movil/ (seguridad, datos) | X2 |
+| X4 Backend: respaldo, API del socio, servidor de updates | backend/sync, backend/cuentas | — |
+| X5 Cola y reunión | movil/ (cola, reunion) | X3, X4 |
+| X6 Vista del socio | movil/ (socio), backend/cuentas | X3, X4 |
+| X7 Distribución y llaves | .github/, docs/operacion | X2 |
+
+Parallel lanes: Lane A: X1 → X2 → X3 → X5 (movil, secuencial). Lane B: X4 (backend, independiente). Lane C: X7 (después de X2). Lane D: X6 (después de X3 y X4).
+Execution order: lanzar Lane A y Lane B; al terminar X2, lanzar Lane C; al terminar X3 y X4, lanzar X5 y X6 (ambos tocan movil/: coordinar o secuenciar).
+Conflict flags: X5 y X6 comparten movil/ (navegación y datos); X4 y X6 comparten backend/cuentas.
+
+## Implementation Tasks (cambio a Expo)
+Synthesized from this review's findings. Each task derives from a specific finding above. Run with Claude Code or Codex; checkbox as you ship. Reemplazan la parte de celular de T5, T6 y T7 (el backend de esas tareas sigue igual).
+
+- [ ] **TX1 (P1, human: ~1d / CC: ~45min)** — packages — Crear packages/reglas y packages/tokens; mover web/src/reglas y las fuentes; quitar la ruta (reunion) y Serwist de la web
+  - Surfaced by: Scope Challenge B (estructura A, D1)
+  - Files: packages/reglas/, packages/tokens/, scripts/generar-tokens.mjs, web/
+  - Verify: Vitest de packages con los casos compartidos; build de la web; tokens:check
+- [ ] **TX2 (P1, human: ~3d / CC: ~2h)** — movil — Esqueleto Expo (build de desarrollo, Android), Metro del monorepo, Jest + RNTL, CI con Gradle, firma por secretos y Maestro en emulador
+  - Surfaced by: EX3 (D4), EX6 (D7)
+  - Files: movil/, .github/workflows/
+  - Verify: CI construye el APK firmado y corre un flujo Maestro con modo avión
+- [ ] **TX3 (P1, human: ~1w / CC: ~4h)** — movil/seguridad — quick-crypto: PIN con derivación de ~1 s y piso, DEK doblemente envuelta (Keystore), llaves ECDSA P-256, bloqueo de 5 intentos, enrolamiento QR
+  - Surfaced by: EX1 (D2), EP1 (D11); D5, D17, D18
+  - Files: movil/src/seguridad/, backend/cuentas/
+  - Verify: firma verificada por el servidor; firma alterada rechazada; 5 PIN → en pausa; calibración en el celular de referencia
+- [ ] **TX4 (P1, human: ~3d / CC: ~1.5h)** — movil/datos — SQLite con SQLCipher (llave cruda), migraciones versionadas, caducidad de 60 días, pendientes nunca se borran
+  - Surfaced by: EX2 (D3); D5, D9
+  - Files: movil/src/datos/
+  - Verify: la base no abre sin secreto y PIN; migración con pendientes conserva la cola
+- [ ] **TX5 (P1, human: ~1w / CC: ~4h)** — movil/cola + backend/sync — Cola propia: lotes de ~50, reanudación, estados, dependientes en conflicto, N-1
+  - Surfaced by: EX5 (D6); D24, D10 (eng)
+  - Files: movil/src/cola/, backend/sync/
+  - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar
+- [ ] **TX6 (P1, human: ~2w / CC: ~1d)** — movil/reunion — Asistente de 9 pasos, firmas agrupadas, arqueo, cierre y E2E de reunión completa sin red obligatorio para fusionar
+  - Surfaced by: EX3 (D4); T7 reinterpretado
+  - Files: movil/src/reunion/, movil/.maestro/
+  - Verify: Maestro: 20 socios en modo avión → sync → todo confirmado, totales iguales
+- [ ] **TX7 (P1, human: ~2d / CC: ~1h)** — respaldo — Archivo cifrado para el servidor, compartido con expo-sharing, importación idempotente desde el back-office
+  - Surfaced by: EA1 (D8); D2
+  - Files: movil/src/respaldo/, backend/sync/, web/
+  - Verify: archivo alterado rechazado; importar dos veces no duplica
+- [ ] **TX8 (P2, human: ~3d / CC: ~1.5h)** — socio — Alta del perfil en la reunión, PIN por perfil, vista de solo lectura, API limitada a su titular
+  - Surfaced by: EX4 (D5); D3 de alcance
+  - Files: movil/src/socio/, backend/cuentas/
+  - Verify: dos perfiles en un celular aislados; la API rechaza otro titular
+- [ ] **TX9 (P2, human: ~3d / CC: ~1.5h)** — actualizaciones — Servidor de actualizaciones propio compatible con expo-updates, firma de código en CI, aplicación manual sin pendientes
+  - Surfaced by: EX6 (D7), EA2 (D9); D9 (eng)
+  - Files: backend/ (app de actualizaciones), .github/workflows/, movil/
+  - Verify: actualización sin firma rechazada; no se aplica con reunión abierta
+- [ ] **TX10 (P2, human: ~1d / CC: ~30min)** — operación — Play App Signing con la llave del piloto, llave de subida aparte y copias cifradas de las tres llaves fuera de GitHub; runbook
+  - Surfaced by: EA3 (D10)
+  - Files: docs/operacion/llaves.md, .github/workflows/
+  - Verify: la versión firmada para Play se instala sobre un APK del piloto y conserva los datos
+- [x] **TX11 (P3, human: ~10min / CC: ~2min)** — docs — Cerrar en TODOS.md la evaluación de motor de sincronización
+  - Surfaced by: EX5 (D6)
+  - Files: TODOS.md
+  - Verify: el TODO queda en Completed con la evaluación
+
+### Unresolved decisions
+Ninguna en esta revisión.
+
+### Completion summary (cambio a Expo)
+- Step 0: Scope Challenge — scope accepted as-is (estructura A por D1; 6 hallazgos EX1–EX6 resueltos)
+- Architecture Review: 4 issues found (EA1–EA3 decididos; alcance de la API del socio como implementación necesaria)
+- Code Quality Review: 0 issues found
+- Test Review: diagram produced, 21 gaps identified (todas cubiertas por TX1–TX10)
+- Performance Review: 1 issue found (EP1 decidido)
+- NOT in scope: written
+- What already exists: written
+- TODOS.md updates: 0 items proposed to user (1 cierre aprobado por EX5)
+- Failure modes: 0 critical gaps flagged
+- Unresolved decisions: 0 in this review
+- Outside voice: codex unavailable (no instalado; reemplazo nativo no disponible por falta de TaskOutput)
+- Parallelization: 4 lanes, 2 parallel / 2 sequential
+- Lake Score: 5/5 = D3, D4, D8, D9 y D10 eligieron la opción 10/10; D1, D2, D5, D6, D7 y D11 diferían en tipo, sin puntaje
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 |--------|---------|-----|------|--------|----------|
 | CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 3 | unavailable | Codex not installed; native fallback unavailable in eng reviews; design phase used a native Claude subagent [single-model] |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 2 | issues_open | 10 issues, 0 critical gaps (latest re-validation; prior run: 46 issues) |
+| Outside Review | codex via `/plan-eng-review` and `/plan-design-review` | Independent 2nd opinion | 4 | unavailable | Codex not installed; native fallback unavailable in eng reviews (no TaskOutput in this session); design phase used a native Claude subagent [single-model] |
+| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 3 | issues_open | 26 issues, 0 critical gaps (latest: cambio a Expo, 11 decisiones aprobadas, todo mapeado a TX1–TX11; prior runs: 10 and 46 issues) |
 | Design Review | `/plan-design-review` | UI/UX gaps | 1 | issues_open | score: 0/10 → 7/10, 28 decisions |
 | DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
 
-- **OUTSIDE COVERAGE:** codex, plan-review phase (2 runs), unavailable; codex, design phase, unavailable (native Claude subagent completed; not outside coverage).
-- **VERDICT:** No reviews CLEAR yet. All findings have approved remedies mapped to tasks T1–T11, DT1–DT10 and ET1–ET4; design held at 7/10 until DESIGN.md (DT1); eng review required.
+- **OUTSIDE COVERAGE:** codex, plan-review phase (3 runs), unavailable; codex, design phase, unavailable (native Claude subagent completed; not outside coverage).
+- **VERDICT:** No reviews CLEAR yet. All findings have approved remedies mapped to tasks (T1–T11, DT1–DT10, ET1–ET4, TX1–TX11); design review predates the move to Expo (the meeting UI now lives in movil/); eng review required.
 
 NO UNRESOLVED DECISIONS
