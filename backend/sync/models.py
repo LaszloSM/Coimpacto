@@ -41,3 +41,24 @@ class Recibido(models.Model):
 
     def __str__(self) -> str:
         return f"{self.tipo} {str(self.id)[:8]} → {self.estado}"
+
+
+class Reto(models.Model):
+    """Número de un solo uso que el celular firma para pedir datos (TX6.0).
+
+    Así una firma vieja no sirve para volver a bajar los datos del grupo, sin depender del
+    reloj del celular. Vence a los 2 minutos.
+    """
+
+    valor = models.CharField(max_length=64, primary_key=True)
+    dispositivo = models.ForeignKey(
+        "cuentas.Dispositivo", on_delete=models.CASCADE, related_name="+"
+    )
+    vence_en = models.DateTimeField()
+    usado_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "reto"
+
+    def __str__(self) -> str:
+        return f"Reto de {self.dispositivo_id} · vence {self.vence_en:%H:%M}"

@@ -85,6 +85,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sync/reto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pedir un número de un solo uso para bajar los datos del grupo */
+        post: operations["sync_api_pedir_reto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sync/grupo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bajar los datos del grupo para llevar la reunión sin señal
+         * @description El celular firma {"pedido": "grupo", "reto": …}. Un celular retirado recibe 410 y borra
+         *     sus datos locales después de subir su cola (E3).
+         */
+        post: operations["sync_api_bajar_grupo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -156,6 +194,18 @@ export interface components {
         ResultadoLote: {
             /** Resultados */
             resultados: components["schemas"]["ResultadoElemento"][];
+        };
+        /** Reto */
+        Reto: {
+            /** Reto */
+            reto: string;
+        };
+        /** PedidoGrupo */
+        PedidoGrupo: {
+            /** Reto */
+            reto: string;
+            /** Firma */
+            firma: string;
         };
     };
     responses: never;
@@ -263,6 +313,70 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    sync_api_pedir_reto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Reto"];
+                };
+            };
+        };
+    };
+    sync_api_bajar_grupo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoGrupo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+            /** @description Gone */
+            410: {
                 headers: {
                     [name: string]: unknown;
                 };
