@@ -11,12 +11,13 @@ import uuid
 
 from ninja import Router, Schema
 from ninja.errors import HttpError
+from ninja.security import django_auth
 from ninja.throttling import AnonRateThrottle
 
 from core import firmas
 from core.canonico import ValorNoCanonico
 from cuentas.models import Dispositivo
-from sync import bajada, servicio
+from sync import bajada, respaldo, servicio
 
 router = Router(tags=["sincronizacion"])
 
@@ -120,3 +121,28 @@ def bajar_grupo(request, pedido: PedidoGrupo):
     except bajada.BajadaRechazada as error:
         return error.estado_http, {"codigo": error.codigo}
     return bajada.foto_del_grupo(dispositivo)
+
+
+class Respaldo(Schema):
+    archivo: str
+
+
+class ResultadoRespaldo(Schema):
+    elementos: int
+    resultado: dict[str, int]
+
+
+@router.post(
+    "/respaldos",
+    response={200: ResultadoRespaldo, 400: Rechazo, 403: Rechazo},
+    auth=django_auth,
+    summary="Subir el archivo de respaldo de un celular (lo trae el facilitador)",
+)
+def subir_respaldo(request, cuerpo: Respaldo):
+    """Importa los pendientes del archivo cifrado; subirlo dos veces no duplica nada."""
+    if not request.user.has_perm("cuentas.add_codigoenrolamiento"):
+        return 403, {"codigo": "SIN_PERMISO"}
+    try:
+        return respaldo.importar(texto=cuerpo.archivo, usuario=request.user)
+    except respaldo.RespaldoInvalido as error:
+        return 400, {"codigo": error.codigo}

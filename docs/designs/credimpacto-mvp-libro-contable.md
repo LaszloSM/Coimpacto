@@ -2501,7 +2501,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX3 (D4); T7 reinterpretado
   - Files: movil/src/reunion/, movil/.maestro/
   - Verify: Maestro: 20 socios en modo avión → sync → todo confirmado, totales iguales — **hecho 2026-10-19 sin red** (TX6.0 bajada del grupo, TX6a pasos 1–4, TX6b abonos y préstamos con firmas agrupadas, TX6c arqueo a ciegas, cierre firmado con sello y resumen; Maestro recorre la reunión completa en modo avión). Pendiente: el E2E de sincronización contra un servidor real en CI, que necesita el enrolamiento de TD1
-- [ ] **TX7 (P1, human: ~2d / CC: ~1h)** — respaldo — Archivo cifrado para el servidor, compartido con expo-sharing, importación idempotente desde el back-office
+- [x] **TX7 (P1, human: ~2d / CC: ~1h)** — respaldo — Archivo cifrado para el servidor, compartido con expo-sharing, importación idempotente desde el back-office
   - Surfaced by: EA1 (D8); D2
   - Files: movil/src/respaldo/, backend/sync/, web/
   - Verify: archivo alterado rechazado; importar dos veces no duplica

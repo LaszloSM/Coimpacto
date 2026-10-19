@@ -17,6 +17,12 @@ export default function Fundacion() {
           </Link>
           <p className={estilos.detalle}>{t("fundacion.celularesDetalle")}</p>
         </li>
+        <li className={estilos.opcion}>
+          <Link className={estilos.enlace} href="/fundacion/respaldos">
+            {t("fundacion.respaldos")}
+          </Link>
+          <p className={estilos.detalle}>{t("fundacion.respaldosDetalle")}</p>
+        </li>
       </ul>
     </main>
   );

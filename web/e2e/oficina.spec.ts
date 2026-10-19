@@ -37,3 +37,23 @@ test("sin sesión, la página de celulares lleva a entrar", async ({ page }) => 
   await page.goto("/fundacion/celulares");
   await expect(page).toHaveURL(/\/fundacion\/entrar$/);
 });
+
+test("subir una copia de seguridad: muestra cuántos registros entraron", async ({ page }) => {
+  await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
+  await page.route("**/api/respaldos", (r) => r.fulfill({ json: { elementos: 3, resultado: { confirmado: 2, rechazado: 1 } } }));
+  await page.goto("/fundacion/respaldos");
+  await page.getByLabel("Archivo de la copia").setInputFiles({ name: "copia.json", mimeType: "application/json", buffer: Buffer.from("{}") });
+  await page.getByRole("button", { name: "Subir la copia" }).click();
+  await expect(page.getByText("Copia subida. Registros: 3.")).toBeVisible();
+  await expect(page.getByText("Aceptados: 2")).toBeVisible();
+  await expect(page.getByText("Rechazados: 1")).toBeVisible();
+});
+
+test("copia alterada: lo explica en palabras sencillas", async ({ page }) => {
+  await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
+  await page.route("**/api/respaldos", (r) => r.fulfill({ status: 400, json: { codigo: "ARCHIVO_ALTERADO" } }));
+  await page.goto("/fundacion/respaldos");
+  await page.getByLabel("Archivo de la copia").setInputFiles({ name: "copia.json", mimeType: "application/json", buffer: Buffer.from("{}") });
+  await page.getByRole("button", { name: "Subir la copia" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "El archivo está dañado" })).toBeVisible();
+});

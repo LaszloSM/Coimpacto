@@ -43,6 +43,7 @@ export default function PantallaInicio() {
       alAbrir={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "reunion" } })}
       alEnviar={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "enviar" } })}
       alAltaCargo={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "alta" } })}
+      alRespaldo={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "respaldo" } })}
       alRegistrar={() => router.push("/enrolar")}
     />
   );

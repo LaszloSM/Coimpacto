@@ -13,7 +13,9 @@
     "titulo": "Pendientes",
     "enConstruccion": "Aquí va la cola de reuniones por revisar.",
     "celulares": "Registrar un celular",
-    "celularesDetalle": "Código QR de un solo uso para el celular de una ACAP."
+    "celularesDetalle": "Código QR de un solo uso para el celular de una ACAP.",
+    "respaldos": "Subir una copia de seguridad",
+    "respaldosDetalle": "El archivo que una junta envió desde su celular sin señal."
   },
   "entrar": {
     "titulo": "Entrar a la oficina",
@@ -36,5 +38,27 @@
     "otro": "Generar otro código",
     "sinPermiso": "Este usuario no puede registrar celulares.",
     "cargando": "Cargando…"
+  },
+  "respaldos": {
+    "titulo": "Subir una copia de seguridad",
+    "archivo": "Archivo de la copia",
+    "subir": "Subir la copia",
+    "subiendo": "Subiendo…",
+    "resultado": "Copia subida. Registros: {total}.",
+    "estado": {
+      "confirmado": "Aceptados",
+      "por_validar": "Por revisar",
+      "rechazado": "Rechazados",
+      "en_conflicto": "Hay que aclarar",
+      "en_espera": "En espera"
+    },
+    "errores": {
+      "ARCHIVO_ALTERADO": "El archivo está dañado o fue cambiado. Pida otra copia a la junta.",
+      "ARCHIVO_INVALIDO": "Ese archivo no es una copia de Credimpacto.",
+      "FIRMA_INVALIDA": "La copia no viene de un celular registrado.",
+      "CELULAR_DESCONOCIDO": "La copia es de un celular que no está registrado.",
+      "SERVIDOR_SIN_LLAVE": "El servidor aún no tiene la llave de las copias. Avise al equipo técnico.",
+      "SIN_PERMISO": "Este usuario no puede subir copias."
+    }
   }
 }

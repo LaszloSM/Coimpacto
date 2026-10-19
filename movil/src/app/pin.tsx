@@ -10,7 +10,7 @@ import { estilos } from "../ui/componentes";
 import { TecladoPin } from "../ui/TecladoPin";
 
 export default function PantallaPin() {
-  const { cargo, accion } = useLocalSearchParams<{ cargo: string; accion?: "reunion" | "enviar" | "alta" }>();
+  const { cargo, accion } = useLocalSearchParams<{ cargo: string; accion?: "reunion" | "enviar" | "alta" | "respaldo" }>();
   const { entorno, setSesion } = useSesion();
   const router = useRouter();
   const [perfil, setPerfil] = useState<Perfil>();
@@ -32,7 +32,9 @@ export default function PantallaPin() {
           setVerificando(true);
           try {
             setSesion(await abrirSesion(entorno, perfil, pin));
-            router.replace(accion === "enviar" ? "/enviar" : accion === "alta" ? "/alta-cargo" : "/reunion");
+            router.replace(
+              accion === "enviar" ? "/enviar" : accion === "alta" ? "/alta-cargo" : accion === "respaldo" ? "/respaldo" : "/reunion",
+            );
           } catch (error) {
             if (error instanceof PinFallido) setAviso(error.message);
             else if (error instanceof CargoEnPausa) setAviso("Este PIN quedó en pausa en este celular.");
