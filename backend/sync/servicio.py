@@ -12,7 +12,8 @@ Cada firma es de la llave de un cargo de este celular sobre el JCS de
 
 Resultado de cada elemento, en el mismo orden:
 
-    confirmado    aplicado al libro
+    confirmado    aceptado; en el libro queda provisional hasta el cierre firmado, que lo
+                  confirma (o lo deja en conflicto si no está en su lista)
     por_validar   aplicado, pero el celular está retirado (E3): lo revisa la junta
     rechazado     no cumple una regla; `codigo` dice cuál. No se edita ni se borra (D22)
     en_conflicto  depende de algo rechazado (E6) o es una recaptura distinta del mismo id
@@ -233,12 +234,14 @@ def _firmas_prestamo(firmantes: list[LlaveCargo], titular: Titular) -> None:
 
 
 def _cerrar(ctx: _Contexto, *movimientos: Movimiento) -> str:
-    """El servidor confirma; lo de un celular retirado queda por validar (E3)."""
-    destino = E.CONFIRMADO if ctx.dispositivo.activo else E.POR_VALIDAR
-    for mov in movimientos:
-        if libro.estado_actual(mov) == E.PROVISIONAL:
-            libro.cambiar_estado(mov, destino, codigo="SYNC")
-    return R.CONFIRMADO if ctx.dispositivo.activo else R.POR_VALIDAR
+    """Aceptado: en el libro queda provisional hasta que el cierre firmado lo ratifica (D9,
+    _cierre). Lo de un celular retirado queda por validar de una vez (E3)."""
+    if not ctx.dispositivo.activo:
+        for mov in movimientos:
+            if libro.estado_actual(mov) == E.PROVISIONAL:
+                libro.cambiar_estado(mov, E.POR_VALIDAR, codigo="SYNC")
+        return R.POR_VALIDAR
+    return R.CONFIRMADO
 
 
 def _comun(ctx, firmantes, e: Elemento) -> dict:
@@ -379,8 +382,12 @@ def _cierre(ctx, firmantes, e):
         previo = Recibido.objects.filter(id=id_).first()
         if previo is None or previo.estado not in (R.RECHAZADO, R.EN_CONFLICTO):
             raise EnEspera("FALTA_MOVIMIENTO")
-    for mov in Movimiento.objects.filter(reunion=reunion).exclude(id__in=ids):
-        if E.EN_CONFLICTO in libro.TRANSICIONES[libro.estado_actual(mov)]:
+    # El cierre ratifica lo que lista y deja en conflicto lo que el servidor tiene fuera de ella.
+    for mov in Movimiento.objects.filter(reunion=reunion):
+        actual = libro.estado_actual(mov)
+        if mov.id in ids and actual == E.PROVISIONAL and ctx.dispositivo.activo:
+            libro.cambiar_estado(mov, E.CONFIRMADO, codigo="CIERRE")
+        elif mov.id not in ids and E.EN_CONFLICTO in libro.TRANSICIONES[actual]:
             libro.cambiar_estado(mov, E.EN_CONFLICTO, codigo="FUERA_DEL_CIERRE")
     reunion.estado = Reunion.Estado.CERRADA
     reunion.caja_contada = caja

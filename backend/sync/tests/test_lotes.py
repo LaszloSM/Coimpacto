@@ -51,7 +51,8 @@ class TestReunionCompleta:
         assert mov.monto == 30_000  # lo calcula el servidor con el precio congelado
         assert mov.registrado_por_llave == junta.cajera.registro
         assert mov.registrado_por is None
-        assert libro.estado_actual(mov) == E.CONFIRMADO
+        # Aceptado, pero provisional en el libro hasta que el cierre firmado lo ratifique.
+        assert libro.estado_actual(mov) == E.PROVISIONAL
 
     def test_multa_movimiento_y_correccion(self, junta):
         reunion_id = uuid.uuid4()
@@ -365,6 +366,7 @@ class TestCierre:
         reunion = Reunion.objects.get(id=reunion_id)
         assert reunion.estado == "cerrada"
         assert reunion.caja_contada == 50_000
+        assert libro.estado_actual(Movimiento.objects.get(id=aporte["id"])) == E.CONFIRMADO
 
     def test_lo_que_no_esta_en_el_cierre_queda_en_conflicto(self, junta):
         reunion_id = uuid.uuid4()
