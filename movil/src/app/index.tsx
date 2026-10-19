@@ -5,6 +5,7 @@ import { Inicio } from "../pantallas/Inicio";
 import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { useSesion } from "../sesion/contexto";
 import { reunionAbiertaMarcada } from "../sesion/marcas";
+import { perfilesSocio, type PerfilSocio } from "../socio/socio";
 import { MODO_PRUEBA, sembrarModoPrueba } from "../sesion/modoPrueba";
 
 export default function PantallaInicio() {
@@ -14,6 +15,7 @@ export default function PantallaInicio() {
   const [elegido, setElegido] = useState<string>();
   const [error, setError] = useState<string>();
   const [abierta, setAbierta] = useState<string | null>(null);
+  const [socios, setSocios] = useState<PerfilSocio[]>([]);
 
   useEffect(() => {
     void (async () => {
@@ -21,6 +23,7 @@ export default function PantallaInicio() {
         if (MODO_PRUEBA) await sembrarModoPrueba(entorno, entorno.ahora());
         const lista = await leerPerfiles(entorno.almacen);
         setAbierta(await reunionAbiertaMarcada(entorno.almacen));
+        setSocios(await perfilesSocio(entorno.almacen));
         setPerfiles(lista);
         if (lista.length === 1) setElegido(lista[0].cargoId);
       } catch (e) {
@@ -45,6 +48,9 @@ export default function PantallaInicio() {
       alAltaCargo={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "alta" } })}
       alRespaldo={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "respaldo" } })}
       alRegistrar={() => router.push("/enrolar")}
+      socios={socios}
+      alVerSocio={(llave) => router.push({ pathname: "/socio", params: { llave } })}
+      alAltaSocio={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "socio" } })}
     />
   );
 }

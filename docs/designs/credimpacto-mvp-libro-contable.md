@@ -2505,7 +2505,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EA1 (D8); D2
   - Files: movil/src/respaldo/, backend/sync/, web/
   - Verify: archivo alterado rechazado; importar dos veces no duplica
-- [ ] **TX8 (P2, human: ~3d / CC: ~1.5h)** — socio — Alta del perfil en la reunión, PIN por perfil, vista de solo lectura, API limitada a su titular
+- [x] **TX8 (P2, human: ~3d / CC: ~1.5h)** — socio — Alta del perfil en la reunión, PIN por perfil, vista de solo lectura, API limitada a su titular
   - Surfaced by: EX4 (D5); D3 de alcance
   - Files: movil/src/socio/, backend/cuentas/
   - Verify: dos perfiles en un celular aislados; la API rechaza otro titular
@@ -2707,7 +2707,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Pasada 3 N6
   - Files: docs/operacion/llaves.md, .github/workflows/
   - Verify: un cargo invitado instala desde Play sin advertencias de origen desconocido
-- [ ] **TD5 (P2, human: ~4d / CC: ~2h)** — movil/socio — Vista del socio (N2, N3), alta aparte con celular volteado (N7a), espera creciente (N7), almacén aparte (N17), privacidad (N12)
+- [x] **TD5 (P2, human: ~4d / CC: ~2h)** — movil/socio — Vista del socio (N2, N3), alta aparte con celular volteado (N7a), espera creciente (N7), almacén aparte (N17), privacidad (N12)
   - Surfaced by: Pasadas 1, 2, 3, 6 y 7
   - Files: movil/src/socio/, movil/src/datos/, backend/cuentas/
   - Verify: con el PIN de un socio no se abre la base de la reunión; FLAG_SECURE activo; datos de más de 60 días no muestran cifras

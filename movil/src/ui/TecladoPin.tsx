@@ -3,6 +3,7 @@
 // del sistema (DESIGN.md, superficie nativa).
 
 import { tokens } from "@credimpacto/tokens";
+import { usePreventScreenCapture } from "expo-screen-capture";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -19,6 +20,8 @@ export function TecladoPin(props: {
   verificando?: boolean;
   alCompletar: (pin: string) => void;
 }) {
+  // Sin capturas ni vista previa en apps recientes mientras se escribe un PIN (N12).
+  usePreventScreenCapture();
   const [pin, setPin] = useState("");
 
   const tocar = (tecla: (typeof TECLAS)[number]) => {
