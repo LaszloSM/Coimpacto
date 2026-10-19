@@ -10,6 +10,7 @@ import { BotonPrincipal, estilos as base } from "../ui/componentes";
 const { color, tipo, spacing } = tokens;
 
 export function Inicio(props: {
+  error?: string;
   perfiles?: Perfil[];
   elegido?: string;
   alElegir?: (cargoId: string) => void;
@@ -23,7 +24,11 @@ export function Inicio(props: {
           Credimpacto
         </Text>
         <View style={estilos.renglon} />
-        {perfiles.length === 0 ? (
+        {props.error ? (
+          <Text style={estilos.mensaje} testID="inicio-error">
+            No se pudo preparar este celular. Avise al facilitador. ({props.error})
+          </Text>
+        ) : perfiles.length === 0 ? (
           <Text style={estilos.mensaje}>Este celular aún no está registrado. Pida el código al facilitador.</Text>
         ) : (
           <>
