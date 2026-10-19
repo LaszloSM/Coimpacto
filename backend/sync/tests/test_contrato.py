@@ -52,7 +52,7 @@ def preparar_grupo(muestra: dict) -> Dispositivo:
             id=m["membresia_id"], acap=acap, titular=titular, numero_miembro=m["numero"]
         )
     dispositivo = Dispositivo.objects.create(
-        id=muestra["dispositivo"]["id"], acap=acap, llave_publica=LlaveDePrueba().publica
+        id=uuid.UUID(muestra["dispositivo"]["id"]), acap=acap, llave_publica=LlaveDePrueba().publica
     )
     facilitador = Usuario.objects.create_user(username="facilitadora", password="x" * 16)
     facilitador.groups.add(Group.objects.get(name="Facilitador"))
