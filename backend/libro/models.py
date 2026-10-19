@@ -7,6 +7,8 @@ barrera. Las correcciones son contramovimientos y los cambios de estado son even
 Toda escritura pasa por libro/servicio.py.
 """
 
+import uuid
+
 from django.db import models
 from django.db.models import OuterRef, Subquery
 
@@ -213,3 +215,33 @@ class Auditoria(models.Model):
 
     def __str__(self) -> str:
         return f"{self.accion} {self.tabla} {self.pk_registro}"
+
+
+class Comprobante(models.Model):
+    """Comprobante confirmado de un miembro en una reunión cerrada (alcance 3, pregunta 2b).
+
+    Se entrega como enlace o QR en la siguiente reunión. El enlace es un token firmado por el
+    servidor (libro/comprobantes.py) que vence; la Fundación lo puede revocar. Fuera del libro
+    solo-agregar: no es dinero, es la constancia de lo que el libro ya tiene.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    reunion = models.ForeignKey(
+        "acap.Reunion", on_delete=models.PROTECT, related_name="comprobantes"
+    )
+    membresia = models.ForeignKey(
+        "acap.Membresia", on_delete=models.PROTECT, related_name="comprobantes"
+    )
+    emitido_en = models.DateTimeField(auto_now_add=True)
+    revocado_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "comprobante"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["reunion", "membresia"], name="un_comprobante_por_miembro_y_reunion"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"Comprobante #{self.membresia.numero_miembro} · reunión {self.reunion.numero}"

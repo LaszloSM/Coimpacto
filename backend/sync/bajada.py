@@ -18,6 +18,7 @@ from django.utils import timezone
 from acap.models import Cargo, Ciclo, Membresia, Reunion
 from core import firmas
 from cuentas.models import Dispositivo
+from libro import comprobantes
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
 from sync.models import Reto
@@ -129,6 +130,7 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "prestamos": [],
         "caja": 0,
         "ultima_reunion": None,
+        "comprobantes": None,
     }
     if ciclo is None:
         return foto
@@ -176,6 +178,8 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
     # Caja con que abre la próxima reunión: lo contado en el arqueo de la última cerrada (D12).
     cerradas = [r for r in reuniones if r.caja_contada is not None]
     foto["caja"] = cerradas[-1].caja_contada if cerradas else 0
+    # Comprobantes de la última reunión cerrada, para mostrarlos en la siguiente (pregunta 2b).
+    foto["comprobantes"] = comprobantes.emitir(ciclo)
     # "Igual que la reunión pasada" (D11): lo que dio cada miembro en la última del ciclo.
     foto["ultima_reunion"] = (
         {

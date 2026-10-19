@@ -89,5 +89,24 @@
     "viejos": "{n} ACAP con datos de hace más de 14 días",
     "cargando": "Cargando indicadores…",
     "sinPermiso": "Este usuario no puede ver los indicadores."
+  },
+  "comprobante": {
+    "titulo": "Comprobante",
+    "miembro": "Miembro #{n}",
+    "reunion": "Reunión {n} · {fecha}",
+    "confirmado": "Confirmado por el libro de la ACAP",
+    "ahorro": "Ahorro ({n} acciones)",
+    "fondoSocial": "Fondo social",
+    "multas": "Multas",
+    "abonos": "Abonos a préstamos",
+    "ahorroCiclo": "Ahorro en el ciclo",
+    "saldoPrestamos": "Saldo de préstamos hoy",
+    "datosAl": "Datos al {fecha}",
+    "venceEn": "este enlace sirve hasta el {fecha}",
+    "noBanco": "Credimpacto lleva las cuentas del grupo. No guarda ni recibe dinero.",
+    "vencido": "Este comprobante venció. Pida uno nuevo a su junta.",
+    "revocado": "Este enlace ya no sirve. Pida uno nuevo a su junta.",
+    "noExiste": "No encontramos este comprobante. Revise que el enlace esté completo o pida uno nuevo a su junta.",
+    "sinConexion": "No hay conexión. Intente de nuevo cuando tenga señal."
   }
 }

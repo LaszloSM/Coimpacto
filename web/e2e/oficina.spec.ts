@@ -92,3 +92,37 @@ test("indicadores: cifras por ACAP con la fecha de sus datos y el total", async 
   await expect(page.getByText("1 ACAP con datos de hace más de 14 días")).toBeVisible();
   await expect(page.getByText("Sin datos", { exact: true })).toBeVisible();
 });
+
+test("comprobante por enlace: cifras confirmadas del miembro, sin nombre", async ({ page }) => {
+  await page.route("**/api/comprobantes/**", (r) =>
+    r.fulfill({
+      json: {
+        acap: "ACAP Las Brisas",
+        reunion: 4,
+        fecha: "2026-10-04",
+        numero_miembro: 7,
+        acciones: 3,
+        ahorro: 30000,
+        fondo_social: 2000,
+        multas: 2000,
+        abonos: 25000,
+        ahorro_ciclo: 120000,
+        saldo_prestamos: 75000,
+        vence_en: "2026-12-03",
+        datos_al: "2026-10-05T10:00:00Z",
+      },
+    }),
+  );
+  await page.goto("/comprobante/abc:def");
+  await expect(page.getByRole("heading", { name: "Miembro #07" })).toBeVisible();
+  await expect(page.getByText("Ahorro (3 acciones)")).toBeVisible();
+  await expect(page.getByText("$ 120.000")).toBeVisible();
+  await expect(page.getByText("Confirmado por el libro de la ACAP")).toBeVisible();
+  expect(await page.locator('meta[name="robots"]').getAttribute("content")).toContain("noindex");
+});
+
+test("comprobante vencido: lo dice y a quién pedir otro", async ({ page }) => {
+  await page.route("**/api/comprobantes/**", (r) => r.fulfill({ status: 410, json: { codigo: "VENCIDO" } }));
+  await page.goto("/comprobante/abc:def");
+  await expect(page.getByRole("alert").filter({ hasText: "venció" })).toHaveText("Este comprobante venció. Pida uno nuevo a su junta.");
+});
