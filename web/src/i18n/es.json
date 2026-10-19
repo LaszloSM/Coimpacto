@@ -11,6 +11,30 @@
   },
   "fundacion": {
     "titulo": "Pendientes",
-    "enConstruccion": "Aquí va la cola de reuniones por revisar."
+    "enConstruccion": "Aquí va la cola de reuniones por revisar.",
+    "celulares": "Registrar un celular",
+    "celularesDetalle": "Código QR de un solo uso para el celular de una ACAP."
+  },
+  "entrar": {
+    "titulo": "Entrar a la oficina",
+    "usuario": "Usuario",
+    "clave": "Clave",
+    "boton": "Entrar",
+    "entrando": "Entrando…",
+    "error": "Usuario o clave incorrectos."
+  },
+  "celulares": {
+    "titulo": "Registrar un celular",
+    "acap": "ACAP",
+    "elegir": "Elija la ACAP",
+    "generar": "Generar el código",
+    "generando": "Generando…",
+    "instrucciones": "En el celular de la ACAP toque «Registrar este celular» y lea este código. Sirve una sola vez.",
+    "vence": "Vence en",
+    "vencido": "Este código venció. Genere uno nuevo.",
+    "escrito": "Si la cámara no funciona, escriba este código:",
+    "otro": "Generar otro código",
+    "sinPermiso": "Este usuario no puede registrar celulares.",
+    "cargando": "Cargando…"
   }
 }

@@ -48,3 +48,11 @@ def nuevo_cargo(ciclo):
         return Cargo.objects.create(ciclo=ciclo, membresia=membresia, tipo=tipo)
 
     return crear
+
+
+@pytest.fixture(autouse=True)
+def _limites_limpios():
+    """Los límites de intentos (throttle) viven en la caché; cada prueba empieza de cero."""
+    from django.core.cache import cache
+
+    cache.clear()
