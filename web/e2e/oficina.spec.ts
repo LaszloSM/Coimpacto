@@ -57,3 +57,38 @@ test("copia alterada: lo explica en palabras sencillas", async ({ page }) => {
   await page.getByRole("button", { name: "Subir la copia" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "El archivo está dañado" })).toBeVisible();
 });
+
+test("bandeja de pendientes: por gravedad, con el código para el equipo", async ({ page }) => {
+  await page.route("**/api/oficina/pendientes", (r) =>
+    r.fulfill({
+      json: [
+        { acap_id: "a1", acap: "ACAP Las Brisas", tipo: "rechazado", codigo: "MAXIMO_ACCIONES", cuantos: 2, desde: "2026-10-19T10:00:00Z" },
+        { acap_id: "a2", acap: "ACAP Sin Señal", tipo: "sin_datos", codigo: "", cuantos: 21, desde: "2026-09-28T10:00:00Z" },
+      ],
+    }),
+  );
+  await page.goto("/fundacion");
+  await expect(page.getByText("No se aceptó · 2 registros")).toBeVisible();
+  await expect(page.getByText("MAXIMO_ACCIONES")).toBeVisible();
+  await expect(page.getByText("Sin datos hace 21 días")).toBeVisible();
+});
+
+test("indicadores: cifras por ACAP con la fecha de sus datos y el total", async ({ page }) => {
+  await page.route("**/api/oficina/consolidado", (r) =>
+    r.fulfill({
+      json: {
+        generado_en: "2026-10-19T12:00:00Z",
+        acaps: [
+          { id: "a1", nombre: "ACAP Las Brisas", socios: 20, reuniones: 4, ahorro: 380000, prestamos_con_saldo: 2, saldo_prestamos: 216000, por_revisar: 1, datos_al: "2026-10-18T12:00:00Z", datos_viejos: false },
+          { id: "a2", nombre: "ACAP Sin Señal", socios: 12, reuniones: 1, ahorro: 50000, prestamos_con_saldo: 0, saldo_prestamos: 0, por_revisar: 0, datos_al: null, datos_viejos: true },
+        ],
+        totales: { ahorro: 430000, prestamos_con_saldo: 2, saldo_prestamos: 216000, socios: 32, acaps_con_datos_viejos: 1 },
+      },
+    }),
+  );
+  await page.goto("/fundacion/indicadores");
+  await expect(page.getByRole("rowheader", { name: /ACAP Las Brisas/ })).toBeVisible();
+  await expect(page.getByText("$ 430.000")).toBeVisible();
+  await expect(page.getByText("1 ACAP con datos de hace más de 14 días")).toBeVisible();
+  await expect(page.getByText("Sin datos", { exact: true })).toBeVisible();
+});

@@ -107,3 +107,99 @@
   color: var(--color-tinta-suave);
   margin: 0;
 }
+
+.paginaAncha {
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.secciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-renglon-fuerte);
+  font-weight: 700;
+}
+
+.secciones a {
+  color: var(--color-navy);
+  min-height: var(--spacing-toque-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.renglon {
+  display: grid;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--color-renglon);
+}
+
+.renglon[data-tipo="en_conflicto"] span {
+  color: var(--color-en-conflicto);
+}
+
+.renglon[data-tipo="rechazado"] span {
+  color: var(--color-rechazado);
+}
+
+.renglon[data-tipo="por_validar"] span,
+.renglon[data-tipo="sin_datos"] span {
+  color: var(--color-por-validar);
+}
+
+.aviso {
+  color: var(--color-por-validar);
+  background: var(--color-por-validar-tinte);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-sm);
+}
+
+/* Si no cabe, la tabla se desplaza sola, nunca la página (DESIGN.md, Layout). */
+.tablaContenedor {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla th,
+.tabla td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-renglon);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabla thead th {
+  border-bottom: 2px solid var(--color-tinta);
+  font-weight: 700;
+}
+
+.tabla th[scope="row"] {
+  text-align: left;
+  display: grid;
+  white-space: normal;
+}
+
+.tabla tfoot th,
+.tabla tfoot td {
+  border-top: 2px solid var(--color-tinta);
+  font-weight: 700;
+}
+
+.viejo {
+  color: var(--color-tinta-suave);
+}
