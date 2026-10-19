@@ -44,7 +44,7 @@ describe("migraciones", () => {
     const base = await baseLista();
     expect(await versionDe(base)).toBe(VERSION_ACTUAL);
     const tablas = await base.todas<{ name: string }>("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name;");
-    expect(tablas.map((t) => t.name)).toEqual(["asistencia", "grupo", "meta", "miembros", "pendientes", "registro_miembro", "reunion_local"]);
+    expect(tablas.map((t) => t.name)).toEqual(["asistencia", "grupo", "meta", "miembros", "pendientes", "registro_abono", "registro_miembro", "reunion_local", "solicitud_prestamo"]);
   });
 
   test("migrar dos veces no hace nada la segunda", async () => {

@@ -1,0 +1,17 @@
+# PIN del Presidente del grupo de prueba (src/sesion/modoPrueba.ts).
+appId: com.coimpactob.credimpacto
+tags:
+  - subflujo
+---
+- tapOn:
+    id: "tecla-4"
+- tapOn:
+    id: "tecla-8"
+- tapOn:
+    id: "tecla-2"
+- tapOn:
+    id: "tecla-9"
+- tapOn:
+    id: "tecla-1"
+- tapOn:
+    id: "tecla-6"

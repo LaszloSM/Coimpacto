@@ -106,6 +106,35 @@ export const MIGRACIONES: readonly Migracion[] = [
       ) STRICT;
     `,
   },
+  {
+    // Abonos y préstamos de la reunión (TX6b): lo registrado por préstamo (para corregir) y
+    // cada solicitud con su votación (D21) hasta que la firman los cargos (D10, D13).
+    version: 5,
+    sql: `
+      CREATE TABLE registro_abono (
+        reunion_id TEXT NOT NULL REFERENCES reunion_local (id),
+        prestamo_id TEXT NOT NULL,
+        version INTEGER NOT NULL,
+        monto INTEGER NOT NULL,
+        elementos TEXT NOT NULL,
+        PRIMARY KEY (reunion_id, prestamo_id)
+      ) STRICT;
+
+      CREATE TABLE solicitud_prestamo (
+        id TEXT PRIMARY KEY,
+        reunion_id TEXT NOT NULL REFERENCES reunion_local (id),
+        titular_id TEXT NOT NULL,
+        capital INTEGER NOT NULL CHECK (capital > 0),
+        num_cuotas INTEGER NOT NULL CHECK (num_cuotas > 0),
+        a_favor INTEGER NOT NULL,
+        en_contra INTEGER NOT NULL,
+        abstenciones INTEGER NOT NULL,
+        presentes INTEGER NOT NULL,
+        estado TEXT NOT NULL CHECK (estado IN ('aprobada', 'no_aprobada', 'firmada')),
+        UNIQUE (reunion_id, titular_id)
+      ) STRICT;
+    `,
+  },
 ];
 
 export const VERSION_ACTUAL = MIGRACIONES[MIGRACIONES.length - 1].version;

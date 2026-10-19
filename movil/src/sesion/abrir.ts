@@ -60,3 +60,19 @@ export async function leerFoto(base: BaseLocal): Promise<FotoGrupo | null> {
     miembros: miembros.map((m) => ({ ...m, activo: m.activo === 1 })),
   };
 }
+
+/** Abre solo la llave de firma de otro cargo (firmas agrupadas, D10): su PIN, sus 5 intentos. */
+export async function abrirFirmante(
+  deps: { cripto: Cripto; almacen: AlmacenSeguro },
+  perfil: Perfil,
+  pin: string,
+): Promise<{ llaveId: string; privada: CryptoKey; perfil: Perfil }> {
+  const llavero = await llaveroDe(deps.almacen, perfil.cargoId);
+  if (!llavero) throw new Error("Este cargo no está registrado en este celular.");
+  const secreto = await secretoDelDispositivo(deps.cripto, deps.almacen);
+  const abierto = await new ControlIntentos(deps.almacen).intentar(perfil.cargoId, () =>
+    abrirCargo(deps.cripto, llavero, pin, secreto),
+  );
+  abierto.dek.fill(0);
+  return { llaveId: llavero.llaveId, privada: abierto.privada, perfil };
+}
