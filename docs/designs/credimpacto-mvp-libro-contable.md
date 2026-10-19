@@ -2699,7 +2699,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Pasada 2 N4; Pasada 6 N11
   - Files: movil/src/, packages/ (textos i18n)
   - Verify: Jest + Maestro: cámara denegada, QR vencido, 5.º PIN, respaldo pendiente, actualización lista, Keystore perdido; atrás en paso 1 pide confirmación y en firmas cancela el grupo completo
-- [ ] **TD3 (P1, human: ~2d / CC: ~1h)** — backend/sync + movil/cola — Contrato de subida estable para cualquier versión
+- [x] **TD3 (P1, human: ~2d / CC: ~1h)** — backend/sync + movil/cola — Contrato de subida estable para cualquier versión
   - Surfaced by: Pasada 2 N5
   - Files: backend/sync/, movil/src/cola/, packages/api-client/
   - Verify: prueba de contrato: una cola de la versión más antigua soportada se acepta sin pérdidas

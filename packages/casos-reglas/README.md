@@ -30,3 +30,10 @@ Los archivos generados no se editan a mano: se cambia el script y se corre
 `python packages/casos-reglas/scripts/generar_casos.py`. El script tiene su propio oráculo (fracciones exactas)
 y verifica contra valores calculados a mano. CI lo vuelve a correr y falla si el resultado no coincide con lo
 commiteado.
+
+## Colas de muestra (contrato de subida, N5)
+
+`cola/formato-N.json` es una cola real armada por la app (`movil/src/cola/contrato.test.ts`) con
+todos los tipos de elemento del formato N. El servidor la vuelve a recibir en cada CI
+(`backend/sync/tests/test_contrato.py`) y debe aceptarla sin pérdidas. Una muestra publicada no se
+cambia: si el formato evoluciona, se agrega `formato-N+1.json` y las anteriores se quedan.

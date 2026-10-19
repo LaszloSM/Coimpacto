@@ -1,0 +1,450 @@
+{
+  "formato": 1,
+  "descripcion": "Cola de muestra del formato 1, armada por la app. El servidor debe aceptarla sin pérdidas en cada versión (N5).",
+  "grupo": {
+    "acap": {
+      "id": "00000000-0000-4000-8000-a00000000001",
+      "nombre": "ACAP de prueba"
+    },
+    "ciclo": {
+      "id": "00000000-0000-4000-8000-c00000000001",
+      "numero": 1,
+      "fecha_inicio": "2026-01-10",
+      "duracion_meses": 12,
+      "valor_accion": 10000,
+      "max_acciones_reunion": 5,
+      "valor_fondo_social": 2000,
+      "valor_multa": 2000,
+      "tasa_interes": "2.000"
+    },
+    "miembros": [
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000001",
+        "titular_id": "00000000-0000-4000-8000-d00000000001",
+        "numero": 1
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000002",
+        "titular_id": "00000000-0000-4000-8000-d00000000002",
+        "numero": 2
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000003",
+        "titular_id": "00000000-0000-4000-8000-d00000000003",
+        "numero": 3
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000004",
+        "titular_id": "00000000-0000-4000-8000-d00000000004",
+        "numero": 4
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000005",
+        "titular_id": "00000000-0000-4000-8000-d00000000005",
+        "numero": 5
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000006",
+        "titular_id": "00000000-0000-4000-8000-d00000000006",
+        "numero": 6
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000007",
+        "titular_id": "00000000-0000-4000-8000-d00000000007",
+        "numero": 7
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000008",
+        "titular_id": "00000000-0000-4000-8000-d00000000008",
+        "numero": 8
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000009",
+        "titular_id": "00000000-0000-4000-8000-d00000000009",
+        "numero": 9
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000010",
+        "titular_id": "00000000-0000-4000-8000-d00000000010",
+        "numero": 10
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000011",
+        "titular_id": "00000000-0000-4000-8000-d00000000011",
+        "numero": 11
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000012",
+        "titular_id": "00000000-0000-4000-8000-d00000000012",
+        "numero": 12
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000013",
+        "titular_id": "00000000-0000-4000-8000-d00000000013",
+        "numero": 13
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000014",
+        "titular_id": "00000000-0000-4000-8000-d00000000014",
+        "numero": 14
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000015",
+        "titular_id": "00000000-0000-4000-8000-d00000000015",
+        "numero": 15
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000016",
+        "titular_id": "00000000-0000-4000-8000-d00000000016",
+        "numero": 16
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000017",
+        "titular_id": "00000000-0000-4000-8000-d00000000017",
+        "numero": 17
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000018",
+        "titular_id": "00000000-0000-4000-8000-d00000000018",
+        "numero": 18
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000019",
+        "titular_id": "00000000-0000-4000-8000-d00000000019",
+        "numero": 19
+      },
+      {
+        "membresia_id": "00000000-0000-4000-8000-b00000000020",
+        "titular_id": "00000000-0000-4000-8000-d00000000020",
+        "numero": 20
+      }
+    ],
+    "cargos": [
+      {
+        "id": "00000000-0000-4000-8000-e00000000001",
+        "tipo": "presidente",
+        "numero": 1,
+        "llave_id": "922e3a36-b50c-44fc-be85-7079e25f4943",
+        "llave_publica": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEqRB3N9oQMHclQoqD6oezWHUak1i1-eUiFT5FVHYOXK9FISZZIPLZGj4ejZz_belIWJ7OP4YBXrb4VYYlKqRQ3w"
+      },
+      {
+        "id": "00000000-0000-4000-8000-e00000000002",
+        "tipo": "portador_caja",
+        "numero": 2,
+        "llave_id": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab",
+        "llave_publica": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAESp3FCrnNh5O3IJtl_RHVfDXUpY4yVqspp597uOO_5eFActziaHlP2zt5vlt9INMF7bjR6qVzh3iVdK-wpBSt8w"
+      }
+    ]
+  },
+  "dispositivo": {
+    "id": "7f0c1d2e-3a4b-4c5d-8e6f-000000000001"
+  },
+  "cola": [
+    {
+      "datos": {
+        "ciclo": "00000000-0000-4000-8000-c00000000001",
+        "fecha": "2026-10-04",
+        "numero": 1
+      },
+      "firmas": [
+        {
+          "firma": "B5wmm0PGNljNNTZMq4AP5h0oW6uJTtGASft2rx-ucIXfmeu9fwc9zrtlkDiM3Wq0EfgDhHOjf617P5vTJYurRg",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "11872ef0-44c2-421b-8263-4914b99cb264",
+      "tipo": "reunion"
+    },
+    {
+      "datos": {
+        "acciones": 2,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000003"
+      },
+      "firmas": [
+        {
+          "firma": "BEYfx4iinh2heNS6RUnNoFPuckOZV9jo2nle3MQkvIHvZaWHQQ-hN43tv632uwYw_lIh02V_bpUNCKJo6xhztg",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "5799fbe8-9da2-592c-8c27-dbf9edcd32c1",
+      "tipo": "ahorro"
+    },
+    {
+      "datos": {
+        "monto": 2000,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "tipo": "fondo_social",
+        "titular": "00000000-0000-4000-8000-d00000000003"
+      },
+      "firmas": [
+        {
+          "firma": "xu0z_ahW423MwZrYKRQe0ki3AfJEwRfPjh7IO-PhNokJ9Y8XkGiIr40EEqyldBkBt0Gg6Np2MScbaCcXLYs64Q",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "c948d18b-a722-559e-97f8-cd6dd0e8bc51",
+      "tipo": "movimiento"
+    },
+    {
+      "datos": {
+        "acciones": 1,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "QdIKuhj_ZypDnDlI3HEDM1dwxDezvWc1cuTpyajvnkJywuLoNUmhNP15jhkaskM7s-FcI-cgBzXkeLVJRABC3Q",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "221c5beb-120a-50cf-bea3-a7fdff1e89d2",
+      "tipo": "ahorro"
+    },
+    {
+      "datos": {
+        "monto": 2000,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "tipo": "fondo_social",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "D_45fFPhvMlwnd6xCg7kvllWxS-kxPQR1ojDu1M-xtLYshux-RWN-hM297SDuHjFpaaXnoa7wb7EO3nXEO2llA",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "23e84cf9-01ce-5eda-b2d4-14742508e729",
+      "tipo": "movimiento"
+    },
+    {
+      "datos": {
+        "cantidad": 1,
+        "motivo": "Llegó tarde",
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "TR-ZrlV14hbpuD2OGGfHpZitw9Wg2FzwuDrbM12OGv-zPPR9XUtAHPHxUd3fBfbeVwbe2TbOY2hareRxGSVniw",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "f1c34f3a-6e5c-5d87-ba5c-9f9410e1e9f4",
+      "tipo": "multa"
+    },
+    {
+      "datos": {
+        "motivo": "Corregido en la reunión",
+        "original": "221c5beb-120a-50cf-bea3-a7fdff1e89d2"
+      },
+      "firmas": [
+        {
+          "firma": "mOvTHK5uYQKxgIRbMEVwkKJ03BvxpJt0Pg6XvPverxV9AZnaCPskGGPvz8ZFNGpWXkoXbzgvvCzrZ_n-SalZfg",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "f179283f-e4a9-58f4-a59f-d73aa9ae827f",
+      "tipo": "correccion"
+    },
+    {
+      "datos": {
+        "motivo": "Corregido en la reunión",
+        "original": "23e84cf9-01ce-5eda-b2d4-14742508e729"
+      },
+      "firmas": [
+        {
+          "firma": "k8cZL3dyPUuJVDjiSpuHzBmPwNAUASNbTsViqNId7FcljMv1vmGAK1nC7MC7Hv3ywQCgxK-Wxd5PLz8V017k1A",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "61102c7d-5959-5632-9ee0-a31d3e319f5e",
+      "tipo": "correccion"
+    },
+    {
+      "datos": {
+        "motivo": "Corregido en la reunión",
+        "original": "f1c34f3a-6e5c-5d87-ba5c-9f9410e1e9f4"
+      },
+      "firmas": [
+        {
+          "firma": "I1teKwPTuutVCK327DxWEXtxW7q-49EPWxRHGGjTKcJTS2RRFI_Cyb5xxPlZi4xplPNMzU-TB9yt0qLr5LkwrA",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "33758760-8fa1-5bc4-a8b7-e26e430b17dd",
+      "tipo": "correccion"
+    },
+    {
+      "datos": {
+        "acciones": 3,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "MuwIOGd3RZvdpHd52dF9emAIzcug95PAxYC9mGhyaVCXOiRO-D5Iws_M26CiiW1BhY-Rz_7l--jBsGmykbhB4Q",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "6a691bf3-72af-5f0e-a2c6-1cc7cca0d6bc",
+      "tipo": "ahorro"
+    },
+    {
+      "datos": {
+        "monto": 2000,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "tipo": "fondo_social",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "We-445AOYT4YVStFNWwkKYdRoETf70ltg4splgj-5NG2X5lDMifUnB4ebT-59esdc1U8w8xUFxT0eku05rk6JQ",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "2ddb7fb6-6c4f-5996-9e52-f5ec0f564ac0",
+      "tipo": "movimiento"
+    },
+    {
+      "datos": {
+        "cantidad": 1,
+        "motivo": "Llegó tarde",
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000004"
+      },
+      "firmas": [
+        {
+          "firma": "tzzRRY8gj5ju5TJX9GR7IyH-EAr49Qy13mLV4XeSH9PscKPyhSiD6DT6eZSGVoQyUh_YpqHYrP8bGS-VGch7fA",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "6933f2c2-24b6-580e-af45-44cf18fce091",
+      "tipo": "multa"
+    },
+    {
+      "datos": {
+        "capital": 100000,
+        "id_desembolso": "8fa4048d-4f9f-588a-98e8-5906bcae6273",
+        "num_cuotas": 4,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "titular": "00000000-0000-4000-8000-d00000000009",
+        "votacion": {
+          "a_favor": 15,
+          "abstenciones": 0,
+          "en_contra": 0,
+          "presentes": 15
+        }
+      },
+      "firmas": [
+        {
+          "firma": "BO48_2RPRSFBRLajSOCh3ntGbamL46_18KzrZ1gueoTLUOxuTtqU3LHksUxIMGOFWO-Px-WxIxqwSZ1TM7-_og",
+          "llave": "922e3a36-b50c-44fc-be85-7079e25f4943"
+        },
+        {
+          "firma": "JGoyIt1-046g7hQAkIHNPRJU7-azI-L7TGIfpb3G61BVQYDXiF1_m5RZQ_wNGLhfcbLmgvuUObnaWjtXhn-KbA",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "f9502130-7ac8-5d64-8d89-4116c62680f9",
+      "tipo": "prestamo"
+    },
+    {
+      "datos": {
+        "monto": 27000,
+        "prestamo": "f9502130-7ac8-5d64-8d89-4116c62680f9",
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264"
+      },
+      "firmas": [
+        {
+          "firma": "kGCg56YngkDHW5GKFQv3wTjf_6wIS7zYza59Ne3xJTrh1L7RF-bC3vHveKRAIlay5kwukqMOxgZ149idlxmNmg",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "abfe3402-2a12-5243-b5f1-882db43f6917",
+      "tipo": "abono"
+    },
+    {
+      "datos": {
+        "detalle": {
+          "motivo": "Se pagó el refrigerio"
+        },
+        "monto": 2000,
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264",
+        "tipo": "faltante"
+      },
+      "firmas": [
+        {
+          "firma": "R6Lb27AYlqlgks2-v_NMHU6J8-06ADBhNfKowijwHM0vZBJPMH6IKl7VzF6YqgWGrmL6IbjC1U2B9Za_qVlqRw",
+          "llave": "922e3a36-b50c-44fc-be85-7079e25f4943"
+        },
+        {
+          "firma": "A1Tk4gDnSUPzQfd1pZFtOk9RsNmajZZlxHAZdJo52hDI-UzgGu5UdewhA7LvaJGFuEtiOFrMy243nQiYDswQ_Q",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "8e46e2fb-fb51-5822-b8b0-23402a087c8f",
+      "tipo": "movimiento"
+    },
+    {
+      "datos": {
+        "caja_contada": 131000,
+        "movimientos": [
+          "5799fbe8-9da2-592c-8c27-dbf9edcd32c1",
+          "c948d18b-a722-559e-97f8-cd6dd0e8bc51",
+          "221c5beb-120a-50cf-bea3-a7fdff1e89d2",
+          "23e84cf9-01ce-5eda-b2d4-14742508e729",
+          "f1c34f3a-6e5c-5d87-ba5c-9f9410e1e9f4",
+          "f179283f-e4a9-58f4-a59f-d73aa9ae827f",
+          "61102c7d-5959-5632-9ee0-a31d3e319f5e",
+          "33758760-8fa1-5bc4-a8b7-e26e430b17dd",
+          "6a691bf3-72af-5f0e-a2c6-1cc7cca0d6bc",
+          "2ddb7fb6-6c4f-5996-9e52-f5ec0f564ac0",
+          "6933f2c2-24b6-580e-af45-44cf18fce091",
+          "8fa4048d-4f9f-588a-98e8-5906bcae6273",
+          "abfe3402-2a12-5243-b5f1-882db43f6917",
+          "8e46e2fb-fb51-5822-b8b0-23402a087c8f"
+        ],
+        "reunion": "11872ef0-44c2-421b-8263-4914b99cb264"
+      },
+      "firmas": [
+        {
+          "firma": "stWQQ9abf1s2leXFB2e2Ezo6vz3fo2Lnd--4wdNTmzmn6Fazs3C8zYsHId6HSXXtwgZUgYwe6FQo8TlaMGwgBw",
+          "llave": "922e3a36-b50c-44fc-be85-7079e25f4943"
+        },
+        {
+          "firma": "6dSbscaZhwgaMheusH1xyM-nyqz6fChFzMJef58g-XHIbAdnhiEn7ZXs8xFVr7HJNVzS6ZMS5cgeYyqCFzDcjw",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "77888cc5-be57-5c81-9097-238af9169267",
+      "tipo": "cierre"
+    },
+    {
+      "datos": {
+        "firma_alta": "e8ZmDaGt3dCVxH6WEWpN0znOPVKwmpN86LsFCRwGFJrk35g6M4PzKhmdJQoiyqCyh3ajFZtRFsbDH2DF2LzRjw",
+        "llave_publica": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEK5xgYmja_Scs6Z8zOx7y0GIs5y38WHfqWqqrpupUh7mqMJ_aK6oUPM8ZhK5936h3bBLZ4BV7Q_0LWdyfNmzZww",
+        "membresia": "00000000-0000-4000-8000-b00000000007"
+      },
+      "firmas": [
+        {
+          "firma": "Trb-i8H2pFJQMBtMVLOriEwYXaajEboARocbA8H8K19TEUxRm5SncupAIYweqNIaGmay1C8mq1nPZCHUgAZIYg",
+          "llave": "34b98e9a-b4d1-4df6-b009-ddc5a96fb6ab"
+        }
+      ],
+      "id": "e36862b3-c91e-4add-b8ab-ee9bafa8d6b1",
+      "tipo": "llave_socio"
+    }
+  ],
+  "tipos": [
+    "abono",
+    "ahorro",
+    "cierre",
+    "correccion",
+    "llave_socio",
+    "movimiento",
+    "multa",
+    "prestamo",
+    "reunion"
+  ]
+}
