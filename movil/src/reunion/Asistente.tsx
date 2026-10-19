@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
 import { leerFoto, type Sesion } from "../sesion/abrir";
+import { marcarReunionAbierta, quitarReunionAbierta } from "../sesion/marcas";
 import { PasoArqueo, PasoCierre, PasoResumen } from "./PasosCierre";
 import { PasoAbonos, PasoPrestamos } from "./PasosPrestamos";
 import { useSesion } from "../sesion/contexto";
@@ -104,6 +105,7 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
             id: entorno.nuevoId(),
             ahora: entorno.ahora(),
           });
+          await marcarReunionAbierta(entorno.almacen, reunion.fecha);
           // Paso 2 "Cambios desde la última": sin cambios por revisar se salta solo (D7, D8).
           await guardarPosicion(sesion.base, reunion.id, 3);
           await recargar();
@@ -151,7 +153,13 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
       ) : paso === 8 ? (
         <PasoCierre {...comun} />
       ) : (
-        <PasoResumen {...comun} alTerminar={() => setSesion(null)} />
+        <PasoResumen
+          {...comun}
+          alTerminar={async () => {
+            await quitarReunionAbierta(entorno.almacen);
+            setSesion(null);
+          }}
+        />
       );
   } else {
     contenido = <PasoPendiente paso={paso} alVolver={() => irA(paso - 1)} />;
