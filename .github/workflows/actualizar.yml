@@ -32,7 +32,7 @@ jobs:
       - name: Motivo
         env:
           MOTIVO: ${{ inputs.motivo }}
-        run: echo "Actualización: $MOTIVO"
+        run: 'echo "Actualización: $MOTIVO"'
       - name: El modo de prueba nunca va a los celulares
         run: |
           if [ -n "${EXPO_PUBLIC_MODO_PRUEBA:-}" ]; then echo "::error::EXPO_PUBLIC_MODO_PRUEBA definido"; exit 1; fi
