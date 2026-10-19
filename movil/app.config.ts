@@ -48,6 +48,8 @@ const config: ExpoConfig = {
     ["expo-font", { fonts: FUENTES }],
     // Solo la cámara, para leer el QR del facilitador; sin micrófono.
     ["expo-camera", { barcodeScannerEnabled: true, recordAudioAndroid: false }],
+    // Avisos locales del ciclo (N14), sin servidor de notificaciones.
+    "expo-notifications",
     // Todo el archivo de la base cifrado con la DEK (EX2); sin esto la app no abre la base.
     ["expo-sqlite", { useSQLCipher: true }],
     ["expo-build-properties", { android: { minSdkVersion: 26 } }],

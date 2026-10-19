@@ -29,6 +29,9 @@ import {
   type Conteo,
   type ResumenMiembro,
 } from "./cierre";
+import { programadorNativo } from "../avisos/programadorNativo";
+import { fechaProxima, guardarProxima, OPCIONES_PROXIMA, reprogramar } from "../avisos/recordatorios";
+import { perfilesSocio } from "../socio/socio";
 import { FirmasGrupo } from "./FirmasGrupo";
 import { PASOS, type ReunionLocal } from "./reunion";
 
@@ -212,6 +215,7 @@ export function PasoCierre(props: PropsPaso) {
         <View style={[base.contenido, { flex: 1, alignItems: "center", justifyContent: "center" }]}>
           <Sello acap={props.foto.acap.nombre} fecha={props.reunion.fecha} />
           <Parrafo testID="reunion-cerrada">Reunión cerrada · Guardado en este celular</Parrafo>
+          <ProximaReunion foto={props.foto} />
         </View>
         <View style={base.acciones}>
           <BotonPrincipal testID="ver-resumen" texto="Ver el resumen de cada uno" alTocar={props.alSeguir} />
@@ -281,6 +285,44 @@ export function PasoCierre(props: PropsPaso) {
         </View>
       </View>
     </>
+  );
+}
+
+/** ¿Cuándo es la próxima reunión? Programa el aviso del día antes (N14). Sin permiso, nada. */
+function ProximaReunion(props: { foto: FotoGrupo }) {
+  const { entorno } = useSesion();
+  const [elegida, setElegida] = useState<string | null>(null);
+  return (
+    <View style={{ width: "100%", gap: spacing.sm, marginTop: spacing.lg }}>
+      <Text style={base.parrafo}>{elegida ? `Próxima reunión: ${elegida}. Les avisamos el día antes.` : "¿Cuándo es la próxima reunión?"}</Text>
+      {elegida
+        ? null
+        : OPCIONES_PROXIMA.map((o) => (
+            <BotonSecundario
+              key={o.dias}
+              testID={`proxima-${o.dias}`}
+              texto={o.texto}
+              alTocar={async () => {
+                const fecha = fechaProxima(entorno.ahora(), o.dias);
+                await guardarProxima(entorno.almacen, fecha);
+                setElegida(fecha);
+                const socios = await perfilesSocio(entorno.almacen);
+                const conPrestamo = socios.filter((s) =>
+                  props.foto.prestamos.some(
+                    (p) => p.saldo > 0 && props.foto.miembros.find((m) => m.membresia_id === s.membresiaId)?.titular_id === p.titular_id,
+                  ),
+                ).length;
+                try {
+                  if (await programadorNativo.pedirPermiso()) {
+                    await reprogramar(programadorNativo, { proxima: fecha, acap: props.foto.acap.nombre, sociosConPrestamo: conPrestamo, ahora: entorno.ahora() });
+                  }
+                } catch {
+                  // Sin avisos la app funciona igual (N14).
+                }
+              }}
+            />
+          ))}
+    </View>
   );
 }
 
