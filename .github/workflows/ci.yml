@@ -194,14 +194,13 @@ jobs:
           disable-animations: true
           script: |
             adb install credimpacto-*.apk
-            maestro test movil/.maestro --exclude-tags=subflujo --format junit --output maestro-reporte.xml
+            mkdir -p "$GITHUB_WORKSPACE/maestro-salida"
+            maestro test movil/.maestro --exclude-tags=subflujo --format junit --output "$GITHUB_WORKSPACE/maestro-salida/reporte.xml" --debug-output "$GITHUB_WORKSPACE/maestro-salida/depuracion" || { adb logcat -d -v time > "$GITHUB_WORKSPACE/maestro-salida/logcat.txt"; adb logcat -d -v time -s ReactNativeJS:V ReactNative:V AndroidRuntime:E > "$GITHUB_WORKSPACE/maestro-salida/logcat-app.txt"; exit 1; }
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: reporte-maestro
-          path: |
-            maestro-reporte.xml
-            ~/.maestro/tests
+          path: maestro-salida
           retention-days: 7
 
   e2e:
