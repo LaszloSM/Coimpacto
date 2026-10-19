@@ -15,7 +15,7 @@ name: Reunión sin señal hasta los aportes
     id: "perfil-portador_caja"
 - tapOn:
     id: "ir-a-reunion"
-- assertVisible: "Portador de Caja"
+- assertVisible: ".*Portador de Caja.*"
 - runFlow: pin-cajera.yaml
 - extendedWaitUntil:
     visible:
@@ -36,12 +36,13 @@ name: Reunión sin señal hasta los aportes
     id: "acciones-mas"
 - tapOn:
     id: "acciones-mas"
-- assertVisible: "veintidós mil pesos"
+# El dinero es un solo nodo accesible con su etiqueta ("Total de #01 hoy: …", TD6).
+- assertVisible: ".*veintidós mil pesos.*"
 - tapOn:
     id: "guardar-siguiente"
 - assertVisible: "#02"
-- assertVisible: "dos mil pesos"
-- assertVisible: "Guardado en este celular · 3 por subir"
+- assertVisible: ".*: dos mil pesos.*"
+- assertVisible: ".*Guardado en este celular · 3 por subir.*"
 # La app se cierra a mitad de la reunión: al volver, sigue en el mismo miembro.
 - stopApp
 - launchApp
