@@ -197,6 +197,7 @@ Reglas (el número de firmas y de llaveros es **configurable por ACAP**, con 2 p
 1. **Proveedor de nube** para PostgreSQL, backend y web (AWS, GCP, Azure u otro), y residencia de los datos frente a la Ley 1581 (transferencia internacional).
 2. **(bloqueante para la vista con sesión del miembro)** Identificación de personas con teléfonos compartidos: ¿cédula + PIN con recuperación por el facilitador, OTP por SMS (costo), o ambos?
 2b. **(bloqueante para el comprobante confirmado; responsable: Dirección de CoimpactoB)** Canal de entrega del comprobante: SMS, WhatsApp transaccional (API oficial, sin bot), QR mostrado en la siguiente reunión o impreso. Por defecto, si no se decide: QR o enlace mostrado en la siguiente reunión.
+    - **Aplicado el valor por defecto (2026-10-19):** el celular de la junta muestra el QR de cada miembro en la siguiente reunión; el enlace firmado vence a los 60 días y la Fundación lo puede revocar. Otro canal puede reusar el mismo enlace cuando se decida.
 3. **Política de cierre** (`politica_cierre` está pendiente de confirmar por CoimpactoB): ¿se reparte el fondo social?, ¿las multas entran a lo repartible?, ¿qué son las "ventas"?
 4. ¿Qué significa la sigla ACAP?
 5. ¿Usan llaveros (tradicionalmente 3 personas con llave en VSLA, el documento propone 2)?
@@ -1540,7 +1541,8 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Scope E2 (D6), E4 (D8), E9 (D13); Section 1 A3 (D19); D2
   - Files: web/app/(reunion)/
   - Verify: E2E Playwright de reunión completa sin red
-- [ ] **T8 (P2, human: ~1w / CC: ~4h)** — web (fundacion) — Back-office: miembros, consentimiento con foto, validaciones pendientes, consolidado
+- [x] **T8 (P2, human: ~1w / CC: ~4h)** — web (fundacion) — Back-office: miembros, consentimiento con foto, validaciones pendientes, consolidado
+  - **Hecho (2026-10-19):** bandeja de pendientes, indicadores por ACAP con fecha de datos (D2, D23), miembros con alta, foto de la autorización, captura para migrados y revocación con supresión (D12 = A), nombre corto en la reunión solo con autorización (D3). Queda para ET3: que la junta valide en la siguiente reunión lo que registró el facilitador.
   - Surfaced by: Scope E7 (D11), E8 (D12)
   - Files: web/app/(fundacion)/, backend/cuentas/, backend/acap/
   - Verify: E2E de alta con foto, revocación y validación en la siguiente reunión
