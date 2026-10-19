@@ -249,3 +249,28 @@
 .renglon[data-consentimiento="revocado"] > span:nth-of-type(1) {
   color: var(--color-por-validar);
 }
+
+.opciones {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opciones legend {
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.opciones label {
+  min-height: var(--spacing-toque-min);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+textarea.campo {
+  padding: var(--spacing-sm) var(--spacing-md);
+  resize: vertical;
+}

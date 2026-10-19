@@ -2040,7 +2040,8 @@ Approval readiness: PASS — R1 (D1), R2 (D2), R3 (D3); scope from prior D4; fin
   - Surfaced by: Scope — R2 (D2)
   - Files: backend/acap/, backend/libro/, web/app/(reunion)/prestamos/
   - Verify: casos sin quórum, empate y aprobado; regla distinta por ACAP
-- [ ] **ET3 (P2, human: ~2d / CC: ~1h)** — sync/web — Propuestas del facilitador: tabla aparte, descarga al celular, aceptar con N firmas o no aceptar con motivo
+- [x] **ET3 (P2, human: ~2d / CC: ~1h)** — sync/web — Propuestas del facilitador: tabla aparte, descarga al celular, aceptar con N firmas o no aceptar con motivo
+  - **Hecho (2026-10-19):** aceptar resuelve el estado del registro (anular → rechazado, dejar → confirmado) en vez de crear un reverso, porque el registro por aclarar ya no suma en ningún total.
   - Surfaced by: Scope — R3 (D3)
   - Files: backend/sync/, backend/libro/, web/app/(reunion)/, web/app/(fundacion)/
   - Verify: E2E propuesta → paso 2 → no aceptar → bandeja con motivo; aceptar → contramovimiento firmado

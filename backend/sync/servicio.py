@@ -38,7 +38,8 @@ from cuentas.models import Dispositivo, LlaveCargo, Titular
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
 from libro.reglas import ReglaInvalida
-from sync.models import Recibido
+from sync import propuestas
+from sync.models import Propuesta, Recibido
 
 R = Recibido.Estado
 E = EstadoMovimiento
@@ -96,6 +97,7 @@ TIPOS_V1 = {
     "llave_cargo",
     "cierre",
     "llave_socio",
+    "respuesta_propuesta",
 }
 
 
@@ -446,6 +448,46 @@ def _llave_socio(ctx, firmantes, e):
     return R.CONFIRMADO
 
 
+def _respuesta_propuesta(ctx, firmantes, e):
+    """La junta responde en el paso 2 a una propuesta del facilitador (ET3, D3 = A).
+
+    Aceptar pide N firmas de cargos distintos; no aceptar, quien opera y un motivo de la lista.
+    """
+    propuesta = (
+        Propuesta.objects.select_related("movimiento__reunion__ciclo")
+        .filter(id=_ref(e.datos, "propuesta"))
+        .first()
+    )
+    if propuesta is None:
+        raise Rechazo("PROPUESTA_DESCONOCIDA")
+    acap_id = propuesta.movimiento.reunion.ciclo.acap_id
+    if acap_id != ctx.dispositivo.acap_id or any(
+        f.cargo.ciclo.acap_id != acap_id for f in firmantes
+    ):
+        raise Rechazo("OTRA_ACAP")
+    if not ctx.dispositivo.activo:
+        raise Rechazo("DISPOSITIVO_REVOCADO")
+    respuesta = _campo(e.datos, "respuesta", str)
+    if respuesta == "acepta":
+        _firmas_distintas(firmantes)
+        motivo, nota = "", ""
+    elif respuesta == "no_acepta":
+        motivo = _campo(e.datos, "motivo", str)
+        nota = _campo(e.datos, "nota", str, opcional=True) or ""
+        if motivo not in propuestas.MOTIVOS_NO_ACEPTAR:
+            raise Rechazo("DATOS_INVALIDOS")
+    else:
+        raise Rechazo("DATOS_INVALIDOS")
+    if propuesta.estado != Propuesta.Estado.PENDIENTE:
+        raise Conflicto("PROPUESTA_YA_RESPONDIDA")
+    if libro.estado_actual(propuesta.movimiento) not in propuestas.POR_ACLARAR:
+        raise Conflicto("YA_NO_ESTA_POR_ACLARAR")
+    propuestas.responder(
+        propuesta=propuesta, acepta=respuesta == "acepta", motivo=motivo, nota=nota
+    )
+    return R.CONFIRMADO
+
+
 APLICAR = {
     "reunion": _reunion,
     "ahorro": _ahorro,
@@ -457,6 +499,7 @@ APLICAR = {
     "llave_cargo": _llave_cargo,
     "cierre": _cierre,
     "llave_socio": _llave_socio,
+    "respuesta_propuesta": _respuesta_propuesta,
 }
 
 

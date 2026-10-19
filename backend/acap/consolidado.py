@@ -13,7 +13,7 @@ from django.utils import timezone
 from acap.models import Acap, Ciclo, Membresia, Reunion
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
-from sync.models import Recibido
+from sync.models import Propuesta, Recibido
 
 DIAS_DATOS_VIEJOS = 14
 E = EstadoMovimiento
@@ -90,7 +90,13 @@ def consolidado(ahora=None) -> dict:
     }
 
 
-ORDEN_GRAVEDAD = {"en_conflicto": 0, "rechazado": 1, "por_validar": 2, "sin_datos": 3}
+ORDEN_GRAVEDAD = {
+    "en_conflicto": 0,
+    "no_aceptada": 1,
+    "rechazado": 2,
+    "por_validar": 3,
+    "sin_datos": 4,
+}
 
 
 def bandeja(ahora=None) -> list[dict]:
@@ -117,6 +123,25 @@ def bandeja(ahora=None) -> list[dict]:
                 "codigo": r["codigo"],
                 "cuantos": r["cuantos"],
                 "desde": r["desde"].isoformat(),
+            }
+        )
+    # Propuestas que la junta no aceptó: vuelven al facilitador con el motivo (ET3, D3 = A).
+    no_aceptadas = (
+        Propuesta.objects.filter(estado=Propuesta.Estado.NO_ACEPTADA)
+        # Si ya hay otra propuesta esperando a la junta, esta dejó de ser pendiente del facilitador.
+        .exclude(movimiento__propuestas__estado=Propuesta.Estado.PENDIENTE)
+        .select_related("movimiento__reunion__ciclo__acap")
+    )
+    for p in no_aceptadas:
+        acap = p.movimiento.reunion.ciclo.acap
+        filas.append(
+            {
+                "acap_id": str(acap.id),
+                "acap": acap.nombre,
+                "tipo": "no_aceptada",
+                "codigo": p.respuesta_motivo,
+                "cuantos": 1,
+                "desde": p.respondida_en.isoformat() if p.respondida_en else None,
             }
         )
     limite = ahora - datetime.timedelta(days=DIAS_DATOS_VIEJOS)

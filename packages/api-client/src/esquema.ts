@@ -464,6 +464,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/acaps/{acap_id}/por-aclarar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Registros de la ACAP en conflicto o por validar, con su última propuesta */
+        get: operations["sync_propuestas_api_por_aclarar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/propuestas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Proponer a la junta anular o dejar un registro por aclarar */
+        post: operations["sync_propuestas_api_proponer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -682,6 +716,18 @@ export interface components {
             reto: string;
             /** Firma */
             firma: string;
+        };
+        /** NuevaPropuesta */
+        NuevaPropuesta: {
+            /**
+             * Movimiento Id
+             * Format: uuid
+             */
+            movimiento_id: string;
+            /** Accion */
+            accion: string;
+            /** Motivo */
+            motivo: string;
         };
     };
     responses: never;
@@ -1453,6 +1499,61 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    sync_propuestas_api_por_aclarar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    sync_propuestas_api_proponer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NuevaPropuesta"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };

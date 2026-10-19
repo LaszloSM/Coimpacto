@@ -25,11 +25,13 @@
       "en_conflicto": "Hay que aclarar",
       "rechazado": "No se aceptó",
       "por_validar": "Por revisar",
-      "sin_datos": "Sin datos hace {dias} días"
+      "sin_datos": "Sin datos hace {dias} días",
+      "no_aceptada": "La junta no aceptó la propuesta"
     },
     "registros": "{n} registros",
     "nuncaSincronizo": "Nunca ha enviado datos",
-    "miembros": "Miembros"
+    "miembros": "Miembros",
+    "porAclarar": "Por aclarar"
   },
   "entrar": {
     "titulo": "Entrar a la oficina",
@@ -140,6 +142,37 @@
       "alta": "Miembro dado de alta.",
       "autorizar": "Autorización guardada.",
       "revocar": "Revocación guardada. Sus datos se borraron."
+    }
+  },
+  "porAclarar": {
+    "titulo": "Por aclarar",
+    "detalle": "Registros que no cuadraron. Proponga a la junta qué hacer; nada cambia hasta que la junta lo firme en su próxima reunión.",
+    "sinPermiso": "Este usuario no puede ver los pendientes.",
+    "acap": "ACAP",
+    "elegir": "Elija la ACAP",
+    "nada": "Nada por aclarar en esta ACAP.",
+    "reunion": "Reunión {n} · {fecha}",
+    "proponer": "Proponer a la junta",
+    "queProponer": "Qué propone",
+    "anular": "Quitarlo del cuaderno",
+    "dejar": "Dejarlo como está",
+    "motivo": "Motivo",
+    "motivoDetalle": "Escríbalo en palabras sencillas: la junta lo lee en voz alta.",
+    "enviar": "Enviar a la junta",
+    "enviando": "Enviando…",
+    "cancelar": "Cancelar",
+    "esperaJunta": "Espera a la junta",
+    "aceptada": "La junta la aceptó",
+    "noAceptada": "La junta no la aceptó",
+    "tipos": {
+      "ahorro": "Ahorro",
+      "fondo_social": "Fondo social",
+      "multa": "Multa",
+      "abono": "Abono",
+      "desembolso": "Préstamo entregado",
+      "venta": "Venta",
+      "faltante": "Faltante de caja",
+      "sobrante": "Sobrante de caja"
     }
   }
 }

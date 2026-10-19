@@ -15,7 +15,7 @@ import estilos from "./oficina.module.css";
 interface Pendiente {
   acap_id: string;
   acap: string;
-  tipo: "en_conflicto" | "rechazado" | "por_validar" | "sin_datos";
+  tipo: "en_conflicto" | "no_aceptada" | "rechazado" | "por_validar" | "sin_datos";
   codigo: string;
   cuantos: number;
   desde: string | null;
@@ -37,7 +37,9 @@ export default function Pendientes() {
       ? f.desde
         ? t("fundacion.pendiente.sin_datos").replace("{dias}", String(f.cuantos))
         : t("fundacion.nuncaSincronizo")
-      : `${t(`fundacion.pendiente.${f.tipo}` as ClaveTexto)} · ${t("fundacion.registros").replace("{n}", String(f.cuantos))}`;
+      : f.tipo === "no_aceptada"
+        ? t("fundacion.pendiente.no_aceptada")
+        : `${t(`fundacion.pendiente.${f.tipo}` as ClaveTexto)} · ${t("fundacion.registros").replace("{n}", String(f.cuantos))}`;
 
   return (
     <main className={estilos.pagina}>
@@ -45,6 +47,7 @@ export default function Pendientes() {
       <nav aria-label="Secciones" className={estilos.secciones}>
         <Link href="/fundacion/indicadores">{t("fundacion.indicadores")}</Link>
         <Link href="/fundacion/miembros">{t("fundacion.miembros")}</Link>
+        <Link href="/fundacion/por-aclarar">{t("fundacion.porAclarar")}</Link>
         <Link href="/fundacion/celulares">{t("fundacion.celulares")}</Link>
         <Link href="/fundacion/respaldos">{t("fundacion.respaldos")}</Link>
       </nav>

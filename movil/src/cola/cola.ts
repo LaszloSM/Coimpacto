@@ -27,7 +27,8 @@ export type TipoElemento =
   | "correccion"
   | "llave_cargo"
   | "cierre"
-  | "llave_socio";
+  | "llave_socio"
+  | "respuesta_propuesta";
 
 export interface Firma {
   llave: string;
