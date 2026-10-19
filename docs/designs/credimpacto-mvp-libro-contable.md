@@ -2513,7 +2513,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX6 (D7), EA2 (D9); D9 (eng)
   - Files: backend/ (app de actualizaciones), .github/workflows/, movil/
   - Verify: actualización sin firma rechazada; no se aplica con reunión abierta
-- [ ] **TX10 (P2, human: ~1d / CC: ~30min)** — operación — Play App Signing con la llave del piloto, llave de subida aparte y copias cifradas de las tres llaves fuera de GitHub; runbook
+- [x] **TX10 (P2, human: ~1d / CC: ~30min)** — operación — Play App Signing con la llave del piloto, llave de subida aparte y copias cifradas de las tres llaves fuera de GitHub; runbook
   - Surfaced by: EA3 (D10)
   - Files: docs/operacion/llaves.md, .github/workflows/
   - Verify: la versión firmada para Play se instala sobre un APK del piloto y conserva los datos
@@ -2808,7 +2808,7 @@ Secciones 1–4 (validación):
 Approval readiness: PASS — EF1 (D1 = A); N5, N6 y N17 aprobados por el usuario en la revisión de diseño (D7, D8, D20); mapeos como implementación necesaria.
 
 ## Implementation Tasks (validación N5, N6, N17)
-- [ ] **TF1 (P2, human: ~1d / CC: ~45min)** — CI — Construir el AAB firmado y subirlo a la pista interna de Play con una cuenta de servicio limitada a pruebas
+- [x] **TF1 (P2, human: ~1d / CC: ~45min)** — CI — Construir el AAB firmado y subirlo a la pista interna de Play con una cuenta de servicio limitada a pruebas
   - Surfaced by: EF1 (D1); N6
   - Files: .github/workflows/, docs/operacion/llaves.md
   - Verify: una versión que pasa CI aparece en la pista interna; la cuenta de servicio no puede publicar en producción
