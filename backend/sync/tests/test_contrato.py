@@ -68,7 +68,8 @@ def preparar_grupo(muestra: dict) -> Dispositivo:
             llave_publica=cargo["llave_publica"],
             autorizada_por_usuario=facilitador,
         )
-    return dispositivo
+    # Releído de la base, como lo carga el servidor: ids UUID y no el texto de la muestra.
+    return Dispositivo.objects.select_related("acap").get(pk=dispositivo.pk)
 
 
 @pytest.mark.parametrize("ruta", COLAS, ids=lambda r: r.stem)
