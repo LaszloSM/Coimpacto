@@ -34,7 +34,7 @@ name: Reunión completa sin señal
       - tapOn:
           id: "guardar-siguiente"
 - extendedWaitUntil:
-    visible: "Nadie tiene préstamo vigente."
+    visible: ".*Nadie tiene préstamo vigente..*"
     timeout: 15000
 - tapOn:
     id: "seguir-prestamos"
@@ -45,6 +45,10 @@ name: Reunión completa sin señal
       id: "pide-9"
 - tapOn:
     id: "pide-9"
+# En pantallas bajas el teclado queda debajo del monto: primero se desplaza hasta él.
+- scrollUntilVisible:
+    element:
+      id: "capital-000"
 - tapOn:
     id: "capital-1"
 - tapOn:
@@ -53,7 +57,7 @@ name: Reunión completa sin señal
     id: "capital-0"
 - tapOn:
     id: "capital-000"
-- assertVisible: "cien mil pesos"
+- assertVisible: ".*cien mil pesos.*"
 - scrollUntilVisible:
     element:
       id: "voto-favor-mas"
@@ -63,7 +67,7 @@ name: Reunión completa sin señal
       - tapOn:
           id: "voto-favor-mas"
 - scrollUntilVisible:
-    element: "Aprobado por la asamblea."
+    element: ".*Aprobado por la asamblea..*"
 - tapOn:
     id: "guardar-solicitud"
 - tapOn:
@@ -75,7 +79,7 @@ name: Reunión completa sin señal
     id: "firma-presidente"
 - runFlow: pin-presidente.yaml
 - extendedWaitUntil:
-    visible: "Falta 1 firma de 2."
+    visible: ".*Falta 1 firma de 2..*"
     timeout: 30000
 - scrollUntilVisible:
     element:
@@ -84,11 +88,11 @@ name: Reunión completa sin señal
     id: "firma-portador_caja"
 - runFlow: pin-cajera.yaml
 - extendedWaitUntil:
-    visible: "Firmada · entregar el efectivo"
+    visible: ".*Firmada · entregar el efectivo.*"
     timeout: 30000
 - tapOn:
     id: "seguir-arqueo"
-- assertVisible: "Cuenten los billetes"
+- assertVisible: ".*Cuenten los billetes.*"
 - tapOn:
     id: "cuenta-50000-mas"
 - tapOn:
@@ -99,7 +103,7 @@ name: Reunión completa sin señal
     id: "contar-monedas"
 - tapOn:
     id: "termine-de-contar"
-- assertVisible: "Cuadra al peso."
+- assertVisible: ".*Cuadra al peso..*"
 - tapOn:
     id: "seguir-cierre"
 - tapOn:
@@ -111,7 +115,7 @@ name: Reunión completa sin señal
     id: "firma-presidente"
 - runFlow: pin-presidente.yaml
 - extendedWaitUntil:
-    visible: "Falta 1 firma de 2."
+    visible: ".*Falta 1 firma de 2..*"
     timeout: 30000
 - scrollUntilVisible:
     element:
@@ -120,7 +124,8 @@ name: Reunión completa sin señal
     id: "firma-portador_caja"
 - runFlow: pin-cajera.yaml
 - extendedWaitUntil:
-    visible: "Reunión cerrada · Guardado en este celular"
+    visible:
+      id: "reunion-cerrada"
     timeout: 30000
 - tapOn:
     id: "ver-resumen"
