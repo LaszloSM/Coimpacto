@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
-import { BotonPrincipal, Contador, Dinero, Franja } from "./componentes";
+import { BotonPrincipal, Contador, Dinero, Franja, mostrarSegmentos } from "./componentes";
 import { TecladoPin } from "./TecladoPin";
 
 describe("componentes de la reunión", () => {
@@ -51,5 +51,21 @@ describe("teclado de PIN", () => {
     expect(screen.getByText("Verificando…")).toBeOnTheScreen();
     for (const d of "482916") await fireEvent.press(screen.getByTestId(`tecla-${d}`));
     expect(alCompletar).not.toHaveBeenCalled();
+  });
+});
+
+describe("escala de letra (N10)", () => {
+  test.each([
+    [411, 1, true],
+    [411, 1.3, true],
+    [411, 2, false], // letra al 200 %: solo el texto "Paso 4 de 9"
+    [320, 1, false], // celular de 320 dp
+  ])("ancho %i dp y letra %f× → segmentos %s", async (ancho, escala, esperado) => {
+    expect(mostrarSegmentos(ancho, escala)).toBe(esperado);
+  });
+
+  test("TalkBack lee la franja completa", async () => {
+    await render(<Franja porSubir={2} paso={4} />);
+    expect(screen.getByLabelText("Guardado en este celular · 2 por subir. Paso 4 de 9.")).toBeOnTheScreen();
   });
 });
