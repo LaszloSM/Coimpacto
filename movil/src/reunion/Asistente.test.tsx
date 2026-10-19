@@ -104,3 +104,25 @@ test("sin lista del grupo pide conectarse una vez", async () => {
   await montar(null as never);
   expect(await screen.findByText("Este celular aún no tiene la lista del grupo. Conéctelo a señal una vez.")).toBeOnTheScreen();
 });
+
+test("igual que la reunión pasada rellena acciones y fondo, y se ve antes de guardar (D11)", async () => {
+  const primera = FOTO_PRUEBA.miembros[0].titular_id;
+  const base = await montar({
+    ...FOTO_PRUEBA,
+    ultima_reunion: { numero: 1, aportes: { [primera]: { acciones: 3, fondo_social: true } } },
+  });
+  await fireEvent.press(await screen.findByTestId("abrir-reunion"));
+  await fireEvent.press(await screen.findByTestId("seguir-aportes"));
+  expect(await screen.findByText("#01")).toBeOnTheScreen();
+  expect(screen.getByText("3 acciones y fondo social")).toBeOnTheScreen();
+
+  await fireEvent.press(screen.getByTestId("igual-pasada"));
+  expect(screen.getByTestId("acciones-valor")).toHaveTextContent("3");
+  expect(screen.getByText("treinta y dos mil pesos")).toBeOnTheScreen();
+  expect(screen.queryByTestId("igual-pasada")).toBeNull(); // ya está igual
+  expect((await cola(base)).map((e) => e.tipo)).toEqual(["reunion"]); // nada se guarda sin tocar "Guardar"
+
+  await fireEvent.press(screen.getByTestId("guardar-siguiente"));
+  expect(await screen.findByText("#02")).toBeOnTheScreen();
+  expect(screen.queryByTestId("igual-pasada")).toBeNull(); // la #02 no dio nada la vez pasada
+});

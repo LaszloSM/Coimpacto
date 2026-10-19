@@ -168,3 +168,31 @@ def test_la_caja_de_la_ultima_reunion_cerrada(junta):
     foto, _ = pedir(junta)
     assert foto.json()["caja"] == 123_000
     assert foto.json()["reuniones"][0]["estado"] == "cerrada"
+
+
+def test_aportes_de_la_ultima_reunion(junta):
+    """D11, "Igual que la reunión pasada": acciones y fondo de la última, con correcciones."""
+    assert pedir(junta)[0].json()["ultima_reunion"] is None
+    reunion_id = str(uuid.uuid4())
+    socia = str(junta.socia.id)
+    ahorro = junta.elemento("ahorro", {"reunion": reunion_id, "titular": socia, "acciones": 3})
+    fondo = junta.elemento(
+        "movimiento",
+        {"reunion": reunion_id, "tipo": "fondo_social", "monto": 2_000, "titular": socia},
+    )
+    recibir_lote(
+        dispositivo=junta.dispositivo,
+        cuerpo=junta.lote(
+            junta.elemento(
+                "reunion",
+                {"ciclo": str(junta.ciclo.id), "numero": 1, "fecha": "2026-10-04"},
+                id=reunion_id,
+            ),
+            ahorro,
+            fondo,
+            junta.elemento("correccion", {"original": ahorro["id"], "motivo": "eran 2"}),
+            junta.elemento("ahorro", {"reunion": reunion_id, "titular": socia, "acciones": 2}),
+        ),
+    )
+    ultima = pedir(junta)[0].json()["ultima_reunion"]
+    assert ultima == {"numero": 1, "aportes": {socia: {"acciones": 2, "fondo_social": True}}}
