@@ -110,6 +110,49 @@
         }
       }
     },
+    "/api/enrolamiento/presidente": {
+      "post": {
+        "operationId": "cuentas_api_alta_presidente",
+        "summary": "Registrar la llave del primer Presidente en el celular recién registrado",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LlaveRegistrada"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "Con el mismo código del QR, firmado por el celular que lo canjeó, en sus 15 minutos.",
+        "tags": [
+          "enrolamiento"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoPresidente"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
     "/api/sync/lotes": {
       "post": {
         "operationId": "sync_api_subir_lote",
@@ -333,6 +376,61 @@
           "llave_publica"
         ],
         "title": "PedidoCanje",
+        "type": "object"
+      },
+      "LlaveRegistrada": {
+        "properties": {
+          "llave_id": {
+            "format": "uuid",
+            "title": "Llave Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "llave_id"
+        ],
+        "title": "LlaveRegistrada",
+        "type": "object"
+      },
+      "PedidoPresidente": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "dispositivo_id": {
+            "format": "uuid",
+            "title": "Dispositivo Id",
+            "type": "string"
+          },
+          "llave_id": {
+            "format": "uuid",
+            "title": "Llave Id",
+            "type": "string"
+          },
+          "cargo_id": {
+            "format": "uuid",
+            "title": "Cargo Id",
+            "type": "string"
+          },
+          "llave_publica": {
+            "title": "Llave Publica",
+            "type": "string"
+          },
+          "firma": {
+            "title": "Firma",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "dispositivo_id",
+          "llave_id",
+          "cargo_id",
+          "llave_publica",
+          "firma"
+        ],
+        "title": "PedidoPresidente",
         "type": "object"
       },
       "ResultadoElemento": {
