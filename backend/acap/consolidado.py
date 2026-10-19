@@ -91,6 +91,7 @@ def consolidado(ahora=None) -> dict:
 
 
 ORDEN_GRAVEDAD = {
+    "totales_distintos": 0,
     "en_conflicto": 0,
     "no_aceptada": 1,
     "rechazado": 2,
@@ -142,6 +143,18 @@ def bandeja(ahora=None) -> list[dict]:
                 "codigo": p.respuesta_motivo,
                 "cuantos": 1,
                 "desde": p.respondida_en.isoformat() if p.respondida_en else None,
+            }
+        )
+    # Cierres cuyos totales firmados no cuadran con lo aceptado (ET1).
+    for r in Reunion.objects.filter(totales_cuadran=False).select_related("ciclo__acap"):
+        filas.append(
+            {
+                "acap_id": str(r.ciclo.acap_id),
+                "acap": r.ciclo.acap.nombre,
+                "tipo": "totales_distintos",
+                "codigo": f"REUNION_{r.numero}",
+                "cuantos": 1,
+                "desde": r.cerrada_en.isoformat() if r.cerrada_en else None,
             }
         )
     limite = ahora - datetime.timedelta(days=DIAS_DATOS_VIEJOS)

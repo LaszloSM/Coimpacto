@@ -15,7 +15,7 @@ import estilos from "./oficina.module.css";
 interface Pendiente {
   acap_id: string;
   acap: string;
-  tipo: "en_conflicto" | "no_aceptada" | "rechazado" | "por_validar" | "sin_datos";
+  tipo: "totales_distintos" | "en_conflicto" | "no_aceptada" | "rechazado" | "por_validar" | "sin_datos";
   codigo: string;
   cuantos: number;
   desde: string | null;
@@ -37,8 +37,8 @@ export default function Pendientes() {
       ? f.desde
         ? t("fundacion.pendiente.sin_datos").replace("{dias}", String(f.cuantos))
         : t("fundacion.nuncaSincronizo")
-      : f.tipo === "no_aceptada"
-        ? t("fundacion.pendiente.no_aceptada")
+      : f.tipo === "no_aceptada" || f.tipo === "totales_distintos"
+        ? t(`fundacion.pendiente.${f.tipo}`)
         : `${t(`fundacion.pendiente.${f.tipo}` as ClaveTexto)} · ${t("fundacion.registros").replace("{n}", String(f.cuantos))}`;
 
   return (

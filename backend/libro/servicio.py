@@ -335,6 +335,28 @@ def corregir(*, id, original: Movimiento, motivo: str, actor, dispositivo="") ->
     return _crear(campos, actor=actor, dispositivo=dispositivo)
 
 
+TIPOS_TOTALES = (
+    Movimiento.Tipo.AHORRO,
+    Movimiento.Tipo.FONDO_SOCIAL,
+    Movimiento.Tipo.MULTA,
+    Movimiento.Tipo.VENTA,
+    Movimiento.Tipo.DESEMBOLSO,
+    Movimiento.Tipo.ABONO,
+    Movimiento.Tipo.FALTANTE,
+    Movimiento.Tipo.SOBRANTE,
+)
+
+
+def totales_por_tipo(movimientos) -> dict[str, int]:
+    """Pesos por tipo; cada reverso resta en el tipo que corrige (ET1, igual que el celular)."""
+    totales = {str(t): 0 for t in TIPOS_TOTALES}
+    for mov in movimientos.select_related("corrige"):
+        tipo = mov.corrige.tipo if mov.tipo == Movimiento.Tipo.REVERSO else mov.tipo
+        if tipo in totales:
+            totales[tipo] += mov.monto
+    return totales
+
+
 def estado_actual(movimiento: Movimiento) -> str:
     return movimiento.eventos.order_by("-id").values_list("estado", flat=True).first()
 

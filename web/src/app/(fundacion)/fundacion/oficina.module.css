@@ -274,3 +274,8 @@ textarea.campo {
   padding: var(--spacing-sm) var(--spacing-md);
   resize: vertical;
 }
+
+.renglon[data-tipo="totales_distintos"] span,
+.renglon[data-tipo="no_aceptada"] span {
+  color: var(--color-en-conflicto);
+}

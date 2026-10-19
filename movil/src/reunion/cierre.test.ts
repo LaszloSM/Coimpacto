@@ -15,6 +15,7 @@ import {
   guardarConteo,
   guardarMotivo,
   movimientosDelCierre,
+  totalesDelCierre,
   resumenMiembro,
   terminarReunion,
   totalConteo,
@@ -102,6 +103,13 @@ test("si la caja cuadra, el cierre va solo; queda cerrado y no se vuelve a firma
   const cierre = JSON.parse(cierres[0].carga) as Elemento;
   expect(cierre.datos.caja_contada).toBe(131_000);
   expect(cierre.firmas).toHaveLength(2);
+  // ET1: la firma cubre los totales por tipo y la instantánea del resumen leído.
+  const totales = cierre.datos.totales as Record<string, number>;
+  const esperado = totalesDelCierre(await elementosDeLaReunion(base, reunion.id), foto.ciclo!);
+  expect(totales).toEqual(esperado);
+  expect(Object.values(totales).some((v) => v !== 0)).toBe(true);
+  const resumen = cierre.datos.resumen as { titular: string; ahorro_hoy: number }[];
+  expect(resumen).toHaveLength(foto.miembros.filter((m) => m.activo).length);
   expect((await arqueoGuardado(base, reunion.id))?.cerradaEn).toBe(AHORA.toISOString());
   await guardarConteo(base, reunion.id, {}, 0); // ya cerrado: no cambia
   expect((await arqueoGuardado(base, reunion.id))?.contado).toBe(131_000);
@@ -138,4 +146,31 @@ test("terminar deja la reunión cerrada en este celular", async () => {
   const { base, reunion } = await reunionConMovimientos();
   await terminarReunion(base, reunion.id);
   expect(await reunionAbierta(base)).toBeNull();
+});
+
+test("totales del cierre por tipo: la corrección resta en el tipo que corrige (ET1)", () => {
+  const e = (id: string, tipo: Elemento["tipo"], datos: Elemento["datos"]): Elemento => ({ id, tipo, datos, firmas: [] });
+  const ciclo = FOTO_PRUEBA.ciclo!;
+  const totales = totalesDelCierre(
+    [
+      e("a1", "ahorro", { acciones: 3 }),
+      e("a2", "ahorro", { acciones: 1 }),
+      e("c1", "correccion", { original: "a2" }),
+      e("f1", "movimiento", { tipo: "fondo_social", monto: 2_000 }),
+      e("m1", "multa", { cantidad: 2 }),
+      e("p1", "prestamo", { capital: 50_000 }),
+      e("x1", "movimiento", { tipo: "faltante", monto: 1_000 }),
+    ],
+    ciclo,
+  );
+  expect(totales).toEqual({
+    ahorro: 3 * ciclo.valor_accion,
+    fondo_social: 2_000,
+    multa: 2 * ciclo.valor_multa,
+    venta: 0,
+    desembolso: 50_000,
+    abono: 0,
+    faltante: 1_000,
+    sobrante: 0,
+  });
 });
