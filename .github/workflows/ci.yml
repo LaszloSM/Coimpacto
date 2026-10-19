@@ -100,6 +100,8 @@ jobs:
   movil:
     name: App Android (eslint + tsc + jest + APK de release x86_64)
     runs-on: ubuntu-latest
+    # Un APK tarda ~25 min; si Gradle se cuelga, que falle pronto y no a las 6 horas.
+    timeout-minutes: 60
     env:
       # La llave de subida vive en secretos de GitHub (EX6, EA3); ver movil/plugins/firma-android.js.
       FIRMA_JKS_BASE64: ${{ secrets.CREDIMPACTO_FIRMA_JKS_BASE64 }}
@@ -158,7 +160,12 @@ jobs:
         # Solo la arquitectura del emulador: compilar el C++ nativo (quick-crypto, SQLCipher)
         # para dos arquitecturas duplica el tiempo. El AAB para celulares (arm64) lo construye
         # el flujo de publicación (TF1).
-        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
+        # Sin lint vital de release: falla dentro de dependencias de terceros (masked-view,
+        # screens) y no revisa nuestro código. Kotlin en el mismo proceso: así no quedan
+        # daemons vivos que dejen el paso colgado después de terminar Gradle.
+        run: >-
+          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
+          -x lintVitalAnalyzeRelease -Pkotlin.compiler.execution.strategy=in-process
       - run: mv movil/android/app/build/outputs/apk/release/app-release.apk "credimpacto-${FIRMA}.apk"
       - uses: actions/upload-artifact@v7
         with:
@@ -170,6 +177,7 @@ jobs:
     name: E2E Maestro (emulador Android, modo avión)
     needs: movil
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     env:
       MAESTRO_VERSION: "2.11.0"
     steps:
