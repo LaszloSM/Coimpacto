@@ -126,3 +126,46 @@ test("comprobante vencido: lo dice y a quién pedir otro", async ({ page }) => {
   await page.goto("/comprobante/abc:def");
   await expect(page.getByRole("alert").filter({ hasText: "venció" })).toHaveText("Este comprobante venció. Pida uno nuevo a su junta.");
 });
+
+test("miembros: alta con la foto de la autorización y revocación que borra el nombre", async ({ page }) => {
+  await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
+  await page.route("**/api/acaps", (r) => r.fulfill({ json: [{ id: "a1", nombre: "ACAP Las Brisas" }] }));
+  type Fila = { id: string; numero: number; activo: boolean; nombre_corto: string | null; consentimiento: string; consentimiento_id: string | null; desde: string | null };
+  let lista: Fila[] = [
+    { id: "m5", numero: 5, activo: true, nombre_corto: null, consentimiento: "falta", consentimiento_id: null, desde: null },
+  ];
+  let alta: string | null = null;
+  await page.route("**/api/oficina/acaps/a1/miembros", async (r) => {
+    if (r.request().method() === "POST") {
+      alta = r.request().headers()["content-type"] ?? "";
+      lista = [
+        ...lista,
+        { id: "m6", numero: 6, activo: true, nombre_corto: "Yuliana I.", consentimiento: "vigente", consentimiento_id: "c6", desde: "2026-10-19T10:00:00Z" },
+      ];
+      return r.fulfill({ status: 201, json: lista[1] });
+    }
+    return r.fulfill({ json: lista });
+  });
+  await page.route("**/api/oficina/miembros/m6/revocar", (r) => {
+    lista = [lista[0], { ...lista[1], nombre_corto: null, consentimiento: "revocado", consentimiento_id: null }];
+    return r.fulfill({ json: { ok: true } });
+  });
+
+  await page.goto("/fundacion/miembros");
+  await page.getByLabel("ACAP").selectOption("a1");
+  await expect(page.getByText("Falta la autorización de datos: se ve solo el número")).toBeVisible();
+
+  await page.getByRole("button", { name: "Dar de alta un miembro" }).click();
+  await page.getByLabel("Nombres").fill("Yuliana Andrea");
+  await page.getByLabel("Apellidos").fill("Ibarra");
+  await page.getByLabel(/Foto del formato/).setInputFiles({ name: "formato.png", mimeType: "image/png", buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47]) });
+  await page.getByRole("button", { name: "Guardar" }).click();
+  await expect(page.getByText("#06 Yuliana I.")).toBeVisible();
+  expect(alta).toContain("multipart/form-data");
+
+  await page.getByRole("button", { name: "Registrar que revocó" }).click();
+  await page.getByLabel("Cómo lo pidió").fill("De palabra ante la facilitadora");
+  await page.getByRole("button", { name: "Guardar" }).click();
+  await expect(page.getByText("Revocación guardada. Sus datos se borraron.")).toBeVisible();
+  await expect(page.getByText("Yuliana I.")).toHaveCount(0);
+});

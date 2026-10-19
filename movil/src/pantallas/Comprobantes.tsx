@@ -26,7 +26,7 @@ export function Comprobantes(props: { foto: FotoGrupo | null; servidor: string; 
   const datos = props.foto?.comprobantes;
   const lista = (props.foto?.miembros ?? [])
     .filter((m) => datos?.enlaces[m.titular_id])
-    .map((m) => ({ numero: m.numero, token: datos!.enlaces[m.titular_id] }));
+    .map((m) => ({ numero: m.numero, nombre: m.nombre_corto ?? "", token: datos!.enlaces[m.titular_id] }));
 
   if (!datos || lista.length === 0) {
     return (
@@ -54,6 +54,7 @@ export function Comprobantes(props: { foto: FotoGrupo | null; servidor: string; 
           <Text style={estilos.numero} accessibilityRole="header" testID="comprobante-numero">
             {numero(actual.numero)}
           </Text>
+          {actual.nombre ? <Text style={estilos.nombre}>{actual.nombre}</Text> : null}
           <Parrafo>
             Reunión {datos.reunion} · {fecha(datos.fecha)}. Escanee con la cámara de su celular para ver su comprobante.
           </Parrafo>
@@ -94,7 +95,7 @@ export function Comprobantes(props: { foto: FotoGrupo | null; servidor: string; 
             onPress={() => setElegido(i)}
             style={({ pressed }) => [estilos.renglon, pressed && { backgroundColor: color["papel-oficina"] }]}
           >
-            <Text style={estilos.renglonTexto}>{numero(m.numero)}</Text>
+            <Text style={estilos.renglonTexto}>{[numero(m.numero), m.nombre].filter(Boolean).join(" ")}</Text>
             <Text style={estilos.renglonDetalle}>Mostrar código</Text>
           </Pressable>
         ))}
@@ -108,6 +109,7 @@ export function Comprobantes(props: { foto: FotoGrupo | null; servidor: string; 
 
 const estilos = StyleSheet.create({
   numero: { ...tipo["campo-titulo"], color: color.tinta, marginTop: spacing.lg, marginBottom: spacing.sm },
+  nombre: { ...tipo["campo-titulo"], color: color.tinta, marginBottom: spacing.sm },
   qr: { alignItems: "center", marginVertical: spacing.lg },
   renglon: {
     minHeight: 64,

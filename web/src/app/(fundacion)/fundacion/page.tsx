@@ -44,6 +44,7 @@ export default function Pendientes() {
       <h1 className={estilos.titulo}>{t("fundacion.titulo")}</h1>
       <nav aria-label="Secciones" className={estilos.secciones}>
         <Link href="/fundacion/indicadores">{t("fundacion.indicadores")}</Link>
+        <Link href="/fundacion/miembros">{t("fundacion.miembros")}</Link>
         <Link href="/fundacion/celulares">{t("fundacion.celulares")}</Link>
         <Link href="/fundacion/respaldos">{t("fundacion.respaldos")}</Link>
       </nav>

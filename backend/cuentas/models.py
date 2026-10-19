@@ -155,3 +155,65 @@ class LlaveSocio(models.Model):
 
     def __str__(self) -> str:
         return f"Llave de socio {str(self.id)[:8]} · {self.membresia}"
+
+
+class DatosPersonales(models.Model):
+    """Nombre, documento y teléfono de un titular, aparte del libro (Ley 1581, T8).
+
+    Solo se tratan con consentimiento vigente. Al revocarse se borran (supresión) y el titular
+    queda solo con su número de miembro; los movimientos contables no cambian.
+    """
+
+    titular = models.OneToOneField(
+        Titular, on_delete=models.PROTECT, primary_key=True, related_name="datos"
+    )
+    nombres = models.CharField(max_length=80, blank=True)
+    apellidos = models.CharField(max_length=80, blank=True)
+    documento = models.CharField(max_length=20, blank=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+    suprimido_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "datos personales"
+        verbose_name_plural = "datos personales"
+
+    def __str__(self) -> str:
+        return self.nombre_corto or f"Titular {str(self.titular_id)[:8]}"
+
+    @property
+    def nombre_corto(self) -> str:
+        """ "Yuliana I.": primer nombre e inicial del primer apellido (D3)."""
+        nombre = self.nombres.split()[0] if self.nombres.split() else ""
+        inicial = f" {self.apellidos.strip()[0].upper()}." if self.apellidos.strip() else ""
+        return f"{nombre}{inicial}".strip()
+
+
+class Consentimiento(models.Model):
+    """Evento de autorización o revocación del tratamiento de datos (D12 = A). Solo-agregar.
+
+    La evidencia es la foto del formato firmado o con huella; se guarda en la base con su
+    SHA-256 y solo la ve personal de la Fundación con permiso.
+    """
+
+    class Tipo(models.TextChoices):
+        OTORGADO = "otorgado", "Autorizó"
+        REVOCADO = "revocado", "Revocó"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    titular = models.ForeignKey(Titular, on_delete=models.PROTECT, related_name="consentimientos")
+    tipo = models.CharField(max_length=10, choices=Tipo.choices)
+    politica = models.CharField(max_length=40, help_text="Versión de la política aceptada.")
+    foto = models.BinaryField(null=True, blank=True, editable=False)
+    foto_tipo = models.CharField(max_length=20, blank=True)
+    foto_sha256 = models.CharField(max_length=64, blank=True)
+    nota = models.CharField(max_length=200, blank=True)
+    registrado_por = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="+")
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "consentimiento"
+        indexes = [models.Index(fields=["titular", "-creado_en"], name="consentimiento_ultimo")]
+
+    def __str__(self) -> str:
+        return f"{self.get_tipo_display()} · {self.creado_en:%Y-%m-%d}"

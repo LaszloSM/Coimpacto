@@ -28,7 +28,8 @@
       "sin_datos": "Sin datos hace {dias} días"
     },
     "registros": "{n} registros",
-    "nuncaSincronizo": "Nunca ha enviado datos"
+    "nuncaSincronizo": "Nunca ha enviado datos",
+    "miembros": "Miembros"
   },
   "entrar": {
     "titulo": "Entrar a la oficina",
@@ -108,5 +109,37 @@
     "revocado": "Este enlace ya no sirve. Pida uno nuevo a su junta.",
     "noExiste": "No encontramos este comprobante. Revise que el enlace esté completo o pida uno nuevo a su junta.",
     "sinConexion": "No hay conexión. Intente de nuevo cuando tenga señal."
+  },
+  "miembros": {
+    "titulo": "Miembros",
+    "cargando": "Cargando las ACAP…",
+    "sinPermiso": "Este usuario no puede ver ni registrar datos de personas.",
+    "acap": "ACAP",
+    "elegir": "Elija la ACAP",
+    "vacio": "Esta ACAP todavía no tiene miembros.",
+    "alta": "Dar de alta un miembro",
+    "autorizar": "Registrar la autorización",
+    "revocar": "Registrar que revocó",
+    "revocarDetalle": "Sus datos personales se borran y queda solo su número de miembro. Sus aportes y préstamos no cambian.",
+    "nota": "Cómo lo pidió",
+    "fotoOpcional": "Foto de la solicitud escrita (si la hay)",
+    "nombres": "Nombres",
+    "apellidos": "Apellidos",
+    "documento": "Documento (opcional)",
+    "telefono": "Teléfono (opcional)",
+    "foto": "Foto del formato de autorización firmado o con huella",
+    "fotoDetalle": "Sin esta foto no se guardan sus datos. En la reunión se ve solo su primer nombre y la inicial del apellido.",
+    "guardar": "Guardar",
+    "guardando": "Guardando…",
+    "cancelar": "Cancelar",
+    "verFoto": "Ver la foto",
+    "vigente": "Autorizó sus datos el {fecha}",
+    "revocado": "Revocó la autorización el {fecha}",
+    "falta": "Falta la autorización de datos: se ve solo el número",
+    "listo": {
+      "alta": "Miembro dado de alta.",
+      "autorizar": "Autorización guardada.",
+      "revocar": "Revocación guardada. Sus datos se borraron."
+    }
   }
 }

@@ -262,6 +262,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/acaps/{acap_id}/miembros": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Miembros de una ACAP por número, con el estado de su consentimiento */
+        get: operations["cuentas_miembros_api_lista"];
+        put?: never;
+        /** Dar de alta un miembro con la foto de su autorización de datos */
+        post: operations["cuentas_miembros_api_alta"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/miembros/{membresia_id}/consentimiento": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registrar la autorización de un miembro que no la tenía (por ejemplo, migrado) */
+        post: operations["cuentas_miembros_api_capturar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/miembros/{membresia_id}/revocar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registrar que el miembro revocó la autorización; sus datos se suprimen */
+        post: operations["cuentas_miembros_api_revocar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/consentimientos/{consentimiento_id}/foto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Foto de la evidencia del consentimiento (solo personal con permiso) */
+        get: operations["cuentas_miembros_api_foto"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/comprobantes/{token}": {
         parameters: {
             query?: never;
@@ -508,6 +577,30 @@ export interface components {
             id: string;
             /** Nombre */
             nombre: string;
+        };
+        /** Miembro */
+        Miembro: {
+            /** Id */
+            id: string;
+            /** Numero */
+            numero: number;
+            /** Activo */
+            activo: boolean;
+            /** Nombre Corto */
+            nombre_corto: string | null;
+            /** Consentimiento */
+            consentimiento: string;
+            /** Consentimiento Id */
+            consentimiento_id: string | null;
+            /** Desde */
+            desde: string | null;
+        };
+        /** Error */
+        Error: {
+            /** Codigo */
+            codigo: string;
+            /** Mensaje */
+            mensaje: string;
         };
         /** Comprobante */
         Comprobante: {
@@ -910,6 +1003,208 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_miembros_api_lista: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Miembro"][];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_alta: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Nombres */
+                    nombres: string;
+                    /**
+                     * Apellidos
+                     * @default
+                     */
+                    apellidos?: string;
+                    /**
+                     * Documento
+                     * @default
+                     */
+                    documento?: string;
+                    /**
+                     * Telefono
+                     * @default
+                     */
+                    telefono?: string;
+                    /**
+                     * Foto
+                     * Format: binary
+                     */
+                    foto: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Miembro"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_capturar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Nombres */
+                    nombres: string;
+                    /**
+                     * Apellidos
+                     * @default
+                     */
+                    apellidos?: string;
+                    /**
+                     * Documento
+                     * @default
+                     */
+                    documento?: string;
+                    /**
+                     * Telefono
+                     * @default
+                     */
+                    telefono?: string;
+                    /**
+                     * Foto
+                     * Format: binary
+                     */
+                    foto: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_revocar: {
+        parameters: {
+            query?: {
+                foto?: string | null;
+            };
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": {
+                    /** Nota */
+                    nota: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_foto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                consentimiento_id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;

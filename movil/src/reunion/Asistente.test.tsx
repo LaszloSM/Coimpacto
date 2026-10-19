@@ -126,3 +126,13 @@ test("igual que la reunión pasada rellena acciones y fondo, y se ve antes de gu
   expect(await screen.findByText("#02")).toBeOnTheScreen();
   expect(screen.queryByTestId("igual-pasada")).toBeNull(); // la #02 no dio nada la vez pasada
 });
+
+test("número + nombre corto de quien autorizó sus datos; los demás solo el número (D3)", async () => {
+  const [uno, ...resto] = FOTO_PRUEBA.miembros;
+  await montar({ ...FOTO_PRUEBA, miembros: [{ ...uno, nombre_corto: "Yuliana I." }, ...resto] });
+  await fireEvent.press(await screen.findByTestId("abrir-reunion"));
+  expect(await screen.findByText("#01 Yuliana I.")).toBeOnTheScreen();
+  expect(screen.getByText("#02")).toBeOnTheScreen();
+  await fireEvent.press(screen.getByTestId("seguir-aportes"));
+  expect(await screen.findByTestId("aporte-nombre")).toHaveTextContent("Yuliana I.");
+});

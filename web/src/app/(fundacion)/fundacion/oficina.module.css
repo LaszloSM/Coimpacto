@@ -203,3 +203,49 @@
 .viejo {
   color: var(--color-tinta-suave);
 }
+
+.bloque {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-renglon-fuerte);
+}
+
+.subtitulo {
+  font-family: var(--tipo-heading-familia);
+  font-size: var(--tipo-heading-size);
+  font-weight: var(--tipo-heading-weight);
+  color: var(--color-navy);
+  margin: 0;
+}
+
+.listo {
+  color: var(--color-confirmado);
+  background: var(--color-confirmado-tinte);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-sm);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.acciones a,
+.enlace {
+  min-height: var(--spacing-toque-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-navy);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.renglon[data-consentimiento="falta"] > span:nth-of-type(1),
+.renglon[data-consentimiento="revocado"] > span:nth-of-type(1) {
+  color: var(--color-por-validar);
+}

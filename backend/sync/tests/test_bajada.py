@@ -5,6 +5,8 @@ import pytest
 from django.test import Client
 from django.utils import timezone
 
+from cuentas import miembros
+from cuentas.models import Usuario
 from cuentas.tests.llaves import LlaveDePrueba
 from sync import bajada
 from sync.models import Reto
@@ -44,6 +46,7 @@ def test_foto_del_grupo_sin_datos_personales(junta):
         "numero",
         "activo",
         "ahorro_ciclo",
+        "nombre_corto",
     }
     tipos = {c["tipo"]: c for c in foto["cargos"]}
     assert tipos["presidente"]["llaves"] == [str(junta.presidente.registro.id)]
@@ -196,3 +199,21 @@ def test_aportes_de_la_ultima_reunion(junta):
     )
     ultima = pedir(junta)[0].json()["ultima_reunion"]
     assert ultima == {"numero": 1, "aportes": {socia: {"acciones": 2, "fondo_social": True}}}
+
+
+def test_nombre_corto_solo_con_consentimiento_vigente(junta):
+    """D3: número + nombre corto en la reunión; sin autorización de datos, solo el número."""
+    facilitadora = Usuario.objects.create_user(username="fa", password="x" * 16)
+    miembros.capturar(
+        titular=junta.socia,
+        usuario=facilitadora,
+        nombres="Yuliana",
+        apellidos="Ibarra",
+        documento="",
+        telefono="",
+        foto=b"\xff\xd8\xff" + b"\x00" * 32,
+    )
+    socia = next(m for m in pedir(junta)[0].json()["miembros"] if m["numero"] == 7)
+    assert socia["nombre_corto"] == "Yuliana I."
+    otros = [m for m in pedir(junta)[0].json()["miembros"] if m["numero"] != 7]
+    assert {m["nombre_corto"] for m in otros} == {None}
