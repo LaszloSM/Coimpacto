@@ -125,7 +125,13 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
     foto = {
         "formato": 1,
         "generado_en": timezone.now().isoformat(),
-        "acap": {"id": str(acap.id), "nombre": acap.nombre},
+        "acap": {
+            "id": str(acap.id),
+            "nombre": acap.nombre,
+            # Reglamento de la votación de préstamos (ET2): el celular lo aplica sin señal.
+            "quorum_porcentaje": acap.quorum_porcentaje,
+            "mayoria": acap.mayoria,
+        },
         "ciclo": None,
         "miembros": [],
         "cargos": [],

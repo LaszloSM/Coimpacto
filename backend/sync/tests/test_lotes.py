@@ -140,6 +140,7 @@ class TestPrestamo:
                 "id_desembolso": str(uuid.uuid4()),
                 "capital": capital,
                 "num_cuotas": 4,
+                "votacion": {"presentes": 4, "a_favor": 4, "en_contra": 0, "abstenciones": 0},
             },
             *firmantes,
         )
@@ -151,6 +152,38 @@ class TestPrestamo:
         assert estados(resultados)[1] == ("confirmado", "")
         desembolso = Movimiento.objects.get(id=elemento["datos"]["id_desembolso"])
         assert desembolso.monto == 100_000
+
+    def votado(self, junta, reunion_id, **votacion):
+        elemento = self.prestamo(junta, reunion_id, junta.presidente, junta.cajera)
+        elemento["datos"]["votacion"] = votacion
+        # Volver a firmar: la votación es parte de lo firmado.
+        return junta.elemento("prestamo", elemento["datos"], junta.presidente, junta.cajera)
+
+    def test_sin_quorum_o_sin_aprobar_no_se_otorga(self, junta):
+        """ET2: 2 de 4 activos no es más de la mitad; empate no aprueba."""
+        reunion_id = uuid.uuid4()
+        sin_quorum = self.votado(
+            junta, reunion_id, presentes=2, a_favor=2, en_contra=0, abstenciones=0
+        )
+        empate = self.votado(junta, reunion_id, presentes=4, a_favor=2, en_contra=2, abstenciones=0)
+        resultados = recibir(junta, abrir(junta, reunion_id), sin_quorum, empate)
+        assert estados(resultados)[1:] == [
+            ("rechazado", "SIN_QUORUM"),
+            ("rechazado", "NO_APROBADO"),
+        ]
+
+    def test_la_politica_es_de_cada_acap(self, junta):
+        """Mayoría absoluta: 2 a favor de 4 presentes gana por mayoría simple pero no alcanza."""
+        acap = junta.ciclo.acap
+        acap.mayoria = "absoluta"
+        acap.save()
+        reunion_id = uuid.uuid4()
+        votos = {"presentes": 4, "a_favor": 2, "en_contra": 1, "abstenciones": 1}
+        elemento = self.votado(junta, reunion_id, **votos)
+        assert estados(recibir(junta, abrir(junta, reunion_id), elemento))[1] == (
+            "rechazado",
+            "NO_APROBADO",
+        )
 
     def test_una_sola_firma_no_basta(self, junta):
         reunion_id = uuid.uuid4()

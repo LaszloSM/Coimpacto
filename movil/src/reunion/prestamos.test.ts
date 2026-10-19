@@ -167,3 +167,10 @@ describe("firmas agrupadas (D10)", () => {
     expect(puedeFirmar({ cargoId: "k1", tipo: "presidente", numero: 9 }, [caja], [titular(9)], FOTO_PRUEBA)).toBe("beneficiario");
   });
 });
+
+test("la votación usa el reglamento de la ACAP que baja con la foto (ET2)", () => {
+  const v = { presentes: 13, aFavor: 13, enContra: 0, abstenciones: 0 };
+  expect(resultadoVotacion(v, 20).aprobada).toBe(true);
+  expect(resultadoVotacion(v, 20, { quorum_porcentaje: 66 })).toEqual({ quorum: false, votosCuadran: true, aprobada: false });
+  expect(resultadoVotacion({ ...v, aFavor: 6, enContra: 2, abstenciones: 5 }, 20, { mayoria: "absoluta" }).aprobada).toBe(false);
+});

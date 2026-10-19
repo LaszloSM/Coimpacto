@@ -6,6 +6,7 @@ TX3. Política de firmas y quórum llegan después. Estas tablas sí se editan; 
 
 import uuid
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -13,6 +14,21 @@ class Acap(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre = models.CharField(max_length=200)
     creado_en = models.DateTimeField(auto_now_add=True)
+    # Reglamento de la votación de préstamos (ET2): por defecto, más de la mitad presente y
+    # más votos a favor que en contra. Lo valida el celular y lo revalida el servidor.
+    quorum_porcentaje = models.PositiveSmallIntegerField(
+        default=50,
+        validators=[MinValueValidator(1), MaxValueValidator(99)],
+        help_text="Hay quórum si los presentes son más que este porcentaje de los activos.",
+    )
+    mayoria = models.CharField(
+        max_length=10,
+        choices=[
+            ("simple", "A favor más que en contra"),
+            ("absoluta", "A favor más de la mitad de presentes"),
+        ],
+        default="simple",
+    )
 
     class Meta:
         verbose_name = "ACAP"

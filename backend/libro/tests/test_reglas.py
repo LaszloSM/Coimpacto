@@ -11,12 +11,14 @@ from libro.reglas import (
     dividir_abono,
     montos_registro,
     preview_cierre,
+    resultado_votacion,
 )
 
 PRESTAMO = leer("prestamo.json")
 ABONO = leer("abono.json")
 CIERRE = leer("cierre-ciclo.json")
 REGISTRO = leer("registro-ahorro.json")
+VOTACION = leer("votacion.json")
 
 
 def _ids(caso):
@@ -151,3 +153,14 @@ def test_cierre_cuadra_y_entrega_en_billetes(miembros, fondo, multas, ventas, mu
     for d in r["detalle"]:
         assert d["a_entregar"] % multiplo == 0
         assert d["a_entregar"] >= 0 and d["deuda_arrastrada"] >= 0
+
+
+@pytest.mark.parametrize("caso", VOTACION["casos"], ids=_ids)
+def test_votacion(caso):
+    assert resultado_votacion(**caso["entrada"]) == caso["esperado"]
+
+
+@pytest.mark.parametrize("caso", VOTACION["rechazos"], ids=_ids)
+def test_votacion_rechazos(caso):
+    with pytest.raises(ReglaInvalida):
+        resultado_votacion(**caso["entrada"])

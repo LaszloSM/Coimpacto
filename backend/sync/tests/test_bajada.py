@@ -62,6 +62,7 @@ def test_ahorro_y_prestamos_vigentes(junta):
             "id_desembolso": str(uuid.uuid4()),
             "capital": 100_000,
             "num_cuotas": 4,
+            "votacion": {"presentes": 4, "a_favor": 4, "en_contra": 0, "abstenciones": 0},
         },
         junta.presidente,
         junta.cajera,

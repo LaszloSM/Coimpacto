@@ -3,10 +3,12 @@ import abono from "@credimpacto/casos-reglas/casos/abono.json";
 import cierre from "@credimpacto/casos-reglas/casos/cierre-ciclo.json";
 import prestamo from "@credimpacto/casos-reglas/casos/prestamo.json";
 import registro from "@credimpacto/casos-reglas/casos/registro-ahorro.json";
+import votacion from "@credimpacto/casos-reglas/casos/votacion.json";
 import { pisoCociente, ReglaInvalida } from "./aritmetica";
 import { previewCierre, type EntradaCierre } from "./cierre";
 import { calcularPrestamo, dividirAbono } from "./prestamo";
 import { montosRegistro } from "./registro";
+import { resultadoVotacion } from "./votacion";
 
 // Mismos casos que backend/libro/tests/test_reglas.py: si difieren, el celular y el servidor
 // calcularían distinto.
@@ -55,5 +57,14 @@ describe("pisoCociente", () => {
     [0n, 5n, 0n],
   ])("piso(%s / %s) = %s", (a, b, esperado) => {
     expect(pisoCociente(a, b)).toBe(esperado);
+  });
+});
+
+describe("votación de préstamos (ET2)", () => {
+  it.each(votacion.casos)("$nombre", ({ entrada, esperado }) => {
+    expect(resultadoVotacion(entrada)).toEqual(esperado);
+  });
+  it.each(votacion.rechazos)("rechaza: $nombre", ({ entrada }) => {
+    expect(() => resultadoVotacion(entrada)).toThrow(ReglaInvalida);
   });
 });
