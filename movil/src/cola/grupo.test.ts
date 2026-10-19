@@ -33,6 +33,7 @@ const FOTO: FotoGrupo = {
   cargos: [{ id: "k1", tipo: "presidente", membresia_id: "m1", llaves: ["l1"] }],
   reuniones: [],
   prestamos: [],
+  caja: 0,
 };
 
 async function base() {

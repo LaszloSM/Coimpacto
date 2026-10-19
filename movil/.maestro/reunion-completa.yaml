@@ -1,8 +1,8 @@
-# Reunión sin señal hasta el préstamo (TX6b): aportes de los 20, abonos sin préstamos vigentes,
-# solicitud con votación y plan de cuotas, y firmas agrupadas de Presidente y Portadora de Caja
-# con un PIN cada uno (D10).
+# Reunión completa sin señal (TX6, EX3/D23): aportes de los 20, abonos, préstamo con votación y
+# firmas agrupadas (D10), arqueo a ciegas que cuadra (D12), cierre firmado con el sello y resumen
+# por miembro. Caja: 150.000 de apertura + 20 × 2.000 de fondo social − 100.000 del préstamo.
 appId: com.coimpactob.credimpacto
-name: Reunión sin señal con un préstamo firmado
+name: Reunión completa sin señal
 ---
 - launchApp:
     clearState: true
@@ -86,4 +86,53 @@ name: Reunión sin señal con un préstamo firmado
 - extendedWaitUntil:
     visible: "Firmada · entregar el efectivo"
     timeout: 30000
+- tapOn:
+    id: "seguir-arqueo"
+- assertVisible: "Cuenten los billetes"
+- tapOn:
+    id: "cuenta-50000-mas"
+- tapOn:
+    id: "cuenta-20000-mas"
+- tapOn:
+    id: "cuenta-20000-mas"
+- tapOn:
+    id: "contar-monedas"
+- tapOn:
+    id: "termine-de-contar"
+- assertVisible: "Cuadra al peso."
+- tapOn:
+    id: "seguir-cierre"
+- tapOn:
+    id: "firmar-cierre"
+- scrollUntilVisible:
+    element:
+      id: "firma-presidente"
+- tapOn:
+    id: "firma-presidente"
+- runFlow: pin-presidente.yaml
+- extendedWaitUntil:
+    visible: "Falta 1 firma de 2."
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "firma-portador_caja"
+- tapOn:
+    id: "firma-portador_caja"
+- runFlow: pin-cajera.yaml
+- extendedWaitUntil:
+    visible: "Reunión cerrada · Guardado en este celular"
+    timeout: 30000
+- tapOn:
+    id: "ver-resumen"
+- assertVisible: "#01"
+- repeat:
+    times: 19
+    commands:
+      - tapOn:
+          id: "resumen-siguiente"
+- tapOn:
+    id: "terminar-reunion"
+- extendedWaitUntil:
+    visible: "¿Quién lleva la reunión?"
+    timeout: 15000
 - setAirplaneMode: disabled

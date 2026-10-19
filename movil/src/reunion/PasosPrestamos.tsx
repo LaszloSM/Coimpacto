@@ -9,26 +9,20 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
-import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
-import { NOMBRE_CARGO, perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
-import { abrirFirmante, type Sesion } from "../sesion/abrir";
+import type { Sesion } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
 import { BotonPrincipal, BotonSecundario, Contador, Dinero, estilos as base, Parrafo, Titulo } from "../ui/componentes";
 import { TecladoDinero } from "../ui/TecladoDinero";
-import { TecladoPin } from "../ui/TecladoPin";
+import { FirmasGrupo } from "./FirmasGrupo";
 import {
   abonoRegistrado,
   firmarPrestamos,
-  FIRMAS_PRESTAMO,
   guardarSolicitud,
   partesAbono,
   planDeCuotas,
-  puedeFirmar,
   registrarAbono,
   resultadoVotacion,
   solicitudes as leerSolicitudes,
-  type FirmanteCargo,
-  type MotivoFirmaInvalida,
   type PrestamoFoto,
   type Solicitud,
   type Votacion,
@@ -371,111 +365,32 @@ function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: (
   );
 }
 
-const MOTIVO: Record<MotivoFirmaInvalida, string> = {
-  mismo_cargo: "ya firmó ese cargo",
-  misma_persona: "ya firmó esa persona",
-  beneficiario: "pide préstamo hoy",
-};
-
 function FirmasAgrupadas(props: PropsPaso & { solicitudes: Solicitud[]; alTerminar: () => void }) {
   const { entorno } = useSesion();
-  const [perfiles, setPerfiles] = useState<Perfil[] | null>(null);
-  const [firmantes, setFirmantes] = useState<FirmanteCargo[]>([]);
-  const [turno, setTurno] = useState<Perfil | null>(null);
-  const [aviso, setAviso] = useState<string>();
-  const [verificando, setVerificando] = useState(false);
-  const [enPausa, setEnPausa] = useState<string[]>([]);
-
-  useEffect(() => {
-    void leerPerfiles(entorno.almacen).then(setPerfiles);
-  }, [entorno]);
-  if (!perfiles) return null;
-  const beneficiarios = props.solicitudes.map((s) => s.titularId);
-
-  if (turno) {
-    return (
-      <TecladoPin
-        paraQuien={NOMBRE_CARGO[turno.tipo] ?? turno.tipo}
-        aviso={aviso}
-        verificando={verificando}
-        alCompletar={async (pin) => {
-          setVerificando(true);
-          try {
-            const f = await abrirFirmante(entorno, turno, pin);
-            const todos = [...firmantes, f];
-            if (todos.length >= FIRMAS_PRESTAMO) {
-              await firmarPrestamos(props.sesion.base, props.sesion.cripto, {
-                reunion: props.reunion,
-                firmantes: todos,
-                foto: props.foto,
-                ahora: entorno.ahora(),
-              });
-              props.alTerminar();
-              return;
-            }
-            setFirmantes(todos);
-            setTurno(null);
-            setAviso(undefined);
-          } catch (error) {
-            if (error instanceof PinFallido) setAviso(error.message);
-            else if (error instanceof CargoEnPausa) {
-              setEnPausa([...enPausa, turno.cargoId]);
-              setTurno(null);
-              setAviso(undefined);
-            } else setAviso("No se pudo firmar. Intente de nuevo.");
-          } finally {
-            setVerificando(false);
-          }
-        }}
-      />
-    );
-  }
-
   return (
-    <>
-      <ScrollView contentContainerStyle={base.contenido}>
-        <Titulo>Firmar las aprobaciones</Titulo>
-        {props.solicitudes.map((s) => (
-          <View key={s.id} style={base.renglon}>
-            <Text style={[base.cifraRenglon, { width: 56 }]}>{num(numeroDe(props.foto, s.titularId))}</Text>
-            <Text style={[base.parrafo, { flex: 1 }]}>
-              {formatearPesos(s.capital)} en {s.numCuotas} cuotas
-            </Text>
-          </View>
-        ))}
-        <Parrafo testID="firmas-faltan">
-          {firmantes.length === 0 ? `Faltan ${FIRMAS_PRESTAMO} firmas.` : `Falta ${FIRMAS_PRESTAMO - firmantes.length} firma de ${FIRMAS_PRESTAMO}.`}
-        </Parrafo>
-        {enPausa.length > 0 ? <Parrafo>Un PIN quedó en pausa en este celular. Firma otro cargo en su reemplazo.</Parrafo> : null}
-        <Text style={[base.titulo, { fontSize: 22 }]}>¿Quién firma?</Text>
-        {perfiles.map((p) => {
-          const firmo = firmantes.some((f) => f.perfil.cargoId === p.cargoId);
-          const motivo = firmo ? null : puedeFirmar(p, firmantes.map((f) => f.perfil), beneficiarios, props.foto);
-          const pausado = enPausa.includes(p.cargoId);
-          const disponible = !firmo && !motivo && !pausado;
-          return (
-            <Pressable
-              key={p.cargoId}
-              testID={`firma-${p.tipo}`}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !disponible }}
-              disabled={!disponible}
-              onPress={() => setTurno(p)}
-              style={[base.renglon, !disponible && { opacity: 0.6 }]}
-            >
-              <Text style={[base.parrafo, { flex: 1 }]}>{NOMBRE_CARGO[p.tipo] ?? p.tipo}</Text>
-              <Text style={[base.etiqueta, firmo && { color: color.confirmado }]}>
-                {firmo ? "Firmó" : pausado ? "En pausa" : motivo ? `No puede: ${MOTIVO[motivo]}` : "Falta firmar"}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-      <View style={base.acciones}>
-        {/* Atrás cancela el grupo entero: nunca firmas a medias (N11). */}
-        <BotonSecundario testID="cancelar-firmas" texto="Cancelar estas firmas" alTocar={props.alTerminar} />
-      </View>
-    </>
+    <FirmasGrupo
+      titulo="Firmar las aprobaciones"
+      foto={props.foto}
+      beneficiarios={props.solicitudes.map((s) => s.titularId)}
+      lista={props.solicitudes.map((s) => (
+        <View key={s.id} style={base.renglon}>
+          <Text style={[base.cifraRenglon, { width: 56 }]}>{num(numeroDe(props.foto, s.titularId))}</Text>
+          <Text style={[base.parrafo, { flex: 1 }]}>
+            {formatearPesos(s.capital)} en {s.numCuotas} cuotas
+          </Text>
+        </View>
+      ))}
+      alFirmar={async (firmantes) => {
+        await firmarPrestamos(props.sesion.base, props.sesion.cripto, {
+          reunion: props.reunion,
+          firmantes,
+          foto: props.foto,
+          ahora: entorno.ahora(),
+        });
+        props.alTerminar();
+      }}
+      alCancelar={props.alTerminar}
+    />
   );
 }
 

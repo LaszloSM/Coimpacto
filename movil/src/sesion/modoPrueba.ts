@@ -49,6 +49,7 @@ export const FOTO_PRUEBA: FotoGrupo = {
   ],
   reuniones: [],
   prestamos: [],
+  caja: 150_000,
 };
 
 /** Siembra el grupo de prueba la primera vez. No hace nada si ya hay perfiles. */

@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
 import { leerFoto, type Sesion } from "../sesion/abrir";
+import { PasoArqueo, PasoCierre, PasoResumen } from "./PasosCierre";
 import { PasoAbonos, PasoPrestamos } from "./PasosPrestamos";
 import { useSesion } from "../sesion/contexto";
 import {
@@ -60,7 +61,7 @@ export function Asistente() {
 }
 
 function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
-  const { entorno } = useSesion();
+  const { entorno, setSesion } = useSesion();
   const [estado, setEstado] = useState<Estado | null>(null);
 
   const [version, setVersion] = useState(0);
@@ -135,6 +136,23 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
         alCambiar={recargar}
       />
     );
+  } else if (paso >= 7 && paso <= 9) {
+    const comun = {
+      sesion,
+      foto: estado.foto,
+      reunion: estado.reunion,
+      alSeguir: () => irA(paso + 1),
+      alVolver: () => irA(paso - 1),
+      alCambiar: recargar,
+    };
+    contenido =
+      paso === 7 ? (
+        <PasoArqueo {...comun} />
+      ) : paso === 8 ? (
+        <PasoCierre {...comun} />
+      ) : (
+        <PasoResumen {...comun} alTerminar={() => setSesion(null)} />
+      );
   } else {
     contenido = <PasoPendiente paso={paso} alVolver={() => irA(paso - 1)} />;
   }
