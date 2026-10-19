@@ -5,12 +5,13 @@
 
 import { tokens } from "@credimpacto/tokens";
 import { useEffect, useState, type ReactNode } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, BackHandler, Pressable, ScrollView, Text, View } from "react-native";
 
 import type { FotoGrupo } from "../cola/grupo";
 import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
 import { NOMBRE_CARGO, perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { abrirFirmante } from "../sesion/abrir";
+import { TEXTO_CANCELAR_FIRMAS } from "../navegacion/atras";
 import { useSesion } from "../sesion/contexto";
 import { BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
 import { TecladoPin } from "../ui/TecladoPin";
@@ -45,6 +46,20 @@ export function FirmasGrupo(props: {
   useEffect(() => {
     void leerPerfiles(entorno.almacen).then(setPerfiles);
   }, [entorno]);
+
+  // Atrás en un grupo de firmas cancela el grupo entero, nunca firmas a medias (N11).
+  const { alCancelar } = props;
+  useEffect(() => {
+    const suscripcion = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (verificando) return true;
+      Alert.alert(TEXTO_CANCELAR_FIRMAS.titulo, TEXTO_CANCELAR_FIRMAS.mensaje, [
+        { text: TEXTO_CANCELAR_FIRMAS.no, style: "cancel" },
+        { text: TEXTO_CANCELAR_FIRMAS.si, style: "destructive", onPress: alCancelar },
+      ]);
+      return true;
+    });
+    return () => suscripcion.remove();
+  }, [verificando, alCancelar]);
   if (!perfiles) return null;
   const beneficiarios = props.beneficiarios ?? [];
 

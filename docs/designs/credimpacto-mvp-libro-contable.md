@@ -2695,7 +2695,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Verify: Maestro: con reunión abierta el botón naranja es "Seguir la reunión"; filas de perfil sin nombres completos; arranque < 2 s en el celular de referencia
   - Agregado 2026-10-07 (falta de TX3/TX5): alta del primer Presidente en el enrolamiento. Con el facilitador presente, después de canjear el QR el celular baja la lista de cargos del ciclo activo, el Presidente crea su PIN y su llave, y el alta sube autorizada por el facilitador que emitió el código (D18) dentro de los mismos 15 minutos. Sin esto ningún celular puede sincronizar: todo elemento lleva la firma de un cargo con llave registrada, y las demás llaves las autoriza el Presidente por la cola
   - Files (agregado): backend/cuentas/ (canje con alta del Presidente y bajada de cargos), movil/src/seguridad/enrolamiento.ts
-- [ ] **TD2 (P1, human: ~3d / CC: ~1.5h)** — movil — Tabla de estados nativos y "atrás" guiado
+- [x] **TD2 (P1, human: ~3d / CC: ~1.5h)** — movil — Tabla de estados nativos y "atrás" guiado
   - Surfaced by: Pasada 2 N4; Pasada 6 N11
   - Files: movil/src/, packages/ (textos i18n)
   - Verify: Jest + Maestro: cámara denegada, QR vencido, 5.º PIN, respaldo pendiente, actualización lista, Keystore perdido; atrás en paso 1 pide confirmación y en firmas cancela el grupo completo

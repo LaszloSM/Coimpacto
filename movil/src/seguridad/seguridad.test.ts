@@ -5,7 +5,7 @@ import type { ValorJson } from "@credimpacto/reglas";
 
 import { almacenEnMemoria } from "./almacen";
 import { aB64url, desdeB64url } from "./cripto";
-import { llaveDelDispositivo, secretoDelDispositivo } from "./dispositivo";
+import { llaveDelDispositivo, llavesPerdidas, secretoDelDispositivo } from "./dispositivo";
 import { canjearCodigo, EnrolamientoFallido, leerQr } from "./enrolamiento";
 import { firmar, mensajeAlta, verificar } from "./firma";
 import { CargoEnPausa, ControlIntentos, PinFallido } from "./intentos";
@@ -229,5 +229,15 @@ describe("enrolamiento por QR", () => {
     await expect(canjearCodigo("https://api.example", codigo, "llave", pedir)).rejects.toThrow(
       "Necesita señal solo para este paso.",
     );
+  });
+});
+
+describe("llaves perdidas (tabla de estados)", () => {
+  test("con perfiles y sin secreto del Keystore se avisa antes de pedir PIN", async () => {
+    const almacen = almacenEnMemoria();
+    expect(await llavesPerdidas(almacen, false)).toBe(false);
+    expect(await llavesPerdidas(almacen, true)).toBe(true);
+    await secretoDelDispositivo(c, almacen);
+    expect(await llavesPerdidas(almacen, true)).toBe(false);
   });
 });
