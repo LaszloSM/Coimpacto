@@ -95,6 +95,7 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "cargos": [],
         "reuniones": [],
         "prestamos": [],
+        "caja": 0,
     }
     if ciclo is None:
         return foto
@@ -134,10 +135,14 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         }
         for c in Cargo.objects.filter(ciclo=ciclo, vigente=True).prefetch_related("llaves")
     ]
+    reuniones = list(Reunion.objects.filter(ciclo=ciclo).order_by("numero"))
     foto["reuniones"] = [
         {"id": str(r.id), "numero": r.numero, "fecha": r.fecha.isoformat(), "estado": r.estado}
-        for r in Reunion.objects.filter(ciclo=ciclo).order_by("numero")
+        for r in reuniones
     ]
+    # Caja con que abre la próxima reunión: lo contado en el arqueo de la última cerrada (D12).
+    cerradas = [r for r in reuniones if r.caja_contada is not None]
+    foto["caja"] = cerradas[-1].caja_contada if cerradas else 0
     for p in Prestamo.objects.filter(ciclo=ciclo).order_by("id"):
         saldo = libro.saldo_prestamo(p)
         if saldo > 0:

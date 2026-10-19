@@ -145,3 +145,26 @@ def test_celular_desconocido(junta):
         "/api/sync/reto", secure=True, headers={"X-Credimpacto-Dispositivo": str(uuid.uuid4())}
     )
     assert r.status_code == 401
+
+
+def test_la_caja_de_la_ultima_reunion_cerrada(junta):
+    reunion_id = str(uuid.uuid4())
+    recibir_lote(
+        dispositivo=junta.dispositivo,
+        cuerpo=junta.lote(
+            junta.elemento(
+                "reunion",
+                {"ciclo": str(junta.ciclo.id), "numero": 1, "fecha": "2026-10-04"},
+                id=reunion_id,
+            ),
+            junta.elemento(
+                "cierre",
+                {"reunion": reunion_id, "movimientos": [], "caja_contada": 123_000},
+                junta.presidente,
+                junta.cajera,
+            ),
+        ),
+    )
+    foto, _ = pedir(junta)
+    assert foto.json()["caja"] == 123_000
+    assert foto.json()["reuniones"][0]["estado"] == "cerrada"
