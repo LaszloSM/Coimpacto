@@ -2,6 +2,7 @@
 
 from ninja import NinjaAPI
 
+from actualizaciones.api import router as actualizaciones_router
 from core.api import router as core_router
 from cuentas.api import router as cuentas_router
 from cuentas.sesion import router as sesion_router
@@ -15,6 +16,7 @@ api = NinjaAPI(
 )
 
 api.add_router("/", core_router)
+api.add_router("/", actualizaciones_router)
 api.add_router("/", cuentas_router)
 api.add_router("/", sesion_router)
 api.add_router("/", sync_router)

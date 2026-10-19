@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import type { ExpoConfig } from "expo/config";
 
 // Fuentes estáticas por peso (packages/tokens/fuentes/nativas). Android registra cada archivo
@@ -12,6 +15,21 @@ const FUENTES = [
   "Bitter-700",
 ].map((nombre) => `../packages/tokens/fuentes/nativas/${nombre}.ttf`);
 
+// Actualizaciones de JavaScript con el servidor propio (TX9, EX6): solo si hay servidor y
+// certificado de firma de código; la app nunca busca sola y aplica solo sin pendientes ni
+// reunión abierta (D9). La llave privada vive en CI (docs/operacion/llaves.md).
+const servidor = (process.env.EXPO_PUBLIC_SERVIDOR ?? "").replace(/\/$/, "");
+const certificado = join(__dirname, "certs", "certificate.pem");
+const actualizaciones: ExpoConfig["updates"] =
+  servidor && existsSync(certificado)
+    ? {
+        url: `${servidor}/api/actualizaciones/manifiesto`,
+        checkAutomatically: "NEVER",
+        codeSigningCertificate: "./certs/certificate.pem",
+        codeSigningMetadata: { keyid: "main", alg: "rsa-v1_5-sha256" },
+      }
+    : { enabled: false };
+
 // Cada subida a Google Play necesita un versionCode mayor; CI lo pasa (TF1).
 const versionCode = Number(process.env.CREDIMPACTO_VERSION_CODE ?? 1);
 
@@ -20,6 +38,9 @@ const config: ExpoConfig = {
   slug: "credimpacto",
   scheme: "credimpacto",
   version: "0.1.0",
+  // Una actualización de JavaScript solo llega a binarios con la misma versión nativa.
+  runtimeVersion: { policy: "appVersion" },
+  updates: actualizaciones,
   orientation: "portrait",
   icon: "./assets/icon.png",
   // Solo modo claro (DESIGN.md, "Superficie nativa").

@@ -24,6 +24,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/actualizaciones/manifiesto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Manifiesto de expo-updates v1 */
+        get: operations["actualizaciones_api_manifiesto"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/actualizaciones/archivos/{resumen}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Archivo de una actualización */
+        get: operations["actualizaciones_api_archivo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/actualizaciones/publicar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publicar una actualización (solo CI)
+         * @description CI sube el manifiesto ya firmado y los archivos; el servidor comprueba los resúmenes.
+         */
+        post: operations["actualizaciones_api_publicar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/enrolamiento/codigos": {
         parameters: {
             query?: never;
@@ -472,6 +526,73 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Salud"];
                 };
+            };
+        };
+    };
+    actualizaciones_api_manifiesto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    actualizaciones_api_archivo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resumen: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    actualizaciones_api_publicar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Manifiesto */
+                    manifiesto: string;
+                    /** Firma */
+                    firma: string;
+                    /** Archivos */
+                    archivos: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

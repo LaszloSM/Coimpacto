@@ -29,6 +29,96 @@
         ]
       }
     },
+    "/api/actualizaciones/manifiesto": {
+      "get": {
+        "operationId": "actualizaciones_api_manifiesto",
+        "summary": "Manifiesto de expo-updates v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "actualizaciones"
+        ]
+      }
+    },
+    "/api/actualizaciones/archivos/{resumen}": {
+      "get": {
+        "operationId": "actualizaciones_api_archivo",
+        "summary": "Archivo de una actualización",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resumen",
+            "schema": {
+              "title": "Resumen",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "actualizaciones"
+        ]
+      }
+    },
+    "/api/actualizaciones/publicar": {
+      "post": {
+        "operationId": "actualizaciones_api_publicar",
+        "summary": "Publicar una actualización (solo CI)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "CI sube el manifiesto ya firmado y los archivos; el servidor comprueba los resúmenes.",
+        "tags": [
+          "actualizaciones"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "title": "MultiPartBodyParams",
+                "type": "object",
+                "properties": {
+                  "manifiesto": {
+                    "title": "Manifiesto",
+                    "type": "string"
+                  },
+                  "firma": {
+                    "title": "Firma",
+                    "type": "string"
+                  },
+                  "archivos": {
+                    "items": {
+                      "format": "binary",
+                      "type": "string"
+                    },
+                    "title": "Archivos",
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "manifiesto",
+                  "firma",
+                  "archivos"
+                ]
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
     "/api/enrolamiento/codigos": {
       "post": {
         "operationId": "cuentas_api_emitir_codigo",

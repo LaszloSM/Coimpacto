@@ -1,0 +1,53 @@
+name: Publicar actualización de la app (JavaScript)
+
+# TX9 (EX6, EA2): actualización de JavaScript por el servidor propio, firmada en CI con la llave
+# de código (el servidor solo almacena y entrega). Se lanza a mano y solo para correcciones y
+# mejoras, nunca para cambiar el propósito de la app (política de Google Play). Los celulares
+# la instalan solo sin pendientes ni reunión abierta (D9) y preguntan con datos móviles (N16).
+
+on:
+  workflow_dispatch:
+    inputs:
+      motivo:
+        description: "Qué corrige o mejora (queda en el registro de la corrida)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: actualizar-app
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    name: Exportar, firmar y subir
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_SERVIDOR: ${{ vars.CREDIMPACTO_SERVIDOR }}
+      EXPO_PUBLIC_LLAVE_RESPALDO: ${{ vars.CREDIMPACTO_LLAVE_RESPALDO }}
+      CREDIMPACTO_ACTUALIZACIONES_LLAVE: ${{ secrets.CREDIMPACTO_ACTUALIZACIONES_LLAVE }}
+      CREDIMPACTO_ACTUALIZACIONES_TOKEN: ${{ secrets.CREDIMPACTO_ACTUALIZACIONES_TOKEN }}
+    steps:
+      - name: Motivo
+        env:
+          MOTIVO: ${{ inputs.motivo }}
+        run: echo "Actualización: $MOTIVO"
+      - name: El modo de prueba nunca va a los celulares
+        run: |
+          if [ -n "${EXPO_PUBLIC_MODO_PRUEBA:-}" ]; then echo "::error::EXPO_PUBLIC_MODO_PRUEBA definido"; exit 1; fi
+      - uses: actions/checkout@v7
+      - name: Certificado de firma de código en el repositorio
+        run: test -f movil/certs/certificate.pem || { echo "::error::Falta movil/certs/certificate.pem (docs/operacion/llaves.md)"; exit 1; }
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run test -w @credimpacto/movil
+      - name: Exportar el bundle de Android
+        working-directory: movil
+        run: npx expo export --platform android --output-dir dist
+      - name: Firmar y publicar
+        working-directory: movil
+        run: node scripts/publicar-actualizacion.mjs

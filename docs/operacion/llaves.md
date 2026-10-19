@@ -53,3 +53,20 @@ Registrar en un acta quién custodia cada copia y en qué fecha se revisó.
 
 - Publicar en producción: la cuenta de servicio no tiene ese permiso.
 - Publicar un build con `EXPO_PUBLIC_MODO_PRUEBA`: el flujo falla si está definido.
+
+## Llave de actualizaciones (TX9)
+
+Generarla una vez en un equipo de confianza (dentro de `movil/`):
+
+```bash
+npx expo-updates codesigning:generate --key-output-directory ~/credimpacto-llaves --certificate-output-directory certs --certificate-validity-duration-years 10 --certificate-common-name "Credimpacto"
+```
+
+- `movil/certs/certificate.pem` (pública) **sí** se commitea: con ella la app solo acepta
+  actualizaciones firmadas con su llave. Sin ese archivo las actualizaciones quedan apagadas.
+- La llave privada va al secreto `CREDIMPACTO_ACTUALIZACIONES_LLAVE` y a las copias cifradas;
+  nunca al repositorio.
+- El token de publicación va al secreto `CREDIMPACTO_ACTUALIZACIONES_TOKEN` de GitHub y a la
+  variable `CREDIMPACTO_ACTUALIZACIONES_TOKEN` del servidor.
+- Publicar: Actions → "Publicar actualización de la app" → motivo. Retirar una con problemas:
+  `/admin` → Paquetes de actualización → desmarcar "activo".

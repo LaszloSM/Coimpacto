@@ -4,9 +4,11 @@
 
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { actualizadorNativo, conDatosMoviles } from "../actualizaciones/actualizadorNativo";
+import { buscarActualizacion, type ResultadoActualizacion } from "../actualizaciones/actualizar";
 import { enviarPorHttp } from "../cola/cola";
 import { bajarPorHttp, sincronizarTodo, type ResultadoSincronizacion } from "../cola/grupo";
 import { SERVIDOR } from "../config";
@@ -14,12 +16,13 @@ import { borrarBase } from "../datos/baseNativa";
 import { dispositivoRegistrado } from "../enrolamiento/flujo";
 import { firmarComoDispositivo } from "../seguridad/dispositivo";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, estilos as base, Franja, Parrafo, Titulo } from "../ui/componentes";
+import { BotonPrincipal, BotonSecundario, estilos as base, Franja, Parrafo, Titulo } from "../ui/componentes";
 
 export default function PantallaEnviar() {
   const { sesion, entorno, setSesion } = useSesion();
   const router = useRouter();
   const [resultado, setResultado] = useState<ResultadoSincronizacion | { fin: "error"; mensaje: string } | null>(null);
+  const [mejora, setMejora] = useState<ResultadoActualizacion | null>(null);
 
   useEffect(() => {
     if (!sesion) return;
@@ -40,6 +43,21 @@ export default function PantallaEnviar() {
           await borrarBase();
         }
         if (vigente) setResultado(r);
+        if (r.fin === "listo") {
+          // Todo subido: es el momento seguro para bajar una mejora de la app (D9, N16).
+          const m = await buscarActualizacion(sesion.base, {
+            actualizador: actualizadorNativo,
+            conDatosMoviles,
+            preguntarDatosMoviles: () =>
+              new Promise((responder) =>
+                Alert.alert("Hay una mejora de la app", "Está usando datos móviles. ¿La bajamos ahora?", [
+                  { text: "Después, con wifi", style: "cancel", onPress: () => responder(false) },
+                  { text: "Bajarla", onPress: () => responder(true) },
+                ]),
+              ),
+          }).catch(() => "nada" as const);
+          if (vigente) setMejora(m);
+        }
       } catch (e) {
         if (vigente) setResultado({ fin: "error", mensaje: e instanceof Error ? e.message : String(e) });
       }
@@ -73,6 +91,13 @@ export default function PantallaEnviar() {
         <Parrafo testID="envio-estado">{texto}</Parrafo>
       </View>
       <View style={base.acciones}>
+        {mejora === "lista" ? (
+          <BotonSecundario
+            testID="instalar-mejora"
+            texto="Instalar la mejora de la app"
+            alTocar={() => void actualizadorNativo.aplicar()}
+          />
+        ) : null}
         <BotonPrincipal
           testID="envio-volver"
           texto="Volver al inicio"
