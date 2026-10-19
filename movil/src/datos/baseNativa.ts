@@ -6,18 +6,30 @@ import { prepararBaseCifrada, type BaseLocal } from "./base";
 import { migrar } from "./migraciones";
 
 function envolver(db: SQLite.SQLiteDatabase): BaseLocal {
+  // Las transacciones van en ESTA conexión, la que tiene el PRAGMA key. withExclusiveTransactionAsync
+  // de expo-sqlite abre otra conexión sin llave y SQLCipher la rechaza ("file is not a database").
+  // Una cola en JS hace que nunca corran dos transacciones a la vez.
+  let cola: Promise<unknown> = Promise.resolve();
   const base: BaseLocal = {
     ejecutar: (sql) => db.execAsync(sql),
     correr: async (sql, ...p) => ({ cambios: (await db.runAsync(sql, p)).changes }),
     todas: (sql, ...p) => db.getAllAsync(sql, p),
     primera: (sql, ...p) => db.getFirstAsync(sql, p),
-    transaccion: async (cuerpo) => {
-      let resultado!: Awaited<ReturnType<typeof cuerpo>>;
-      // Solo lo que corre sobre `txn` entra a la transacción exclusiva (docs de expo-sqlite).
-      await db.withExclusiveTransactionAsync(async (txn) => {
-        resultado = await cuerpo(envolver(txn));
-      });
-      return resultado;
+    transaccion: (cuerpo) => {
+      const correrTransaccion = async () => {
+        await db.execAsync("BEGIN IMMEDIATE;");
+        try {
+          const resultado = await cuerpo(base);
+          await db.execAsync("COMMIT;");
+          return resultado;
+        } catch (error) {
+          await db.execAsync("ROLLBACK;");
+          throw error;
+        }
+      };
+      const turno = cola.then(correrTransaccion, correrTransaccion);
+      cola = turno.catch(() => undefined);
+      return turno;
     },
     cerrar: () => db.closeAsync(),
   };
