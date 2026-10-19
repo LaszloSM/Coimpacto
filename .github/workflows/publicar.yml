@@ -91,7 +91,10 @@ jobs:
       - name: AAB de release (arm64 y armv7, para celulares reales)
         if: steps.listo.outputs.listo == 'si'
         working-directory: movil/android
-        run: ./gradlew bundleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+        # Igual que en CI: sin lint vital de terceros y Kotlin en el mismo proceso.
+        run: >-
+          ./gradlew bundleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+          -x lintVitalAnalyzeRelease -Pkotlin.compiler.execution.strategy=in-process
       - name: Subir a la pista de prueba interna
         if: steps.listo.outputs.listo == 'si'
         uses: r0adkll/upload-google-play@v1.1.5
