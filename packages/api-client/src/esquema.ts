@@ -223,6 +223,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/consolidado": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consolidado de la Fundación por ACAP
+         * @description Ahorro, préstamos con saldo, pendientes y fecha de los datos por ACAP (D23).
+         *
+         *     Sin datos personales.
+         */
+        get: operations["cuentas_sesion_consolidado"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/pendientes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Bandeja de pendientes por gravedad (D2) */
+        get: operations["cuentas_sesion_pendientes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/lotes": {
         parameters: {
             query?: never;
@@ -794,6 +833,42 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AcapResumen"][];
                 };
+            };
+        };
+    };
+    cuentas_sesion_consolidado: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_sesion_pendientes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

@@ -380,6 +380,47 @@
         ]
       }
     },
+    "/api/oficina/consolidado": {
+      "get": {
+        "operationId": "cuentas_sesion_consolidado",
+        "summary": "Consolidado de la Fundación por ACAP",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Ahorro, préstamos con saldo, pendientes y fecha de los datos por ACAP (D23).\n\nSin datos personales.",
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/pendientes": {
+      "get": {
+        "operationId": "cuentas_sesion_pendientes",
+        "summary": "Bandeja de pendientes por gravedad (D2)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/sync/lotes": {
       "post": {
         "operationId": "sync_api_subir_lote",

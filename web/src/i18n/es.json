@@ -15,7 +15,20 @@
     "celulares": "Registrar un celular",
     "celularesDetalle": "Código QR de un solo uso para el celular de una ACAP.",
     "respaldos": "Subir una copia de seguridad",
-    "respaldosDetalle": "El archivo que una junta envió desde su celular sin señal."
+    "respaldosDetalle": "El archivo que una junta envió desde su celular sin señal.",
+    "indicadores": "Indicadores",
+    "indicadoresDetalle": "Ahorro, préstamos y pendientes de cada ACAP, con la fecha de sus datos.",
+    "todoAlDia": "Todo al día.",
+    "cargando": "Cargando pendientes…",
+    "sinPermiso": "Este usuario no puede ver los pendientes.",
+    "pendiente": {
+      "en_conflicto": "Hay que aclarar",
+      "rechazado": "No se aceptó",
+      "por_validar": "Por revisar",
+      "sin_datos": "Sin datos hace {dias} días"
+    },
+    "registros": "{n} registros",
+    "nuncaSincronizo": "Nunca ha enviado datos"
   },
   "entrar": {
     "titulo": "Entrar a la oficina",
@@ -60,5 +73,21 @@
       "SERVIDOR_SIN_LLAVE": "El servidor aún no tiene la llave de las copias. Avise al equipo técnico.",
       "SIN_PERMISO": "Este usuario no puede subir copias."
     }
+  },
+  "indicadores": {
+    "titulo": "Indicadores",
+    "datosAl": "Datos al {fecha}",
+    "sinDatos": "Sin datos",
+    "acap": "ACAP",
+    "socios": "Socios",
+    "reuniones": "Reuniones",
+    "ahorro": "Ahorro del ciclo",
+    "prestamos": "Préstamos con saldo",
+    "saldo": "Por cobrar",
+    "revisar": "Por revisar",
+    "total": "Total",
+    "viejos": "{n} ACAP con datos de hace más de 14 días",
+    "cargando": "Cargando indicadores…",
+    "sinPermiso": "Este usuario no puede ver los indicadores."
   }
 }
