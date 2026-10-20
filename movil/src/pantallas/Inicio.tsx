@@ -21,6 +21,7 @@ export function Inicio(props: {
   alAbrir?: () => void;
   alEnviar?: () => void;
   alAltaCargo?: () => void;
+  alRespaldo?: () => void;
   alRegistrar?: () => void;
 }) {
   const perfiles = props.perfiles ?? [];
@@ -73,6 +74,7 @@ export function Inicio(props: {
               alTocar={() => props.alAbrir?.()}
             />
             <BotonSecundario testID="enviar-fundacion" texto="Enviar a la Fundación" alTocar={() => props.alEnviar?.()} />
+            <BotonSecundario testID="respaldo" texto="Copia de seguridad" alTocar={() => props.alRespaldo?.()} />
             <BotonSecundario testID="alta-cargo" texto="Dar de alta un cargo" alTocar={() => props.alAltaCargo?.()} />
           </>
         )}
