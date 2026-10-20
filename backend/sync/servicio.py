@@ -397,6 +397,15 @@ def _cierre(ctx, firmantes, e):
     if caja < 0:
         raise Rechazo("DATOS_INVALIDOS")
     ids = {_a_uuid(x) for x in lista}
+    totales = _campo(e.datos, "totales", dict, opcional=True)
+    resumen = _campo(e.datos, "resumen", list, opcional=True)
+    if totales is not None and (
+        set(totales) - {str(t) for t in libro.TIPOS_TOTALES}
+        or any(isinstance(v, bool) or not isinstance(v, int) for v in totales.values())
+    ):
+        raise Rechazo("DATOS_INVALIDOS")
+    if resumen is not None and not all(isinstance(fila, dict) for fila in resumen):
+        raise Rechazo("DATOS_INVALIDOS")
     if reunion.estado == Reunion.Estado.CERRADA:
         raise Conflicto("REUNION_YA_CERRADA")
     del_libro = set(Movimiento.objects.filter(reunion=reunion).values_list("id", flat=True))
@@ -414,7 +423,27 @@ def _cierre(ctx, firmantes, e):
     reunion.estado = Reunion.Estado.CERRADA
     reunion.caja_contada = caja
     reunion.cerrada_en = timezone.now()
-    reunion.save(update_fields=["estado", "caja_contada", "cerrada_en"])
+    reunion.cierre_resumen = resumen
+    if totales is not None:
+        # Lo que la junta firmó contra lo que el servidor aceptó de la lista (ET1).
+        firmados = {str(t): 0 for t in libro.TIPOS_TOTALES} | totales
+        aceptados = libro.totales_por_tipo(
+            Movimiento.objects.filter(reunion=reunion, id__in=ids)
+            .con_estado()
+            .exclude(estado__in=[E.RECHAZADO, E.EN_CONFLICTO])
+        )
+        reunion.cierre_totales = firmados
+        reunion.totales_cuadran = firmados == aceptados
+    reunion.save(
+        update_fields=[
+            "estado",
+            "caja_contada",
+            "cerrada_en",
+            "cierre_resumen",
+            "cierre_totales",
+            "totales_cuadran",
+        ]
+    )
     return R.CONFIRMADO if ctx.dispositivo.activo else R.POR_VALIDAR
 
 

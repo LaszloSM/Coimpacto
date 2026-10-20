@@ -6,6 +6,7 @@ import pytest
 from django.test import Client
 from django.utils import timezone
 
+from acap import consolidado
 from acap.models import Reunion
 from cuentas.tests.llaves import LlaveDePrueba
 from libro import servicio as libro
@@ -387,6 +388,64 @@ class TestCierre:
             "cierre",
             {"reunion": str(reunion_id), "movimientos": movimientos, "caja_contada": caja},
             *(firmantes or (junta.presidente, junta.cajera)),
+        )
+
+    def test_firma_totales_e_instantanea_del_resumen(self, junta):
+        """ET1: lo firmado incluye los totales y el resumen leído; el servidor los compara."""
+        reunion_id = uuid.uuid4()
+        aporte = ahorro(junta, reunion_id)  # 3 acciones de 10.000
+        corregido = ahorro(junta, reunion_id, acciones=1, titular=junta.cajera.titular)
+        correccion = junta.elemento(
+            "correccion", {"original": corregido["id"], "motivo": "No era de ella"}
+        )
+        resumen = [{"titular": str(junta.socia.id), "ahorro_hoy": 30_000, "ahorro_ciclo": 30_000}]
+        cierre = junta.elemento(
+            "cierre",
+            {
+                "reunion": str(reunion_id),
+                "movimientos": [aporte["id"], corregido["id"], correccion["id"]],
+                "caja_contada": 30_000,
+                "totales": {"ahorro": 30_000},
+                "resumen": resumen,
+            },
+            junta.presidente,
+            junta.cajera,
+        )
+        recibir(junta, abrir(junta, reunion_id), aporte, corregido, correccion, cierre)
+        reunion = Reunion.objects.get(id=reunion_id)
+        assert reunion.totales_cuadran is True
+        assert reunion.cierre_resumen == resumen
+        assert reunion.cierre_totales["ahorro"] == 30_000
+
+        otra_id = uuid.uuid4()
+        otro = ahorro(junta, otra_id)
+        mal = self.cierre(junta, otra_id, [otro["id"]])
+        mal = junta.elemento(
+            "cierre",
+            {**mal["datos"], "totales": {"ahorro": 99_000}},
+            junta.presidente,
+            junta.cajera,
+        )
+        recibir(junta, abrir(junta, otra_id, numero=2), otro, mal)
+        assert Reunion.objects.get(id=otra_id).totales_cuadran is False
+        assert "totales_distintos" in [f["tipo"] for f in consolidado.bandeja()]
+
+    def test_totales_con_tipos_desconocidos_se_rechazan(self, junta):
+        reunion_id = uuid.uuid4()
+        mal = junta.elemento(
+            "cierre",
+            {
+                "reunion": str(reunion_id),
+                "movimientos": [],
+                "caja_contada": 0,
+                "totales": {"propina": 5},
+            },
+            junta.presidente,
+            junta.cajera,
+        )
+        assert estados(recibir(junta, abrir(junta, reunion_id), mal))[1] == (
+            "rechazado",
+            "DATOS_INVALIDOS",
         )
 
     def test_cierra_la_reunion_y_guarda_la_caja(self, junta):

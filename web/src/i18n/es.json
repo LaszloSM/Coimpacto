@@ -26,7 +26,8 @@
       "rechazado": "No se aceptó",
       "por_validar": "Por revisar",
       "sin_datos": "Sin datos hace {dias} días",
-      "no_aceptada": "La junta no aceptó la propuesta"
+      "no_aceptada": "La junta no aceptó la propuesta",
+      "totales_distintos": "Los totales firmados al cerrar no cuadran con lo recibido"
     },
     "registros": "{n} registros",
     "nuncaSincronizo": "Nunca ha enviado datos",

@@ -118,15 +118,43 @@ export function movimientosDelCierre(elementos: Elemento[]): string[] {
     .map((e) => (e.tipo === "prestamo" ? String(e.datos.id_desembolso) : e.id));
 }
 
+const TIPOS_TOTALES = ["ahorro", "fondo_social", "multa", "venta", "desembolso", "abono", "faltante", "sobrante"] as const;
+
+/**
+ * Pesos por tipo de lo que lista el cierre (ET1); cada corrección resta en el tipo que corrige.
+ * El servidor calcula lo mismo con libro.servicio.totales_por_tipo y compara.
+ */
+export function totalesDelCierre(elementos: Elemento[], ciclo: Ciclo): Record<string, number> {
+  const totales: Record<string, number> = Object.fromEntries(TIPOS_TOTALES.map((t) => [t, 0]));
+  const de = new Map<string, [string, number]>();
+  for (const e of elementos) {
+    const d = e.datos as Record<string, number | string>;
+    let par: [string, number] | null = null;
+    if (e.tipo === "ahorro") par = ["ahorro", Number(d.acciones) * ciclo.valor_accion];
+    else if (e.tipo === "multa") par = ["multa", Number(d.cantidad) * ciclo.valor_multa];
+    else if (e.tipo === "abono") par = ["abono", Number(d.monto)];
+    else if (e.tipo === "prestamo") par = ["desembolso", Number(d.capital)];
+    else if (e.tipo === "movimiento") par = [String(d.tipo), Number(d.monto)];
+    else if (e.tipo === "correccion") {
+      const original = de.get(String(d.original));
+      if (original) par = [original[0], -original[1]];
+    }
+    if (!par) continue;
+    de.set(e.id, par);
+    if (par[0] in totales) totales[par[0]] += par[1];
+  }
+  return totales;
+}
+
 /**
  * Cierra la reunión: si la caja no cuadra, registra el faltante o sobrante con su motivo, y
- * firma el cierre con la lista de movimientos y la caja contada. Todo con las mismas N firmas,
+ * firma el cierre con la lista de movimientos, la caja contada, los totales y el resumen (ET1). Todo con las mismas N firmas,
  * en una sola transacción: nunca un cierre a medias.
  */
 export async function cerrarReunion(
   base: BaseLocal,
   cripto: Cripto,
-  datos: { reunion: ReunionLocal; firmantes: FirmanteCargo[]; foto: Pick<FotoGrupo, "miembros">; ahora: Date },
+  datos: { reunion: ReunionLocal; firmantes: FirmanteCargo[]; foto: FotoGrupo; ahora: Date },
 ): Promise<void> {
   const arqueo = await arqueoGuardado(base, datos.reunion.id);
   if (!arqueo) throw new ReglaInvalida("FALTA_ARQUEO");
@@ -155,14 +183,32 @@ export async function cerrarReunion(
       ),
     );
   }
-  const lista = movimientosDelCierre([...(await elementosDeLaReunion(base, datos.reunion.id)), ...nuevos]);
+  const delCierre = [...(await elementosDeLaReunion(base, datos.reunion.id)), ...nuevos];
+  const lista = movimientosDelCierre(delCierre);
+  // Instantánea del resumen que se lee en voz alta (D27, ET1): cifras por titular seudónimo.
+  const resumen = [];
+  for (const m of datos.foto.miembros.filter((x) => x.activo)) {
+    const r = await resumenMiembro(base, datos.reunion, datos.foto, m);
+    resumen.push({
+      titular: m.titular_id,
+      ahorro_hoy: r.ahorroHoy,
+      ahorro_ciclo: r.ahorroCiclo,
+      ...(r.debePrestamo === null ? {} : { debe_prestamo: r.debePrestamo }),
+    });
+  }
   nuevos.push(
     await prepararElemento(
       cripto,
       {
         id: await idNatural(cripto, "cierre", datos.reunion.id),
         tipo: "cierre",
-        datos: { reunion: datos.reunion.id, movimientos: lista, caja_contada: arqueo.contado },
+        datos: {
+          reunion: datos.reunion.id,
+          movimientos: lista,
+          caja_contada: arqueo.contado,
+          totales: totalesDelCierre(delCierre, datos.foto.ciclo!),
+          resumen,
+        },
       },
       datos.firmantes,
     ),

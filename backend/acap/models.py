@@ -154,6 +154,12 @@ class Reunion(models.Model):
     # Lo que contó la junta en el arqueo al cerrar (D12): es la caja con que abre la siguiente.
     caja_contada = models.PositiveBigIntegerField(null=True, blank=True)
     cerrada_en = models.DateTimeField(null=True, blank=True)
+    # Lo que la junta firmó al cerrar (ET1): totales por tipo e instantánea del resumen leído en
+    # voz alta (cifras por titular seudónimo). Si los totales no cuadran con lo que el servidor
+    # aceptó de la lista, la reunión aparece en la bandeja de la Fundación.
+    cierre_totales = models.JSONField(null=True, blank=True)
+    cierre_resumen = models.JSONField(null=True, blank=True)
+    totales_cuadran = models.BooleanField(null=True, blank=True)
 
     class Meta:
         verbose_name = "reunión"

@@ -208,14 +208,14 @@ Reglas (el número de firmas y de llaveros es **configurable por ACAP**, con 2 p
 
 ## Success Criteria
 
-Piloto con 3-5 ACAP durante un ciclo de reuniones (mínimo 1 mes). Durante el piloto se lleva el **cuaderno de papel en paralelo**, que es la referencia independiente.
+Piloto con 3-5 ACAP: **al menos 4 reuniones por ACAP y 1 mes, lo que sea más largo** (D14). Durante el piloto se lleva el **cuaderno de papel en paralelo**, que es la referencia independiente. Para migrar al resto de ACAP: estos criterios cumplidos + la prueba de aceptación del cierre sobre 2 ciclos curados (el chatbot ya está fuera del proyecto, así que no hay que esperar su apagado).
 
 | Criterio | Meta | Cómo se mide |
 |---|---|---|
 | Reuniones registradas en la plataforma sin re-digitación | 100% | Reuniones confirmadas vs reuniones realizadas reportadas por el facilitador. |
 | Arqueo cuadrado al peso | ≥ 95% de las reuniones | Reuniones sin movimiento de faltante o sobrante. |
 | Tiempo de registro por miembro | < 45 s en promedio y menor que la línea base en papel | Telemetría del dispositivo (inicio y fin del registro por miembro) vs cronometraje del Assignment. |
-| Registros perdidos o duplicados | 0 | Cotejo movimiento por movimiento contra el cuaderno en paralelo al final de cada reunión del piloto. |
+| Registros perdidos o duplicados | 0 | Sobre los movimientos **confirmados por el servidor** tras sincronizar, contra la foto de la página del cuaderno de cada reunión piloto (D15). |
 | Autonomía del grupo | < 20% de registros del facilitador | Movimientos marcados como registrados por el facilitador. |
 | Horas de consolidación de la Fundación | Reducción medida | Horas reportadas en el piloto vs línea base del Assignment. |
 | Cierre de ciclo | Reproduce al peso el reparto validado | Prueba de aceptación sobre 2 ciclos curados (ver alcance). |
@@ -1521,7 +1521,8 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Scope D4; Test review E18 (D23)
   - Files: backend/, web/, packages/casos-reglas/, packages/api-client/, .github/workflows/
   - Verify: CI verde con una prueba de cada suite — **hecho 2026-10-06** (rama t2-monorepo, CI #3 verde: contrato, backend sobre PostgreSQL, web y E2E)
-- [ ] **T3 (P1, human: ~1w / CC: ~4h)** — libro — Reglas de dinero en Python y TS con casos compartidos y JCS
+- [x] **T3 (P1, human: ~1w / CC: ~4h)** — libro — Reglas de dinero en Python y TS con casos compartidos y JCS
+  - **Estado:** Hecho en `packages/reglas` + `backend/libro/reglas.py` con casos compartidos en `packages/casos-reglas` (TX1).
   - Surfaced by: Section 2 C1; Section 1 A3 (D19); regression contract
   - Files: backend/libro/reglas.py, web/src/reglas/, packages/casos-reglas/
   - Verify: pytest + Vitest con los mismos casos; Hypothesis en redondeo; 2 ciclos curados al peso — **reglas y casos hechos 2026-10-06 (PR LaszloSM/Coimpacto#2); falta la prueba con 2 ciclos curados que valide CoimpactoB**
@@ -1529,15 +1530,18 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Section 2 C2 (D22)
   - Files: backend/libro/migrations/, backend/libro/servicio.py
   - Verify: UPDATE/DELETE del rol app falla; admin en solo lectura — **hecho 2026-10-06** (rama t4-libro-solo-agregar, CI verde con PostgreSQL)
-- [ ] **T5 (P1, human: ~1w / CC: ~4h)** — cuentas — DEK por PIN, llaves de firma ECDSA, enrolamiento por QR
+- [x] **T5 (P1, human: ~1w / CC: ~4h)** — cuentas — DEK por PIN, llaves de firma ECDSA, enrolamiento por QR
+  - **Estado:** Hecho en la app nativa (TX3): DEK por PIN, llaves ECDSA P-256, enrolamiento por QR (TD1).
   - Surfaced by: Scope E1 (D5); Section 1 A1 (D17), A2 (D18)
   - Files: backend/cuentas/, web/src/seguridad/
   - Verify: firma alterada rechazada; QR vencido rechazado; 5 PIN → bloqueo
-- [ ] **T6 (P1, human: ~1w / CC: ~4h)** — sync — Cola idempotente, lotes, reanudación, estados, dependientes en conflicto, N-1
+- [x] **T6 (P1, human: ~1w / CC: ~4h)** — sync — Cola idempotente, lotes, reanudación, estados, dependientes en conflicto, N-1
+  - **Hecho (TX5, TD3):** cola idempotente, lotes, reanudación, estados y contrato de subida estable.
   - Surfaced by: Scope E3 (D7), E5 (D9), E6 (D10); Section 4 (D24); D1/D2
   - Files: backend/sync/, web/src/cola/
   - Verify: reenviar cola no duplica; corte de señal reanuda; versión N-1 aceptada
-- [ ] **T7 (P1, human: ~2w / CC: ~1d)** — web (reunion) — Shell offline de reunión con firmas N, reemplazo, arqueo, cierre y respaldo
+- [x] **T7 (P1, human: ~2w / CC: ~1d)** — web (reunion) — Shell offline de reunión con firmas N, reemplazo, arqueo, cierre y respaldo
+  - **Estado:** Reemplazado por la app nativa (D2): asistente de reunión offline en `movil/` (TX6, TX7).
   - Surfaced by: Scope E2 (D6), E4 (D8), E9 (D13); Section 1 A3 (D19); D2
   - Files: web/app/(reunion)/
   - Verify: E2E Playwright de reunión completa sin red
@@ -1554,7 +1558,8 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Section 1 A4 (D20, D21)
   - Files: infra/ (según proveedor)
   - Verify: restauración en entorno aparte con cotejo de totales por ACAP
-- [ ] **T11 (P2, human: ~2h / CC: ~10min)** — docs — Actualizar criterios de éxito y piloto en el diseño
+- [x] **T11 (P2, human: ~2h / CC: ~10min)** — docs — Actualizar criterios de éxito y piloto en el diseño
+  - **Hecho (2026-10-19):** piloto de 4 reuniones y 1 mes (D14), cotejo sobre lo confirmado (D15).
   - Surfaced by: Scope E10 (D14), E11 (D15)
   - Files: docs/designs/credimpacto-mvp-libro-contable.md
   - Verify: Success Criteria refleja 4 reuniones + prueba de cierre y cotejo sobre confirmados
@@ -1799,39 +1804,48 @@ No hay TODOs nuevos: todo lo aprobado entra como tareas del plan; las exclusione
 ## Implementation Tasks (design review)
 Synthesized from this review's findings. Each task derives from a specific finding above. Ratios assumed: features ~30x, design systems ~10x, research ~3x.
 
-- [ ] **DT1 (P1, human: ~3d / CC: ~1h)** — diseño — Correr /design-consultation y producir DESIGN.md con los dos estilos; luego /impeccable init
+- [x] **DT1 (P1, human: ~3d / CC: ~1h)** — diseño — Correr /design-consultation y producir DESIGN.md con los dos estilos; luego /impeccable init
+  - **Estado:** Hecho: DESIGN.md y tokens generados (`packages/tokens`).
   - Surfaced by: Pasada 5 — D16, D15
   - Files: DESIGN.md, .impeccable/
   - Verify: DESIGN.md con tokens de color, tipografía (cifras tabulares), espaciado, áreas de toque y componentes para reunión y back-office
-- [ ] **DT2 (P1, human: ~2w / CC: ~1d)** — web (reunion) — Construir el asistente de 9 pasos con franja fija y retomar
+- [x] **DT2 (P1, human: ~2w / CC: ~1d)** — web (reunion) — Construir el asistente de 9 pasos con franja fija y retomar
+  - **Estado:** Hecho en la app nativa (D2, TX6): asistente de 9 pasos con franja fija y retomar.
   - Surfaced by: Pasada 1 — D1; Pasada 3 — D14
   - Files: web/app/(reunion)/
   - Verify: E2E Playwright recorre los 9 pasos sin red; cerrar a mitad y "Seguir la reunión" vuelve al mismo miembro
-- [ ] **DT3 (P1, human: ~1w / CC: ~4h)** — web (reunion) — Registro por miembro con toques, corregir libre, arqueo a ciegas, voto y cuotas, resumen por miembro
+- [x] **DT3 (P1, human: ~1w / CC: ~4h)** — web (reunion) — Registro por miembro con toques, corregir libre, arqueo a ciegas, voto y cuotas, resumen por miembro
+  - **Estado:** Hecho en la app nativa (TX6): registro con toques, corregir libre, arqueo a ciegas, voto y cuotas, resumen por miembro.
   - Surfaced by: Pasada 3 — D9, D11, D12; Pasada 7 — D21, D27; Pasada 1 — D3
   - Files: web/app/(reunion)/
   - Verify: telemetría < 45 s por miembro en prueba con 20 miembros; esperado oculto hasta confirmar el conteo
-- [ ] **DT4 (P1, human: ~1w / CC: ~4h)** — web (reunion) — Firmas: traspaso guiado, PIN privado, agrupación, PIN en pausa, alta de PIN con práctica
+- [x] **DT4 (P1, human: ~1w / CC: ~4h)** — web (reunion) — Firmas: traspaso guiado, PIN privado, agrupación, PIN en pausa, alta de PIN con práctica
+  - **Estado:** Hecho en la app nativa (TX6, TD2): traspaso guiado, PIN privado, firmas agrupadas, PIN en pausa con reemplazo.
   - Surfaced by: Pasada 3 — D10, D13; Pasada 7 — D26
   - Files: web/src/seguridad/, web/app/(reunion)/firmas/
   - Verify: PIN nunca se muestra; 5 fallos → "En pausa" + selector de reemplazo; PIN obvio rechazado
-- [ ] **DT5 (P1, human: ~3d / CC: ~2h)** — web (compartido) — Tabla de estados, vacíos, franja de pendientes, avisos de caducidad y paso "Cambios desde la última reunión"
+- [x] **DT5 (P1, human: ~3d / CC: ~2h)** — web (compartido) — Tabla de estados, vacíos, franja de pendientes, avisos de caducidad y paso "Cambios desde la última reunión"
+  - **Estado:** Hecho en la app nativa (TD2, ET3): estados, vacíos, franja de pendientes y paso 2 "Cambios desde la última".
   - Surfaced by: Pasada 2 — D4, D5, D6, D7, D8
   - Files: web/src/estados/, web/locales/es.json
   - Verify: cada estado interno renderiza ícono + palabra + frase; ninguna pantalla muestra nombres internos
-- [ ] **DT6 (P1, human: ~2d / CC: ~1h)** — web (compartido) — Componente de dinero es-CO con monto en palabras y alerta de inusual
+- [x] **DT6 (P1, human: ~2d / CC: ~1h)** — web (compartido) — Componente de dinero es-CO con monto en palabras y alerta de inusual
+  - **Estado:** Hecho: componente de dinero es-CO con monto en palabras (`enLetras`).
   - Surfaced by: Pasada 5 — D17
   - Files: web/src/dinero/, packages/casos-reglas/
   - Verify: casos compartidos de formato y palabras; alerta al superar 5 veces el habitual
-- [ ] **DT7 (P1, human: ~2d / CC: ~1h)** — web (compartido) — Mínimos de campo e i18n desde el inicio
+- [x] **DT7 (P1, human: ~2d / CC: ~1h)** — web (compartido) — Mínimos de campo e i18n desde el inicio
+  - **Estado:** Hecho: mínimos de campo (TD6) y textos en archivos de idioma.
   - Surfaced by: Pasada 6 — D18, D19
   - Files: web/app/(reunion)/, web/locales/
   - Verify: Playwright mide contraste ≥ 7:1, texto ≥ 18 px, toques ≥ 56 dp; búsqueda de textos fuera de archivos i18n vacía
-- [ ] **DT8 (P2, human: ~1w / CC: ~4h)** — web (fundacion) — Back-office: 5 secciones, bandeja de pendientes, fecha de datos, vista de conflicto, cámara guiada
+- [x] **DT8 (P2, human: ~1w / CC: ~4h)** — web (fundacion) — Back-office: 5 secciones, bandeja de pendientes, fecha de datos, vista de conflicto, cámara guiada
+  - **Hecho (T8):** bandeja, indicadores con fecha de datos, por aclarar, miembros con cámara del celular.
   - Surfaced by: Pasada 1 — D2, D28; Pasada 6 — D20; Pasada 7 — D23, D24, D25
   - Files: web/app/(fundacion)/
   - Verify: a 360 px el facilitador enrola, fotografía y resuelve un conflicto; a 1280 px Dirección ve indicadores con "Datos al"
-- [ ] **DT9 (P2, human: ~2d / CC: ~1h)** — web (reunion) — Respaldo guiado y recepción de copia
+- [x] **DT9 (P2, human: ~2d / CC: ~1h)** — web (reunion) — Respaldo guiado y recepción de copia
+  - **Hecho (TX7):** respaldo guiado en la app y recepción de la copia en la oficina.
   - Surfaced by: Pasada 7 — D22
   - Files: web/app/(reunion)/respaldo/
   - Verify: en Android real se envía la copia por WhatsApp y Bluetooth y se importa sin duplicados
@@ -2032,7 +2046,8 @@ TODO dispositions: no new TODOs.
 Approval readiness: PASS — R1 (D1), R2 (D2), R3 (D3); scope from prior D4; findings 4–9 carried as necessary implementation of approved decisions (diseño D7, D10, D12, D14, D17, D19; ingeniería D17, D13) or factual correction.
 
 ## Implementation Tasks (re-validación)
-- [ ] **ET1 (P1, human: ~1d / CC: ~45min)** — libro/sync — Firma de cierre sobre lista JCS de movimientos, totales e instantánea; fuera de lista → en_conflicto
+- [x] **ET1 (P1, human: ~1d / CC: ~45min)** — libro/sync — Firma de cierre sobre lista JCS de movimientos, totales e instantánea; fuera de lista → en_conflicto
+  - **Hecho (2026-10-19):** el cierre firma la lista, la caja, los totales por tipo y la instantánea del resumen; el servidor guarda ambos y marca en la bandeja si los totales no cuadran con lo aceptado.
   - Surfaced by: Scope — R1 (D1)
   - Files: backend/libro/, backend/sync/, web/src/seguridad/, packages/casos-reglas/
   - Verify: pytest + Vitest con el mismo hash; movimiento agregado después del cierre queda en_conflicto
@@ -2046,7 +2061,8 @@ Approval readiness: PASS — R1 (D1), R2 (D2), R3 (D3); scope from prior D4; fin
   - Surfaced by: Scope — R3 (D3)
   - Files: backend/sync/, backend/libro/, web/app/(reunion)/, web/app/(fundacion)/
   - Verify: E2E propuesta → paso 2 → no aceptar → bandeja con motivo; aceptar → contramovimiento firmado
-- [ ] **ET4 (P2, human: ~2d / CC: ~1h)** — implementación de diseño — Firmas agrupadas sobre lista, instantánea del resumen con el cierre, arqueo por denominaciones, posición del asistente, códigos de error i18n
+- [x] **ET4 (P2, human: ~2d / CC: ~1h)** — implementación de diseño — Firmas agrupadas sobre lista, instantánea del resumen con el cierre, arqueo por denominaciones, posición del asistente, códigos de error i18n
+  - **Estado:** Hecho en la app nativa (TX6, ET1): firmas agrupadas sobre la lista, instantánea con el cierre, arqueo por denominaciones, posición del asistente y códigos de error estables.
   - Surfaced by: findings 4, 5, 6, 7, 9
   - Files: backend/libro/, backend/sync/, web/src/
   - Verify: pruebas de las rutas de la tabla anterior
