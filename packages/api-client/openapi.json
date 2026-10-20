@@ -421,6 +421,58 @@
         ]
       }
     },
+    "/api/comprobantes/{token}": {
+      "get": {
+        "operationId": "libro_api_ver_comprobante",
+        "summary": "Comprobante confirmado de un miembro en una reunión",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "schema": {
+              "title": "Token",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comprobante"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoValido"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoValido"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "comprobantes"
+        ]
+      }
+    },
     "/api/sync/lotes": {
       "post": {
         "operationId": "sync_api_subir_lote",
@@ -889,6 +941,92 @@
           "nombre"
         ],
         "title": "AcapResumen",
+        "type": "object"
+      },
+      "Comprobante": {
+        "properties": {
+          "acap": {
+            "title": "Acap",
+            "type": "string"
+          },
+          "reunion": {
+            "title": "Reunion",
+            "type": "integer"
+          },
+          "fecha": {
+            "title": "Fecha",
+            "type": "string"
+          },
+          "numero_miembro": {
+            "title": "Numero Miembro",
+            "type": "integer"
+          },
+          "acciones": {
+            "title": "Acciones",
+            "type": "integer"
+          },
+          "ahorro": {
+            "title": "Ahorro",
+            "type": "integer"
+          },
+          "fondo_social": {
+            "title": "Fondo Social",
+            "type": "integer"
+          },
+          "multas": {
+            "title": "Multas",
+            "type": "integer"
+          },
+          "abonos": {
+            "title": "Abonos",
+            "type": "integer"
+          },
+          "ahorro_ciclo": {
+            "title": "Ahorro Ciclo",
+            "type": "integer"
+          },
+          "saldo_prestamos": {
+            "title": "Saldo Prestamos",
+            "type": "integer"
+          },
+          "vence_en": {
+            "title": "Vence En",
+            "type": "string"
+          },
+          "datos_al": {
+            "title": "Datos Al",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acap",
+          "reunion",
+          "fecha",
+          "numero_miembro",
+          "acciones",
+          "ahorro",
+          "fondo_social",
+          "multas",
+          "abonos",
+          "ahorro_ciclo",
+          "saldo_prestamos",
+          "vence_en",
+          "datos_al"
+        ],
+        "title": "Comprobante",
+        "type": "object"
+      },
+      "NoValido": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo"
+        ],
+        "title": "NoValido",
         "type": "object"
       },
       "ResultadoElemento": {

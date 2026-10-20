@@ -22,6 +22,7 @@ export function Inicio(props: {
   alEnviar?: () => void;
   alAltaCargo?: () => void;
   alRespaldo?: () => void;
+  alComprobantes?: () => void;
   alRegistrar?: () => void;
   /** Socios con acceso en este celular (N1: número, nunca el nombre completo). */
   socios?: { llaveId: string; numero: number }[];
@@ -96,6 +97,11 @@ export function Inicio(props: {
               alTocar={() => props.alAbrir?.()}
             />
             <BotonSecundario testID="enviar-fundacion" texto="Enviar a la Fundación" alTocar={() => props.alEnviar?.()} />
+            <BotonSecundario
+              testID="comprobantes"
+              texto="Comprobantes de la reunión pasada"
+              alTocar={() => props.alComprobantes?.()}
+            />
             <BotonSecundario testID="respaldo" texto="Copia de seguridad" alTocar={() => props.alRespaldo?.()} />
             <BotonSecundario testID="alta-cargo" texto="Dar de alta un cargo" alTocar={() => props.alAltaCargo?.()} />
             <BotonSecundario testID="alta-socio" texto="Dar acceso a un socio" alTocar={() => props.alAltaSocio?.()} />

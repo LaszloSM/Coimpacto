@@ -50,6 +50,15 @@ export interface FotoGrupo {
   caja: number;
   /** Lo que dio cada titular en la última reunión del ciclo ("Igual que la reunión pasada", D11). */
   ultima_reunion?: UltimaReunion | null;
+  /** Enlaces del comprobante confirmado de la última reunión cerrada, por titular (pregunta 2b). */
+  comprobantes?: ComprobantesFoto | null;
+}
+
+export interface ComprobantesFoto {
+  reunion: number;
+  fecha: string;
+  vence_en: string;
+  enlaces: Record<string, string>;
 }
 
 export interface UltimaReunion {
@@ -113,6 +122,7 @@ export async function guardarFoto(base: BaseLocal, foto: FotoGrupo): Promise<voi
       ["prestamos", foto.prestamos],
       ["caja", foto.caja ?? 0],
       ["ultima_reunion", foto.ultima_reunion ?? null],
+      ["comprobantes", foto.comprobantes ?? null],
     ];
     for (const [id, datos] of partes) {
       await txn.correr(

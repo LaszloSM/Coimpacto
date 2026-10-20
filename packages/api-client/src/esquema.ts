@@ -262,6 +262,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/comprobantes/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Comprobante confirmado de un miembro en una reunión */
+        get: operations["libro_api_ver_comprobante"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/lotes": {
         parameters: {
             query?: never;
@@ -491,6 +508,40 @@ export interface components {
             id: string;
             /** Nombre */
             nombre: string;
+        };
+        /** Comprobante */
+        Comprobante: {
+            /** Acap */
+            acap: string;
+            /** Reunion */
+            reunion: number;
+            /** Fecha */
+            fecha: string;
+            /** Numero Miembro */
+            numero_miembro: number;
+            /** Acciones */
+            acciones: number;
+            /** Ahorro */
+            ahorro: number;
+            /** Fondo Social */
+            fondo_social: number;
+            /** Multas */
+            multas: number;
+            /** Abonos */
+            abonos: number;
+            /** Ahorro Ciclo */
+            ahorro_ciclo: number;
+            /** Saldo Prestamos */
+            saldo_prestamos: number;
+            /** Vence En */
+            vence_en: string;
+            /** Datos Al */
+            datos_al: string;
+        };
+        /** NoValido */
+        NoValido: {
+            /** Codigo */
+            codigo: string;
         };
         /** ResultadoElemento */
         ResultadoElemento: {
@@ -869,6 +920,46 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    libro_api_ver_comprobante: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comprobante"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoValido"];
+                };
+            };
+            /** @description Gone */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoValido"];
+                };
             };
         };
     };

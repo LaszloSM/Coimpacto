@@ -30,7 +30,7 @@ autorizar al primer Presidente y subir copias. Los usuarios de la Fundación se 
 
 | Variable | Qué es |
 |---|---|
-| `EXPO_PUBLIC_SERVIDOR` | Dirección del servidor (https://…). Fija en la app: un QR no la cambia (D18) |
+| `EXPO_PUBLIC_SERVIDOR` | Dirección pública del servidor (https://…), la misma de la web: los QR de comprobante apuntan a `<servidor>/comprobante/…`. Fija en la app: un QR no la cambia (D18) |
 | `EXPO_PUBLIC_LLAVE_RESPALDO` | Llave pública del servidor para las copias de seguridad |
 | `EXPO_PUBLIC_MODO_PRUEBA` | Solo el APK del emulador de CI (`1`). Nunca en el AAB de Google Play |
 | `CREDIMPACTO_FIRMA_*` | Llave de subida para firmar el release (secretos de GitHub, `movil/README.md`) |

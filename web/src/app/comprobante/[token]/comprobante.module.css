@@ -1,0 +1,85 @@
+/* Comprobante por enlace (DESIGN.md: superficie READ; una columna de renglones, sin tarjetas,
+   Atkinson con cifras tabulares; se abre en el celular del miembro). */
+.pagina {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: var(--spacing-xl) 20px var(--spacing-2xl);
+  font-family: var(--tipo-body-familia);
+  color: var(--color-tinta);
+}
+
+.acap {
+  margin: 0;
+  color: var(--color-tinta-suave);
+  font-size: var(--tipo-label-size);
+  font-weight: var(--tipo-label-weight);
+  letter-spacing: var(--tipo-label-letter-spacing);
+}
+
+.titulo {
+  margin: var(--spacing-xs) 0;
+  font-family: var(--tipo-campo-titulo-familia);
+  font-size: var(--tipo-campo-titulo-size);
+  font-weight: var(--tipo-campo-titulo-weight);
+  line-height: var(--tipo-campo-titulo-line-height);
+}
+
+.reunion {
+  margin: 0;
+}
+
+.confirmado {
+  display: inline-block;
+  margin: var(--spacing-md) 0 0;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--estado-rounded);
+  background: var(--color-confirmado-tinte);
+  color: var(--color-confirmado);
+  font-weight: 700;
+}
+
+.renglones {
+  margin: var(--spacing-lg) 0 0;
+  border-top: 1px solid var(--color-renglon-fuerte);
+}
+
+.renglon,
+.renglonFuerte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-height: 56px;
+  border-bottom: 1px solid var(--color-renglon);
+}
+
+.renglon dt,
+.renglonFuerte dt {
+  margin: 0;
+}
+
+.renglon dd,
+.renglonFuerte dd {
+  margin: 0;
+  font-family: var(--tipo-cifra-renglon-familia);
+  font-size: var(--tipo-cifra-renglon-size);
+  font-weight: var(--tipo-cifra-renglon-weight);
+  font-feature-settings: var(--tipo-cifra-renglon-rasgos);
+  text-align: right;
+}
+
+.renglonFuerte {
+  font-weight: 700;
+}
+
+.pie {
+  margin: var(--spacing-lg) 0 0;
+  color: var(--color-tinta-suave);
+  font-size: 0.9375rem;
+}
+
+.esqueleto {
+  height: 56px;
+  border-bottom: 1px solid var(--color-renglon);
+  background: linear-gradient(var(--color-papel-oficina), var(--color-papel-oficina)) left center / 60% 16px no-repeat;
+}
