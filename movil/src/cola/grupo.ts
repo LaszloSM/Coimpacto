@@ -54,6 +54,15 @@ export interface FotoGrupo {
   ultima_reunion?: UltimaReunion | null;
   /** Enlaces del comprobante confirmado de la última reunión cerrada, por titular (pregunta 2b). */
   comprobantes?: ComprobantesFoto | null;
+  /** Propuestas del facilitador para el paso 2 "Cambios desde la última" (ET3, D7). */
+  propuestas?: PropuestaFoto[];
+}
+
+export interface PropuestaFoto {
+  id: string;
+  accion: "anular" | "dejar";
+  motivo: string;
+  movimiento: { id: string; tipo: string; monto: number; titular_id: string | null; reunion: number; fecha: string };
 }
 
 export interface ComprobantesFoto {
@@ -125,6 +134,7 @@ export async function guardarFoto(base: BaseLocal, foto: FotoGrupo): Promise<voi
       ["caja", foto.caja ?? 0],
       ["ultima_reunion", foto.ultima_reunion ?? null],
       ["comprobantes", foto.comprobantes ?? null],
+      ["propuestas", foto.propuestas ?? []],
     ];
     for (const [id, datos] of partes) {
       await txn.correr(

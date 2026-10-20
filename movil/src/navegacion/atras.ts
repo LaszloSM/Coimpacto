@@ -12,7 +12,8 @@ export function atrasEnAsistente(datos: { paso: number; miembro: number; hayReun
   if (datos.paso === 4) {
     return datos.miembro > 0 ? { tipo: "ir", paso: 4, miembro: datos.miembro - 1 } : { tipo: "ir", paso: 3 };
   }
-  if (datos.paso === 3) return { tipo: "confirmar-salir" }; // el paso 2 se salta solo: antes del 3 está salir
+  // Antes del 2 está abrir (ya hecho) y lo respondido en el 2 ya está firmado: atrás es salir.
+  if (datos.paso === 2 || datos.paso === 3) return { tipo: "confirmar-salir" };
   if (datos.paso === 5) return { tipo: "ir", paso: 4, miembro: datos.ultimoMiembro };
   if (datos.paso === 9) return { tipo: "nada" }; // la reunión ya se cerró: no se vuelve al cierre
   return { tipo: "ir", paso: datos.paso - 1 };

@@ -16,6 +16,8 @@ import { leerFoto, type Sesion } from "../sesion/abrir";
 import { marcarReunionAbierta, quitarReunionAbierta } from "../sesion/marcas";
 import { PasoArqueo, PasoCierre, PasoResumen } from "./PasosCierre";
 import { PasoAbonos, PasoPrestamos } from "./PasosPrestamos";
+import { PasoCambios } from "./PasoCambios";
+import { porResponder } from "./propuestas";
 import { useSesion } from "../sesion/contexto";
 import {
   BotonPrincipal,
@@ -118,11 +120,14 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
           });
           await marcarReunionAbierta(entorno.almacen, reunion.fecha);
           // Paso 2 "Cambios desde la última": sin cambios por revisar se salta solo (D7, D8).
-          await guardarPosicion(sesion.base, reunion.id, 3);
+          const cambios = await porResponder(sesion.base, estado.foto!);
+          await guardarPosicion(sesion.base, reunion.id, cambios.length > 0 ? 2 : 3);
           await recargar();
         }}
       />
     );
+  } else if (paso === 2) {
+    contenido = <PasoCambios sesion={sesion} foto={estado.foto} alTerminar={() => void irA(3, 0)} />;
   } else if (paso <= 3) {
     contenido = <PasoAsistencia sesion={sesion} foto={estado.foto} reunion={estado.reunion} alSeguir={() => irA(4, 0)} />;
   } else if (paso === 4) {

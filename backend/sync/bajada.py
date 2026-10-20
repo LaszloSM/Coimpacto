@@ -23,6 +23,7 @@ from cuentas.models import Dispositivo
 from libro import comprobantes
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
+from sync import propuestas
 from sync.models import Reto
 
 VIGENCIA_RETO = datetime.timedelta(minutes=2)
@@ -133,6 +134,7 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "caja": 0,
         "ultima_reunion": None,
         "comprobantes": None,
+        "propuestas": [],
     }
     if ciclo is None:
         return foto
@@ -186,6 +188,8 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
     foto["caja"] = cerradas[-1].caja_contada if cerradas else 0
     # Comprobantes de la última reunión cerrada, para mostrarlos en la siguiente (pregunta 2b).
     foto["comprobantes"] = comprobantes.emitir(ciclo)
+    # Propuestas del facilitador para el paso 2 de la siguiente reunión (ET3, D7).
+    foto["propuestas"] = propuestas.para_la_foto(acap)
     # "Igual que la reunión pasada" (D11): lo que dio cada miembro en la última del ciclo.
     foto["ultima_reunion"] = (
         {

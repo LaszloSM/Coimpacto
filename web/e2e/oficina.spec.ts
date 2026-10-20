@@ -169,3 +169,36 @@ test("miembros: alta con la foto de la autorización y revocación que borra el 
   await expect(page.getByText("Revocación guardada. Sus datos se borraron.")).toBeVisible();
   await expect(page.getByText("Yuliana I.")).toHaveCount(0);
 });
+
+test("por aclarar: proponer a la junta quitar un registro, con motivo en palabras sencillas", async ({ page }) => {
+  await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
+  await page.route("**/api/acaps", (r) => r.fulfill({ json: [{ id: "a1", nombre: "ACAP Las Brisas" }] }));
+  let propuesta: unknown = null;
+  const registro = {
+    movimiento_id: "m1",
+    tipo: "fondo_social",
+    monto: 2000,
+    numero_miembro: 7,
+    reunion: 3,
+    fecha: "2026-09-27",
+    estado: "en_conflicto",
+    codigo: "FUERA_DEL_CIERRE",
+    propuesta: null as null | Record<string, string>,
+  };
+  await page.route("**/api/oficina/acaps/a1/por-aclarar", (r) => r.fulfill({ json: [registro] }));
+  await page.route("**/api/oficina/propuestas", (r) => {
+    propuesta = r.request().postDataJSON();
+    registro.propuesta = { id: "p1", accion: "anular", motivo: "Se anotó dos veces", estado: "pendiente", respuesta_motivo: "", respuesta_nota: "" };
+    return r.fulfill({ status: 201, json: { id: "p1" } });
+  });
+
+  await page.goto("/fundacion/por-aclarar");
+  await page.getByLabel("ACAP").selectOption("a1");
+  await expect(page.getByText("Fondo social · $ 2.000 · #07")).toBeVisible();
+  await page.getByRole("button", { name: "Proponer a la junta" }).click();
+  await page.getByLabel("Quitarlo del cuaderno").check();
+  await page.getByLabel("Motivo").fill("Se anotó dos veces");
+  await page.getByRole("button", { name: "Enviar a la junta" }).click();
+  await expect(page.getByText("Quitarlo del cuaderno · Espera a la junta")).toBeVisible();
+  expect(propuesta).toEqual({ movimiento_id: "m1", accion: "anular", motivo: "Se anotó dos veces" });
+});

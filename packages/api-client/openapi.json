@@ -1055,6 +1055,86 @@
           "required": true
         }
       }
+    },
+    "/api/oficina/acaps/{acap_id}/por-aclarar": {
+      "get": {
+        "operationId": "sync_propuestas_api_por_aclarar",
+        "summary": "Registros de la ACAP en conflicto o por validar, con su última propuesta",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "propuestas"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/propuestas": {
+      "post": {
+        "operationId": "sync_propuestas_api_proponer",
+        "summary": "Proponer a la junta anular o dejar un registro por aclarar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "propuestas"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaPropuesta"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1569,6 +1649,30 @@
           "firma"
         ],
         "title": "PedidoSocio",
+        "type": "object"
+      },
+      "NuevaPropuesta": {
+        "properties": {
+          "movimiento_id": {
+            "format": "uuid",
+            "title": "Movimiento Id",
+            "type": "string"
+          },
+          "accion": {
+            "title": "Accion",
+            "type": "string"
+          },
+          "motivo": {
+            "title": "Motivo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "movimiento_id",
+          "accion",
+          "motivo"
+        ],
+        "title": "NuevaPropuesta",
         "type": "object"
       }
     },

@@ -136,3 +136,30 @@ test("número + nombre corto de quien autorizó sus datos; los demás solo el n�
   await fireEvent.press(screen.getByTestId("seguir-aportes"));
   expect(await screen.findByTestId("aporte-nombre")).toHaveTextContent("Yuliana I.");
 });
+
+test("con una propuesta del facilitador, el paso 2 la muestra y no aceptarla pide motivo (D7, ET3)", async () => {
+  const base = await montar({
+    ...FOTO_PRUEBA,
+    propuestas: [
+      {
+        id: "11111111-2222-4333-8444-555555555555",
+        accion: "anular",
+        motivo: "Se anotó dos veces",
+        movimiento: { id: "m1", tipo: "fondo_social", monto: 2_000, titular_id: FOTO_PRUEBA.miembros[6].titular_id, reunion: 3, fecha: "2026-09-27" },
+      },
+    ],
+  });
+  await fireEvent.press(await screen.findByTestId("abrir-reunion"));
+  expect(await screen.findByText("1 cambio por revisar")).toBeOnTheScreen();
+  expect(screen.getByText("Paso 2 de 9")).toBeOnTheScreen();
+  expect(screen.getByTestId("cambio-propuesta")).toHaveTextContent("Quitarlo del cuaderno");
+
+  await fireEvent.press(screen.getByTestId("no-aceptar-cambio"));
+  expect(screen.getByText("Elija un motivo")).toBeOnTheScreen();
+  await fireEvent.press(screen.getByTestId("motivo-si_se_recibio"));
+  await fireEvent.press(screen.getByTestId("guardar-no-aceptar"));
+
+  expect(await screen.findByText("Asistencia")).toBeOnTheScreen();
+  const respuesta = (await cola(base)).find((e) => e.tipo === "respuesta_propuesta");
+  expect(respuesta?.datos).toMatchObject({ respuesta: "no_acepta", motivo: "si_se_recibio" });
+});

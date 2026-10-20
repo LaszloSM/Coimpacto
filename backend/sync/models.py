@@ -66,3 +66,49 @@ class Reto(models.Model):
 
     def __str__(self) -> str:
         return f"Reto de {self.dispositivo_id} · vence {self.vence_en:%H:%M}"
+
+
+class Propuesta(models.Model):
+    """Propuesta del facilitador sobre un registro por aclarar (ET3, D3 = A, D24).
+
+    Vive aparte del libro: no cambia nada hasta que la junta la acepta con N firmas en el paso 2
+    de la siguiente reunión. Si no la acepta, vuelve al facilitador con el motivo de la junta y
+    el registro sigue por aclarar.
+    """
+
+    class Accion(models.TextChoices):
+        ANULAR = "anular", "Anularlo"
+        DEJAR = "dejar", "Dejarlo como está"
+
+    class Estado(models.TextChoices):
+        PENDIENTE = "pendiente", "Espera a la junta"
+        ACEPTADA = "aceptada", "La junta la aceptó"
+        NO_ACEPTADA = "no_aceptada", "La junta no la aceptó"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    movimiento = models.ForeignKey(
+        "libro.Movimiento", on_delete=models.PROTECT, related_name="propuestas"
+    )
+    accion = models.CharField(max_length=10, choices=Accion.choices)
+    motivo = models.CharField(
+        max_length=300, help_text="En palabras sencillas, para leer en voz alta."
+    )
+    creada_por = models.ForeignKey("cuentas.Usuario", on_delete=models.PROTECT, related_name="+")
+    creada_en = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=12, choices=Estado.choices, default=Estado.PENDIENTE)
+    respuesta_motivo = models.CharField(max_length=60, blank=True)
+    respuesta_nota = models.CharField(max_length=300, blank=True)
+    respondida_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "propuesta"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movimiento"],
+                condition=models.Q(estado="pendiente"),
+                name="una_propuesta_pendiente_por_movimiento",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.get_accion_display()} {str(self.movimiento_id)[:8]} · {self.estado}"

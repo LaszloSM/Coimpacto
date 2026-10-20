@@ -9,6 +9,7 @@ from cuentas.miembros_api import router as miembros_router
 from cuentas.sesion import router as sesion_router
 from libro.api import router as libro_router
 from sync.api import router as sync_router
+from sync.propuestas_api import router as propuestas_router
 
 api = NinjaAPI(
     title="Credimpacto API",
@@ -24,3 +25,4 @@ api.add_router("/", sesion_router)
 api.add_router("/", miembros_router)
 api.add_router("/", libro_router)
 api.add_router("/", sync_router)
+api.add_router("/", propuestas_router)
