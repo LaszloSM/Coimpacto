@@ -1,0 +1,109 @@
+/* Oficina de la Fundación (DESIGN.md: Operate denso, navy y Bitter en títulos, un solo naranja). */
+.pagina {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.titulo {
+  font-family: var(--tipo-display-familia);
+  font-weight: var(--tipo-display-weight);
+  font-size: var(--tipo-display-size);
+  color: var(--color-navy);
+  line-height: 1.1;
+  margin: 0 0 var(--spacing-xl);
+}
+
+.formulario {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.etiqueta {
+  display: grid;
+  gap: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.campo {
+  min-height: var(--spacing-toque-min);
+  padding: 0 var(--spacing-md);
+  font: inherit;
+  color: var(--color-tinta);
+  border: 2px solid var(--color-tinta);
+  border-radius: var(--rounded-md);
+  background: var(--color-papel);
+}
+
+.principal {
+  min-height: var(--spacing-toque-min);
+  border: 0;
+  border-radius: var(--rounded-md);
+  background: var(--color-naranja);
+  color: var(--color-on-naranja);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.principal:active {
+  background: var(--color-naranja-presionado);
+}
+
+.principal:disabled {
+  background: var(--color-provisional-tinte);
+  color: var(--color-tinta-suave);
+  cursor: default;
+}
+
+.secundario {
+  min-height: var(--spacing-toque-min);
+  border: 2px solid var(--color-tinta);
+  border-radius: var(--rounded-md);
+  background: var(--color-papel);
+  color: var(--color-tinta);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.error {
+  color: var(--color-rechazado);
+  background: var(--color-rechazado-tinte);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--rounded-sm);
+  margin: 0;
+}
+
+.qr {
+  display: grid;
+  gap: var(--spacing-md);
+  justify-items: center;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--color-renglon-fuerte);
+}
+
+.qr svg {
+  width: min(20rem, 100%);
+  height: auto;
+}
+
+.cifra {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--color-tinta);
+}
+
+.codigo {
+  font-family: var(--tipo-mono-familia);
+  word-break: break-all;
+  text-align: center;
+  margin: 0;
+}
+
+.detalle {
+  color: var(--color-tinta-suave);
+  margin: 0;
+}

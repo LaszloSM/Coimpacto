@@ -153,6 +153,143 @@
         }
       }
     },
+    "/api/sesion/csrf": {
+      "get": {
+        "operationId": "cuentas_sesion_csrf",
+        "summary": "Entrega la cookie CSRF para la web",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "sesion"
+        ]
+      }
+    },
+    "/api/sesion/entrar": {
+      "post": {
+        "operationId": "cuentas_sesion_entrar",
+        "summary": "Entrar a la oficina de la Fundación",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Yo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sesion"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credenciales"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/sesion": {
+      "get": {
+        "operationId": "cuentas_sesion_yo",
+        "summary": "Quién tiene la sesión abierta",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Yo"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/sesion/salir": {
+      "post": {
+        "operationId": "cuentas_sesion_salir",
+        "summary": "Cerrar la sesión",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/acaps": {
+      "get": {
+        "operationId": "cuentas_sesion_acaps",
+        "summary": "ACAP para enrolar",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AcapResumen"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/sync/lotes": {
       "post": {
         "operationId": "sync_api_subir_lote",
@@ -431,6 +568,61 @@
           "firma"
         ],
         "title": "PedidoPresidente",
+        "type": "object"
+      },
+      "Yo": {
+        "properties": {
+          "usuario": {
+            "title": "Usuario",
+            "type": "string"
+          },
+          "puede_enrolar": {
+            "title": "Puede Enrolar",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "usuario",
+          "puede_enrolar"
+        ],
+        "title": "Yo",
+        "type": "object"
+      },
+      "Credenciales": {
+        "properties": {
+          "usuario": {
+            "title": "Usuario",
+            "type": "string"
+          },
+          "clave": {
+            "title": "Clave",
+            "type": "string"
+          }
+        },
+        "required": [
+          "usuario",
+          "clave"
+        ],
+        "title": "Credenciales",
+        "type": "object"
+      },
+      "AcapResumen": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nombre"
+        ],
+        "title": "AcapResumen",
         "type": "object"
       },
       "ResultadoElemento": {
