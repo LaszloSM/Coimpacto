@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
 import { leerFoto, type Sesion } from "../sesion/abrir";
+import { PasoAbonos, PasoPrestamos } from "./PasosPrestamos";
 import { useSesion } from "../sesion/contexto";
 import {
   BotonPrincipal,
@@ -122,8 +123,20 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
         alVolver={() => irA(3)}
       />
     );
+  } else if (paso === 5 || paso === 6) {
+    const Paso = paso === 5 ? PasoAbonos : PasoPrestamos;
+    contenido = (
+      <Paso
+        sesion={sesion}
+        foto={estado.foto}
+        reunion={estado.reunion}
+        alSeguir={() => irA(paso + 1)}
+        alVolver={() => (paso === 5 ? irA(4, activos(estado.foto!).length - 1) : irA(5))}
+        alCambiar={recargar}
+      />
+    );
   } else {
-    contenido = <PasoPendiente paso={paso} alVolver={() => irA(paso - 1, paso - 1 === 4 ? activos(estado.foto!).length - 1 : 0)} />;
+    contenido = <PasoPendiente paso={paso} alVolver={() => irA(paso - 1)} />;
   }
 
   return (

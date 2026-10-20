@@ -1,0 +1,89 @@
+# Reunión sin señal hasta el préstamo (TX6b): aportes de los 20, abonos sin préstamos vigentes,
+# solicitud con votación y plan de cuotas, y firmas agrupadas de Presidente y Portadora de Caja
+# con un PIN cada uno (D10).
+appId: com.coimpactob.credimpacto
+name: Reunión sin señal con un préstamo firmado
+---
+- launchApp:
+    clearState: true
+- setAirplaneMode: enabled
+- extendedWaitUntil:
+    visible:
+      id: "perfil-portador_caja"
+    timeout: 30000
+- tapOn:
+    id: "perfil-portador_caja"
+- tapOn:
+    id: "ir-a-reunion"
+- runFlow: pin-cajera.yaml
+- extendedWaitUntil:
+    visible:
+      id: "abrir-reunion"
+    timeout: 30000
+- tapOn:
+    id: "abrir-reunion"
+- extendedWaitUntil:
+    visible:
+      id: "seguir-aportes"
+    timeout: 15000
+- tapOn:
+    id: "seguir-aportes"
+- repeat:
+    times: 20
+    commands:
+      - tapOn:
+          id: "guardar-siguiente"
+- extendedWaitUntil:
+    visible: "Nadie tiene préstamo vigente."
+    timeout: 15000
+- tapOn:
+    id: "seguir-prestamos"
+- tapOn:
+    id: "agregar-solicitud"
+- scrollUntilVisible:
+    element:
+      id: "pide-9"
+- tapOn:
+    id: "pide-9"
+- tapOn:
+    id: "capital-1"
+- tapOn:
+    id: "capital-0"
+- tapOn:
+    id: "capital-0"
+- tapOn:
+    id: "capital-000"
+- assertVisible: "cien mil pesos"
+- scrollUntilVisible:
+    element:
+      id: "voto-favor-mas"
+- repeat:
+    times: 12
+    commands:
+      - tapOn:
+          id: "voto-favor-mas"
+- scrollUntilVisible:
+    element: "Aprobado por la asamblea."
+- tapOn:
+    id: "guardar-solicitud"
+- tapOn:
+    id: "firmar-aprobaciones"
+- scrollUntilVisible:
+    element:
+      id: "firma-presidente"
+- tapOn:
+    id: "firma-presidente"
+- runFlow: pin-presidente.yaml
+- extendedWaitUntil:
+    visible: "Falta 1 firma de 2."
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "firma-portador_caja"
+- tapOn:
+    id: "firma-portador_caja"
+- runFlow: pin-cajera.yaml
+- extendedWaitUntil:
+    visible: "Firmada · entregar el efectivo"
+    timeout: 30000
+- setAirplaneMode: disabled
