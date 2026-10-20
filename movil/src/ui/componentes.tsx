@@ -4,12 +4,17 @@
 import { enLetras, formatearPesos } from "@credimpacto/reglas";
 import { tokens } from "@credimpacto/tokens";
 import type { ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 const { color, tipo, spacing, componentes } = tokens;
 
 /** Cifras y teclas crecen con la letra del sistema hasta 1,3× (N10). */
 export const TOPE_CIFRAS = 1.3;
+
+/** La barra de 9 segmentos solo cabe con ≥ 360 dp y letra ≤ 1,3×; si no, queda el texto (N10). */
+export function mostrarSegmentos(ancho: number, escalaLetra: number): boolean {
+  return ancho >= 360 && escalaLetra <= TOPE_CIFRAS;
+}
 
 export function BotonPrincipal(props: {
   texto: string;
@@ -57,10 +62,16 @@ export function BotonSecundario(props: { texto: string; alTocar: () => void; tes
 
 /** Franja fija: estado de guardado (D5, en calma) y paso del asistente (D1). */
 export function Franja(props: { porSubir: number; paso?: number; totalPasos?: number }) {
+  const { width, fontScale } = useWindowDimensions();
   const guardado =
     props.porSubir === 0 ? "Nada por subir" : `Guardado en este celular · ${props.porSubir} por subir`;
   return (
-    <View style={estilos.franja} accessibilityRole="summary">
+    <View
+      style={estilos.franja}
+      accessibilityRole="summary"
+      accessible
+      accessibilityLabel={props.paso ? `${guardado}. Paso ${props.paso} de ${props.totalPasos ?? 9}.` : guardado}
+    >
       <View style={estilos.franjaFila}>
         <Text style={estilos.franjaTexto} testID="franja-guardado">
           {guardado}
@@ -71,7 +82,7 @@ export function Franja(props: { porSubir: number; paso?: number; totalPasos?: nu
           </Text>
         ) : null}
       </View>
-      {props.paso ? (
+      {props.paso && mostrarSegmentos(width, fontScale) ? (
         <View style={estilos.segmentos} importantForAccessibility="no-hide-descendants">
           {Array.from({ length: props.totalPasos ?? 9 }, (_, i) => (
             <View

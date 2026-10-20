@@ -9,7 +9,8 @@ name: Inicio sin señal
     visible: "¿Quién lleva la reunión?"
     timeout: 30000
 - assertVisible: "Credimpacto"
-- assertVisible: "Portador de Caja"
+# La fila del cargo es un solo nodo accesible ("Portador de Caja #02", TD6).
+- assertVisible: ".*Portador de Caja.*"
 - stopApp
 - launchApp
 - assertVisible: "¿Quién lleva la reunión?"
