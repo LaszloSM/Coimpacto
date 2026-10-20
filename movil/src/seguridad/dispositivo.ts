@@ -51,3 +51,9 @@ export async function llaveDelDispositivo(cripto: Cripto, almacen: AlmacenSeguro
   await almacen.escribir(PUBLICA, spki);
   return spki;
 }
+
+/** El celular tiene perfiles pero perdió el secreto del Keystore (p. ej. tras restaurarlo):
+ * ningún PIN puede abrir lo guardado. Se avisa antes de pedir PIN (tabla de estados, TD2). */
+export async function llavesPerdidas(almacen: AlmacenSeguro, hayPerfiles: boolean): Promise<boolean> {
+  return hayPerfiles && !(await almacen.leer(SECRETO));
+}

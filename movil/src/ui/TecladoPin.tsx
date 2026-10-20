@@ -4,8 +4,8 @@
 
 import { tokens } from "@credimpacto/tokens";
 import { usePreventScreenCapture } from "expo-screen-capture";
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { estilos as base, TOPE_CIFRAS } from "./componentes";
 
@@ -23,6 +23,13 @@ export function TecladoPin(props: {
   // Sin capturas ni vista previa en apps recientes mientras se escribe un PIN (N12).
   usePreventScreenCapture();
   const [pin, setPin] = useState("");
+  // Durante "Verificando…" atrás no hace nada (N11): no se corta una derivación a medias.
+  const { verificando } = props;
+  useEffect(() => {
+    if (!verificando) return;
+    const suscripcion = BackHandler.addEventListener("hardwareBackPress", () => true);
+    return () => suscripcion.remove();
+  }, [verificando]);
 
   const tocar = (tecla: (typeof TECLAS)[number]) => {
     if (props.verificando) return;

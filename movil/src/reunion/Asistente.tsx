@@ -6,10 +6,12 @@
 import { formatearPesos } from "@credimpacto/reglas";
 import { tokens } from "@credimpacto/tokens";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
+import { atrasEnAsistente, TEXTO_SALIR } from "../navegacion/atras";
 import { leerFoto, type Sesion } from "../sesion/abrir";
 import { marcarReunionAbierta, quitarReunionAbierta } from "../sesion/marcas";
 import { PasoArqueo, PasoCierre, PasoResumen } from "./PasosCierre";
@@ -63,6 +65,7 @@ export function Asistente() {
 
 function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
   const { entorno, setSesion } = useSesion();
+  const router = useRouter();
   const [estado, setEstado] = useState<Estado | null>(null);
 
   const [version, setVersion] = useState(0);
@@ -79,6 +82,12 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
       vigente = false;
     };
   }, [sesion, version]);
+
+  // Atrás de Android guiado (N11): paso anterior; en el paso 1 pregunta antes de salir.
+  useAtrasDelAsistente(estado, recargar, () => {
+    setSesion(null);
+    router.replace("/");
+  });
 
   if (!estado) return <SafeAreaView style={base.pantalla} />;
   const paso = estado.reunion?.paso ?? 1;
@@ -171,6 +180,31 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
       {contenido}
     </SafeAreaView>
   );
+}
+
+function useAtrasDelAsistente(estado: Estado | null, recargar: () => void, salir: () => void) {
+  const { sesion } = useSesion();
+  useEffect(() => {
+    const suscripcion = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (!estado || !sesion) return false;
+      const accion = atrasEnAsistente({
+        paso: estado.reunion?.paso ?? 1,
+        miembro: estado.reunion?.miembro ?? 0,
+        hayReunion: Boolean(estado.reunion),
+        ultimoMiembro: Math.max(0, (estado.foto?.miembros.filter((m) => m.activo).length ?? 1) - 1),
+      });
+      if (accion.tipo === "ir" && estado.reunion) {
+        void guardarPosicion(sesion.base, estado.reunion.id, accion.paso, accion.miembro ?? 0).then(recargar);
+      } else if (accion.tipo === "confirmar-salir") {
+        Alert.alert(TEXTO_SALIR.titulo, TEXTO_SALIR.mensaje, [
+          { text: TEXTO_SALIR.no, style: "cancel" },
+          { text: TEXTO_SALIR.si, onPress: salir },
+        ]);
+      }
+      return true;
+    });
+    return () => suscripcion.remove();
+  }, [estado, sesion, recargar, salir]);
 }
 
 const activos = (foto: FotoGrupo) => foto.miembros.filter((m) => m.activo).sort((a, b) => a.numero - b.numero);

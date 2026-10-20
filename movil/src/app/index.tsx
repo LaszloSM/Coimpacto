@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 import { Inicio } from "../pantallas/Inicio";
+import { llavesPerdidas } from "../seguridad/dispositivo";
 import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { useSesion } from "../sesion/contexto";
 import { reunionAbiertaMarcada } from "../sesion/marcas";
@@ -22,6 +23,13 @@ export default function PantallaInicio() {
       try {
         if (MODO_PRUEBA) await sembrarModoPrueba(entorno, entorno.ahora());
         const lista = await leerPerfiles(entorno.almacen);
+        if (await llavesPerdidas(entorno.almacen, lista.length > 0)) {
+          setError(
+            "Este celular perdió sus llaves de seguridad. Lo guardado aquí no se puede abrir: pida al facilitador registrarlo de nuevo.",
+          );
+          setPerfiles([]);
+          return;
+        }
         setAbierta(await reunionAbiertaMarcada(entorno.almacen));
         setSocios(await perfilesSocio(entorno.almacen));
         setPerfiles(lista);
