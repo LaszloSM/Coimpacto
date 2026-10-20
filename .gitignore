@@ -47,3 +47,4 @@ backend/staticfiles/
 deploy/.env
 deploy/respaldos/
 deploy/respaldos.log
+!deploy/.env.ejemplo
