@@ -48,7 +48,8 @@ export async function leerFoto(base: BaseLocal): Promise<FotoGrupo | null> {
     numero: number;
     activo: number;
     ahorro_ciclo: number;
-  }>("SELECT membresia_id, titular_id, numero, activo, ahorro_ciclo FROM miembros ORDER BY numero;");
+    iniciales: string;
+  }>("SELECT membresia_id, titular_id, numero, activo, ahorro_ciclo, iniciales FROM miembros ORDER BY numero;");
   return {
     formato: 1,
     generado_en: filas[0].descargado_en,
@@ -60,7 +61,7 @@ export async function leerFoto(base: BaseLocal): Promise<FotoGrupo | null> {
     caja: parte.caja ?? 0,
     ultima_reunion: parte.ultima_reunion ?? null,
     comprobantes: parte.comprobantes ?? null,
-    miembros: miembros.map((m) => ({ ...m, activo: m.activo === 1 })),
+    miembros: miembros.map(({ iniciales, ...m }) => ({ ...m, activo: m.activo === 1, nombre_corto: iniciales || null })),
   };
 }
 

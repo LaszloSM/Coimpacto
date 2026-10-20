@@ -13,14 +13,16 @@ function leerCookie(nombre: string): string {
 export async function api<T>(ruta: string, opciones: { metodo?: "GET" | "POST"; cuerpo?: unknown } = {}): Promise<T> {
   const metodo = opciones.metodo ?? "GET";
   if (metodo !== "GET" && !leerCookie("csrftoken")) await fetch("/api/sesion/csrf", { credentials: "same-origin" });
+  // Un FormData (fotos) va como multipart: el navegador pone el Content-Type con su separador.
+  const formulario = opciones.cuerpo instanceof FormData;
   const respuesta = await fetch(`/api${ruta}`, {
     method: metodo,
     credentials: "same-origin",
     headers: {
-      "Content-Type": "application/json",
+      ...(formulario ? {} : { "Content-Type": "application/json" }),
       ...(metodo !== "GET" ? { "X-CSRFToken": leerCookie("csrftoken") } : {}),
     },
-    body: opciones.cuerpo === undefined ? undefined : JSON.stringify(opciones.cuerpo),
+    body: opciones.cuerpo === undefined ? undefined : formulario ? (opciones.cuerpo as FormData) : JSON.stringify(opciones.cuerpo),
   });
   if (respuesta.status === 401) throw new SinSesion();
   const datos = await respuesta.json().catch(() => ({}));

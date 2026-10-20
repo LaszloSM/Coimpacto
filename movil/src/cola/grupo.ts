@@ -17,6 +17,8 @@ export interface MiembroFoto {
   numero: number;
   activo: boolean;
   ahorro_ciclo: number;
+  /** "Yuliana I." (D3), solo si autorizó sus datos (Ley 1581); si no, null y se muestra el número. */
+  nombre_corto?: string | null;
 }
 
 export interface FotoGrupo {
@@ -135,9 +137,10 @@ export async function guardarFoto(base: BaseLocal, foto: FotoGrupo): Promise<voi
     for (const m of foto.miembros) {
       await txn.correr(
         "INSERT INTO miembros (membresia_id, numero, iniciales, activo, titular_id, ahorro_ciclo) " +
-          "VALUES (?, ?, '', ?, ?, ?);",
+          "VALUES (?, ?, ?, ?, ?, ?);",
         m.membresia_id,
         m.numero,
+        m.nombre_corto ?? "",
         m.activo ? 1 : 0,
         m.titular_id,
         m.ahorro_ciclo,

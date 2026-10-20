@@ -4,8 +4,9 @@
     celular ──POST /sync/grupo {reto, firma del celular}──► foto del grupo
 
 Solo lo necesario para llevar la reunión (Habeas Data, Ley 1581): números de miembro e ids
-seudónimos, configuración del ciclo, cargos, reuniones, ahorro acumulado y préstamos vigentes.
-Sin nombres completos, cédulas ni teléfonos. Un celular retirado no recibe datos (E3).
+seudónimos, el nombre corto de quien autorizó sus datos (D3), configuración del ciclo, cargos,
+reuniones, ahorro acumulado y préstamos vigentes. Sin nombres completos, cédulas ni teléfonos.
+Un celular retirado no recibe datos (E3).
 """
 
 import datetime
@@ -17,6 +18,7 @@ from django.utils import timezone
 
 from acap.models import Cargo, Ciclo, Membresia, Reunion
 from core import firmas
+from cuentas import miembros
 from cuentas.models import Dispositivo
 from libro import comprobantes
 from libro import servicio as libro
@@ -146,6 +148,9 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "tasa_interes": format(ciclo.tasa_interes, "f"),
     }
     ahorro = _ahorro_por_titular(ciclo)
+    membresias = list(Membresia.objects.filter(acap=acap).order_by("numero_miembro"))
+    # Nombre corto (D3) solo de quien tiene consentimiento vigente; los demás, solo el número.
+    nombres = miembros.nombres_cortos([m.titular_id for m in membresias])
     foto["miembros"] = [
         {
             "membresia_id": str(m.id),
@@ -153,8 +158,9 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
             "numero": m.numero_miembro,
             "activo": m.activa,
             "ahorro_ciclo": ahorro.get(str(m.titular_id), 0),
+            "nombre_corto": nombres.get(str(m.titular_id)),
         }
-        for m in Membresia.objects.filter(acap=acap).order_by("numero_miembro")
+        for m in membresias
     ]
     foto["cargos"] = [
         {

@@ -421,6 +421,344 @@
         ]
       }
     },
+    "/api/oficina/acaps/{acap_id}/miembros": {
+      "get": {
+        "operationId": "cuentas_miembros_api_lista",
+        "summary": "Miembros de una ACAP por número, con el estado de su consentimiento",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Miembro"
+                  },
+                  "title": "Response",
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "cuentas_miembros_api_alta",
+        "summary": "Dar de alta un miembro con la foto de su autorización de datos",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Miembro"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "title": "MultiPartBodyParams",
+                "type": "object",
+                "properties": {
+                  "nombres": {
+                    "title": "Nombres",
+                    "type": "string"
+                  },
+                  "apellidos": {
+                    "default": "",
+                    "title": "Apellidos",
+                    "type": "string"
+                  },
+                  "documento": {
+                    "default": "",
+                    "title": "Documento",
+                    "type": "string"
+                  },
+                  "telefono": {
+                    "default": "",
+                    "title": "Telefono",
+                    "type": "string"
+                  },
+                  "foto": {
+                    "format": "binary",
+                    "title": "Foto",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nombres",
+                  "foto"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/miembros/{membresia_id}/consentimiento": {
+      "post": {
+        "operationId": "cuentas_miembros_api_capturar",
+        "summary": "Registrar la autorización de un miembro que no la tenía (por ejemplo, migrado)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membresia_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Membresia Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "title": "MultiPartBodyParams",
+                "type": "object",
+                "properties": {
+                  "nombres": {
+                    "title": "Nombres",
+                    "type": "string"
+                  },
+                  "apellidos": {
+                    "default": "",
+                    "title": "Apellidos",
+                    "type": "string"
+                  },
+                  "documento": {
+                    "default": "",
+                    "title": "Documento",
+                    "type": "string"
+                  },
+                  "telefono": {
+                    "default": "",
+                    "title": "Telefono",
+                    "type": "string"
+                  },
+                  "foto": {
+                    "format": "binary",
+                    "title": "Foto",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nombres",
+                  "foto"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/miembros/{membresia_id}/revocar": {
+      "post": {
+        "operationId": "cuentas_miembros_api_revocar",
+        "summary": "Registrar que el miembro revocó la autorización; sus datos se suprimen",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membresia_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Membresia Id",
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "foto",
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "binary",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Foto"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "title": "FormParams",
+                "type": "object",
+                "properties": {
+                  "nota": {
+                    "title": "Nota",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nota"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/consentimientos/{consentimiento_id}/foto": {
+      "get": {
+        "operationId": "cuentas_miembros_api_foto",
+        "summary": "Foto de la evidencia del consentimiento (solo personal con permiso)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "consentimiento_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Consentimiento Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/comprobantes/{token}": {
       "get": {
         "operationId": "libro_api_ver_comprobante",
@@ -941,6 +1279,88 @@
           "nombre"
         ],
         "title": "AcapResumen",
+        "type": "object"
+      },
+      "Miembro": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "numero": {
+            "title": "Numero",
+            "type": "integer"
+          },
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "nombre_corto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombre Corto"
+          },
+          "consentimiento": {
+            "title": "Consentimiento",
+            "type": "string"
+          },
+          "consentimiento_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Consentimiento Id"
+          },
+          "desde": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Desde"
+          }
+        },
+        "required": [
+          "id",
+          "numero",
+          "activo",
+          "nombre_corto",
+          "consentimiento",
+          "consentimiento_id",
+          "desde"
+        ],
+        "title": "Miembro",
+        "type": "object"
+      },
+      "Error": {
+        "properties": {
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          },
+          "mensaje": {
+            "title": "Mensaje",
+            "type": "string"
+          }
+        },
+        "required": [
+          "codigo",
+          "mensaje"
+        ],
+        "title": "Error",
         "type": "object"
       },
       "Comprobante": {

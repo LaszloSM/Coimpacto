@@ -388,6 +388,7 @@ export function PasoResumen(props: PropsPaso & { alTerminar: () => void }) {
             {indice + 1}/{lista.length}
           </Text>
         </View>
+        {miembro.nombre_corto ? <Text style={base.cifraRenglon}>{miembro.nombre_corto}</Text> : null}
         <View style={estilos.cifras}>
           <Dinero testID="resumen-hoy" pesos={resumen.ahorroHoy} etiqueta="Ahorró hoy" grande />
           <Dinero pesos={resumen.ahorroCiclo} etiqueta="Total ahorrado en el ciclo" />

@@ -269,7 +269,7 @@ function PasoAsistencia(props: { sesion: Sesion; foto: FotoGrupo; reunion: Reuni
           <Casilla
             key={m.membresia_id}
             testID={`asistencia-${m.numero}`}
-            texto={`#${String(m.numero).padStart(2, "0")}`}
+            texto={[`#${String(m.numero).padStart(2, "0")}`, m.nombre_corto].filter(Boolean).join(" ")}
             detalle={esta(m) ? "Vino" : "No vino"}
             marcada={esta(m)}
             alCambiar={async (v) => {
@@ -342,6 +342,11 @@ function PasoAportes(props: {
             {indice + 1}/{lista.length}
           </Text>
         </View>
+        {miembro.nombre_corto ? (
+          <Text style={estilos.nombre} testID="aporte-nombre">
+            {miembro.nombre_corto}
+          </Text>
+        ) : null}
         {pasada && !iguales(pasada, { ...aportes, multas: {} }) ? (
           // Rellena acciones y fondo; se ve antes de guardar (D11). Las multas quedan como están.
           <BotonSecundario
@@ -435,6 +440,7 @@ const estilos = StyleSheet.create({
   encabezado: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: spacing.lg },
   numero: { ...tipo["cifra-clave"], color: color.tinta },
   cuenta: { ...tipo["cifra-renglon"], color: color["tinta-suave"] },
+  nombre: { ...tipo["campo-titulo"], color: color.tinta, marginBottom: spacing.sm },
   total: { marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 3, borderTopColor: color.tinta },
   dosBotones: { flexDirection: "row", gap: spacing.sm },
 });
