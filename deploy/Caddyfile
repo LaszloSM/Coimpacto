@@ -1,0 +1,32 @@
+# HTTPS automático con Let's Encrypt para CREDIMPACTO_HOST (p. ej. 3-85-12-7.sslip.io mientras no
+# haya dominio). /api y /admin van a Django; lo demás es la web de la oficina.
+{$CREDIMPACTO_HOST} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "same-origin"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	# Copias de seguridad de los celulares y fotos de autorización: tope razonable.
+	request_body {
+		max_size 25MB
+	}
+
+	handle_path /static/* {
+		root * /srv/estaticos
+		file_server
+	}
+
+	@django path /api/* /admin /admin/*
+	handle @django {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}

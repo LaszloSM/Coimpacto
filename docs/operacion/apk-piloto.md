@@ -4,6 +4,9 @@ Mientras no exista la cuenta de Google Play (TD4), la app se reparte como **APK*
 a mano en los celulares de las juntas. Se compila gratis en **EAS Build** (la nube de Expo), así
 no gasta minutos de GitHub Actions.
 
+El servidor del piloto se instala como dice `servidor-aws.md`; de ahí salen las dos variables
+que necesita el APK.
+
 Hay dos variantes, definidas en `movil/eas.json`:
 
 | Perfil | Para qué | App en el celular |
