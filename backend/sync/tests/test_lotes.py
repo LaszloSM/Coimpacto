@@ -51,7 +51,8 @@ class TestReunionCompleta:
         assert mov.monto == 30_000  # lo calcula el servidor con el precio congelado
         assert mov.registrado_por_llave == junta.cajera.registro
         assert mov.registrado_por is None
-        assert libro.estado_actual(mov) == E.CONFIRMADO
+        # Aceptado, pero provisional en el libro hasta que el cierre firmado lo ratifique.
+        assert libro.estado_actual(mov) == E.PROVISIONAL
 
     def test_multa_movimiento_y_correccion(self, junta):
         reunion_id = uuid.uuid4()
@@ -345,3 +346,69 @@ class TestApi:
         respuesta = self.enviar(junta, {"formato": 7, "lote": str(uuid.uuid4()), "elementos": [{}]})
         assert respuesta.status_code == 400
         assert respuesta.json() == {"codigo": "FORMATO_DESCONOCIDO"}
+
+
+class TestCierre:
+    def cierre(self, junta, reunion_id, movimientos, *firmantes, caja=50_000):
+        return junta.elemento(
+            "cierre",
+            {"reunion": str(reunion_id), "movimientos": movimientos, "caja_contada": caja},
+            *(firmantes or (junta.presidente, junta.cajera)),
+        )
+
+    def test_cierra_la_reunion_y_guarda_la_caja(self, junta):
+        reunion_id = uuid.uuid4()
+        aporte = ahorro(junta, reunion_id)
+        cierre = self.cierre(junta, reunion_id, [aporte["id"]])
+        assert [
+            e for e, _ in estados(recibir(junta, abrir(junta, reunion_id), aporte, cierre))
+        ] == ["confirmado"] * 3
+        reunion = Reunion.objects.get(id=reunion_id)
+        assert reunion.estado == "cerrada"
+        assert reunion.caja_contada == 50_000
+        assert libro.estado_actual(Movimiento.objects.get(id=aporte["id"])) == E.CONFIRMADO
+
+    def test_lo_que_no_esta_en_el_cierre_queda_en_conflicto(self, junta):
+        reunion_id = uuid.uuid4()
+        dentro = ahorro(junta, reunion_id)
+        fuera = ahorro(junta, reunion_id, titular=junta.nueva_socia())
+        recibir(
+            junta,
+            abrir(junta, reunion_id),
+            dentro,
+            fuera,
+            self.cierre(junta, reunion_id, [dentro["id"]]),
+        )
+        assert libro.estado_actual(Movimiento.objects.get(id=dentro["id"])) == E.CONFIRMADO
+        assert libro.estado_actual(Movimiento.objects.get(id=fuera["id"])) == E.EN_CONFLICTO
+
+    def test_espera_lo_que_aun_no_llega(self, junta):
+        reunion_id = uuid.uuid4()
+        recibir(junta, abrir(junta, reunion_id))
+        pendiente = str(uuid.uuid4())
+        assert estados(recibir(junta, self.cierre(junta, reunion_id, [pendiente]))) == [
+            ("en_espera", "FALTA_MOVIMIENTO")
+        ]
+        assert Reunion.objects.get(id=reunion_id).estado == "abierta"
+
+    def test_un_rechazado_en_la_lista_no_traba_el_cierre(self, junta):
+        reunion_id = uuid.uuid4()
+        malo = ahorro(junta, reunion_id, acciones=9)
+        resultados = recibir(
+            junta, abrir(junta, reunion_id), malo, self.cierre(junta, reunion_id, [malo["id"]])
+        )
+        assert estados(resultados)[1:] == [("rechazado", "MAXIMO_ACCIONES"), ("confirmado", "")]
+
+    def test_una_sola_firma_no_cierra(self, junta):
+        reunion_id = uuid.uuid4()
+        resultados = recibir(
+            junta, abrir(junta, reunion_id), self.cierre(junta, reunion_id, [], junta.cajera)
+        )
+        assert estados(resultados)[1] == ("rechazado", "FIRMAS_INSUFICIENTES")
+
+    def test_despues_del_cierre_no_entra_nada_a_esa_reunion(self, junta):
+        reunion_id = uuid.uuid4()
+        recibir(junta, abrir(junta, reunion_id), self.cierre(junta, reunion_id, []))
+        assert estados(recibir(junta, ahorro(junta, reunion_id))) == [
+            ("rechazado", "REUNION_CERRADA")
+        ]

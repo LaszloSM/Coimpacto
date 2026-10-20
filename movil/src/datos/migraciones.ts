@@ -135,6 +135,21 @@ export const MIGRACIONES: readonly Migracion[] = [
       ) STRICT;
     `,
   },
+  {
+    // Arqueo y cierre (TX6c): lo contado por denominación a ciegas (D12), la diferencia con
+    // su motivo y cuándo se firmó el cierre. Con el cierre firmado la reunión ya no se edita.
+    version: 6,
+    sql: `
+      CREATE TABLE arqueo (
+        reunion_id TEXT PRIMARY KEY REFERENCES reunion_local (id),
+        conteo TEXT NOT NULL,
+        contado INTEGER NOT NULL CHECK (contado >= 0),
+        esperado INTEGER NOT NULL,
+        motivo TEXT NOT NULL DEFAULT '',
+        cerrada_en TEXT
+      ) STRICT;
+    `,
+  },
 ];
 
 export const VERSION_ACTUAL = MIGRACIONES[MIGRACIONES.length - 1].version;

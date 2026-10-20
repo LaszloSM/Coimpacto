@@ -135,6 +135,9 @@ class Reunion(models.Model):
     valor_fondo_social = models.PositiveBigIntegerField()
     valor_multa = models.PositiveBigIntegerField()
     estado = models.CharField(max_length=10, choices=Estado.choices, default=Estado.ABIERTA)
+    # Lo que contó la junta en el arqueo al cerrar (D12): es la caja con que abre la siguiente.
+    caja_contada = models.PositiveBigIntegerField(null=True, blank=True)
+    cerrada_en = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = "reunión"

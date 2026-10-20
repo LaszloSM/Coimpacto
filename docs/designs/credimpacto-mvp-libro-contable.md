@@ -2497,10 +2497,10 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX5 (D6); D24, D10 (eng)
   - Files: movil/src/cola/, backend/sync/
   - Verify: E2E Maestro: matar la app a mitad de sync reanuda sin duplicar — **hecho 2026-10-07 en servidor (pytest, 28 casos sobre PostgreSQL) y en la cola (Jest: corte de señal, app cerrada entre envío y guardado, en espera sin tapar la cola)**; el E2E con Maestro contra un servidor real pasa a TX6, que trae las pantallas de la reunión
-- [ ] **TX6 (P1, human: ~2w / CC: ~1d)** — movil/reunion — Asistente de 9 pasos, firmas agrupadas, arqueo, cierre y E2E de reunión completa sin red obligatorio para fusionar
+- [x] **TX6 (P1, human: ~2w / CC: ~1d)** — movil/reunion — Asistente de 9 pasos, firmas agrupadas, arqueo, cierre y E2E de reunión completa sin red obligatorio para fusionar
   - Surfaced by: EX3 (D4); T7 reinterpretado
   - Files: movil/src/reunion/, movil/.maestro/
-  - Verify: Maestro: 20 socios en modo avión → sync → todo confirmado, totales iguales
+  - Verify: Maestro: 20 socios en modo avión → sync → todo confirmado, totales iguales — **hecho 2026-10-19 sin red** (TX6.0 bajada del grupo, TX6a pasos 1–4, TX6b abonos y préstamos con firmas agrupadas, TX6c arqueo a ciegas, cierre firmado con sello y resumen; Maestro recorre la reunión completa en modo avión). Pendiente: el E2E de sincronización contra un servidor real en CI, que necesita el enrolamiento de TD1
 - [ ] **TX7 (P1, human: ~2d / CC: ~1h)** — respaldo — Archivo cifrado para el servidor, compartido con expo-sharing, importación idempotente desde el back-office
   - Surfaced by: EA1 (D8); D2
   - Files: movil/src/respaldo/, backend/sync/, web/

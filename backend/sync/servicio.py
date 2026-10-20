@@ -12,7 +12,8 @@ Cada firma es de la llave de un cargo de este celular sobre el JCS de
 
 Resultado de cada elemento, en el mismo orden:
 
-    confirmado    aplicado al libro
+    confirmado    aceptado; en el libro queda provisional hasta el cierre firmado, que lo
+                  confirma (o lo deja en conflicto si no está en su lista)
     por_validar   aplicado, pero el celular está retirado (E3): lo revisa la junta
     rechazado     no cumple una regla; `codigo` dice cuál. No se edita ni se borra (D22)
     en_conflicto  depende de algo rechazado (E6) o es una recaptura distinta del mismo id
@@ -27,6 +28,7 @@ import uuid
 from dataclasses import dataclass
 
 from django.db import IntegrityError, transaction
+from django.utils import timezone
 
 from acap.models import Cargo, Ciclo, Reunion
 from core import firmas
@@ -92,6 +94,7 @@ TIPOS_V1 = {
     "abono",
     "correccion",
     "llave_cargo",
+    "cierre",
 }
 
 
@@ -210,14 +213,19 @@ def _del_ciclo(firmantes: list[LlaveCargo], ciclo: Ciclo) -> None:
         raise Rechazo("CARGO_DE_OTRO_CICLO")
 
 
-def _firmas_prestamo(firmantes: list[LlaveCargo], titular: Titular) -> None:
-    """D13: N firmas (por defecto 2) de personas y cargos distintos, nunca del beneficiario."""
+def _firmas_distintas(firmantes: list[LlaveCargo]) -> None:
+    """D13: N firmas (por defecto 2) de personas y cargos distintos."""
     cargos = {f.cargo.tipo for f in firmantes}
     personas = {f.cargo.membresia_id for f in firmantes}
     if len(firmantes) < FIRMAS_PRESTAMO or len(cargos) < len(firmantes):
         raise Rechazo("FIRMAS_INSUFICIENTES")
     if len(personas) < len(firmantes):
         raise Rechazo("FIRMAS_DE_LA_MISMA_PERSONA")
+
+
+def _firmas_prestamo(firmantes: list[LlaveCargo], titular: Titular) -> None:
+    """Préstamo: las firmas de _firmas_distintas, nunca del beneficiario."""
+    _firmas_distintas(firmantes)
     if any(f.cargo.membresia.titular_id == titular.id for f in firmantes):
         raise Rechazo("FIRMA_DEL_BENEFICIARIO")
 
@@ -226,12 +234,14 @@ def _firmas_prestamo(firmantes: list[LlaveCargo], titular: Titular) -> None:
 
 
 def _cerrar(ctx: _Contexto, *movimientos: Movimiento) -> str:
-    """El servidor confirma; lo de un celular retirado queda por validar (E3)."""
-    destino = E.CONFIRMADO if ctx.dispositivo.activo else E.POR_VALIDAR
-    for mov in movimientos:
-        if libro.estado_actual(mov) == E.PROVISIONAL:
-            libro.cambiar_estado(mov, destino, codigo="SYNC")
-    return R.CONFIRMADO if ctx.dispositivo.activo else R.POR_VALIDAR
+    """Aceptado: en el libro queda provisional hasta que el cierre firmado lo ratifica (D9,
+    _cierre). Lo de un celular retirado queda por validar de una vez (E3)."""
+    if not ctx.dispositivo.activo:
+        for mov in movimientos:
+            if libro.estado_actual(mov) == E.PROVISIONAL:
+                libro.cambiar_estado(mov, E.POR_VALIDAR, codigo="SYNC")
+        return R.POR_VALIDAR
+    return R.CONFIRMADO
 
 
 def _comun(ctx, firmantes, e: Elemento) -> dict:
@@ -351,6 +361,41 @@ def _llave_cargo(ctx, firmantes, e):
     return R.CONFIRMADO
 
 
+def _cierre(ctx, firmantes, e):
+    """Cierre de la reunión (D13 de diseño, ET): N firmas sobre la lista de sus movimientos.
+
+    Lo que el servidor tiene de esa reunión y no está en la lista queda en conflicto; si falta
+    algo de la lista que aún no llega, el cierre espera. La caja contada abre la siguiente.
+    """
+    reunion = ctx.reunion(e.datos)
+    _del_ciclo(firmantes, reunion.ciclo)
+    _firmas_distintas(firmantes)
+    lista = _campo(e.datos, "movimientos", list)
+    caja = _campo(e.datos, "caja_contada", int)
+    if caja < 0:
+        raise Rechazo("DATOS_INVALIDOS")
+    ids = {_a_uuid(x) for x in lista}
+    if reunion.estado == Reunion.Estado.CERRADA:
+        raise Conflicto("REUNION_YA_CERRADA")
+    del_libro = set(Movimiento.objects.filter(reunion=reunion).values_list("id", flat=True))
+    for id_ in ids - del_libro:
+        previo = Recibido.objects.filter(id=id_).first()
+        if previo is None or previo.estado not in (R.RECHAZADO, R.EN_CONFLICTO):
+            raise EnEspera("FALTA_MOVIMIENTO")
+    # El cierre ratifica lo que lista y deja en conflicto lo que el servidor tiene fuera de ella.
+    for mov in Movimiento.objects.filter(reunion=reunion):
+        actual = libro.estado_actual(mov)
+        if mov.id in ids and actual == E.PROVISIONAL and ctx.dispositivo.activo:
+            libro.cambiar_estado(mov, E.CONFIRMADO, codigo="CIERRE")
+        elif mov.id not in ids and E.EN_CONFLICTO in libro.TRANSICIONES[actual]:
+            libro.cambiar_estado(mov, E.EN_CONFLICTO, codigo="FUERA_DEL_CIERRE")
+    reunion.estado = Reunion.Estado.CERRADA
+    reunion.caja_contada = caja
+    reunion.cerrada_en = timezone.now()
+    reunion.save(update_fields=["estado", "caja_contada", "cerrada_en"])
+    return R.CONFIRMADO if ctx.dispositivo.activo else R.POR_VALIDAR
+
+
 APLICAR = {
     "reunion": _reunion,
     "ahorro": _ahorro,
@@ -360,6 +405,7 @@ APLICAR = {
     "abono": _abono,
     "correccion": _correccion,
     "llave_cargo": _llave_cargo,
+    "cierre": _cierre,
 }
 
 

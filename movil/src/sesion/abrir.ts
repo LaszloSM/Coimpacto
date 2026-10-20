@@ -57,6 +57,7 @@ export async function leerFoto(base: BaseLocal): Promise<FotoGrupo | null> {
     cargos: parte.cargos ?? [],
     reuniones: parte.reuniones ?? [],
     prestamos: parte.prestamos ?? [],
+    caja: parte.caja ?? 0,
     miembros: miembros.map((m) => ({ ...m, activo: m.activo === 1 })),
   };
 }
