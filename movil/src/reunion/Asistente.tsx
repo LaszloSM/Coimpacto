@@ -30,6 +30,7 @@ import {
 } from "../ui/componentes";
 import {
   abrirReunion,
+  aportesDeLaPasada,
   aportesRegistrados,
   asistencia as leerAsistencia,
   guardarPosicion,
@@ -38,6 +39,7 @@ import {
   MOTIVOS_MULTA,
   PASOS,
   porSubir,
+  iguales,
   registrarAportes,
   reunionAbierta,
   siguienteNumero,
@@ -310,17 +312,19 @@ function PasoAportes(props: {
   const miembro = lista[indice];
   const ciclo = props.foto.ciclo!;
   const [aportes, setAportes] = useState<Aportes | null>(null);
+  const [pasada, setPasada] = useState<Aportes | null>(null);
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     void (async () => {
+      setPasada(await aportesDeLaPasada(props.sesion.base, props.foto, props.reunion.id, miembro.titular_id));
       const previo = await aportesRegistrados(props.sesion.base, props.reunion.id, miembro.titular_id);
       if (previo) return setAportes(previo);
       const vino = (await leerAsistencia(props.sesion.base, props.reunion.id)).get(miembro.membresia_id) ?? true;
       // Quien no vino: sin acciones ni fondo y la multa de inasistencia ya marcada (D11).
       setAportes(vino ? SIN_APORTES : { acciones: 0, fondoSocial: false, multas: { no_asistio: 1 } });
     })();
-  }, [props.sesion, props.reunion.id, miembro]);
+  }, [props.sesion, props.foto, props.reunion.id, miembro]);
 
   if (!aportes) return null;
   const calculo = montos(ciclo, aportes);
@@ -338,6 +342,17 @@ function PasoAportes(props: {
             {indice + 1}/{lista.length}
           </Text>
         </View>
+        {pasada && !iguales(pasada, { ...aportes, multas: {} }) ? (
+          // Rellena acciones y fondo; se ve antes de guardar (D11). Las multas quedan como están.
+          <BotonSecundario
+            testID="igual-pasada"
+            texto="Igual que la reunión pasada"
+            detalle={`${pasada.acciones} ${pasada.acciones === 1 ? "acción" : "acciones"}${
+              pasada.fondoSocial ? " y fondo social" : ""
+            }`}
+            alTocar={() => cambiar({ acciones: pasada.acciones, fondoSocial: pasada.fondoSocial })}
+          />
+        ) : null}
         <Contador
           testID="acciones"
           etiqueta="Acciones"

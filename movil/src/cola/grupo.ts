@@ -48,6 +48,13 @@ export interface FotoGrupo {
   }[];
   /** Caja con que abre la próxima reunión: lo contado en el último arqueo (D12). */
   caja: number;
+  /** Lo que dio cada titular en la última reunión del ciclo ("Igual que la reunión pasada", D11). */
+  ultima_reunion?: UltimaReunion | null;
+}
+
+export interface UltimaReunion {
+  numero: number;
+  aportes: Record<string, { acciones: number; fondo_social: boolean }>;
 }
 
 export class CelularRetirado extends Error {
@@ -105,6 +112,7 @@ export async function guardarFoto(base: BaseLocal, foto: FotoGrupo): Promise<voi
       ["reuniones", foto.reuniones],
       ["prestamos", foto.prestamos],
       ["caja", foto.caja ?? 0],
+      ["ultima_reunion", foto.ultima_reunion ?? null],
     ];
     for (const [id, datos] of partes) {
       await txn.correr(

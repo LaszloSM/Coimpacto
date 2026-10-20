@@ -87,6 +87,34 @@ def _ahorro_por_titular(ciclo: Ciclo) -> dict[str, int]:
     return {str(f["titular_id"]): f["total"] for f in filas}
 
 
+def _aportes_de_la_reunion(reunion: Reunion, valor_accion: int) -> dict[str, dict]:
+    """Acciones y fondo social de cada titular en una reunión, con sus correcciones (D11)."""
+    vigentes = (
+        _vigentes()
+        .filter(reunion=reunion)
+        .filter(
+            Q(tipo__in=[Movimiento.Tipo.AHORRO, Movimiento.Tipo.FONDO_SOCIAL])
+            | Q(
+                tipo=Movimiento.Tipo.REVERSO,
+                corrige__tipo__in=[Movimiento.Tipo.AHORRO, Movimiento.Tipo.FONDO_SOCIAL],
+            )
+        )
+        .values("id")
+    )
+    aportes: dict[str, dict] = {}
+    for m in Movimiento.objects.filter(id__in=vigentes, titular__isnull=False).select_related(
+        "corrige"
+    ):
+        tipo = m.corrige.tipo if m.tipo == Movimiento.Tipo.REVERSO else m.tipo
+        fila = aportes.setdefault(str(m.titular_id), {"ahorro": 0, "fondo": 0})
+        fila["ahorro" if tipo == Movimiento.Tipo.AHORRO else "fondo"] += m.monto
+    return {
+        titular: {"acciones": f["ahorro"] // valor_accion, "fondo_social": f["fondo"] > 0}
+        for titular, f in aportes.items()
+        if f["ahorro"] > 0 or f["fondo"] > 0
+    }
+
+
 def foto_del_grupo(dispositivo: Dispositivo) -> dict:
     acap = dispositivo.acap
     ciclo = Ciclo.objects.filter(acap=acap, estado=Ciclo.Estado.ACTIVO).first()
@@ -100,6 +128,7 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "reuniones": [],
         "prestamos": [],
         "caja": 0,
+        "ultima_reunion": None,
     }
     if ciclo is None:
         return foto
@@ -147,6 +176,15 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
     # Caja con que abre la próxima reunión: lo contado en el arqueo de la última cerrada (D12).
     cerradas = [r for r in reuniones if r.caja_contada is not None]
     foto["caja"] = cerradas[-1].caja_contada if cerradas else 0
+    # "Igual que la reunión pasada" (D11): lo que dio cada miembro en la última del ciclo.
+    foto["ultima_reunion"] = (
+        {
+            "numero": reuniones[-1].numero,
+            "aportes": _aportes_de_la_reunion(reuniones[-1], ciclo.valor_accion),
+        }
+        if reuniones
+        else None
+    )
     for p in Prestamo.objects.filter(ciclo=ciclo).order_by("id"):
         saldo = libro.saldo_prestamo(p)
         if saldo > 0:

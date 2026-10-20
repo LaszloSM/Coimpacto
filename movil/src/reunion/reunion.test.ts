@@ -8,6 +8,7 @@ import { uuid } from "../seguridad/llavero";
 import { criptoNode as c } from "../seguridad/pruebas/criptoNode";
 import {
   abrirReunion,
+  aportesDeLaPasada,
   aportesRegistrados,
   asistencia,
   guardarPosicion,
@@ -157,5 +158,42 @@ describe("aportes por miembro", () => {
       registrarAportes(base, c, { reunion, ciclo: CICLO, miembro: SOCIA, aportes: { acciones: 9, fondoSocial: true, multas: {} }, firmante: escritor, ahora: AHORA }),
     ).rejects.toThrow(/MAXIMO_ACCIONES/);
     expect(await porSubir(base)).toBe(1);
+  });
+});
+
+describe("igual que la reunión pasada (D11)", () => {
+  const sin = { ciclo: CICLO, ultima_reunion: null };
+
+  test("sin reunión pasada no hay nada que copiar", async () => {
+    const { base, reunion } = await preparar();
+    expect(await aportesDeLaPasada(base, sin, reunion.id, "t7")).toBeNull();
+  });
+
+  test("usa lo que la Fundación conoce de la última reunión, sin multas y con el tope del ciclo", async () => {
+    const { base, reunion } = await preparar();
+    const foto = {
+      ciclo: CICLO,
+      ultima_reunion: { numero: 3, aportes: { t7: { acciones: 9, fondo_social: true } } },
+    };
+    expect(await aportesDeLaPasada(base, foto, reunion.id, "t7")).toEqual({ acciones: 5, fondoSocial: true, multas: {} });
+    expect(await aportesDeLaPasada(base, foto, reunion.id, "t8")).toBeNull();
+  });
+
+  test("la reunión que llevó este celular gana si es más reciente que la del servidor", async () => {
+    const { base, escritor, reunion } = await preparar();
+    await registrarAportes(base, c, {
+      reunion,
+      ciclo: CICLO,
+      miembro: SOCIA,
+      aportes: { acciones: 2, fondoSocial: false, multas: { tarde: 1 } },
+      firmante: escritor,
+      ahora: AHORA,
+    });
+    await base.correr("UPDATE reunion_local SET estado = 'cerrada' WHERE id = ?;", reunion.id);
+    const hoy = await abrirReunion(base, c, { ciclo: CICLO, numero: 2, fecha: "2026-10-11", escritor, id: uuid(c), ahora: AHORA });
+    const vieja = { ciclo: CICLO, ultima_reunion: { numero: 0, aportes: { t7: { acciones: 4, fondo_social: true } } } };
+    expect(await aportesDeLaPasada(base, vieja, hoy.id, "t7")).toEqual({ acciones: 2, fondoSocial: false, multas: {} });
+    // Lo de hoy no cuenta como "la pasada".
+    expect(await aportesDeLaPasada(base, sin, reunion.id, "t7")).toBeNull();
   });
 });

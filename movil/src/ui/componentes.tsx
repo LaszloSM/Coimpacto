@@ -45,7 +45,7 @@ export function BotonPrincipal(props: {
   );
 }
 
-export function BotonSecundario(props: { texto: string; alTocar: () => void; testID?: string }) {
+export function BotonSecundario(props: { texto: string; alTocar: () => void; detalle?: string; testID?: string }) {
   return (
     <Pressable
       testID={props.testID}
@@ -56,6 +56,7 @@ export function BotonSecundario(props: { texto: string; alTocar: () => void; tes
       <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={estilos.botonTexto}>
         {props.texto}
       </Text>
+      {props.detalle ? <Text style={estilos.cifraRenglonPequena}>{props.detalle}</Text> : null}
     </Pressable>
   );
 }

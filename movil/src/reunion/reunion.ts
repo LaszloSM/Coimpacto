@@ -162,7 +162,39 @@ export async function aportesRegistrados(
   return { acciones: fila.acciones, fondoSocial: fila.fondo_social === 1, multas: JSON.parse(fila.multas) };
 }
 
-const iguales = (a: Aportes, b: Aportes) =>
+/**
+ * "Igual que la reunión pasada" (D11): las acciones y el fondo social que dio el miembro en la
+ * última reunión del ciclo. Vale la más reciente entre la que llevó este celular y la que conoce
+ * la Fundación. Las multas no se copian: dependen de lo que pase hoy. null si no dio nada.
+ */
+export async function aportesDeLaPasada(
+  base: BaseLocal,
+  foto: Pick<FotoGrupo, "ciclo" | "ultima_reunion">,
+  reunionId: string,
+  titularId: string,
+): Promise<Aportes | null> {
+  const local = await base.primera<{ numero: number; acciones: number; fondo_social: number }>(
+    "SELECT l.numero, r.acciones, r.fondo_social FROM registro_miembro r " +
+      "JOIN reunion_local l ON l.id = r.reunion_id " +
+      "WHERE r.titular_id = ? AND r.reunion_id <> ? AND l.ciclo_id = ? ORDER BY l.numero DESC LIMIT 1;",
+    titularId,
+    reunionId,
+    foto.ciclo?.id ?? "",
+  );
+  const servidor = foto.ultima_reunion;
+  let pasada: { acciones: number; fondoSocial: boolean } | null = null;
+  if (local && (!servidor || local.numero >= servidor.numero)) {
+    pasada = { acciones: local.acciones, fondoSocial: local.fondo_social === 1 };
+  } else if (servidor) {
+    const dio = servidor.aportes[titularId];
+    pasada = dio ? { acciones: dio.acciones, fondoSocial: dio.fondo_social } : null;
+  }
+  if (!pasada || (pasada.acciones === 0 && !pasada.fondoSocial)) return null;
+  const tope = foto.ciclo?.max_acciones_reunion ?? pasada.acciones;
+  return { acciones: Math.min(pasada.acciones, tope), fondoSocial: pasada.fondoSocial, multas: {} };
+}
+
+export const iguales = (a: Aportes, b: Aportes) =>
   a.acciones === b.acciones &&
   a.fondoSocial === b.fondoSocial &&
   MOTIVOS_MULTA.every((m) => (a.multas[m.id] ?? 0) === (b.multas[m.id] ?? 0));
