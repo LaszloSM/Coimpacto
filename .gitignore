@@ -42,3 +42,8 @@ Thumbs.db
 
 # Django
 backend/staticfiles/
+
+# Servidor (deploy/): secretos y copias nunca al repositorio
+deploy/.env
+deploy/respaldos/
+deploy/respaldos.log

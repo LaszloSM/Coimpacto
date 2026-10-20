@@ -1,0 +1,85 @@
+# Servidor del piloto en una sola máquina (docs/operacion/servidor-aws.md): PostgreSQL, Django,
+# la web de la oficina y Caddy con HTTPS automático. Solo Caddy se expone (puertos 80 y 443).
+#   cd deploy && docker compose up -d --build
+name: credimpacto
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      # Superusuario solo para crear los roles y para las copias; Django nunca lo usa.
+      POSTGRES_USER: postgres
+      POSTGRES_DB: credimpacto
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?falta POSTGRES_PASSWORD en deploy/.env}
+      CREDIMPACTO_PG_MIGRACIONES: ${CREDIMPACTO_PG_MIGRACIONES:?falta en deploy/.env}
+      CREDIMPACTO_PG_WEB: ${CREDIMPACTO_PG_WEB:?falta en deploy/.env}
+    volumes:
+      - postgres-datos:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d credimpacto"]
+      interval: 5s
+      retries: 20
+
+  # Migraciones con su propio rol (dueño de las tablas), antes de arrancar Django.
+  migrar:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    restart: "no"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://credimpacto_migraciones:${CREDIMPACTO_PG_MIGRACIONES}@postgres:5432/credimpacto
+      DJANGO_ALLOWED_HOSTS: ${CREDIMPACTO_HOST}
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Rol de la app: en el libro solo lee y agrega (docs/operacion/roles-postgres.md).
+      DATABASE_URL: postgres://credimpacto_web:${CREDIMPACTO_PG_WEB}@postgres:5432/credimpacto
+      DJANGO_ALLOWED_HOSTS: ${CREDIMPACTO_HOST:?falta CREDIMPACTO_HOST en deploy/.env}
+      DJANGO_CSRF_TRUSTED_ORIGINS: https://${CREDIMPACTO_HOST}
+    depends_on:
+      migrar:
+        condition: service_completed_successfully
+    volumes:
+      - estaticos:/app/staticfiles
+
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    restart: unless-stopped
+    environment:
+      CREDIMPACTO_API: http://backend:8000
+    depends_on: [backend]
+
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      CREDIMPACTO_HOST: ${CREDIMPACTO_HOST}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - estaticos:/srv/estaticos:ro
+      - caddy-datos:/data
+      - caddy-config:/config
+    depends_on: [backend, web]
+
+volumes:
+  postgres-datos:
+  estaticos:
+  caddy-datos:
+  caddy-config:

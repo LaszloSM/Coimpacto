@@ -1,0 +1,14 @@
+**/node_modules
+**/.venv
+**/.next
+**/__pycache__
+movil/
+.git
+.github
+.claude
+.agents
+.codex
+docs
+**/*.log
+deploy/.env
+deploy/respaldos
