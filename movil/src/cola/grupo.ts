@@ -24,7 +24,7 @@ export interface MiembroFoto {
 export interface FotoGrupo {
   formato: 1;
   generado_en: string;
-  acap: { id: string; nombre: string };
+  acap: { id: string; nombre: string; quorum_porcentaje?: number; mayoria?: string };
   ciclo: {
     id: string;
     numero: number;

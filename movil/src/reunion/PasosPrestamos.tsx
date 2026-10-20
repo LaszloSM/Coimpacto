@@ -297,11 +297,13 @@ function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: (
   } catch {
     plan = null;
   }
-  const resultado = voto ? resultadoVotacion(voto, activos.length) : null;
+  const resultado = voto ? resultadoVotacion(voto, activos.length, props.foto.acap) : null;
+  // Mínimo de presentes con el reglamento de la ACAP (ET2): más que el porcentaje de activos.
+  const minimo = Math.floor(((props.foto.acap.quorum_porcentaje ?? 50) * activos.length) / 100) + 1;
   const textoVoto = !resultado
     ? ""
     : !resultado.quorum
-      ? `Sin quórum: deben estar más de ${Math.floor(activos.length / 2)} de ${activos.length}.`
+      ? `Sin quórum: deben estar al menos ${minimo} de ${activos.length}.`
       : !resultado.votosCuadran
         ? "Hay más votos que presentes."
         : resultado.aprobada
@@ -352,6 +354,7 @@ function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: (
                   activos: activos.length,
                   ciclo,
                   prestamosVigentes: props.foto.prestamos,
+                  politica: props.foto.acap,
                 });
                 props.alTerminar();
               } catch {

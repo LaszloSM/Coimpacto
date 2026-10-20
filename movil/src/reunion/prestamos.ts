@@ -8,7 +8,7 @@
 // Las reglas de firma son las mismas que revalida el servidor (sync/servicio.py): N = 2
 // personas distintas con cargos distintos, nunca el beneficiario (D13 de ingeniería).
 
-import { calcularPrestamo, dividirAbono, ReglaInvalida } from "@credimpacto/reglas";
+import { calcularPrestamo, dividirAbono, ReglaInvalida, resultadoVotacion as resultadoCompartido } from "@credimpacto/reglas";
 
 import { encolar, prepararElemento, type Elemento, type Firmante } from "../cola/cola";
 import type { FotoGrupo } from "../cola/grupo";
@@ -118,15 +118,23 @@ export interface Solicitud extends Votacion {
   estado: "aprobada" | "no_aprobada" | "firmada";
 }
 
-/** Quórum: presentes > 50 % de los miembros activos; aprobada: a favor > en contra (D21). */
-export function resultadoVotacion(v: Votacion, miembrosActivos: number) {
-  const quorum = v.presentes * 2 > miembrosActivos;
-  const votos = v.aFavor + v.enContra + v.abstenciones;
-  return {
-    quorum,
-    votosCuadran: votos <= v.presentes,
-    aprobada: quorum && votos <= v.presentes && v.aFavor > v.enContra,
-  };
+export type PoliticaVotacion = Pick<FotoGrupo["acap"], "quorum_porcentaje" | "mayoria">;
+
+/**
+ * Quórum y aprobación con el reglamento de la ACAP (ET2, regla compartida con el servidor). Por
+ * defecto: presentes > 50 % de los activos y a favor > en contra (D21).
+ */
+export function resultadoVotacion(v: Votacion, miembrosActivos: number, politica: PoliticaVotacion = {}) {
+  const r = resultadoCompartido({
+    presentes: v.presentes,
+    a_favor: v.aFavor,
+    en_contra: v.enContra,
+    abstenciones: v.abstenciones,
+    activos: miembrosActivos,
+    quorum_porcentaje: politica.quorum_porcentaje ?? 50,
+    mayoria: politica.mayoria ?? "simple",
+  });
+  return { quorum: r.quorum, votosCuadran: r.votos_cuadran, aprobada: r.aprobada };
 }
 
 /** Plan de cuotas que se muestra antes de firmar (D21), con las reglas del servidor. */
@@ -137,13 +145,13 @@ export function planDeCuotas(ciclo: Ciclo, capital: number, numCuotas: number) {
 export async function guardarSolicitud(
   base: BaseLocal,
   cripto: Cripto,
-  datos: { reunion: ReunionLocal; titularId: string; capital: number; numCuotas: number; votacion: Votacion; activos: number; ciclo: Ciclo; prestamosVigentes: PrestamoFoto[] },
+  datos: { reunion: ReunionLocal; titularId: string; capital: number; numCuotas: number; votacion: Votacion; activos: number; ciclo: Ciclo; prestamosVigentes: PrestamoFoto[]; politica?: PoliticaVotacion },
 ): Promise<Solicitud> {
   if (datos.prestamosVigentes.some((p) => p.titular_id === datos.titularId && p.saldo > 0)) {
     throw new ReglaInvalida("PRESTAMO_VIGENTE", datos.titularId);
   }
   planDeCuotas(datos.ciclo, datos.capital, datos.numCuotas); // valida montos
-  const { aprobada } = resultadoVotacion(datos.votacion, datos.activos);
+  const { aprobada } = resultadoVotacion(datos.votacion, datos.activos, datos.politica);
   const id = await idNatural(cripto, "prestamo", datos.reunion.id, datos.titularId);
   const firmada = await base.primera("SELECT 1 FROM solicitud_prestamo WHERE id = ? AND estado = 'firmada';", id);
   if (firmada) throw new ReglaInvalida("PRESTAMO_YA_FIRMADO", id);

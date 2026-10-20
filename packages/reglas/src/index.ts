@@ -6,3 +6,4 @@ export { formatearPesos } from "./dinero";
 export { enLetras } from "./letras";
 export { calcularPrestamo, dividirAbono, type DatosAbono, type Prestamo } from "./prestamo";
 export { montosRegistro, type EntradaRegistro } from "./registro";
+export { resultadoVotacion, type EntradaVotacion, type Mayoria } from "./votacion";

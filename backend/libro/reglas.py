@@ -94,6 +94,39 @@ def dividir_abono(
 # --- Cierre de ciclo ---------------------------------------------------------------------------
 
 
+MAYORIAS = ("simple", "absoluta")
+
+
+def resultado_votacion(
+    *,
+    presentes: int,
+    a_favor: int,
+    en_contra: int,
+    abstenciones: int,
+    activos: int,
+    quorum_porcentaje: int,
+    mayoria: str,
+) -> dict:
+    """Quórum y aprobación de un préstamo (ET2), con la política de la ACAP.
+
+    Quórum: presentes × 100 > quorum_porcentaje × activos. Mayoría simple: a favor > en contra;
+    absoluta: a favor × 2 > presentes. Más votos que presentes nunca aprueba.
+    """
+    for n in (presentes, a_favor, en_contra, abstenciones, activos):
+        pesos(n)
+    if isinstance(quorum_porcentaje, bool) or not isinstance(quorum_porcentaje, int):
+        raise ReglaInvalida("QUORUM_INVALIDO", repr(quorum_porcentaje))
+    if not 1 <= quorum_porcentaje <= 99:
+        raise ReglaInvalida("QUORUM_INVALIDO", repr(quorum_porcentaje))
+    if mayoria not in MAYORIAS:
+        raise ReglaInvalida("MAYORIA_INVALIDA", repr(mayoria))
+    quorum = presentes * 100 > quorum_porcentaje * activos
+    votos_cuadran = a_favor + en_contra + abstenciones <= presentes
+    gana = a_favor > en_contra if mayoria == "simple" else a_favor * 2 > presentes
+    aprobada = quorum and votos_cuadran and gana
+    return {"quorum": quorum, "votos_cuadran": votos_cuadran, "aprobada": aprobada}
+
+
 @dataclass(frozen=True)
 class PoliticaCierre:
     reparte_fondo_social: bool

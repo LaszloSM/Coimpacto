@@ -30,14 +30,14 @@ from dataclasses import dataclass
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
-from acap.models import Cargo, Ciclo, Reunion
+from acap.models import Cargo, Ciclo, Membresia, Reunion
 from core import firmas
 from core.canonico import ValorNoCanonico, hash_canonico
 from cuentas import servicio as cuentas
 from cuentas.models import Dispositivo, LlaveCargo, Titular
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
-from libro.reglas import ReglaInvalida
+from libro.reglas import ReglaInvalida, resultado_votacion
 from sync import propuestas
 from sync.models import Propuesta, Recibido
 
@@ -308,11 +308,30 @@ def _movimiento(ctx, firmantes, e):
     return _cerrar(ctx, mov)
 
 
+def _votacion(reunion: Reunion, v: dict) -> None:
+    """ET2: el préstamo se votó con quórum y se aprobó, con la política de la ACAP."""
+    acap = reunion.ciclo.acap
+    resultado = resultado_votacion(
+        presentes=_campo(v, "presentes", int),
+        a_favor=_campo(v, "a_favor", int),
+        en_contra=_campo(v, "en_contra", int),
+        abstenciones=_campo(v, "abstenciones", int),
+        activos=Membresia.objects.filter(acap=acap, activa=True).count(),
+        quorum_porcentaje=acap.quorum_porcentaje,
+        mayoria=acap.mayoria,
+    )
+    if not resultado["quorum"]:
+        raise Rechazo("SIN_QUORUM")
+    if not resultado["aprobada"]:
+        raise Rechazo("NO_APROBADO")
+
+
 def _prestamo(ctx, firmantes, e):
     reunion = ctx.reunion(e.datos)
     _del_ciclo(firmantes, reunion.ciclo)
     titular = ctx.titular(e.datos)
     _firmas_prestamo(firmantes, titular)
+    _votacion(reunion, _campo(e.datos, "votacion", dict))
     _, desembolso = libro.otorgar_prestamo(
         **_comun(ctx, firmantes, e),
         id_desembolso=_ref(e.datos, "id_desembolso"),

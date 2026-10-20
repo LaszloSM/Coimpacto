@@ -2036,7 +2036,8 @@ Approval readiness: PASS — R1 (D1), R2 (D2), R3 (D3); scope from prior D4; fin
   - Surfaced by: Scope — R1 (D1)
   - Files: backend/libro/, backend/sync/, web/src/seguridad/, packages/casos-reglas/
   - Verify: pytest + Vitest con el mismo hash; movimiento agregado después del cierre queda en_conflicto
-- [ ] **ET2 (P2, human: ~1d / CC: ~30min)** — acap/libro — Regla de quórum y aprobación configurable por ACAP, validada en celular y servidor
+- [x] **ET2 (P2, human: ~1d / CC: ~30min)** — acap/libro — Regla de quórum y aprobación configurable por ACAP, validada en celular y servidor
+  - **Hecho (2026-10-19):** `quorum_porcentaje` (50 por defecto) y `mayoria` (simple o absoluta) por ACAP, editables en el panel; regla compartida con casos en `packages/casos-reglas/casos/votacion.json`; el servidor rechaza `SIN_QUORUM` y `NO_APROBADO`.
   - Surfaced by: Scope — R2 (D2)
   - Files: backend/acap/, backend/libro/, web/app/(reunion)/prestamos/
   - Verify: casos sin quórum, empate y aprobado; regla distinta por ACAP

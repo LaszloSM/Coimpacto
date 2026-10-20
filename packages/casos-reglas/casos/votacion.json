@@ -1,0 +1,64 @@
+{
+  "regla": "votacion",
+  "descripcion": "Quórum y aprobación de un préstamo (D2 de ingeniería, ET2). Política por ACAP: quórum si presentes × 100 > quorum_porcentaje × activos; mayoría simple (a favor > en contra) o absoluta (a favor × 2 > presentes). Casos escritos a mano.",
+  "casos": [
+    {
+      "nombre": "por defecto: 11 de 20 hay quórum y gana a favor",
+      "entrada": { "presentes": 11, "a_favor": 6, "en_contra": 3, "abstenciones": 2, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" },
+      "esperado": { "quorum": true, "votos_cuadran": true, "aprobada": true }
+    },
+    {
+      "nombre": "por defecto: 10 de 20 no es quórum (más del 50 %)",
+      "entrada": { "presentes": 10, "a_favor": 10, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" },
+      "esperado": { "quorum": false, "votos_cuadran": true, "aprobada": false }
+    },
+    {
+      "nombre": "empate no aprueba",
+      "entrada": { "presentes": 15, "a_favor": 5, "en_contra": 5, "abstenciones": 5, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" },
+      "esperado": { "quorum": true, "votos_cuadran": true, "aprobada": false }
+    },
+    {
+      "nombre": "más votos que presentes no aprueba",
+      "entrada": { "presentes": 12, "a_favor": 10, "en_contra": 3, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" },
+      "esperado": { "quorum": true, "votos_cuadran": false, "aprobada": false }
+    },
+    {
+      "nombre": "mayoría absoluta: 6 de 13 presentes no alcanza aunque gane",
+      "entrada": { "presentes": 13, "a_favor": 6, "en_contra": 2, "abstenciones": 5, "activos": 20, "quorum_porcentaje": 50, "mayoria": "absoluta" },
+      "esperado": { "quorum": true, "votos_cuadran": true, "aprobada": false }
+    },
+    {
+      "nombre": "mayoría absoluta: 7 de 13 sí",
+      "entrada": { "presentes": 13, "a_favor": 7, "en_contra": 2, "abstenciones": 4, "activos": 20, "quorum_porcentaje": 50, "mayoria": "absoluta" },
+      "esperado": { "quorum": true, "votos_cuadran": true, "aprobada": true }
+    },
+    {
+      "nombre": "ACAP con quórum de dos tercios: 13 de 20 no basta",
+      "entrada": { "presentes": 13, "a_favor": 13, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 66, "mayoria": "simple" },
+      "esperado": { "quorum": false, "votos_cuadran": true, "aprobada": false }
+    },
+    {
+      "nombre": "ACAP con quórum de dos tercios: 14 de 20 sí",
+      "entrada": { "presentes": 14, "a_favor": 8, "en_contra": 6, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 66, "mayoria": "simple" },
+      "esperado": { "quorum": true, "votos_cuadran": true, "aprobada": true }
+    }
+  ],
+  "rechazos": [
+    {
+      "nombre": "presentes negativos",
+      "entrada": { "presentes": -1, "a_favor": 0, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" }
+    },
+    {
+      "nombre": "votos con decimales",
+      "entrada": { "presentes": 10, "a_favor": 1.5, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 50, "mayoria": "simple" }
+    },
+    {
+      "nombre": "quórum del 100 % no se puede cumplir",
+      "entrada": { "presentes": 20, "a_favor": 20, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 100, "mayoria": "simple" }
+    },
+    {
+      "nombre": "mayoría desconocida",
+      "entrada": { "presentes": 12, "a_favor": 7, "en_contra": 0, "abstenciones": 0, "activos": 20, "quorum_porcentaje": 50, "mayoria": "unanime" }
+    }
+  ]
+}
