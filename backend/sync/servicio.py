@@ -95,6 +95,7 @@ TIPOS_V1 = {
     "correccion",
     "llave_cargo",
     "cierre",
+    "llave_socio",
 }
 
 
@@ -396,6 +397,55 @@ def _cierre(ctx, firmantes, e):
     return R.CONFIRMADO if ctx.dispositivo.activo else R.POR_VALIDAR
 
 
+def mensaje_alta_socio(*, llave_id, membresia_id, dispositivo_id, llave_publica: str) -> dict:
+    """Lo que firma el cargo para dar acceso a un socio en este celular (EX4, N7a)."""
+    return {
+        "tipo": "alta_llave_socio",
+        "v": 1,
+        "llave": str(llave_id),
+        "membresia": str(membresia_id),
+        "dispositivo": str(dispositivo_id),
+        "llave_publica": llave_publica,
+    }
+
+
+def _llave_socio(ctx, firmantes, e):
+    from acap.models import Membresia
+    from cuentas.models import LlaveSocio
+
+    if not ctx.dispositivo.activo:
+        raise Rechazo("DISPOSITIVO_REVOCADO")
+    membresia = ctx.buscar(Membresia, _ref(e.datos, "membresia"), lambda m: m.acap_id)
+    if not membresia.activa:
+        raise Rechazo("MIEMBRO_INACTIVO")
+    cargo = firmantes[0]
+    if cargo.cargo.ciclo.acap_id != membresia.acap_id:
+        raise Rechazo("OTRA_ACAP")
+    llave_publica = _campo(e.datos, "llave_publica", str)
+    try:
+        firmas.cargar_llave_publica(llave_publica)
+    except (firmas.LlaveInvalida, ValueError) as error:
+        raise Rechazo("LLAVE_INVALIDA") from error
+    firma_alta = _campo(e.datos, "firma_alta", str)
+    mensaje = mensaje_alta_socio(
+        llave_id=e.id,
+        membresia_id=membresia.id,
+        dispositivo_id=ctx.dispositivo.id,
+        llave_publica=llave_publica,
+    )
+    if not firmas.verificar(cargo.llave_publica, mensaje, firma_alta):
+        raise Rechazo("FIRMA_INVALIDA")
+    LlaveSocio.objects.create(
+        id=e.id,
+        membresia=membresia,
+        dispositivo=ctx.dispositivo,
+        llave_publica=llave_publica,
+        autorizada_por=cargo,
+        firma_alta=firma_alta,
+    )
+    return R.CONFIRMADO
+
+
 APLICAR = {
     "reunion": _reunion,
     "ahorro": _ahorro,
@@ -406,6 +456,7 @@ APLICAR = {
     "correccion": _correccion,
     "llave_cargo": _llave_cargo,
     "cierre": _cierre,
+    "llave_socio": _llave_socio,
 }
 
 

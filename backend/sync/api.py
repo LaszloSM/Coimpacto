@@ -17,7 +17,7 @@ from ninja.throttling import AnonRateThrottle
 from core import firmas
 from core.canonico import ValorNoCanonico
 from cuentas.models import Dispositivo
-from sync import bajada, respaldo, servicio
+from sync import bajada, respaldo, servicio, socio
 
 router = Router(tags=["sincronizacion"])
 
@@ -146,3 +146,50 @@ def subir_respaldo(request, cuerpo: Respaldo):
         return respaldo.importar(texto=cuerpo.archivo, usuario=request.user)
     except respaldo.RespaldoInvalido as error:
         return 400, {"codigo": error.codigo}
+
+
+class PedidoSocio(Schema):
+    reto: str
+    firma: str
+
+
+def _llave_socio_por_cabecera(request):
+    from cuentas.models import LlaveSocio
+
+    try:
+        llave_id = uuid.UUID(request.headers.get("X-Credimpacto-Socio", ""))
+    except ValueError as error:
+        raise HttpError(401, "Falta el socio.") from error
+    llave = (
+        LlaveSocio.objects.select_related("dispositivo", "membresia").filter(id=llave_id).first()
+    )
+    if llave is None:
+        raise HttpError(401, "Socio desconocido.")
+    return llave
+
+
+@router.post(
+    "/socio/reto",
+    response=Reto,
+    auth=None,
+    throttle=[AnonRateThrottle("30/m")],
+    summary="Reto de un solo uso para la vista del socio",
+)
+def reto_socio(request):
+    return {"reto": socio.emitir_reto(_llave_socio_por_cabecera(request))}
+
+
+@router.post(
+    "/socio/datos",
+    response={200: dict, 401: Rechazo, 410: Rechazo},
+    auth=None,
+    summary="Datos de solo lectura del socio (solo los suyos)",
+)
+def datos_socio(request, pedido: PedidoSocio):
+    """El socio firma {"pedido": "socio", "reto": ...} con su llave; recibe solo lo suyo."""
+    llave = _llave_socio_por_cabecera(request)
+    try:
+        socio.usar_reto(llave=llave, reto=pedido.reto, firma=pedido.firma)
+    except bajada.BajadaRechazada as error:
+        return error.estado_http, {"codigo": error.codigo}
+    return socio.datos_del_socio(llave)

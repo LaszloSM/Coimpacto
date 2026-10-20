@@ -127,3 +127,31 @@ class LlaveCargo(models.Model):
 
     def __str__(self) -> str:
         return f"Llave {str(self.id)[:8]} · {self.cargo}"
+
+
+class LlaveSocio(models.Model):
+    """Acceso de un socio a su vista de solo lectura en un celular (EX4, N7a).
+
+    Lo da de alta en la reunión un cargo vigente, que firma el alta; el socio crea ahí su PIN.
+    Con esta llave el celular pide al servidor solo los datos de ese socio (N17).
+    """
+
+    id = models.UUIDField(primary_key=True)
+    membresia = models.ForeignKey(
+        "acap.Membresia", on_delete=models.PROTECT, related_name="llaves_socio"
+    )
+    dispositivo = models.ForeignKey(
+        Dispositivo, on_delete=models.PROTECT, related_name="llaves_socio"
+    )
+    llave_publica = models.TextField(help_text="SPKI DER P-256 en base64url.")
+    autorizada_por = models.ForeignKey(LlaveCargo, on_delete=models.PROTECT, related_name="+")
+    firma_alta = models.TextField()
+    creada_en = models.DateTimeField(auto_now_add=True)
+    revocada_en = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "llave de socio"
+        verbose_name_plural = "llaves de socio"
+
+    def __str__(self) -> str:
+        return f"Llave de socio {str(self.id)[:8]} · {self.membresia}"

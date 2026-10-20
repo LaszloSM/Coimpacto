@@ -48,7 +48,11 @@ def mensaje_bajada(reto: str) -> dict:
 @transaction.atomic
 def usar_reto(*, dispositivo: Dispositivo, reto: str, firma: str, ahora=None) -> None:
     ahora = ahora or timezone.now()
-    registro = Reto.objects.select_for_update().filter(valor=reto, dispositivo=dispositivo).first()
+    registro = (
+        Reto.objects.select_for_update()
+        .filter(valor=reto, dispositivo=dispositivo, llave_socio__isnull=True)
+        .first()
+    )
     if registro is None or registro.usado_en is not None or registro.vence_en <= ahora:
         raise BajadaRechazada("RETO_INVALIDO")
     if not firmas.verificar(dispositivo.llave_publica, mensaje_bajada(reto), firma):

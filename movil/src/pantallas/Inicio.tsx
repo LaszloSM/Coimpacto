@@ -23,6 +23,10 @@ export function Inicio(props: {
   alAltaCargo?: () => void;
   alRespaldo?: () => void;
   alRegistrar?: () => void;
+  /** Socios con acceso en este celular (N1: número, nunca el nombre completo). */
+  socios?: { llaveId: string; numero: number }[];
+  alVerSocio?: (llaveId: string) => void;
+  alAltaSocio?: () => void;
 }) {
   const perfiles = props.perfiles ?? [];
   const falta = props.elegido ? undefined : "Elija quién lleva la reunión";
@@ -59,6 +63,24 @@ export function Inicio(props: {
                 </Pressable>
               );
             })}
+            {props.socios && props.socios.length > 0 ? (
+              <>
+                <Text style={[estilos.mensaje, { marginTop: spacing.lg }]}>Socios en este celular</Text>
+                {props.socios.map((s) => (
+                  <Pressable
+                    key={s.llaveId}
+                    testID={`socio-${s.numero}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Ver lo mío, socio ${s.numero}`}
+                    onPress={() => props.alVerSocio?.(s.llaveId)}
+                    style={base.renglon}
+                  >
+                    <Text style={[base.parrafo, { flex: 1 }]}>Ver lo mío</Text>
+                    <Text style={base.cifraRenglonPequena}>#{String(s.numero).padStart(2, "0")}</Text>
+                  </Pressable>
+                ))}
+              </>
+            ) : null}
           </>
         )}
       </ScrollView>
@@ -76,6 +98,7 @@ export function Inicio(props: {
             <BotonSecundario testID="enviar-fundacion" texto="Enviar a la Fundación" alTocar={() => props.alEnviar?.()} />
             <BotonSecundario testID="respaldo" texto="Copia de seguridad" alTocar={() => props.alRespaldo?.()} />
             <BotonSecundario testID="alta-cargo" texto="Dar de alta un cargo" alTocar={() => props.alAltaCargo?.()} />
+            <BotonSecundario testID="alta-socio" texto="Dar acceso a un socio" alTocar={() => props.alAltaSocio?.()} />
           </>
         )}
       </View>

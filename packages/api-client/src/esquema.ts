@@ -228,6 +228,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/respaldos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Subir el archivo de respaldo de un celular (lo trae el facilitador)
+         * @description Importa los pendientes del archivo cifrado; subirlo dos veces no duplica nada.
+         */
+        post: operations["sync_api_subir_respaldo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/socio/reto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reto de un solo uso para la vista del socio */
+        post: operations["sync_api_reto_socio"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/socio/datos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Datos de solo lectura del socio (solo los suyos)
+         * @description El socio firma {"pedido": "socio", "reto": ...} con su llave; recibe solo lo suyo.
+         */
+        post: operations["sync_api_datos_socio"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -363,6 +420,27 @@ export interface components {
         };
         /** PedidoGrupo */
         PedidoGrupo: {
+            /** Reto */
+            reto: string;
+            /** Firma */
+            firma: string;
+        };
+        /** ResultadoRespaldo */
+        ResultadoRespaldo: {
+            /** Elementos */
+            elementos: number;
+            /** Resultado */
+            resultado: {
+                [key: string]: number;
+            };
+        };
+        /** Respaldo */
+        Respaldo: {
+            /** Archivo */
+            archivo: string;
+        };
+        /** PedidoSocio */
+        PedidoSocio: {
             /** Reto */
             reto: string;
             /** Firma */
@@ -657,6 +735,112 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["PedidoGrupo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+            /** @description Gone */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    sync_api_subir_respaldo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Respaldo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResultadoRespaldo"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    sync_api_reto_socio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Reto"];
+                };
+            };
+        };
+    };
+    sync_api_datos_socio: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoSocio"];
             };
         };
         responses: {

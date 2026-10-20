@@ -399,6 +399,141 @@
           "required": true
         }
       }
+    },
+    "/api/respaldos": {
+      "post": {
+        "operationId": "sync_api_subir_respaldo",
+        "summary": "Subir el archivo de respaldo de un celular (lo trae el facilitador)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoRespaldo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "Importa los pendientes del archivo cifrado; subirlo dos veces no duplica nada.",
+        "tags": [
+          "sincronizacion"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Respaldo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/socio/reto": {
+      "post": {
+        "operationId": "sync_api_reto_socio",
+        "summary": "Reto de un solo uso para la vista del socio",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "sincronizacion"
+        ]
+      }
+    },
+    "/api/socio/datos": {
+      "post": {
+        "operationId": "sync_api_datos_socio",
+        "summary": "Datos de solo lectura del socio (solo los suyos)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Gone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "El socio firma {\"pedido\": \"socio\", \"reto\": ...} con su llave; recibe solo lo suyo.",
+        "tags": [
+          "sincronizacion"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoSocio"
+              }
+            }
+          },
+          "required": true
+        }
+      }
     }
   },
   "components": {
@@ -693,6 +828,58 @@
           "firma"
         ],
         "title": "PedidoGrupo",
+        "type": "object"
+      },
+      "ResultadoRespaldo": {
+        "properties": {
+          "elementos": {
+            "title": "Elementos",
+            "type": "integer"
+          },
+          "resultado": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Resultado",
+            "type": "object"
+          }
+        },
+        "required": [
+          "elementos",
+          "resultado"
+        ],
+        "title": "ResultadoRespaldo",
+        "type": "object"
+      },
+      "Respaldo": {
+        "properties": {
+          "archivo": {
+            "title": "Archivo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "archivo"
+        ],
+        "title": "Respaldo",
+        "type": "object"
+      },
+      "PedidoSocio": {
+        "properties": {
+          "reto": {
+            "title": "Reto",
+            "type": "string"
+          },
+          "firma": {
+            "title": "Firma",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reto",
+          "firma"
+        ],
+        "title": "PedidoSocio",
         "type": "object"
       }
     },

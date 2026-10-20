@@ -54,6 +54,10 @@ class Reto(models.Model):
     dispositivo = models.ForeignKey(
         "cuentas.Dispositivo", on_delete=models.CASCADE, related_name="+"
     )
+    # Si es para la vista de un socio, su llave: el reto solo sirve para pedir sus datos.
+    llave_socio = models.ForeignKey(
+        "cuentas.LlaveSocio", on_delete=models.CASCADE, null=True, blank=True, related_name="+"
+    )
     vence_en = models.DateTimeField()
     usado_en = models.DateTimeField(null=True, blank=True)
 

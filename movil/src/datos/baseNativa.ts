@@ -52,3 +52,10 @@ export async function borrarBase(nombre = "reunion.db"): Promise<void> {
     // No existía.
   }
 }
+
+/** Almacén propio de un socio (N17): su archivo, su llave; sin las migraciones de la reunión. */
+export async function abrirBaseSocio(nombre: string, dek: Uint8Array): Promise<BaseLocal> {
+  const base = envolver(await SQLite.openDatabaseAsync(nombre));
+  await prepararBaseCifrada(base, dek);
+  return base;
+}
