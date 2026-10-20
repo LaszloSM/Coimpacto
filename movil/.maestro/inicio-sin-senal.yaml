@@ -1,14 +1,16 @@
-# La app abre y muestra su pantalla sin señal (modo avión). Base del E2E de la reunión
-# completa sin red (EX3, D23), que crece con TX6.
+# La app abre sin señal (modo avión). En el APK de CI (modo prueba) ya hay dos cargos.
 appId: com.coimpactob.credimpacto
 name: Inicio sin señal
 ---
 - launchApp:
     clearState: true
-- assertVisible: "Credimpacto"
 - setAirplaneMode: enabled
+- extendedWaitUntil:
+    visible: "¿Quién lleva la reunión?"
+    timeout: 30000
+- assertVisible: "Credimpacto"
+- assertVisible: "Portador de Caja"
 - stopApp
 - launchApp
-- assertVisible: "Credimpacto"
-- assertVisible: ".*Pida el código al facilitador.*"
+- assertVisible: "¿Quién lleva la reunión?"
 - setAirplaneMode: disabled

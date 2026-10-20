@@ -1,0 +1,106 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import type { Elemento } from "../cola/cola";
+import { guardarFoto } from "../cola/grupo";
+import { prepararBaseCifrada } from "../datos/base";
+import { migrar } from "../datos/migraciones";
+import { baseEnMemoria } from "../datos/pruebas/baseNode";
+import { almacenEnMemoria } from "../seguridad/almacen";
+import { uuid } from "../seguridad/llavero";
+import { criptoNode as c } from "../seguridad/pruebas/criptoNode";
+import type { Sesion } from "../sesion/abrir";
+import { ProveedorSesion } from "../sesion/contexto";
+import { FOTO_PRUEBA } from "../sesion/modoPrueba";
+import { Asistente } from "./Asistente";
+
+const METRICAS = { frame: { x: 0, y: 0, width: 360, height: 760 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } };
+
+async function montar(foto = FOTO_PRUEBA) {
+  const base = baseEnMemoria();
+  await prepararBaseCifrada(base, new Uint8Array(32));
+  await migrar(base);
+  if (foto) await guardarFoto(base, foto);
+  const par = (await c.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, false, ["sign", "verify"])) as CryptoKeyPair;
+  const sesion: Sesion = {
+    base,
+    cripto: c,
+    perfil: { cargoId: "k2", tipo: "portador_caja", numero: 2 },
+    firmante: { llaveId: uuid(c), privada: par.privateKey },
+  };
+  const entorno = {
+    cripto: c,
+    almacen: almacenEnMemoria(),
+    abrirBase: async () => base,
+    ahora: () => new Date("2026-10-04T15:00:00Z"),
+    nuevoId: () => uuid(c),
+  };
+  await render(
+    <SafeAreaProvider initialMetrics={METRICAS}>
+      <ProveedorSesion entorno={entorno} sesionInicial={sesion}>
+        <Asistente />
+      </ProveedorSesion>
+    </SafeAreaProvider>,
+  );
+  return base;
+}
+
+const cola = async (base: Awaited<ReturnType<typeof montar>>) =>
+  (await base.todas<{ carga: string }>("SELECT carga FROM pendientes ORDER BY rowid;")).map(
+    (f) => JSON.parse(f.carga) as Elemento,
+  );
+
+test("abre la reunión, salta el paso 2 y pasa por asistencia a los aportes", async () => {
+  const base = await montar();
+  await fireEvent.press(await screen.findByTestId("abrir-reunion"));
+  expect(await screen.findByText("Asistencia")).toBeOnTheScreen();
+  expect(screen.getByText("Paso 3 de 9")).toBeOnTheScreen();
+  expect(screen.getByText("Guardado en este celular · 1 por subir")).toBeOnTheScreen();
+
+  await fireEvent.press(screen.getByTestId("asistencia-2"));
+  await waitFor(() => expect(screen.getByText(/Hoy están 19 de 20/)).toBeOnTheScreen());
+  await fireEvent.press(screen.getByTestId("seguir-aportes"));
+
+  expect(await screen.findByText("#01")).toBeOnTheScreen();
+  await fireEvent.press(screen.getByTestId("acciones-mas"));
+  await fireEvent.press(screen.getByTestId("acciones-mas"));
+  expect(screen.getByText("veintidós mil pesos")).toBeOnTheScreen(); // 2 acciones + fondo social
+  await fireEvent.press(screen.getByTestId("guardar-siguiente"));
+
+  // La #02 no vino: sin acciones ni fondo y con la multa de inasistencia marcada (D11).
+  expect(await screen.findByText("#02")).toBeOnTheScreen();
+  expect(screen.getByTestId("multa-no_asistio-valor")).toHaveTextContent("1");
+  expect(screen.getByText("dos mil pesos")).toBeOnTheScreen();
+
+  const tipos = (await cola(base)).map((e) => e.tipo);
+  expect(tipos).toEqual(["reunion", "ahorro", "movimiento"]);
+  expect(await base.primera("SELECT paso, miembro FROM reunion_local;")).toEqual({ paso: 4, miembro: 1 });
+});
+
+test("al reabrir sigue en el mismo miembro (D14)", async () => {
+  const base = await montar();
+  await fireEvent.press(await screen.findByTestId("abrir-reunion"));
+  await fireEvent.press(await screen.findByTestId("seguir-aportes"));
+  await fireEvent.press(await screen.findByTestId("guardar-siguiente"));
+  await screen.findByText("#02");
+  screen.unmount();
+
+  const par = (await c.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, false, ["sign", "verify"])) as CryptoKeyPair;
+  await render(
+    <SafeAreaProvider initialMetrics={METRICAS}>
+      <ProveedorSesion
+        entorno={{ cripto: c, almacen: almacenEnMemoria(), abrirBase: async () => base, ahora: () => new Date(), nuevoId: () => uuid(c) }}
+        sesionInicial={{ base, cripto: c, perfil: { cargoId: "k2", tipo: "portador_caja", numero: 2 }, firmante: { llaveId: "l", privada: par.privateKey } }}
+      >
+        <Asistente />
+      </ProveedorSesion>
+    </SafeAreaProvider>,
+  );
+  expect(await screen.findByText("#02")).toBeOnTheScreen();
+  expect(screen.getByText("Paso 4 de 9")).toBeOnTheScreen();
+});
+
+test("sin lista del grupo pide conectarse una vez", async () => {
+  await montar(null as never);
+  expect(await screen.findByText("Este celular aún no tiene la lista del grupo. Conéctelo a señal una vez.")).toBeOnTheScreen();
+});
