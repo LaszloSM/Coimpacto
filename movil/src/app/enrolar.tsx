@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { tokens } from "@credimpacto/tokens";
 
+import { programadorNativo } from "../avisos/programadorNativo";
 import { SERVIDOR } from "../config";
 import { borrarBase } from "../datos/baseNativa";
 import { altaPrimerPresidente, presidenteDe, registrarCelular, revisarPinDoble, type EnrolamientoEnCurso } from "../enrolamiento/flujo";
@@ -93,6 +94,12 @@ export default function PantallaEnrolar() {
         <View style={[base.contenido, { flex: 1 }]}>
           <Titulo>Celular registrado para {enCurso?.registro.acapNombre}</Titulo>
           <Parrafo>El Presidente ya puede abrir la reunión y dar de alta a los demás cargos.</Parrafo>
+          <Parrafo>Credimpacto puede avisarles el día antes de cada reunión. Los avisos nunca muestran plata ni nombres.</Parrafo>
+          <BotonSecundario
+            testID="activar-avisos"
+            texto="Activar los avisos"
+            alTocar={() => void programadorNativo.pedirPermiso().catch(() => false)}
+          />
         </View>
         <View style={base.acciones}>
           <BotonPrincipal testID="enrolar-listo" texto="Ir al inicio" alTocar={() => router.replace("/")} />

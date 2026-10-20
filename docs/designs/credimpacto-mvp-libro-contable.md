@@ -2715,10 +2715,10 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: Pasada 6 N10, N13
   - Files: movil/src/
   - Verify: pantallas a 100%, 130% y 200% en 320 dp sin cifras partidas; recorrido con TalkBack en la vista del socio y un paso de aportes — **hecho 2026-10-19 en código** (tope 1,3× en cifras y teclas, barra a texto con < 360 dp o letra > 1,3×, etiquetas de TalkBack en franja, cifras en letras, estados y sello); falta la prueba manual con TalkBack y al 200 % en el celular de referencia
-- [ ] **TD7 (P2, human: ~2d / CC: ~1h)** — movil — Recordatorios locales y actualizaciones con datos móviles
+- [x] **TD7 (P2, human: ~2d / CC: ~1h)** — movil — Recordatorios locales y actualizaciones con datos móviles
   - Surfaced by: Pasada 7 N14, N16
   - Files: movil/src/avisos/, movil/src/actualizaciones/
-  - Verify: aviso programado un día antes de la reunión, sin montos; con datos móviles se pregunta antes de bajar
+  - Verify: aviso programado un día antes de la reunión, sin montos; con datos móviles se pregunta antes de bajar — **recordatorios hechos 2026-10-19**; la pregunta antes de bajar actualizaciones con datos móviles (N16) va con el servidor de actualizaciones (TX9)
 - [x] **TD8 (P2, human: ~2h / CC: ~10min)** — DESIGN.md — Sección "Superficie nativa (Android)"
   - Surfaced by: Pasada 5 N9
   - Files: DESIGN.md
