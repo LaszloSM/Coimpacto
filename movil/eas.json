@@ -1,0 +1,23 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "piloto": {
+      "distribution": "internal",
+      "environment": "preview",
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "demostracion": {
+      "extends": "piloto",
+      "env": {
+        "EXPO_PUBLIC_MODO_PRUEBA": "1",
+        "CREDIMPACTO_VARIANTE": "demostracion"
+      }
+    }
+  }
+}

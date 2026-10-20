@@ -5,11 +5,10 @@ name: Publicar en Google Play (pista interna)
 # cuenta de servicio limitada a pistas de prueba. La primera subida es manual en la consola
 # (docs/operacion/llaves.md). Sin los secretos, el flujo se salta sin fallar.
 
+# Solo a mano mientras no exista la cuenta de Google Play (TD4): así no arranca un runner en
+# cada fusión a main. Cuando esté la cuenta, volver a agregar el disparo tras CI verde en main:
+#   workflow_run: { workflows: ["CI"], types: [completed], branches: [main] }
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 permissions:

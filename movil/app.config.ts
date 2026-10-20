@@ -30,11 +30,17 @@ const actualizaciones: ExpoConfig["updates"] =
       }
     : { enabled: false };
 
+const PROYECTO_EAS = process.env.CREDIMPACTO_PROYECTO_EAS ?? "";
+
+// El APK de demostración (grupo de muestra, eas.json) es otra app: otro paquete y otro nombre,
+// así nunca reemplaza ni comparte datos con la del piloto en el mismo celular.
+const DEMOSTRACION = process.env.CREDIMPACTO_VARIANTE === "demostracion";
+
 // Cada subida a Google Play necesita un versionCode mayor; CI lo pasa (TF1).
 const versionCode = Number(process.env.CREDIMPACTO_VERSION_CODE ?? 1);
 
 const config: ExpoConfig = {
-  name: "Credimpacto",
+  name: DEMOSTRACION ? "Credimpacto (demostración)" : "Credimpacto",
   slug: "credimpacto",
   scheme: "credimpacto",
   version: "0.1.0",
@@ -49,7 +55,7 @@ const config: ExpoConfig = {
   platforms: ["android"],
   android: {
     // Identificador permanente en Google Play: no se puede cambiar después de la primera subida.
-    package: "com.coimpactob.credimpacto",
+    package: DEMOSTRACION ? "com.coimpactob.credimpacto.demostracion" : "com.coimpactob.credimpacto",
     versionCode,
     adaptiveIcon: {
       backgroundColor: "#FFFFFF",
@@ -74,8 +80,14 @@ const config: ExpoConfig = {
     // Todo el archivo de la base cifrado con la DEK (EX2); sin esto la app no abre la base.
     ["expo-sqlite", { useSQLCipher: true }],
     ["expo-build-properties", { android: { minSdkVersion: 26 } }],
-    "./plugins/firma-android",
+    // En EAS (APK del piloto) firma Expo con la llave que guarda en la cuenta de la Fundación;
+    // en GitHub Actions firma este plugin con la llave de subida (docs/operacion/apk-piloto.md).
+    ...(process.env.EAS_BUILD ? [] : ["./plugins/firma-android"]),
   ],
+  extra: {
+    // Proyecto de EAS de la Fundación (no es secreto). Lo crea `eas init` (docs/operacion/apk-piloto.md).
+    ...(PROYECTO_EAS ? { eas: { projectId: PROYECTO_EAS } } : {}),
+  },
 };
 
 export default config;

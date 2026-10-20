@@ -1,8 +1,15 @@
 name: CI
 
-# Corre en cada push a cualquier rama (las ramas de trabajo también quedan verificadas).
+# Minutos de Actions (repo privado, plan gratis de 2.000 min/mes): corre en cada PR y en main,
+# no en cada push de rama. Backend, web y contrato tardan ~3 min; Android + Maestro (~30 min)
+# solo cuando cambia la app o sus paquetes, o a mano (workflow_dispatch). Lo que solo cambia
+# documentación no corre.
 on:
+  pull_request:
+    paths-ignore: ["docs/**", "**/*.md", ".claude/**"]
   push:
+    branches: [main]
+    paths-ignore: ["docs/**", "**/*.md", ".claude/**"]
   workflow_dispatch:
 
 permissions:
@@ -16,6 +23,24 @@ env:
   NODE_VERSION: "24"
 
 jobs:
+  cambios:
+    name: Qué cambió
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      app: ${{ steps.filtro.outputs.app }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v3
+        id: filtro
+        with:
+          filters: |
+            app:
+              - "movil/**"
+              - "packages/**"
+              - "package-lock.json"
+              - ".github/workflows/ci.yml"
+
   contrato:
     name: Tokens de diseño y contrato de API al día
     runs-on: ubuntu-latest
@@ -99,6 +124,8 @@ jobs:
 
   movil:
     name: App Android (eslint + tsc + jest + APK de release x86_64)
+    needs: cambios
+    if: needs.cambios.outputs.app == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     # Un APK tarda ~25 min; si Gradle se cuelga, que falle pronto y no a las 6 horas.
     timeout-minutes: 60
