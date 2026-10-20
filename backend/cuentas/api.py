@@ -13,8 +13,9 @@ from ninja.errors import HttpError
 from ninja.security import django_auth
 from ninja.throttling import AnonRateThrottle
 
-from acap.models import Acap
+from acap.models import Acap, Cargo
 from cuentas import servicio
+from cuentas.models import Dispositivo
 
 router = Router(tags=["enrolamiento"])
 
@@ -83,3 +84,41 @@ def canjear_codigo(request, pedido: PedidoCanje):
         "acap_id": dispositivo.acap_id,
         "acap_nombre": dispositivo.acap.nombre,
     }
+
+
+class PedidoPresidente(Schema):
+    codigo: str
+    dispositivo_id: uuid.UUID
+    llave_id: uuid.UUID
+    cargo_id: uuid.UUID
+    llave_publica: str
+    firma: str
+
+
+class LlaveRegistrada(Schema):
+    llave_id: uuid.UUID
+
+
+@router.post(
+    "/enrolamiento/presidente",
+    response={200: LlaveRegistrada, 400: Rechazo},
+    auth=None,
+    throttle=[AnonRateThrottle("10/m")],
+    summary="Registrar la llave del primer Presidente en el celular recién registrado",
+)
+def alta_presidente(request, pedido: PedidoPresidente):
+    """Con el mismo código del QR, firmado por el celular que lo canjeó, en sus 15 minutos."""
+    dispositivo = get_object_or_404(Dispositivo, id=pedido.dispositivo_id)
+    cargo = get_object_or_404(Cargo, id=pedido.cargo_id)
+    try:
+        llave = servicio.alta_primer_presidente(
+            dispositivo=dispositivo,
+            codigo=pedido.codigo,
+            llave_id=pedido.llave_id,
+            cargo=cargo,
+            llave_publica=pedido.llave_publica,
+            firma=pedido.firma,
+        )
+    except servicio.EnrolamientoRechazado as rechazo:
+        return 400, {"motivo": rechazo.motivo, "mensaje": str(rechazo)}
+    return {"llave_id": llave.id}

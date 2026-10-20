@@ -95,6 +95,55 @@ def canjear_codigo(*, codigo: str, llave_publica: str, ahora=None) -> Dispositiv
     return dispositivo
 
 
+def mensaje_primer_presidente(*, codigo: str, llave_id, cargo_id, llave_publica: str) -> dict:
+    """Lo que firma el celular (llave de dispositivo) para dar de alta al primer Presidente."""
+    return {
+        "pedido": "primer_presidente",
+        "codigo": codigo,
+        "llave": str(llave_id),
+        "cargo": str(cargo_id),
+        "llave_publica": llave_publica,
+    }
+
+
+@transaction.atomic
+def alta_primer_presidente(
+    *,
+    dispositivo: Dispositivo,
+    codigo: str,
+    llave_id,
+    cargo: Cargo,
+    llave_publica: str,
+    firma: str,
+    ahora=None,
+) -> LlaveCargo:
+    """El primer Presidente lo autoriza el facilitador que emitió el QR (D18): vale solo desde
+    el celular que canjeó ese código y en los 15 minutos siguientes al canje."""
+    ahora = ahora or timezone.now()
+    registro = CodigoEnrolamiento.objects.filter(resumen=_resumen(codigo)).first()
+    if (
+        registro is None
+        or registro.dispositivo_id != dispositivo.id
+        or registro.usado_en is None
+        or ahora > registro.usado_en + VIGENCIA_CODIGO
+    ):
+        raise EnrolamientoRechazado("codigo_invalido", "Este código ya no sirve.")
+    if cargo.tipo != Cargo.Tipo.PRESIDENTE:
+        raise EnrolamientoRechazado("sin_autorizacion", "Primero se registra el Presidente.")
+    mensaje = mensaje_primer_presidente(
+        codigo=codigo, llave_id=llave_id, cargo_id=cargo.id, llave_publica=llave_publica
+    )
+    if not firmas.verificar(dispositivo.llave_publica, mensaje, firma):
+        raise EnrolamientoRechazado("firma_invalida", "La firma del celular no es válida.")
+    return registrar_llave_cargo(
+        id=llave_id,
+        dispositivo=dispositivo,
+        cargo=cargo,
+        llave_publica=llave_publica,
+        facilitador=registro.creado_por,
+    )
+
+
 def mensaje_alta(*, llave_id, cargo_id, dispositivo_id, llave_publica: str) -> dict:
     """Lo que firma el Presidente para autorizar la llave de otro cargo (JCS, ver core.firmas)."""
     return {

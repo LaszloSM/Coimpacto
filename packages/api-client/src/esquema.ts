@@ -64,6 +64,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/enrolamiento/presidente": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registrar la llave del primer Presidente en el celular recién registrado
+         * @description Con el mismo código del QR, firmado por el celular que lo canjeó, en sus 15 minutos.
+         */
+        post: operations["cuentas_api_alta_presidente"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sync/lotes": {
         parameters: {
             query?: never;
@@ -181,6 +201,38 @@ export interface components {
             /** Llave Publica */
             llave_publica: string;
         };
+        /** LlaveRegistrada */
+        LlaveRegistrada: {
+            /**
+             * Llave Id
+             * Format: uuid
+             */
+            llave_id: string;
+        };
+        /** PedidoPresidente */
+        PedidoPresidente: {
+            /** Codigo */
+            codigo: string;
+            /**
+             * Dispositivo Id
+             * Format: uuid
+             */
+            dispositivo_id: string;
+            /**
+             * Llave Id
+             * Format: uuid
+             */
+            llave_id: string;
+            /**
+             * Cargo Id
+             * Format: uuid
+             */
+            cargo_id: string;
+            /** Llave Publica */
+            llave_publica: string;
+            /** Firma */
+            firma: string;
+        };
         /** ResultadoElemento */
         ResultadoElemento: {
             /** Id */
@@ -280,6 +332,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DispositivoRegistrado"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    cuentas_api_alta_presidente: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoPresidente"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LlaveRegistrada"];
                 };
             };
             /** @description Bad Request */

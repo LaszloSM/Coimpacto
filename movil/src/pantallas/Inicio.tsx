@@ -1,11 +1,13 @@
-// Inicio (N1, versión de TX6a): sin perfiles, el estado vacío de enrolamiento; con perfiles,
-// quién lleva la reunión y un solo botón naranja. El inicio por prioridad completo llega con TD1.
+// Inicio por prioridad (N1, TD1). El único botón naranja es lo que toca ahora: "Seguir la
+// reunión del …" si hay una abierta; si no, "Abrir reunión". "Enviar a la Fundación" siempre
+// a la vista (N15). Perfiles por número y cargo, nunca nombres completos. Sin perfiles: el
+// estado vacío de enrolamiento con "Registrar este celular".
 
 import { tokens } from "@credimpacto/tokens";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { NOMBRE_CARGO, type Perfil } from "../seguridad/perfiles";
-import { BotonPrincipal, estilos as base } from "../ui/componentes";
+import { BotonPrincipal, BotonSecundario, estilos as base } from "../ui/componentes";
 
 const { color, tipo, spacing } = tokens;
 
@@ -13,13 +15,19 @@ export function Inicio(props: {
   error?: string;
   perfiles?: Perfil[];
   elegido?: string;
+  /** Fecha de la reunión abierta en este celular, si hay una. */
+  reunionAbierta?: string | null;
   alElegir?: (cargoId: string) => void;
   alAbrir?: () => void;
+  alEnviar?: () => void;
+  alAltaCargo?: () => void;
+  alRegistrar?: () => void;
 }) {
   const perfiles = props.perfiles ?? [];
+  const falta = props.elegido ? undefined : "Elija quién lleva la reunión";
   return (
     <View style={estilos.pagina} testID="inicio">
-      <View style={estilos.cuerpo}>
+      <ScrollView contentContainerStyle={estilos.cuerpo}>
         <Text style={estilos.marca} accessibilityRole="header">
           Credimpacto
         </Text>
@@ -52,24 +60,30 @@ export function Inicio(props: {
             })}
           </>
         )}
+      </ScrollView>
+      <View style={base.acciones}>
+        {perfiles.length === 0 ? (
+          <BotonPrincipal testID="registrar-celular" texto="Registrar este celular" alTocar={() => props.alRegistrar?.()} />
+        ) : (
+          <>
+            <BotonPrincipal
+              testID="ir-a-reunion"
+              texto={props.reunionAbierta ? `Seguir la reunión del ${props.reunionAbierta}` : "Abrir reunión"}
+              falta={falta}
+              alTocar={() => props.alAbrir?.()}
+            />
+            <BotonSecundario testID="enviar-fundacion" texto="Enviar a la Fundación" alTocar={() => props.alEnviar?.()} />
+            <BotonSecundario testID="alta-cargo" texto="Dar de alta un cargo" alTocar={() => props.alAltaCargo?.()} />
+          </>
+        )}
       </View>
-      {perfiles.length > 0 ? (
-        <View style={base.acciones}>
-          <BotonPrincipal
-            testID="ir-a-reunion"
-            texto="Abrir reunión"
-            falta={props.elegido ? undefined : "Elija quién lleva la reunión"}
-            alTocar={() => props.alAbrir?.()}
-          />
-        </View>
-      ) : null}
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
   pagina: { flex: 1, backgroundColor: color.papel },
-  cuerpo: { flex: 1, paddingHorizontal: 20, paddingTop: spacing["3xl"] },
+  cuerpo: { paddingHorizontal: 20, paddingTop: spacing["3xl"] },
   marca: { ...tipo["campo-titulo"], color: color.tinta },
   renglon: { height: 2, backgroundColor: color.renglon, marginVertical: spacing.md },
   mensaje: { ...tipo.body, color: color.tinta, marginBottom: spacing.sm },

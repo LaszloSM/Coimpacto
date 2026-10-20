@@ -43,3 +43,12 @@ export async function abrirBase(nombre: string, dek: Uint8Array): Promise<BaseLo
   await migrar(base);
   return base;
 }
+
+/** Borra el archivo de la base (registro nuevo o celular retirado, E3). */
+export async function borrarBase(nombre = "reunion.db"): Promise<void> {
+  try {
+    await SQLite.deleteDatabaseAsync(nombre);
+  } catch {
+    // No existía.
+  }
+}

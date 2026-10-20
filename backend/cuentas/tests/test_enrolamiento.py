@@ -258,3 +258,108 @@ class TestApi:
         )
         assert respuesta.status_code == 403
         assert not CodigoEnrolamiento.objects.exists()
+
+
+class TestPrimerPresidente:
+    def preparar(self, ciclo, facilitador, nuevo_cargo, ahora=None):
+        texto, _ = servicio.emitir_codigo(acap=ciclo.acap, usuario=facilitador)
+        celular = LlaveDePrueba()
+        dispositivo = servicio.canjear_codigo(
+            codigo=texto, llave_publica=celular.publica, ahora=ahora
+        )
+        return texto, celular, dispositivo, nuevo_cargo(Cargo.Tipo.PRESIDENTE)
+
+    def pedido(self, texto, celular, dispositivo, cargo, **cambios):
+        llave = LlaveDePrueba()
+        datos = {
+            "codigo": texto,
+            "llave_id": uuid.uuid4(),
+            "cargo": cargo,
+            "llave_publica": llave.publica,
+            "dispositivo": dispositivo,
+        }
+        datos.update(cambios)
+        datos["firma"] = celular.firmar(
+            servicio.mensaje_primer_presidente(
+                codigo=datos["codigo"],
+                llave_id=datos["llave_id"],
+                cargo_id=datos["cargo"].id,
+                llave_publica=datos["llave_publica"],
+            )
+        )
+        return datos
+
+    def test_alta_autorizada_por_el_facilitador_del_qr(self, ciclo, facilitador, nuevo_cargo):
+        texto, celular, dispositivo, cargo = self.preparar(ciclo, facilitador, nuevo_cargo)
+        llave = servicio.alta_primer_presidente(**self.pedido(texto, celular, dispositivo, cargo))
+        assert llave.autorizada_por_usuario == facilitador
+
+    def test_otro_celular_no_usa_ese_codigo(self, ciclo, facilitador, nuevo_cargo):
+        texto, celular, _, cargo = self.preparar(ciclo, facilitador, nuevo_cargo)
+        otro_texto, _ = servicio.emitir_codigo(acap=ciclo.acap, usuario=facilitador)
+        otro = servicio.canjear_codigo(codigo=otro_texto, llave_publica=LlaveDePrueba().publica)
+        assert (
+            motivo(servicio.alta_primer_presidente, **self.pedido(texto, celular, otro, cargo))
+            == "codigo_invalido"
+        )
+
+    def test_vence_15_minutos_despues_del_canje(self, ciclo, facilitador, nuevo_cargo):
+        texto, celular, dispositivo, cargo = self.preparar(ciclo, facilitador, nuevo_cargo)
+        tarde = timezone.now() + datetime.timedelta(minutes=16)
+        assert (
+            motivo(
+                servicio.alta_primer_presidente,
+                **self.pedido(texto, celular, dispositivo, cargo),
+                ahora=tarde,
+            )
+            == "codigo_invalido"
+        )
+
+    def test_solo_el_presidente(self, ciclo, facilitador, nuevo_cargo):
+        texto, celular, dispositivo, _ = self.preparar(ciclo, facilitador, nuevo_cargo)
+        caja = nuevo_cargo(Cargo.Tipo.PORTADOR_CAJA)
+        assert (
+            motivo(
+                servicio.alta_primer_presidente, **self.pedido(texto, celular, dispositivo, caja)
+            )
+            == "sin_autorizacion"
+        )
+
+    def test_firma_de_otro_celular(self, ciclo, facilitador, nuevo_cargo):
+        texto, _, dispositivo, cargo = self.preparar(ciclo, facilitador, nuevo_cargo)
+        assert (
+            motivo(
+                servicio.alta_primer_presidente,
+                **self.pedido(texto, LlaveDePrueba(), dispositivo, cargo),
+            )
+            == "firma_invalida"
+        )
+
+    def test_por_la_api(self, ciclo, facilitador, nuevo_cargo):
+        texto, celular, dispositivo, cargo = self.preparar(ciclo, facilitador, nuevo_cargo)
+        p = self.pedido(texto, celular, dispositivo, cargo)
+        respuesta = Client().post(
+            "/api/enrolamiento/presidente",
+            {
+                "codigo": p["codigo"],
+                "dispositivo_id": str(dispositivo.id),
+                "llave_id": str(p["llave_id"]),
+                "cargo_id": str(cargo.id),
+                "llave_publica": p["llave_publica"],
+                "firma": p["firma"],
+            },
+            content_type="application/json",
+            secure=True,
+        )
+        assert respuesta.status_code == 200, respuesta.content
+        assert respuesta.json() == {"llave_id": str(p["llave_id"])}
+
+
+def test_el_grupo_facilitador_puede_enrolar(db):
+    from django.contrib.auth.models import Group
+
+    usuaria = Usuario.objects.create_user(username="facilitadora2", password="x" * 16)
+    usuaria.groups.add(Group.objects.get(name="Facilitador"))
+    usuaria = Usuario.objects.get(pk=usuaria.pk)
+    assert usuaria.has_perm("cuentas.add_codigoenrolamiento")
+    assert usuaria.has_perm("cuentas.add_llavecargo")

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Inicio } from "../pantallas/Inicio";
 import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { useSesion } from "../sesion/contexto";
+import { reunionAbiertaMarcada } from "../sesion/marcas";
 import { MODO_PRUEBA, sembrarModoPrueba } from "../sesion/modoPrueba";
 
 export default function PantallaInicio() {
@@ -12,12 +13,14 @@ export default function PantallaInicio() {
   const [perfiles, setPerfiles] = useState<Perfil[] | null>(null);
   const [elegido, setElegido] = useState<string>();
   const [error, setError] = useState<string>();
+  const [abierta, setAbierta] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
       try {
         if (MODO_PRUEBA) await sembrarModoPrueba(entorno, entorno.ahora());
         const lista = await leerPerfiles(entorno.almacen);
+        setAbierta(await reunionAbiertaMarcada(entorno.almacen));
         setPerfiles(lista);
         if (lista.length === 1) setElegido(lista[0].cargoId);
       } catch (e) {
@@ -36,7 +39,11 @@ export default function PantallaInicio() {
       perfiles={perfiles}
       elegido={elegido}
       alElegir={setElegido}
-      alAbrir={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido } })}
+      reunionAbierta={abierta}
+      alAbrir={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "reunion" } })}
+      alEnviar={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "enviar" } })}
+      alAltaCargo={() => elegido && router.push({ pathname: "/pin", params: { cargo: elegido, accion: "alta" } })}
+      alRegistrar={() => router.push("/enrolar")}
     />
   );
 }

@@ -2689,7 +2689,7 @@ Registro de decisiones de la pasada 7:
 ## Implementation Tasks (diseño nativo)
 Synthesized from this review's findings. Each task derives from a specific finding above. Ratios assumed: features ~30x, design systems ~10x.
 
-- [ ] **TD1 (P1, human: ~3d / CC: ~1.5h)** — movil/inicio — Inicio por prioridad, envío visible, ícono y arranque
+- [x] **TD1 (P1, human: ~3d / CC: ~1.5h)** — movil/inicio — Inicio por prioridad, envío visible, ícono y arranque
   - Surfaced by: Pasada 1 N1; Pasada 7 N15; Pasada 4 N8
   - Files: movil/src/inicio/, movil/app.json, movil/assets/
   - Verify: Maestro: con reunión abierta el botón naranja es "Seguir la reunión"; filas de perfil sin nombres completos; arranque < 2 s en el celular de referencia
