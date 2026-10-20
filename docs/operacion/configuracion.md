@@ -12,6 +12,7 @@ de nube (servidor) y en los secretos de GitHub (CI).
 | `DJANGO_ALLOWED_HOSTS` | Dominios del servidor, separados por coma | No |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | Origen de la web de la oficina (https://…) | No |
 | `CREDIMPACTO_RESPALDO_LLAVE` | Llave privada (PEM PKCS8) para abrir las copias de seguridad de los celulares (TX7) | Sí |
+| `CREDIMPACTO_ACTUALIZACIONES_TOKEN` | Token con que CI publica actualizaciones de la app (TX9); el servidor no tiene la llave de firma | Sí |
 
 Generar la llave de las copias una sola vez y guardar la privada con el runbook de llaves (TX10):
 

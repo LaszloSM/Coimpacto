@@ -2509,7 +2509,7 @@ Synthesized from this review's findings. Each task derives from a specific findi
   - Surfaced by: EX4 (D5); D3 de alcance
   - Files: movil/src/socio/, backend/cuentas/
   - Verify: dos perfiles en un celular aislados; la API rechaza otro titular
-- [ ] **TX9 (P2, human: ~3d / CC: ~1.5h)** — actualizaciones — Servidor de actualizaciones propio compatible con expo-updates, firma de código en CI, aplicación manual sin pendientes
+- [x] **TX9 (P2, human: ~3d / CC: ~1.5h)** — actualizaciones — Servidor de actualizaciones propio compatible con expo-updates, firma de código en CI, aplicación manual sin pendientes
   - Surfaced by: EX6 (D7), EA2 (D9); D9 (eng)
   - Files: backend/ (app de actualizaciones), .github/workflows/, movil/
   - Verify: actualización sin firma rechazada; no se aplica con reunión abierta
