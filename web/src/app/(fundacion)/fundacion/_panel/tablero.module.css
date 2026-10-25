@@ -847,3 +847,53 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Acceso a la app: pasos ---------- */
+
+.pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 760px;
+  display: grid;
+  gap: 12px;
+}
+
+.paso {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+}
+
+.pasoNumero {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--fondo);
+  border: 1px solid var(--borde-fuerte);
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+}
+
+.pasoTitulo {
+  margin: 4px 0 6px;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+.pasoTexto {
+  margin: 0 0 14px;
+  max-width: 62ch;
+  color: var(--texto-suave);
+}
+
+.pasoTexto:last-child {
+  margin-bottom: 0;
+}

@@ -8,6 +8,7 @@ import {
   ChalkboardTeacher,
   ClipboardText,
   CoinVertical,
+  DeviceMobile,
   FileText,
   GearSix,
   HandCoins,
@@ -57,6 +58,7 @@ const GESTION: Seccion[] = [
   { ruta: "/fundacion/pendientes", texto: "Pendientes", icono: Tray, contador: true },
   { ruta: "/fundacion/por-aclarar", texto: "Por aclarar", icono: MagnifyingGlass },
   { ruta: "/fundacion/miembros", texto: "Personas", icono: UsersThree },
+  { ruta: "/fundacion/celulares", texto: "Acceso a la app", icono: DeviceMobile },
   { ruta: "/fundacion/indicadores", texto: "Comunidades", icono: ChartLineUp },
   { ruta: "/fundacion/respaldos", texto: "Copias de seguridad", icono: ClipboardText },
 ];

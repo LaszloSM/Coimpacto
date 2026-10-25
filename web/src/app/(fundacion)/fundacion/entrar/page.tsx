@@ -26,7 +26,7 @@ export default function Entrar() {
           setError(false);
           try {
             await api("/sesion/entrar", { metodo: "POST", cuerpo: { usuario, clave } });
-            router.replace("/fundacion/celulares");
+            router.replace("/fundacion");
           } catch {
             setError(true);
             setEntrando(false);
