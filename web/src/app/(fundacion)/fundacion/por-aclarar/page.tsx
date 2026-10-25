@@ -106,7 +106,12 @@ export default function PorAclarar() {
           {error}
         </p>
       ) : null}
-      {acaps ? (
+      {acaps && acaps.length === 0 ? (
+        <div className={estilos.vacio} role="status">
+          <p>{t("armazon.sinAcap")}</p>
+          <a href="/admin/acap/acap/add/">{t("armazon.irConfiguracion")}</a>
+        </div>
+      ) : acaps ? (
         <label className={`${estilos.etiqueta} ${estilos.bloque}`}>
           {t("porAclarar.acap")}
           <select

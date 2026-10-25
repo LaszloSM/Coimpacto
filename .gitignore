@@ -51,3 +51,7 @@ deploy/respaldos.log
 
 # Herramientas locales de desarrollo (skills de terceros, hooks): nunca al repositorio público
 .claude/
+
+# Impeccable: capturas de revisión y cachés locales
+.impeccable/review/
+**/.impeccable/hook.cache.json

@@ -67,7 +67,7 @@ test("bandeja de pendientes: por gravedad, con el código para el equipo", async
       ],
     }),
   );
-  await page.goto("/fundacion");
+  await page.goto("/fundacion/pendientes");
   await expect(page.getByText("No se aceptó · 2 registros")).toBeVisible();
   await expect(page.getByText("MAXIMO_ACCIONES")).toBeVisible();
   await expect(page.getByText("Sin datos hace 21 días")).toBeVisible();

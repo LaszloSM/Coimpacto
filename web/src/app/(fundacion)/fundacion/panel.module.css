@@ -1,0 +1,251 @@
+/* Panel de la Fundación. Marca CoimpactoB (coimpactob.com): naranja #F66A03 como único acento,
+   carbón para la barra y el texto, paleta secundaria de la marca solo para datos y estados.
+   Movimiento: curvas propias y menos de 300 ms; nada se anima en lo que se usa a cada rato. */
+.panel {
+  --naranja: #f66a03;
+  --naranja-hover: #e05f00;
+  --naranja-suave: #fff1e6;
+  --carbon: #1c1c1c;
+  --carbon-2: #2a2a2a;
+  --texto: #252525;
+  --texto-suave: #5f5e5a;
+  --texto-tenue: #6b6a66;
+  --fondo: #fafaf9;
+  --superficie: #ffffff;
+  --borde: #ecebe8;
+  --borde-fuerte: #dad8d3;
+  /* Paleta secundaria de CoimpactoB, para datos y estados. */
+  --azul: #005fc5;
+  --verde: #35a472;
+  --verde-suave: #e8f5ee;
+  --amarillo: #f9c032;
+  --amarillo-suave: #fef6e1;
+  --rojo: #f53d45;
+  --rojo-texto: #c4202a;
+  --rojo-suave: #feecec;
+  --gris-datos: #c9c7c1;
+  --radio: 14px;
+  --radio-sm: 8px;
+  --sombra: 0 1px 2px rgb(28 28 28 / 0.04), 0 4px 16px rgb(28 28 28 / 0.04);
+  --curva: cubic-bezier(0.23, 1, 0.32, 1);
+  --fuente-titulos-pila: var(--fuente-titulos), system-ui, sans-serif;
+  --fuente-texto-pila: var(--fuente-texto), system-ui, sans-serif;
+
+  font-family: var(--fuente-texto-pila);
+  color: var(--texto);
+  background: var(--fondo);
+  font-feature-settings: "tnum";
+  min-height: 100dvh;
+  scrollbar-color: var(--borde-fuerte) transparent;
+}
+
+.panel ::selection {
+  background: var(--naranja-suave);
+  color: var(--texto);
+}
+
+.panel :focus-visible {
+  outline: 2px solid var(--naranja);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.armazon {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+}
+
+/* ---------- Barra lateral ---------- */
+
+.barra {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--carbon);
+  color: #f4f3f0;
+  padding: 22px 14px 14px;
+}
+
+.marca {
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 700;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-decoration: none;
+  padding: 0 10px 22px;
+}
+
+.marcaI {
+  color: var(--naranja);
+}
+
+.navegacion {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--carbon-2) transparent;
+}
+
+.navegacion ul {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.grupo {
+  margin: 0 0 6px;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #a3a19b;
+}
+
+.enlace {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: var(--radio-sm);
+  color: #d9d7d2;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .enlace:hover {
+    background: var(--carbon-2);
+    color: #fff;
+  }
+}
+
+.enlace[aria-current="page"] {
+  background: rgb(246 106 3 / 0.16);
+  color: #fff;
+  font-weight: 500;
+}
+
+.enlace[aria-current="page"] svg {
+  color: var(--naranja);
+}
+
+.contador {
+  margin-left: auto;
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--naranja);
+  color: #1c1c1c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.pie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 10px 0;
+  border-top: 1px solid var(--carbon-2);
+}
+
+.iniciales {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--naranja);
+  color: #1c1c1c;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.usuario {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.salir {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radio-sm);
+  background: transparent;
+  color: #d9d7d2;
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 140ms var(--curva);
+}
+
+.salir:active {
+  transform: scale(0.95);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .salir:hover {
+    background: var(--carbon-2);
+    color: #fff;
+  }
+}
+
+.contenido {
+  min-width: 0;
+}
+
+/* Debajo de 900 px la barra pasa arriba como tira desplazable. */
+@media (max-width: 900px) {
+  .armazon {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .barra {
+    position: static;
+    height: auto;
+    min-width: 0;
+    padding: 14px 16px 10px;
+  }
+
+  .marca {
+    padding: 0 0 10px;
+  }
+
+  .navegacion {
+    display: flex;
+    gap: 4px;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .navegacion ul {
+    display: flex;
+    flex: none;
+    margin: 0;
+  }
+
+  .grupo {
+    display: none;
+  }
+
+  .enlace {
+    white-space: nowrap;
+  }
+
+  .pie {
+    display: none;
+  }
+}

@@ -464,6 +464,27 @@
         ]
       }
     },
+    "/api/oficina/tablero": {
+      "get": {
+        "operationId": "cuentas_sesion_tablero",
+        "summary": "Tablero de gerencia del panel",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Cifras, pulso por comunidad, hallazgos y series del panel. Sin datos personales.",
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/oficina/acaps/{acap_id}/miembros": {
       "get": {
         "operationId": "cuentas_miembros_api_lista",
