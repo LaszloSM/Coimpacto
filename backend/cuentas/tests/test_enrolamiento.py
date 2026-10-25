@@ -383,6 +383,7 @@ class TestEntrarConClave:
                 "llave_publica": (llave or LlaveDePrueba()).publica,
             },
             content_type="application/json",
+            secure=True,
         )
 
     def test_registra_el_celular_y_autoriza_al_primer_presidente(
@@ -447,12 +448,10 @@ class TestEntrarConClave:
         )
 
     def test_el_usuario_de_la_app_no_entra_al_panel(self, cuenta_acap):
-        cliente = Client()
-        cliente.get("/api/sesion/csrf")
-        respuesta = cliente.post(
+        respuesta = Client().post(
             "/api/sesion/entrar",
             {"usuario": "las-brisas", "clave": "clave-de-la-junta-1"},
             content_type="application/json",
-            HTTP_X_CSRFTOKEN=cliente.cookies["csrftoken"].value,
+            secure=True,
         )
-        assert respuesta.status_code in (400, 401, 403)
+        assert respuesta.status_code == 401
