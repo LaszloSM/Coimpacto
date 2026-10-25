@@ -48,3 +48,6 @@ deploy/.env
 deploy/respaldos/
 deploy/respaldos.log
 !deploy/.env.ejemplo
+
+# Herramientas locales de desarrollo (skills de terceros, hooks): nunca al repositorio público
+.claude/
