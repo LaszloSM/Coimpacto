@@ -2,6 +2,7 @@
 
 from ninja import NinjaAPI
 
+from acap.oficina_api import router as oficina_router
 from actualizaciones.api import router as actualizaciones_router
 from core.api import router as core_router
 from cuentas.api import router as cuentas_router
@@ -26,3 +27,4 @@ api.add_router("/", miembros_router)
 api.add_router("/", libro_router)
 api.add_router("/", sync_router)
 api.add_router("/", propuestas_router)
+api.add_router("/", oficina_router)

@@ -538,6 +538,283 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/ahorro": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Módulo de ahorro */
+        get: operations["acap_oficina_api_modulo_ahorro"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/credito": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Módulo de crédito */
+        get: operations["acap_oficina_api_modulo_credito"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/cartera": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Módulo de cartera */
+        get: operations["acap_oficina_api_modulo_cartera"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/analisis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lecturas del libro por reglas */
+        get: operations["acap_oficina_api_modulo_analisis"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/reportes/consolidado.xlsx": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consolidado de la Fundación en Excel */
+        get: operations["acap_oficina_api_reporte_consolidado"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/comunidades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Comunidades para gestionar */
+        get: operations["acap_oficina_api_comunidades"];
+        put?: never;
+        /** Crear una ACAP */
+        post: operations["acap_oficina_api_crear_comunidad"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/comunidades/{acap_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detalle de una ACAP */
+        get: operations["acap_oficina_api_detalle_comunidad"];
+        /** Editar una ACAP */
+        put: operations["acap_oficina_api_editar_comunidad"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/comunidades/{acap_id}/ciclos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Abrir un ciclo */
+        post: operations["acap_oficina_api_crear_ciclo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/ciclos/{ciclo_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un ciclo */
+        put: operations["acap_oficina_api_editar_ciclo"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/ciclos/{ciclo_id}/cargos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Asignar un cargo */
+        post: operations["acap_oficina_api_asignar_cargo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/comunidades/{acap_id}/usuario-app": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Crear el usuario de la app de la ACAP o cambiar su clave */
+        post: operations["acap_oficina_api_usuario_app"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/celulares/{dispositivo_id}/retirar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retirar un celular */
+        post: operations["acap_oficina_api_retirar_celular"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/proyectos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Proyectos productivos */
+        get: operations["acap_oficina_api_proyectos"];
+        put?: never;
+        /** Registrar un proyecto */
+        post: operations["acap_oficina_api_crear_proyecto"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/proyectos/{proyecto_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un proyecto */
+        put: operations["acap_oficina_api_editar_proyecto"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/capacitaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Capacitaciones */
+        get: operations["acap_oficina_api_capacitaciones"];
+        put?: never;
+        /** Registrar una capacitación */
+        post: operations["acap_oficina_api_crear_capacitacion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/evaluaciones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Evaluaciones de las ACAP */
+        get: operations["acap_oficina_api_evaluaciones"];
+        put?: never;
+        /** Registrar una evaluación */
+        post: operations["acap_oficina_api_crear_evaluacion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -794,6 +1071,192 @@ export interface components {
             accion: string;
             /** Motivo */
             motivo: string;
+        };
+        /** DatosAcap */
+        DatosAcap: {
+            /** Nombre */
+            nombre: string;
+            /**
+             * Zona
+             * @default
+             */
+            zona: string;
+            /**
+             * Departamento
+             * @default
+             */
+            departamento: string;
+            /**
+             * Municipio
+             * @default
+             */
+            municipio: string;
+        };
+        /** DatosCiclo */
+        DatosCiclo: {
+            /** Numero */
+            numero?: number | null;
+            /**
+             * Fecha Inicio
+             * Format: date
+             */
+            fecha_inicio: string;
+            /** Duracion Meses */
+            duracion_meses: number;
+            /** Valor Accion */
+            valor_accion: number;
+            /**
+             * Max Acciones Reunion
+             * @default 5
+             */
+            max_acciones_reunion: number;
+            /**
+             * Valor Fondo Social
+             * @default 0
+             */
+            valor_fondo_social: number;
+            /**
+             * Valor Multa
+             * @default 0
+             */
+            valor_multa: number;
+            /** Tasa Interes */
+            tasa_interes: number | string;
+            /** Meta Ahorro */
+            meta_ahorro?: number | null;
+            /**
+             * Estado
+             * @default activo
+             */
+            estado: string;
+        };
+        /** DatosCargo */
+        DatosCargo: {
+            /** Tipo */
+            tipo: string;
+            /** Membresia Id */
+            membresia_id?: string | null;
+        };
+        /** DatosUsuarioApp */
+        DatosUsuarioApp: {
+            /** Usuario */
+            usuario: string;
+            /** Clave */
+            clave: string;
+        };
+        /** DatosProyecto */
+        DatosProyecto: {
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+            /** Nombre */
+            nombre: string;
+            /**
+             * Linea
+             * @default otra
+             */
+            linea: string;
+            /**
+             * Descripcion
+             * @default
+             */
+            descripcion: string;
+            /**
+             * Estado
+             * @default idea
+             */
+            estado: string;
+            /**
+             * Monto Estimado
+             * @default 0
+             */
+            monto_estimado: number;
+            /**
+             * Participantes
+             * @default 0
+             */
+            participantes: number;
+            /** Fecha Inicio */
+            fecha_inicio?: string | null;
+            /**
+             * Avance
+             * @default 0
+             */
+            avance: number;
+        };
+        /** DatosCapacitacion */
+        DatosCapacitacion: {
+            /** Acap Id */
+            acap_id?: string | null;
+            /** Tema */
+            tema: string;
+            /** Titulo */
+            titulo: string;
+            /**
+             * Fecha
+             * Format: date
+             */
+            fecha: string;
+            /**
+             * Horas
+             * @default 2
+             */
+            horas: number | string;
+            /**
+             * Asistentes
+             * @default 0
+             */
+            asistentes: number;
+            /**
+             * Facilitador
+             * @default
+             */
+            facilitador: string;
+            /**
+             * Notas
+             * @default
+             */
+            notas: string;
+        };
+        /** DatosEvaluacion */
+        DatosEvaluacion: {
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+            /**
+             * Fecha
+             * Format: date
+             */
+            fecha: string;
+            /**
+             * Evaluador
+             * @default
+             */
+            evaluador: string;
+            /** Gobernanza */
+            gobernanza: number;
+            /** Transparencia */
+            transparencia: number;
+            /** Participacion */
+            participacion: number;
+            /** Gestion Financiera */
+            gestion_financiera: number;
+            /** Reglamento */
+            reglamento: number;
+            /**
+             * Fortalezas
+             * @default
+             */
+            fortalezas: string;
+            /**
+             * Compromisos
+             * @default
+             */
+            compromisos: string;
         };
     };
     responses: never;
@@ -1672,6 +2135,440 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Error"];
                 };
+            };
+        };
+    };
+    acap_oficina_api_modulo_ahorro: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_modulo_credito: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_modulo_cartera: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_modulo_analisis: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_reporte_consolidado: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_comunidades: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_comunidad: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosAcap"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_detalle_comunidad: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_editar_comunidad: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosAcap"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_ciclo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosCiclo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_editar_ciclo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ciclo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosCiclo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_asignar_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ciclo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosCargo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_usuario_app: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                acap_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosUsuarioApp"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_retirar_celular: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dispositivo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_proyectos: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_proyecto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosProyecto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_editar_proyecto: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                proyecto_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosProyecto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_capacitaciones: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_capacitacion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosCapacitacion"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_evaluaciones: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_evaluacion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosEvaluacion"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
