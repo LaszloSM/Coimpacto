@@ -69,7 +69,10 @@ name: Reunión completa sin señal
     id: "capital-0"
 - tapOn:
     id: "capital-000"
-- assertVisible: ".*cien mil pesos.*"
+# La cifra en letras queda arriba del teclado: se sube hasta verla (si no está, falla aquí).
+- scrollUntilVisible:
+    element: ".*cien mil pesos.*"
+    direction: UP
 - scrollUntilVisible:
     element:
       id: "voto-favor-mas"
