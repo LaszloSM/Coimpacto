@@ -4,9 +4,9 @@
 // franja de cifras, tablas ordenables, barras de avance y el panel lateral de formularios.
 
 import { ArrowDown, ArrowUp, X } from "@phosphor-icons/react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { api, SinSesion } from "@/lib/api";
 
@@ -85,6 +85,45 @@ export interface CifraDato {
   pie?: string;
   exacto?: string;
   destacada?: boolean;
+  /** Para contar hasta la cifra al cargar: el número y cómo se escribe. */
+  numero?: number;
+  formato?: (n: number) => string;
+  /** Últimos meses, para la línea pequeña bajo la cifra. */
+  serie?: number[];
+}
+
+/** Cuenta desde cero hasta la cifra (600 ms, ease-out); sin animación con "reducir movimiento". */
+function Contador({ numero, formato }: { numero: number; formato: (n: number) => string }) {
+  const nodo = useRef<HTMLSpanElement>(null);
+  const reducir = useReducedMotion();
+  useEffect(() => {
+    if (reducir || !nodo.current) return;
+    const control = animate(0, numero, {
+      duration: 0.6,
+      ease: [0.23, 1, 0.32, 1],
+      onUpdate: (v) => {
+        if (nodo.current) nodo.current.textContent = formato(Math.round(v));
+      },
+    });
+    return () => control.stop();
+  }, [numero, formato, reducir]);
+  return <span ref={nodo}>{formato(numero)}</span>;
+}
+
+/** Línea pequeña de la tendencia, con el último punto marcado. Solo forma: la cifra va arriba. */
+export function Chispa({ serie, color = "var(--naranja)" }: { serie: number[]; color?: string }) {
+  if (serie.length < 2) return null;
+  const max = Math.max(...serie);
+  const min = Math.min(...serie);
+  const rango = max - min || 1;
+  const puntos = serie.map((v, i) => [(i / (serie.length - 1)) * 100, 26 - ((v - min) / rango) * 22]);
+  const [ux, uy] = puntos[puntos.length - 1];
+  return (
+    <svg className={m.chispa} viewBox="-2 0 104 30" preserveAspectRatio="none" aria-hidden>
+      <polyline points={puntos.map((p) => p.join(",")).join(" ")} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={ux} cy={uy} r="3" fill={color} vectorEffect="non-scaling-stroke" />
+    </svg>
+  );
 }
 
 export function Cifras({ cifras }: { cifras: CifraDato[] }) {
@@ -101,8 +140,13 @@ export function Cifras({ cifras }: { cifras: CifraDato[] }) {
             {c.etiqueta}
           </dt>
           <dd className={estilos.cifraValor} title={c.exacto}>
-            {c.valor}
+            {c.numero !== undefined && c.formato ? <Contador numero={c.numero} formato={c.formato} /> : c.valor}
           </dd>
+          {c.serie ? (
+            <dd className={m.chispaMarco}>
+              <Chispa serie={c.serie} color={c.destacada ? "var(--naranja)" : "var(--texto-tenue)"} />
+            </dd>
+          ) : null}
           {c.pie ? (
             <dd className={estilos.cifraPie}>
               <span className={estilos.variacionNeutra}>{c.pie}</span>

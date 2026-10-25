@@ -38,12 +38,19 @@ export default function Credito() {
           <>
             <Cifras
               cifras={[
-                { etiqueta: "Capital desembolsado", valor: pesosCortos(d.resumen.desembolsado), exacto: pesosExactos(d.resumen.desembolsado), pie: `${d.resumen.prestamos} préstamos otorgados`, destacada: true },
+                { etiqueta: "Capital desembolsado", valor: pesosCortos(d.resumen.desembolsado), numero: d.resumen.desembolsado, formato: pesosCortos, exacto: pesosExactos(d.resumen.desembolsado), pie: `${d.resumen.prestamos} préstamos otorgados`, destacada: true, serie: d.mensual.map((x) => x.desembolsado) },
                 { etiqueta: "Préstamos vigentes", valor: d.resumen.vigentes.toLocaleString("es-CO"), pie: "con saldo por pagar" },
                 { etiqueta: "Préstamo promedio", valor: pesosCortos(d.resumen.capital_promedio), pie: `${d.resumen.plazo_promedio} cuotas en promedio` },
                 { etiqueta: "Intereses pactados", valor: pesosCortos(d.resumen.intereses_pactados), pie: `tasa promedio ${d.resumen.tasa_promedio.toLocaleString("es-CO")} % mensual` },
               ]}
             />
+            {d.resumen.prestamos ? (
+              <p className={m.titular}>
+                Las asambleas aprobaron <strong>{d.resumen.prestamos} préstamos</strong> por {pesosExactos(d.resumen.desembolsado)}; <strong>{d.resumen.vigentes}</strong> siguen con saldo. El préstamo típico es de {pesosCortos(d.resumen.capital_promedio)} a {d.resumen.plazo_promedio} cuotas.
+              </p>
+            ) : (
+              <p className={m.titular}>Todavía no hay préstamos internos registrados. Aparecen aquí cuando una asamblea aprueba el primero en la app.</p>
+            )}
             <div className={m.dosColumnas}>
               <BarrasPorMes
                 titulo="Desembolsos y abonos"

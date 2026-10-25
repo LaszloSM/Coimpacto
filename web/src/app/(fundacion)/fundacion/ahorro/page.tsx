@@ -44,6 +44,26 @@ function fecha(iso: string | null) {
   return iso ? new Date(`${iso}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" }) : "Sin reuniones";
 }
 
+/** La lectura del módulo en una frase: cuánto, quién va adelante y quién necesita apoyo. */
+function Titular({ datos }: { datos: DatosAhorro }) {
+  const conMiembros = datos.comunidades.filter((c) => c.miembros > 0);
+  if (!conMiembros.length) return null;
+  const lider = [...conMiembros].sort((a, b) => b.por_miembro - a.por_miembro)[0];
+  const baja = conMiembros.filter((c) => c.participacion !== null && c.participacion < 60);
+  return (
+    <p className={m.titular}>
+      Las comunidades llevan <strong>{pesosExactos(datos.resumen.ahorro_ciclo)}</strong> ahorrados en su ciclo actual. <strong>{lider.nombre}</strong> va adelante con {pesosCortos(lider.por_miembro)} por miembro
+      {baja.length ? (
+        <>
+          ; {baja.length === 1 ? <strong>{baja[0].nombre}</strong> : <strong>{baja.length} comunidades</strong>} tuvo baja participación en su última reunión.
+        </>
+      ) : (
+        "."
+      )}
+    </p>
+  );
+}
+
 export default function Ahorro() {
   const { datos, error, recargar } = useDatos<DatosAhorro>("/oficina/ahorro");
   return (
@@ -62,23 +82,19 @@ export default function Ahorro() {
           <>
             <Cifras
               cifras={[
-                { etiqueta: "Ahorro del ciclo", valor: pesosCortos(d.resumen.ahorro_ciclo), exacto: pesosExactos(d.resumen.ahorro_ciclo), pie: `${pesosCortos(d.resumen.ahorro_historico)} en toda la historia`, destacada: true },
-                { etiqueta: "Fondo social", valor: pesosCortos(d.resumen.fondo_social_ciclo), exacto: pesosExactos(d.resumen.fondo_social_ciclo), pie: "del ciclo actual" },
+                { etiqueta: "Ahorro del ciclo", valor: pesosCortos(d.resumen.ahorro_ciclo), numero: d.resumen.ahorro_ciclo, formato: pesosCortos, exacto: pesosExactos(d.resumen.ahorro_ciclo), pie: `${pesosCortos(d.resumen.ahorro_historico)} en toda la historia`, destacada: true, serie: d.mensual.map((x) => x.ahorro) },
+                { etiqueta: "Fondo social", valor: pesosCortos(d.resumen.fondo_social_ciclo), numero: d.resumen.fondo_social_ciclo, formato: pesosCortos, exacto: pesosExactos(d.resumen.fondo_social_ciclo), pie: "del ciclo actual", serie: d.mensual.map((x) => x.fondo_social) },
                 { etiqueta: "Ahorro por miembro", valor: pesosCortos(d.resumen.por_miembro), exacto: pesosExactos(d.resumen.por_miembro), pie: "promedio del ciclo" },
                 { etiqueta: "Participación", valor: porcentaje(d.resumen.participacion), pie: "ahorró en la última reunión" },
               ]}
             />
+            <Titular datos={d} />
             <div className={m.dosColumnas}>
               <BarrasPorMes
                 titulo="Ahorro mes a mes"
-                sub="Lo que entró en las reuniones de cada mes, últimos 12 meses"
+                sub="Acciones compradas en las reuniones de cada mes, últimos 12 meses"
                 datos={d.mensual as unknown as Record<string, number | string>[]}
-                apiladas
-                series={[
-                  { clave: "ahorro", texto: "Acciones", color: COLOR.naranja },
-                  { clave: "fondo_social", texto: "Fondo social", color: COLOR.carbon },
-                  { clave: "multas", texto: "Multas", color: COLOR.gris },
-                ]}
+                series={[{ clave: "ahorro", texto: "Acciones", color: COLOR.naranja }]}
                 vacio="Todavía no hay reuniones con ahorro en los últimos 12 meses."
               />
               <BarrasHorizontales

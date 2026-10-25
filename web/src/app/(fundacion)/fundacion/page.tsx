@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import { api, SinSesion } from "@/lib/api";
 
+import { Chispa } from "./_panel/comunes";
 import { fechaLarga, pesosCortos, pesosExactos, porcentaje } from "./_panel/formato";
 import { Crecimiento, Nuevos, Top } from "./_panel/Graficos";
 import { Zonas } from "./_panel/Zonas";
@@ -29,7 +30,7 @@ function Variacion({ valor, texto }: { valor: number | null; texto: string }) {
   );
 }
 
-function Cifra(props: { etiqueta: string; valor: string; exacto?: string; pie: React.ReactNode; i: number; destacada?: boolean }) {
+function Cifra(props: { etiqueta: string; valor: string; exacto?: string; pie: React.ReactNode; i: number; destacada?: boolean; serie?: number[] }) {
   return (
     <div className={props.destacada ? `${estilos.cifra} ${estilos.cifraDestacada}` : estilos.cifra} style={{ "--i": props.i } as React.CSSProperties}>
       <dt className={estilos.cifraEtiqueta}>
@@ -41,6 +42,11 @@ function Cifra(props: { etiqueta: string; valor: string; exacto?: string; pie: R
         {props.exacto ? <span className={estilos.oculto}> ({props.exacto})</span> : null}
       </dd>
       <dd className={estilos.cifraPie}>{props.pie}</dd>
+      {props.serie ? (
+        <dd style={{ margin: "10px 0 0" }}>
+          <Chispa serie={props.serie} color={props.destacada ? "var(--naranja)" : "var(--azul)"} />
+        </dd>
+      ) : null}
     </div>
   );
 }
@@ -163,6 +169,7 @@ export default function Panel() {
               valor={pesosCortos(datos.resumen.ahorro)}
               exacto={pesosExactos(datos.resumen.ahorro)}
               pie={<Variacion valor={datos.resumen.ahorro_variacion} texto="vs. mes pasado" />}
+              serie={datos.series.mensual.map((m) => m.ahorro)}
             />
             <Cifra
               i={1}
@@ -170,6 +177,7 @@ export default function Panel() {
               valor={pesosCortos(datos.resumen.cartera)}
               exacto={pesosExactos(datos.resumen.cartera)}
               pie={<span className={estilos.variacionNeutra}>{pesosCortos(datos.indicadores.cartera_vencida)} vencida</span>}
+              serie={datos.series.mensual.map((m) => m.credito)}
             />
             <Cifra
               i={2}
