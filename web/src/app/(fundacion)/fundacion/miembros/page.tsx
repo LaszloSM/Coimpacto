@@ -47,12 +47,6 @@ export default function Miembros() {
     [router],
   );
 
-  useEffect(() => {
-    api<Acap[]>("/acaps")
-      .then(setAcaps)
-      .catch((e) => (e instanceof SinSesion ? router.replace("/fundacion/entrar") : setError(t("miembros.sinPermiso"))));
-  }, [router]);
-
   const cargar = useCallback(
     (id: string) => {
       setMiembros(null);
@@ -60,6 +54,20 @@ export default function Miembros() {
     },
     [fallo],
   );
+
+  useEffect(() => {
+    api<Acap[]>("/acaps")
+      .then((lista) => {
+        setAcaps(lista);
+        // Desde la ficha de una comunidad llega ?acap=<id>: se abre esa de una vez.
+        const pedida = new URLSearchParams(window.location.search).get("acap");
+        if (pedida && lista.some((a) => a.id === pedida)) {
+          setAcap(pedida);
+          cargar(pedida);
+        }
+      })
+      .catch((e) => (e instanceof SinSesion ? router.replace("/fundacion/entrar") : setError(t("miembros.sinPermiso"))));
+  }, [router, cargar]);
 
   const enviar = async (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault();

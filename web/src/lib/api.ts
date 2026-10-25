@@ -10,7 +10,7 @@ function leerCookie(nombre: string): string {
   return par ? decodeURIComponent(par.slice(nombre.length + 1)) : "";
 }
 
-export async function api<T>(ruta: string, opciones: { metodo?: "GET" | "POST"; cuerpo?: unknown } = {}): Promise<T> {
+export async function api<T>(ruta: string, opciones: { metodo?: "GET" | "POST" | "PUT"; cuerpo?: unknown } = {}): Promise<T> {
   const metodo = opciones.metodo ?? "GET";
   if (metodo !== "GET" && !leerCookie("csrftoken")) await fetch("/api/sesion/csrf", { credentials: "same-origin" });
   // Un FormData (fotos) va como multipart: el navegador pone el Content-Type con su separador.

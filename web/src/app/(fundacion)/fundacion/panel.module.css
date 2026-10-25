@@ -109,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 10px;
   border-radius: var(--radio-sm);
   color: #d9d7d2;
@@ -247,5 +247,20 @@
 
   .pie {
     display: none;
+  }
+}
+
+/* Imprimir o guardar en PDF un módulo: solo el contenido, sin barra ni animaciones. */
+@media print {
+  .barra {
+    display: none;
+  }
+
+  .armazon {
+    display: block;
+  }
+
+  .panel {
+    background: #fff;
   }
 }

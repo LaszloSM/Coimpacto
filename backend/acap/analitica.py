@@ -53,6 +53,27 @@ def _mes(fecha: datetime.date) -> str:
     return fecha.isoformat()[:7]
 
 
+MESES = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+]
+
+
+def _mes_texto(aaaa_mm: str) -> str:
+    """ "2026-10" → "octubre de 2026"."""
+    return f"{MESES[int(aaaa_mm[5:7]) - 1]} de {aaaa_mm[:4]}"
+
+
 def _ultimos_meses(hoy: datetime.date, n: int) -> list[str]:
     meses, fecha = [], hoy.replace(day=1)
     for _ in range(n):
@@ -327,10 +348,10 @@ def analisis(hoy: datetime.date | None = None) -> dict:
             {
                 "tono": "bien" if cambio >= 0 else "alerta",
                 "titulo": "Ritmo del ahorro",
-                "texto": f"En {ultimo['mes']} se ahorraron ${ultimo['ahorro']:,} "
-                f"({'+' if cambio >= 0 else ''}{cambio} % frente a {previo['mes']}).".replace(
-                    ",", "."
-                ),
+                "texto": f"En {_mes_texto(ultimo['mes'])} se ahorraron "
+                f"${ultimo['ahorro']:,}".replace(",", ".")
+                + f" ({'+' if cambio >= 0 else ''}{str(cambio).replace('.', ',')} % frente a "
+                f"{_mes_texto(previo['mes'])}).",
             }
         )
 

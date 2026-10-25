@@ -67,7 +67,7 @@ function Hallazgos({ hallazgos }: { hallazgos: Hallazgo[] }) {
                   {h.acap_id ? (
                     <>
                       {" "}
-                      <Link href={`/fundacion/indicadores#acap-${h.acap_id}`}>Ver comunidad</Link>
+                      <Link href={`/fundacion/comunidades/${h.acap_id}`}>Ver comunidad</Link>
                     </>
                   ) : null}
                 </p>
@@ -149,9 +149,9 @@ export default function Panel() {
         <section className={estilos.vacioGrande}>
           <h2>Todavía no hay comunidades</h2>
           <p>Cree la primera ACAP con su ciclo activo y su junta. El panel se llena a medida que las juntas sincronizan sus reuniones.</p>
-          <a className={estilos.botonPrincipal} href="/admin/acap/acap/add/">
+          <Link className={estilos.botonPrincipal} href="/fundacion/comunidades">
             Crear la primera ACAP
-          </a>
+          </Link>
         </section>
       ) : (
         <>

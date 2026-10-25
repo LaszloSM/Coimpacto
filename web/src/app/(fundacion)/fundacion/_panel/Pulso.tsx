@@ -31,7 +31,7 @@ function detalle(c: Comunidad): string {
   return `Datos de hace ${c.dias_sin_datos} días`;
 }
 
-const enlace = (c: Comunidad) => `/fundacion/indicadores#acap-${c.id}`;
+const enlace = (c: Comunidad) => `/fundacion/comunidades/${c.id}`;
 
 export function Pulso({ comunidades }: { comunidades: Comunidad[] }) {
   const [filtro, setFiltro] = useState<EstadoComunidad | null>(null);
