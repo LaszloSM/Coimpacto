@@ -130,8 +130,6 @@ jobs:
     # Un APK tarda ~25 min; si Gradle se cuelga, que falle pronto y no a las 6 horas.
     timeout-minutes: 60
     env:
-      # La llave de subida vive en secretos de GitHub (EX6, EA3); ver movil/plugins/firma-android.js.
-      FIRMA_JKS_BASE64: ${{ secrets.CREDIMPACTO_FIRMA_JKS_BASE64 }}
       CREDIMPACTO_VERSION_CODE: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v7
@@ -151,33 +149,20 @@ jobs:
       - name: Generar el proyecto Android (CNG)
         working-directory: movil
         run: npx expo prebuild --platform android --clean --no-install
-      - name: Llave de subida (secreto) o llave desechable solo para CI
-        env:
-          CLAVE: ${{ secrets.CREDIMPACTO_FIRMA_CLAVE }}
-          ALIAS: ${{ secrets.CREDIMPACTO_FIRMA_ALIAS }}
-          CLAVE_LLAVE: ${{ secrets.CREDIMPACTO_FIRMA_CLAVE_LLAVE }}
+      - name: Llave desechable (este APK es de modo prueba)
+        # Nunca la llave del piloto: un APK de modo prueba firmado con ella se podría instalar
+        # encima de la app real en un celular. La del piloto solo la usa apk-piloto.yml.
         run: |
-          archivo="$RUNNER_TEMP/subida.jks"
-          if [ -n "$FIRMA_JKS_BASE64" ]; then
-            echo "$FIRMA_JKS_BASE64" | base64 -d > "$archivo"
-            {
-              echo "CREDIMPACTO_FIRMA_CLAVE=$CLAVE"
-              echo "CREDIMPACTO_FIRMA_ALIAS=$ALIAS"
-              echo "CREDIMPACTO_FIRMA_CLAVE_LLAVE=$CLAVE_LLAVE"
-            } >> "$GITHUB_ENV"
-            echo "FIRMA=subida" >> "$GITHUB_ENV"
-          else
-            # Sin secretos (ramas de trabajo, forks): APK solo para el emulador, nunca para celulares.
-            clave="$(openssl rand -hex 24)"
-            echo "::add-mask::$clave"
-            keytool -genkeypair -keystore "$archivo" -storepass "$clave" -keypass "$clave"               -alias ci -keyalg RSA -keysize 2048 -validity 1 -dname "CN=CI desechable" -noprompt
-            {
-              echo "CREDIMPACTO_FIRMA_CLAVE=$clave"
-              echo "CREDIMPACTO_FIRMA_ALIAS=ci"
-            } >> "$GITHUB_ENV"
-            echo "FIRMA=desechable" >> "$GITHUB_ENV"
-          fi
-          echo "CREDIMPACTO_FIRMA_ARCHIVO=$archivo" >> "$GITHUB_ENV"
+          archivo="$RUNNER_TEMP/desechable.jks"
+          clave="$(openssl rand -hex 24)"
+          echo "::add-mask::$clave"
+          keytool -genkeypair -keystore "$archivo" -storepass "$clave" -keypass "$clave"             -alias ci -keyalg RSA -keysize 2048 -validity 1 -dname "CN=CI desechable" -noprompt
+          {
+            echo "CREDIMPACTO_FIRMA_ARCHIVO=$archivo"
+            echo "CREDIMPACTO_FIRMA_CLAVE=$clave"
+            echo "CREDIMPACTO_FIRMA_ALIAS=ci"
+            echo "FIRMA=desechable"
+          } >> "$GITHUB_ENV"
       - name: APK de release firmado (x86_64, solo para el emulador)
         working-directory: movil/android
         env:
