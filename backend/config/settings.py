@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "libro",
     "sync",
     "migracion",
+    "programas",
     "actualizaciones",
 ]
 

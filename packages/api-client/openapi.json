@@ -1199,6 +1199,635 @@
           }
         ]
       }
+    },
+    "/api/oficina/ahorro": {
+      "get": {
+        "operationId": "acap_oficina_api_modulo_ahorro",
+        "summary": "Módulo de ahorro",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/credito": {
+      "get": {
+        "operationId": "acap_oficina_api_modulo_credito",
+        "summary": "Módulo de crédito",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/cartera": {
+      "get": {
+        "operationId": "acap_oficina_api_modulo_cartera",
+        "summary": "Módulo de cartera",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/analisis": {
+      "get": {
+        "operationId": "acap_oficina_api_modulo_analisis",
+        "summary": "Lecturas del libro por reglas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/reportes/consolidado.xlsx": {
+      "get": {
+        "operationId": "acap_oficina_api_reporte_consolidado",
+        "summary": "Consolidado de la Fundación en Excel",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/comunidades": {
+      "get": {
+        "operationId": "acap_oficina_api_comunidades",
+        "summary": "Comunidades para gestionar",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "acap_oficina_api_crear_comunidad",
+        "summary": "Crear una ACAP",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosAcap"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/comunidades/{acap_id}": {
+      "put": {
+        "operationId": "acap_oficina_api_editar_comunidad",
+        "summary": "Editar una ACAP",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosAcap"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "acap_oficina_api_detalle_comunidad",
+        "summary": "Detalle de una ACAP",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/comunidades/{acap_id}/ciclos": {
+      "post": {
+        "operationId": "acap_oficina_api_crear_ciclo",
+        "summary": "Abrir un ciclo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosCiclo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/ciclos/{ciclo_id}": {
+      "put": {
+        "operationId": "acap_oficina_api_editar_ciclo",
+        "summary": "Editar un ciclo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ciclo_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Ciclo Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosCiclo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/ciclos/{ciclo_id}/cierre": {
+      "get": {
+        "operationId": "acap_oficina_api_cierre_ciclo",
+        "summary": "Vista previa del cierre",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ciclo_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Ciclo Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/ciclos/{ciclo_id}/cargos": {
+      "post": {
+        "operationId": "acap_oficina_api_asignar_cargo",
+        "summary": "Asignar un cargo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ciclo_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Ciclo Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosCargo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/comunidades/{acap_id}/usuario-app": {
+      "post": {
+        "operationId": "acap_oficina_api_usuario_app",
+        "summary": "Crear el usuario de la app de la ACAP o cambiar su clave",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "acap_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Acap Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosUsuarioApp"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/celulares/{dispositivo_id}/retirar": {
+      "post": {
+        "operationId": "acap_oficina_api_retirar_celular",
+        "summary": "Retirar un celular",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dispositivo_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Dispositivo Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/proyectos": {
+      "get": {
+        "operationId": "acap_oficina_api_proyectos",
+        "summary": "Proyectos productivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "acap_oficina_api_crear_proyecto",
+        "summary": "Registrar un proyecto",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosProyecto"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/proyectos/{proyecto_id}": {
+      "put": {
+        "operationId": "acap_oficina_api_editar_proyecto",
+        "summary": "Editar un proyecto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "proyecto_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Proyecto Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosProyecto"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/capacitaciones": {
+      "get": {
+        "operationId": "acap_oficina_api_capacitaciones",
+        "summary": "Capacitaciones",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "acap_oficina_api_crear_capacitacion",
+        "summary": "Registrar una capacitación",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosCapacitacion"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/evaluaciones": {
+      "get": {
+        "operationId": "acap_oficina_api_evaluaciones",
+        "summary": "Evaluaciones de las ACAP",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "acap_oficina_api_crear_evaluacion",
+        "summary": "Registrar una evaluación",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosEvaluacion"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1790,6 +2419,341 @@
           "motivo"
         ],
         "title": "NuevaPropuesta",
+        "type": "object"
+      },
+      "DatosAcap": {
+        "properties": {
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "zona": {
+            "default": "",
+            "title": "Zona",
+            "type": "string"
+          },
+          "departamento": {
+            "default": "",
+            "title": "Departamento",
+            "type": "string"
+          },
+          "municipio": {
+            "default": "",
+            "title": "Municipio",
+            "type": "string"
+          }
+        },
+        "required": [
+          "nombre"
+        ],
+        "title": "DatosAcap",
+        "type": "object"
+      },
+      "DatosCiclo": {
+        "properties": {
+          "numero": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numero"
+          },
+          "fecha_inicio": {
+            "format": "date",
+            "title": "Fecha Inicio",
+            "type": "string"
+          },
+          "duracion_meses": {
+            "title": "Duracion Meses",
+            "type": "integer"
+          },
+          "valor_accion": {
+            "title": "Valor Accion",
+            "type": "integer"
+          },
+          "max_acciones_reunion": {
+            "default": 5,
+            "title": "Max Acciones Reunion",
+            "type": "integer"
+          },
+          "valor_fondo_social": {
+            "default": 0,
+            "title": "Valor Fondo Social",
+            "type": "integer"
+          },
+          "valor_multa": {
+            "default": 0,
+            "title": "Valor Multa",
+            "type": "integer"
+          },
+          "tasa_interes": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Tasa Interes"
+          },
+          "meta_ahorro": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meta Ahorro"
+          },
+          "estado": {
+            "default": "activo",
+            "title": "Estado",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fecha_inicio",
+          "duracion_meses",
+          "valor_accion",
+          "tasa_interes"
+        ],
+        "title": "DatosCiclo",
+        "type": "object"
+      },
+      "DatosCargo": {
+        "properties": {
+          "tipo": {
+            "title": "Tipo",
+            "type": "string"
+          },
+          "membresia_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Membresia Id"
+          }
+        },
+        "required": [
+          "tipo"
+        ],
+        "title": "DatosCargo",
+        "type": "object"
+      },
+      "DatosUsuarioApp": {
+        "properties": {
+          "usuario": {
+            "title": "Usuario",
+            "type": "string"
+          },
+          "clave": {
+            "title": "Clave",
+            "type": "string"
+          }
+        },
+        "required": [
+          "usuario",
+          "clave"
+        ],
+        "title": "DatosUsuarioApp",
+        "type": "object"
+      },
+      "DatosProyecto": {
+        "properties": {
+          "acap_id": {
+            "format": "uuid",
+            "title": "Acap Id",
+            "type": "string"
+          },
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "linea": {
+            "default": "otra",
+            "title": "Linea",
+            "type": "string"
+          },
+          "descripcion": {
+            "default": "",
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "estado": {
+            "default": "idea",
+            "title": "Estado",
+            "type": "string"
+          },
+          "monto_estimado": {
+            "default": 0,
+            "title": "Monto Estimado",
+            "type": "integer"
+          },
+          "participantes": {
+            "default": 0,
+            "title": "Participantes",
+            "type": "integer"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Inicio"
+          },
+          "avance": {
+            "default": 0,
+            "title": "Avance",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "acap_id",
+          "nombre"
+        ],
+        "title": "DatosProyecto",
+        "type": "object"
+      },
+      "DatosCapacitacion": {
+        "properties": {
+          "acap_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acap Id"
+          },
+          "tema": {
+            "title": "Tema",
+            "type": "string"
+          },
+          "titulo": {
+            "title": "Titulo",
+            "type": "string"
+          },
+          "fecha": {
+            "format": "date",
+            "title": "Fecha",
+            "type": "string"
+          },
+          "horas": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "default": "2",
+            "title": "Horas"
+          },
+          "asistentes": {
+            "default": 0,
+            "title": "Asistentes",
+            "type": "integer"
+          },
+          "facilitador": {
+            "default": "",
+            "title": "Facilitador",
+            "type": "string"
+          },
+          "notas": {
+            "default": "",
+            "title": "Notas",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tema",
+          "titulo",
+          "fecha"
+        ],
+        "title": "DatosCapacitacion",
+        "type": "object"
+      },
+      "DatosEvaluacion": {
+        "properties": {
+          "acap_id": {
+            "format": "uuid",
+            "title": "Acap Id",
+            "type": "string"
+          },
+          "fecha": {
+            "format": "date",
+            "title": "Fecha",
+            "type": "string"
+          },
+          "evaluador": {
+            "default": "",
+            "title": "Evaluador",
+            "type": "string"
+          },
+          "gobernanza": {
+            "title": "Gobernanza",
+            "type": "integer"
+          },
+          "transparencia": {
+            "title": "Transparencia",
+            "type": "integer"
+          },
+          "participacion": {
+            "title": "Participacion",
+            "type": "integer"
+          },
+          "gestion_financiera": {
+            "title": "Gestion Financiera",
+            "type": "integer"
+          },
+          "reglamento": {
+            "title": "Reglamento",
+            "type": "integer"
+          },
+          "fortalezas": {
+            "default": "",
+            "title": "Fortalezas",
+            "type": "string"
+          },
+          "compromisos": {
+            "default": "",
+            "title": "Compromisos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acap_id",
+          "fecha",
+          "gobernanza",
+          "transparencia",
+          "participacion",
+          "gestion_financiera",
+          "reglamento"
+        ],
+        "title": "DatosEvaluacion",
         "type": "object"
       }
     },

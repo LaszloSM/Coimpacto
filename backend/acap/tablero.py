@@ -17,7 +17,7 @@ from collections import defaultdict
 from django.db.models import Max, Q, Sum
 from django.utils import timezone
 
-from acap.models import Acap, Ciclo, Membresia
+from acap.models import Acap, Ciclo, Membresia, Reunion
 from libro import servicio as libro
 from libro.models import EstadoMovimiento, Movimiento, Prestamo
 from sync.models import Recibido
@@ -100,6 +100,14 @@ def tablero(ahora=None) -> dict:
     ultimo_dato = dict(
         Recibido.objects.values_list("dispositivo__acap").annotate(u=Max("recibido_en"))
     )
+    # Una reunión cerrada también es dato: cubre lo importado de los Excel de la Fundación.
+    for acap_id, cerrada in (
+        Reunion.objects.filter(estado=Reunion.Estado.CERRADA, cerrada_en__isnull=False)
+        .values_list("ciclo__acap")
+        .annotate(u=Max("cerrada_en"))
+    ):
+        if cerrada and (acap_id not in ultimo_dato or cerrada > ultimo_dato[acap_id]):
+            ultimo_dato[acap_id] = cerrada
 
     pulso, total_ahorro, todos_prestamos = [], 0, []
     for acap in acaps:
@@ -162,9 +170,8 @@ def tablero(ahora=None) -> dict:
             "cumplimiento": cartera_total["cumplimiento"],
             "mora": cartera_total["mora"],
             "cartera_vencida": cartera_total["vencida"],
-            # Módulos que todavía no registran datos: el panel muestra su estado vacío.
-            "capacitaciones": None,
-            "proyectos": None,
+            "capacitaciones": _capacitaciones_del_ciclo(hoy),
+            "proyectos": _proyectos_activos(),
         },
         "pulso": pulso,
         "hallazgos": _hallazgos(pulso),
@@ -278,3 +285,22 @@ def _hallazgos(pulso: list[dict]) -> list[dict]:
             }
         )
     return hallazgos
+
+
+def _capacitaciones_del_ciclo(hoy: datetime.date) -> int | None:
+    """Capacitaciones de los últimos 12 meses; None si nunca se ha registrado una."""
+    from programas.models import Capacitacion
+
+    if not Capacitacion.objects.exists():
+        return None
+    return Capacitacion.objects.filter(fecha__gt=hoy - datetime.timedelta(days=365)).count()
+
+
+def _proyectos_activos() -> int | None:
+    from programas.models import Proyecto
+
+    if not Proyecto.objects.exists():
+        return None
+    return Proyecto.objects.filter(
+        estado__in=[Proyecto.Estado.FORMULACION, Proyecto.Estado.EJECUCION]
+    ).count()
