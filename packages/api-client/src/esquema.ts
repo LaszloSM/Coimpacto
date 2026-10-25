@@ -262,6 +262,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/tablero": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tablero de gerencia del panel
+         * @description Cifras, pulso por comunidad, hallazgos y series del panel. Sin datos personales.
+         */
+        get: operations["cuentas_sesion_tablero"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/acaps/{acap_id}/miembros": {
         parameters: {
             query?: never;
@@ -1045,6 +1065,24 @@ export interface operations {
         };
     };
     cuentas_sesion_pendientes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_sesion_tablero: {
         parameters: {
             query?: never;
             header?: never;

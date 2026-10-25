@@ -16,7 +16,7 @@ export default function Entrar() {
   const [entrando, setEntrando] = useState(false);
 
   return (
-    <main className={estilos.pagina}>
+    <main className={estilos.paginaCentrada}>
       <h1 className={estilos.titulo}>{t("entrar.titulo")}</h1>
       <form
         className={estilos.formulario}
