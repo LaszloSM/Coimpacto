@@ -178,6 +178,7 @@ jobs:
         run: >-
           ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
           -x lintVitalAnalyzeRelease -Pkotlin.compiler.execution.strategy=in-process
+          "-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=2g"
       - run: mv movil/android/app/build/outputs/apk/release/app-release.apk "credimpacto-${FIRMA}.apk"
       - uses: actions/upload-artifact@v7
         with:
