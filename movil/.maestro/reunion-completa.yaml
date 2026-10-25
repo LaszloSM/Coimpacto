@@ -108,19 +108,45 @@ name: Reunión completa sin señal
 - tapOn:
     id: "seguir-arqueo"
 - assertVisible: ".*Cuenten los billetes.*"
+- scrollUntilVisible:
+    element:
+      id: "cuenta-50000-mas"
+    centerElement: true
 - tapOn:
     id: "cuenta-50000-mas"
+- scrollUntilVisible:
+    element:
+      id: "cuenta-20000-mas"
+    centerElement: true
 - tapOn:
     id: "cuenta-20000-mas"
 - tapOn:
     id: "cuenta-20000-mas"
+- scrollUntilVisible:
+    element:
+      id: "contar-monedas"
+    centerElement: true
 - tapOn:
     id: "contar-monedas"
+- scrollUntilVisible:
+    element:
+      id: "termine-de-contar"
+    centerElement: true
 - tapOn:
     id: "termine-de-contar"
-- assertVisible: ".*Cuadra al peso..*"
+- scrollUntilVisible:
+    element: ".*Cuadra al peso..*"
+    direction: UP
+- scrollUntilVisible:
+    element:
+      id: "seguir-cierre"
+    centerElement: true
 - tapOn:
     id: "seguir-cierre"
+- scrollUntilVisible:
+    element:
+      id: "firmar-cierre"
+    centerElement: true
 - tapOn:
     id: "firmar-cierre"
 - scrollUntilVisible:
@@ -142,6 +168,10 @@ name: Reunión completa sin señal
     visible:
       id: "reunion-cerrada"
     timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "ver-resumen"
+    centerElement: true
 - tapOn:
     id: "ver-resumen"
 - assertVisible: "#01"
@@ -150,6 +180,10 @@ name: Reunión completa sin señal
     commands:
       - tapOn:
           id: "resumen-siguiente"
+- scrollUntilVisible:
+    element:
+      id: "terminar-reunion"
+    centerElement: true
 - tapOn:
     id: "terminar-reunion"
 - extendedWaitUntil:
