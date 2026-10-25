@@ -1,11 +1,10 @@
-// Registrar este celular (TD1, D18): leer el QR del facilitador (o escribir el código), bajar
-// la lista del grupo y crear el PIN del primer Presidente, dos veces y sin PIN obvios (D26).
-// Textos de la tabla de estados nativos: "Leyendo el código…", "Bajando la lista del grupo…".
+// Registrar este celular (TD1, D18): entrar con el usuario y la clave que la Fundación creó para
+// la ACAP, bajar la lista del grupo y crear el PIN del primer Presidente, dos veces y sin PIN
+// obvios (D26). Con señal solo este paso; la reunión después funciona sin señal.
 
-import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Linking, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { tokens } from "@credimpacto/tokens";
@@ -13,7 +12,7 @@ import { tokens } from "@credimpacto/tokens";
 import { programadorNativo } from "../avisos/programadorNativo";
 import { SERVIDOR } from "../config";
 import { borrarBase } from "../datos/baseNativa";
-import { altaPrimerPresidente, presidenteDe, registrarCelular, revisarPinDoble, type EnrolamientoEnCurso } from "../enrolamiento/flujo";
+import { altaPrimerPresidente, presidenteDe, registrarConClave, revisarPinDoble, type EnrolamientoEnCurso } from "../enrolamiento/flujo";
 import { EnrolamientoFallido } from "../seguridad/enrolamiento";
 import { useSesion } from "../sesion/contexto";
 import { BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
@@ -21,14 +20,14 @@ import { TecladoPin } from "../ui/TecladoPin";
 
 const { color, spacing, tipo, componentes } = tokens;
 
-type Fase = "escanear" | "registrando" | "presidente" | "confirmar" | "guardando" | "listo";
+type Fase = "entrar" | "registrando" | "presidente" | "confirmar" | "guardando" | "listo";
 
 export default function PantallaEnrolar() {
   const { entorno } = useSesion();
   const router = useRouter();
-  const [permiso, pedirPermiso] = useCameraPermissions();
-  const [fase, setFase] = useState<Fase>("escanear");
-  const [codigoEscrito, setCodigoEscrito] = useState("");
+  const [fase, setFase] = useState<Fase>("entrar");
+  const [usuario, setUsuario] = useState("");
+  const [clave, setClave] = useState("");
   const [error, setError] = useState<string>();
   const [enCurso, setEnCurso] = useState<EnrolamientoEnCurso | null>(null);
   const [pin, setPin] = useState("");
@@ -36,17 +35,18 @@ export default function PantallaEnrolar() {
 
   const deps = { ...entorno, servidor: SERVIDOR, borrarBase };
 
-  const registrar = async (texto: string) => {
+  const registrar = async () => {
     if (leyendo) return;
     setLeyendo(true);
     setError(undefined);
     setFase("registrando");
     try {
-      setEnCurso(await registrarCelular(deps, texto));
+      setEnCurso(await registrarConClave(deps, usuario, clave));
+      setClave("");
       setFase("presidente");
     } catch (e) {
       setError(e instanceof EnrolamientoFallido ? e.message : "No se pudo registrar este celular. Intente de nuevo.");
-      setFase("escanear");
+      setFase("entrar");
     } finally {
       setLeyendo(false);
     }
@@ -80,7 +80,7 @@ export default function PantallaEnrolar() {
               setFase("listo");
             } catch (e) {
               setError(e instanceof EnrolamientoFallido ? e.message : "No se pudo registrar el PIN. Intente de nuevo.");
-              setFase(e instanceof EnrolamientoFallido && e.motivo === "codigo_invalido" ? "escanear" : "presidente");
+              setFase(e instanceof EnrolamientoFallido && e.motivo === "codigo_invalido" ? "entrar" : "presidente");
             }
           }}
         />
@@ -116,55 +116,47 @@ export default function PantallaEnrolar() {
           <Parrafo testID="enrolar-estado">Bajando la lista del grupo…</Parrafo>
         ) : (
           <>
-            <Parrafo>Lea el código que le muestra el facilitador.</Parrafo>
+            <Parrafo>Escriba el usuario y la clave que le dio la Fundación para esta ACAP.</Parrafo>
             {error ? (
               <Text style={estilos.error} testID="enrolar-error" accessibilityLiveRegion="polite">
                 {error}
               </Text>
             ) : null}
-            {!permiso ? null : permiso.granted ? (
-              <View style={estilos.camara}>
-                <CameraView
-                  style={StyleSheet.absoluteFill}
-                  facing="back"
-                  barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
-                  onBarcodeScanned={leyendo ? undefined : ({ data }) => void registrar(data)}
-                />
-              </View>
-            ) : (
-              <View style={{ gap: spacing.sm }}>
-                <Parrafo>La app necesita la cámara solo para leer el código.</Parrafo>
-                <BotonSecundario
-                  testID="permitir-camara"
-                  texto={permiso.canAskAgain ? "Permitir la cámara" : "Abrir Ajustes"}
-                  alTocar={() => (permiso.canAskAgain ? void pedirPermiso() : void Linking.openSettings())}
-                />
-              </View>
-            )}
-            <Text style={[base.titulo, { fontSize: 22 }]}>O escriba el código</Text>
+            <Text style={estilos.etiqueta}>Usuario</Text>
             <TextInput
-              testID="codigo-escrito"
-              value={codigoEscrito}
-              onChangeText={setCodigoEscrito}
+              testID="enrolar-usuario"
+              value={usuario}
+              onChangeText={setUsuario}
               autoCapitalize="none"
               autoCorrect={false}
-              placeholder="Código del facilitador"
-              placeholderTextColor={color["tinta-suave"]}
+              autoComplete="username"
+              textContentType="username"
               style={estilos.campo}
-              accessibilityLabel="Código del facilitador"
+              accessibilityLabel="Usuario"
+            />
+            <Text style={estilos.etiqueta}>Clave</Text>
+            <TextInput
+              testID="enrolar-clave"
+              value={clave}
+              onChangeText={setClave}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="password"
+              textContentType="password"
+              style={estilos.campo}
+              accessibilityLabel="Clave"
+              onSubmitEditing={() => usuario.trim() && clave && void registrar()}
             />
           </>
         )}
       </ScrollView>
       <View style={base.acciones}>
         <BotonPrincipal
-          testID="enrolar-codigo"
-          texto="Registrar con este código"
-          falta={fase === "registrando" ? "Registrando…" : codigoEscrito.trim() ? undefined : "Lea el QR o escriba el código"}
-          alTocar={() => {
-            const texto = codigoEscrito.trim();
-            void registrar(texto.startsWith("credimpacto:") ? texto : `credimpacto:enrolar:${texto}`);
-          }}
+          testID="enrolar-entrar"
+          texto="Registrar este celular"
+          falta={fase === "registrando" ? "Registrando…" : usuario.trim() && clave ? undefined : "Escriba el usuario y la clave"}
+          alTocar={() => void registrar()}
         />
       </View>
     </SafeAreaView>
@@ -172,13 +164,11 @@ export default function PantallaEnrolar() {
 }
 
 const estilos = StyleSheet.create({
-  camara: {
-    height: 280,
-    borderRadius: componentes.dinero.rounded,
-    overflow: "hidden",
-    borderWidth: 2,
-    borderColor: color.tinta,
-    marginVertical: spacing.md,
+  etiqueta: {
+    ...tipo.body,
+    color: color.tinta,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
   },
   campo: {
     ...tipo.body,

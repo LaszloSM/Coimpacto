@@ -7,10 +7,21 @@ from django.db import models
 class Usuario(AbstractUser):
     """Usuario de plataforma. Se define desde el inicio para no migrar el modelo de auth después.
 
-    Los roles de plataforma y los cargos por membresía se completan en T5 y T8.
+    Los roles de plataforma y los cargos por membresía se completan en T5 y T8. Un usuario con
+    ACAP es el acceso de la junta a la app: con su usuario y clave registra el celular de esa
+    ACAP (reemplaza el código QR) y autoriza al primer Presidente.
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    acap = models.ForeignKey(
+        "acap.Acap",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="accesos_app",
+        verbose_name="ACAP de la app",
+        help_text="Llénelo solo para el usuario con el que la junta entra a la app de esta ACAP.",
+    )
 
     class Meta:
         verbose_name = "usuario"

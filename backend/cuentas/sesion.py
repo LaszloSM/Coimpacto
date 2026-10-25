@@ -55,7 +55,8 @@ def csrf(request):
 )
 def entrar(request, credenciales: Credenciales):
     usuario = authenticate(request, username=credenciales.usuario, password=credenciales.clave)
-    if usuario is None or not usuario.is_active:
+    # El usuario de la app de una ACAP solo registra celulares; no entra a la oficina.
+    if usuario is None or not usuario.is_active or usuario.acap_id is not None:
         return 401, {"mensaje": "Usuario o clave incorrectos."}
     login(request, usuario)
     return _yo(usuario)

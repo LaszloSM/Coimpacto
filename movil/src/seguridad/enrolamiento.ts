@@ -1,4 +1,5 @@
-// Registro del celular con el código QR del facilitador (D18).
+// Registro del celular (D18): con el usuario y la clave que la Fundación creó para la ACAP, o
+// con el código QR del facilitador.
 //
 // El QR trae solo el código. La dirección del servidor está fija en la app: un QR falso no
 // puede mandar el celular a otro servidor.
@@ -10,20 +11,24 @@ export interface Registro {
 }
 
 export type MotivoRechazo =
+  | "clave_invalida"
   | "codigo_invalido"
   | "codigo_vencido"
   | "llave_invalida"
   | "qr_ajeno"
   | "sin_senal"
+  | "demasiados_intentos"
   | "servidor";
 
 /** Textos de la tabla de estados nativos (revisión de diseño nativo, pasada 2). */
 export const TEXTO_RECHAZO: Record<MotivoRechazo, string> = {
+  clave_invalida: "El usuario o la clave no son correctos. Revíselos con la Fundación.",
   codigo_invalido: "Este código ya no sirve. Pida uno nuevo al facilitador.",
   codigo_vencido: "Este código ya no sirve. Pida uno nuevo al facilitador.",
   llave_invalida: "No se pudo registrar este celular. Intente de nuevo.",
   qr_ajeno: "Este código no es de Credimpacto.",
   sin_senal: "Necesita señal solo para este paso.",
+  demasiados_intentos: "Demasiados intentos. Espere un minuto y vuelva a intentar.",
   servidor: "No se pudo registrar este celular. Intente de nuevo.",
 };
 
@@ -66,4 +71,41 @@ export async function canjearCodigo(
   if (!respuesta.ok) throw new EnrolamientoFallido("servidor");
   const datos = (await respuesta.json()) as { dispositivo_id: string; acap_id: string; acap_nombre: string };
   return { dispositivoId: datos.dispositivo_id, acapId: datos.acap_id, acapNombre: datos.acap_nombre };
+}
+
+async function leerRespuesta<T>(pedido: () => Promise<Response>): Promise<T> {
+  let respuesta: Response;
+  try {
+    respuesta = await pedido();
+  } catch {
+    throw new EnrolamientoFallido("sin_senal");
+  }
+  if (respuesta.status === 400) {
+    const { motivo } = (await respuesta.json()) as { motivo: string };
+    throw new EnrolamientoFallido(motivo in TEXTO_RECHAZO ? (motivo as MotivoRechazo) : "servidor");
+  }
+  if (respuesta.status === 429) throw new EnrolamientoFallido("demasiados_intentos");
+  if (!respuesta.ok) throw new EnrolamientoFallido("servidor");
+  return (await respuesta.json()) as T;
+}
+
+/** Entrar con el usuario y la clave de la ACAP: registra el celular y trae el código de un uso. */
+export async function entrarConClave(
+  servidor: string,
+  usuario: string,
+  clave: string,
+  llavePublica: string,
+  pedir: typeof fetch = fetch,
+): Promise<{ codigo: string; registro: Registro }> {
+  const datos = await leerRespuesta<{ codigo: string; dispositivo_id: string; acap_id: string; acap_nombre: string }>(() =>
+    pedir(`${servidor}/api/enrolamiento/entrar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usuario: usuario.trim(), clave, llave_publica: llavePublica }),
+    }),
+  );
+  return {
+    codigo: datos.codigo,
+    registro: { dispositivoId: datos.dispositivo_id, acapId: datos.acap_id, acapNombre: datos.acap_nombre },
+  };
 }

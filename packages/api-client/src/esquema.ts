@@ -118,6 +118,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/enrolamiento/entrar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registrar este celular con el usuario y la clave de la ACAP
+         * @description Devuelve el código de un solo uso con el que el celular da de alta al primer Presidente.
+         */
+        post: operations["cuentas_api_entrar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/enrolamiento/presidente": {
         parameters: {
             query?: never;
@@ -556,6 +576,32 @@ export interface components {
             /** Llave Publica */
             llave_publica: string;
         };
+        /** CelularConCodigo */
+        CelularConCodigo: {
+            /**
+             * Dispositivo Id
+             * Format: uuid
+             */
+            dispositivo_id: string;
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+            /** Acap Nombre */
+            acap_nombre: string;
+            /** Codigo */
+            codigo: string;
+        };
+        /** PedidoEntrada */
+        PedidoEntrada: {
+            /** Usuario */
+            usuario: string;
+            /** Clave */
+            clave: string;
+            /** Llave Publica */
+            llave_publica: string;
+        };
         /** LlaveRegistrada */
         LlaveRegistrada: {
             /**
@@ -869,6 +915,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DispositivoRegistrado"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
+    cuentas_api_entrar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoEntrada"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CelularConCodigo"];
                 };
             };
             /** @description Bad Request */

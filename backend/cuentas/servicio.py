@@ -68,6 +68,20 @@ def emitir_codigo(*, acap: Acap, usuario: Usuario, ahora=None) -> tuple[str, Cod
     return texto, codigo
 
 
+def entrar_con_clave(*, usuario: str, clave: str, ahora=None) -> tuple[str, CodigoEnrolamiento]:
+    """Acceso de la junta a la app: usuario y clave creados por la Fundación, en lugar del QR.
+
+    Emite un código de un solo uso a nombre de ese usuario; el celular lo canjea enseguida y lo
+    usa para el primer Presidente, igual que si lo hubiera leído de un QR.
+    """
+    from django.contrib.auth import authenticate
+
+    cuenta = authenticate(username=usuario.strip(), password=clave)
+    if cuenta is None or not cuenta.is_active or cuenta.acap_id is None:
+        raise EnrolamientoRechazado("clave_invalida", "El usuario o la clave no son correctos.")
+    return emitir_codigo(acap=cuenta.acap, usuario=cuenta, ahora=ahora)
+
+
 @transaction.atomic
 def canjear_codigo(*, codigo: str, llave_publica: str, ahora=None) -> Dispositivo:
     """Registra el celular para la ACAP del código. El código no sirve una segunda vez."""
@@ -188,7 +202,9 @@ def registrar_llave_cargo(
         raise EnrolamientoRechazado(
             "sin_autorizacion", "El alta la autoriza el facilitador o el Presidente."
         )
-    if facilitador is not None and not facilitador.has_perm("cuentas.add_llavecargo"):
+    if facilitador is not None and not (
+        facilitador.has_perm("cuentas.add_llavecargo") or facilitador.acap_id == cargo.ciclo.acap_id
+    ):
         raise EnrolamientoRechazado("sin_autorizacion", "Este usuario no puede dar altas.")
     if autoriza is not None:
         _validar_presidente(autoriza, cargo, dispositivo)
