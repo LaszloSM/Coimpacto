@@ -1500,6 +1500,37 @@
         ]
       }
     },
+    "/api/oficina/ciclos/{ciclo_id}/cierre": {
+      "get": {
+        "operationId": "acap_oficina_api_cierre_ciclo",
+        "summary": "Vista previa del cierre",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ciclo_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Ciclo Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/oficina/ciclos/{ciclo_id}/cargos": {
       "post": {
         "operationId": "acap_oficina_api_asignar_cargo",

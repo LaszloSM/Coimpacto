@@ -314,6 +314,14 @@ def editar_ciclo(request, ciclo_id: uuid.UUID, datos: DatosCiclo):
     return _ciclo_json(ciclo)
 
 
+@router.get(
+    "/oficina/ciclos/{ciclo_id}/cierre", auth=django_auth, summary="Vista previa del cierre"
+)
+def cierre_ciclo(request, ciclo_id: uuid.UUID):
+    _exigir(request.user, "acap.view_acap")
+    return analitica.cierre_ciclo(get_object_or_404(Ciclo, id=ciclo_id))
+
+
 @router.post("/oficina/ciclos/{ciclo_id}/cargos", auth=django_auth, summary="Asignar un cargo")
 def asignar_cargo(request, ciclo_id: uuid.UUID, datos: DatosCargo):
     _exigir(request.user, "acap.change_cargo")

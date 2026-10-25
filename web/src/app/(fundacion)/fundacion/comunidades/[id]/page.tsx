@@ -49,6 +49,7 @@ const PESTANAS = [
   ["ciclo", "Ciclo"],
   ["junta", "Junta"],
   ["personas", "Personas"],
+  ["cierre", "Cierre del ciclo"],
   ["app", "Acceso a la app"],
 ] as const;
 type Pestana = (typeof PESTANAS)[number][0];
@@ -264,6 +265,133 @@ function Junta({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   );
 }
 
+interface Cierre {
+  ciclo: number;
+  estado: string;
+  termina: string;
+  dias_para_terminar: number;
+  reuniones: number;
+  politica: { reparte_fondo_social: boolean; multas_a_repartible: boolean; multiplo_redondeo: number };
+  totales: {
+    acciones: number;
+    ahorro: number;
+    fondo_social: number;
+    multas: number;
+    interes_prestamos: number;
+    ganancia: number;
+    monto_repartible: number;
+    residuo_redondeo: number;
+  } | null;
+  detalle: {
+    numero_miembro: number;
+    nombre: string | null;
+    acciones: number;
+    ahorro: number;
+    participacion_interes: number;
+    deuda_pendiente: number;
+    a_entregar: number;
+    deuda_arrastrada: number;
+  }[];
+}
+
+function CierreCiclo({ f }: { f: Ficha }) {
+  const [cicloId, setCicloId] = useState(f.ciclo_activo ?? f.ciclos[0]?.id ?? "");
+  if (!cicloId) {
+    return (
+      <Bloque titulo="Cierre del ciclo">
+        <p className={estilos.graficoVacio}>Esta comunidad todavía no tiene ciclos.</p>
+      </Bloque>
+    );
+  }
+  return <CierreDe key={cicloId} f={f} cicloId={cicloId} alCambiar={setCicloId} />;
+}
+
+function CierreDe({ f, cicloId, alCambiar }: { f: Ficha; cicloId: string; alCambiar: (id: string) => void }) {
+  const { datos, error, recargar } = useDatos<Cierre>(`/oficina/ciclos/${cicloId}/cierre`);
+  return (
+    <Cargando datos={datos} error={error} recargar={recargar}>
+      {(c) => (
+        <>
+          <Bloque
+            titulo={`Reparto del ciclo ${c.ciclo}`}
+            sub={
+              c.estado === "activo"
+                ? c.dias_para_terminar > 0
+                  ? `Vista previa: termina el ${fechaCorta(c.termina)}, en ${c.dias_para_terminar} días. El cierre lo firman la junta y la asamblea en la reunión final, en la app.`
+                  : "Vista previa: el ciclo ya cumplió su duración. El cierre lo firman la junta y la asamblea en la reunión final, en la app."
+                : "Así quedaría el reparto con lo registrado en el libro."
+            }
+            acciones={
+              f.ciclos.length > 1 ? (
+                <select className={m.campo} value={cicloId} onChange={(e) => alCambiar(e.target.value)} aria-label="Ciclo" style={{ minHeight: 40, padding: "0 10px", borderRadius: 8, border: "1px solid var(--borde-fuerte)", font: "inherit" }}>
+                  {f.ciclos.map((x) => (
+                    <option key={x.id} value={x.id}>
+                      Ciclo {x.numero}
+                      {x.estado === "activo" ? " (activo)" : ""}
+                    </option>
+                  ))}
+                </select>
+              ) : null
+            }
+          >
+            {c.totales ? (
+              <dl className={m.ficha}>
+                <div>
+                  <dt>Ahorro (acciones)</dt>
+                  <dd>{pesosExactos(c.totales.ahorro)}</dd>
+                </div>
+                <div>
+                  <dt>Intereses cobrados</dt>
+                  <dd>{pesosExactos(c.totales.interes_prestamos)}</dd>
+                </div>
+                <div>
+                  <dt>Multas (ganancia del grupo)</dt>
+                  <dd>{pesosExactos(c.totales.multas)}</dd>
+                </div>
+                <div>
+                  <dt>Ganancia a repartir</dt>
+                  <dd>{pesosExactos(c.totales.ganancia)}</dd>
+                </div>
+                <div>
+                  <dt>Total a repartir</dt>
+                  <dd>{pesosExactos(c.totales.monto_repartible)}</dd>
+                </div>
+                <div>
+                  <dt>Fondo social (no se reparte)</dt>
+                  <dd>{pesosExactos(c.totales.fondo_social)}</dd>
+                </div>
+              </dl>
+            ) : (
+              <p className={estilos.graficoVacio}>Todavía no hay ahorro registrado en este ciclo.</p>
+            )}
+            <p className={m.tenue} style={{ margin: "16px 0 0" }}>
+              Política de reparto pendiente de confirmar por CoimpactoB: la ganancia se reparte según las acciones de cada miembro, el fondo social queda como seguro y lo entregado se redondea a billetes de {pesosExactos(c.politica.multiplo_redondeo)}.
+            </p>
+          </Bloque>
+          {c.detalle.length ? (
+            <Bloque titulo="Por miembro" sub="Lo que recibiría cada persona; si debe un préstamo, se descuenta">
+              <Tabla
+                filas={c.detalle}
+                clave={(d) => String(d.numero_miembro)}
+                vacio=""
+                columnas={[
+                  { clave: "numero", titulo: "#", orden: (d) => d.numero_miembro, valor: (d) => String(d.numero_miembro).padStart(2, "0") },
+                  { clave: "nombre", titulo: "Nombre", valor: (d) => d.nombre ?? <span className={m.tenue}>Solo número</span> },
+                  { clave: "acciones", titulo: "Acciones", numero: true, orden: (d) => d.acciones, valor: (d) => d.acciones },
+                  { clave: "ahorro", titulo: "Ahorro", numero: true, orden: (d) => d.ahorro, valor: (d) => pesosExactos(d.ahorro) },
+                  { clave: "ganancia", titulo: "Ganancia", numero: true, orden: (d) => d.participacion_interes, valor: (d) => pesosExactos(d.participacion_interes) },
+                  { clave: "deuda", titulo: "Debe", numero: true, orden: (d) => d.deuda_pendiente, valor: (d) => (d.deuda_pendiente ? pesosExactos(d.deuda_pendiente) : "—") },
+                  { clave: "entregar", titulo: "A entregar", numero: true, orden: (d) => d.a_entregar, valor: (d) => <strong>{pesosExactos(d.a_entregar)}</strong> },
+                ]}
+              />
+            </Bloque>
+          ) : null}
+        </>
+      )}
+    </Cargando>
+  );
+}
+
 function Personas({ f }: { f: Ficha }) {
   return (
     <Bloque
@@ -400,6 +528,7 @@ export default function FichaComunidad() {
               {pestana === "ciclo" ? <CicloForm key={f.ciclo_activo ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
               {pestana === "junta" ? <Junta f={f} alGuardar={recargar} /> : null}
               {pestana === "personas" ? <Personas f={f} /> : null}
+              {pestana === "cierre" ? <CierreCiclo f={f} /> : null}
               {pestana === "app" ? <AccesoApp key={f.usuarios_app[0]?.usuario ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
             </div>
           </>

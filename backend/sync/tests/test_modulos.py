@@ -160,3 +160,15 @@ def test_proyectos_capacitaciones_y_evaluaciones(admin_cliente):
     assert indicadores["proyectos"] == 1
     assert indicadores["capacitaciones"] == 1
     assert Proyecto.objects.get().avance == 40
+
+
+def test_vista_previa_del_cierre_de_ciclo(junta, admin_cliente):
+    reunion_con_prestamo(junta, timezone.localdate())
+    r = admin_cliente.get(f"/api/oficina/ciclos/{junta.ciclo.id}/cierre", secure=True)
+    assert r.status_code == 200, r.content
+    datos = r.json()
+    assert datos["totales"]["ahorro"] == 30_000
+    [fila] = datos["detalle"]
+    assert fila["acciones"] == 3
+    assert fila["deuda_pendiente"] > 0
+    assert datos["politica_confirmada"] is False

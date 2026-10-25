@@ -693,6 +693,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/ciclos/{ciclo_id}/cierre": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vista previa del cierre */
+        get: operations["acap_oficina_api_cierre_ciclo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/ciclos/{ciclo_id}/cargos": {
         parameters: {
             query?: never;
@@ -2350,6 +2367,26 @@ export interface operations {
                 "application/json": components["schemas"]["DatosCiclo"];
             };
         };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_cierre_ciclo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ciclo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {

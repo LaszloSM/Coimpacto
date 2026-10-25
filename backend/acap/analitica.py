@@ -11,6 +11,7 @@ import io
 from collections import defaultdict
 from statistics import mean
 
+from django.db.models import Q
 from django.utils import timezone
 
 from acap.models import Acap, Ciclo, Membresia, Reunion
@@ -624,3 +625,79 @@ def reporte_consolidado(hoy: datetime.date | None = None) -> bytes:
     salida = io.BytesIO()
     wb.save(salida)
     return salida.getvalue()
+
+
+# ---------------------------------------------------------------- Cierre de ciclo (vista previa)
+
+# Política de reparto documentada en docs/reglas/reglas-de-dinero.md §4, pendiente de que
+# CoimpactoB la confirme: el fondo social no se reparte, las multas son ganancia del grupo.
+POLITICA_CIERRE = {
+    "reparte_fondo_social": False,
+    "multas_a_repartible": True,
+    "ventas_a_repartible": False,
+    "multiplo_redondeo": 1000,
+}
+
+
+def cierre_ciclo(ciclo: Ciclo, hoy: datetime.date | None = None) -> dict:
+    """Vista previa del reparto del ciclo con las reglas del libro (preview_cierre)."""
+    from cuentas.miembros import nombres_cortos
+    from libro import reglas
+    from libro import servicio as libro_servicio
+
+    hoy = hoy or timezone.localdate()
+    por_titular = defaultdict(lambda: defaultdict(int))
+    interes = ventas = 0
+    for m in _efectivos(Q(reunion__ciclo=ciclo)):
+        t = m["titular_id"]
+        if m["tipo"] == T.AHORRO:
+            por_titular[t]["ahorro"] += m["monto"]
+            precio = m["reunion"].valor_accion or 1
+            por_titular[t]["acciones"] += m["monto"] // precio
+        elif m["tipo"] == T.FONDO_SOCIAL:
+            por_titular[t]["fondo_social"] += m["monto"]
+        elif m["tipo"] == T.MULTA:
+            por_titular[t]["multas"] += m["monto"]
+        elif m["tipo"] == T.ABONO:
+            interes += int((m["detalle"] or {}).get("interes", 0)) * (1 if m["monto"] > 0 else -1)
+        elif m["tipo"] == T.VENTA:
+            ventas += m["monto"]
+    deudas = defaultdict(int)
+    for p in Prestamo.objects.filter(ciclo=ciclo):
+        deudas[p.titular_id] += libro_servicio.saldo_prestamo(p)
+    numeros = dict(
+        Membresia.objects.filter(acap=ciclo.acap).values_list("titular_id", "numero_miembro")
+    )
+    nombres = nombres_cortos(list(numeros.keys()))
+    miembros = [
+        {
+            "numero_miembro": numeros.get(t, 0),
+            "acciones": v["acciones"],
+            "ahorro": v["ahorro"],
+            "fondo_social": v["fondo_social"],
+            "multas": v["multas"],
+            "deuda": deudas.get(t, 0),
+        }
+        for t, v in por_titular.items()
+        if t is not None and v["ahorro"] > 0
+    ]
+    meses = ciclo.fecha_inicio.month - 1 + ciclo.duracion_meses
+    fin = datetime.date(ciclo.fecha_inicio.year + meses // 12, meses % 12 + 1, 1)
+    base = {
+        "ciclo": ciclo.numero,
+        "estado": ciclo.estado,
+        "termina": fin.isoformat(),
+        "dias_para_terminar": (fin - hoy).days,
+        "reuniones": ciclo.reuniones.count(),
+        "politica": POLITICA_CIERRE,
+        "politica_confirmada": False,
+    }
+    if not miembros:
+        return {**base, "totales": None, "detalle": []}
+    resultado = reglas.preview_cierre(
+        politica=POLITICA_CIERRE, interes_cobrado=max(interes, 0), ventas=ventas, miembros=miembros
+    )
+    por_numero = {n: str(t) for t, n in numeros.items()}
+    for fila in resultado["detalle"]:
+        fila["nombre"] = nombres.get(por_numero.get(fila["numero_miembro"], ""))
+    return {**base, **resultado}
