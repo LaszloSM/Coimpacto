@@ -9,7 +9,7 @@ import { perfiles } from "../seguridad/perfiles";
 import { criptoNode as c } from "../seguridad/pruebas/criptoNode";
 import { abrirSesion } from "../sesion/abrir";
 import { FOTO_PRUEBA } from "../sesion/modoPrueba";
-import { altaOtroCargo, altaPrimerPresidente, dispositivoRegistrado, presidenteDe, registrarCelular, revisarPinDoble } from "./flujo";
+import { altaOtroCargo, altaPrimerPresidente, dispositivoRegistrado, presidenteDe, registrarCelular, registrarConClave, revisarPinDoble } from "./flujo";
 
 const CODIGO = "c".repeat(43);
 
@@ -20,6 +20,10 @@ function servidorFalso(opciones: { presidente?: number } = {}) {
     const cuerpo = init.body ? JSON.parse(init.body as string) : {};
     pedidos.push({ url, cuerpo });
     const r = (status: number, json: unknown) => new Response(JSON.stringify(json), { status });
+    if (url.endsWith("/entrar"))
+      return cuerpo.clave === "clave-buena"
+        ? r(200, { codigo: CODIGO, dispositivo_id: "d1", acap_id: FOTO_PRUEBA.acap.id, acap_nombre: "ACAP de prueba" })
+        : r(400, { motivo: "clave_invalida" });
     if (url.endsWith("/canjear")) return r(200, { dispositivo_id: "d1", acap_id: FOTO_PRUEBA.acap.id, acap_nombre: "ACAP de prueba" });
     if (url.endsWith("/reto")) return r(200, { reto: "r1" });
     if (url.endsWith("/grupo")) return r(200, FOTO_PRUEBA);
@@ -65,6 +69,19 @@ test("registro con el QR, bajada del grupo y primer Presidente autorizado por el
   // Con el PIN del Presidente se abre la misma base, con el grupo bajado.
   const sesion = await abrirSesion(deps, perfil, "482916");
   expect(await sesion.base.primera("SELECT count(*) AS n FROM miembros;")).toEqual({ n: 20 });
+});
+
+test("sin QR: con el usuario y la clave de la ACAP se registra y el Presidente usa el código", async () => {
+  const { pedir, pedidos } = servidorFalso();
+  const deps = dependencias(pedir);
+  await expect(registrarConClave(deps, "las-brisas", "otra")).rejects.toThrow(/usuario o la clave/);
+  expect(await dispositivoRegistrado(deps.almacen)).toBeNull();
+
+  const enCurso = await registrarConClave(deps, " las-brisas ", "clave-buena");
+  expect(pedidos.find((p) => p.url.endsWith("/entrar"))!.cuerpo.usuario).toBe("las-brisas");
+  expect(await dispositivoRegistrado(deps.almacen)).toBe("d1");
+  await altaPrimerPresidente(deps, enCurso, "482916");
+  expect(pedidos.find((p) => p.url.endsWith("/presidente"))!.cuerpo).toMatchObject({ codigo: CODIGO, dispositivo_id: "d1" });
 });
 
 test("si el servidor no acepta al Presidente, no queda ningún perfil", async () => {

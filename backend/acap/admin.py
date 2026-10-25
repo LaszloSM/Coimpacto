@@ -11,16 +11,25 @@ from cuentas.models import Titular
 
 
 class CicloEnLinea(admin.TabularInline):
+    """Solo para ver los ciclos de la ACAP; se crean en Ciclos, que pide todos los valores."""
+
     model = Ciclo
     extra = 0
     fields = ("numero", "estado", "fecha_inicio", "duracion_meses", "valor_accion", "tasa_interes")
+    readonly_fields = fields
     show_change_link = True
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Acap)
 class AcapAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "creado_en")
-    search_fields = ("nombre",)
+    list_display = ("nombre", "zona", "municipio", "departamento", "creado_en")
+    list_filter = ("zona", "departamento")
+    search_fields = ("nombre", "municipio")
+    fields = ("nombre", "zona", "departamento", "municipio", "quorum_porcentaje", "mayoria")
     inlines = [CicloEnLinea]
 
 
@@ -35,6 +44,23 @@ class CargoEnLinea(admin.TabularInline):
 class CicloAdmin(admin.ModelAdmin):
     list_display = ("acap", "numero", "estado", "fecha_inicio", "valor_accion", "tasa_interes")
     list_filter = ("estado", "acap")
+    autocomplete_fields = ("acap",)
+    fieldsets = (
+        (None, {"fields": ("acap", "numero", "estado", "fecha_inicio", "duracion_meses")}),
+        (
+            "Valores del reglamento (pesos enteros; interés mensual en %)",
+            {
+                "fields": (
+                    "valor_accion",
+                    "max_acciones_reunion",
+                    "valor_fondo_social",
+                    "valor_multa",
+                    "tasa_interes",
+                    "meta_ahorro",
+                )
+            },
+        ),
+    )
     inlines = [CargoEnLinea]
 
 

@@ -175,5 +175,19 @@
       "faltante": "Faltante de caja",
       "sobrante": "Sobrante de caja"
     }
+  },
+  "armazon": {
+    "oficina": "Oficina de la Fundación",
+    "secciones": "Secciones de la oficina",
+    "pendientes": "Pendientes",
+    "porAclarar": "Por aclarar",
+    "indicadores": "Indicadores",
+    "personas": "Personas",
+    "celulares": "Registrar un celular",
+    "respaldos": "Copias de seguridad",
+    "configuracion": "Configuración",
+    "salir": "Salir",
+    "sinAcap": "Todavía no hay ACAP. Créela en Configuración (ACAP → Agregar), con su ciclo activo y su Presidente, y vuelva aquí.",
+    "irConfiguracion": "Ir a Configuración"
   }
 }

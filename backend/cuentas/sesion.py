@@ -14,6 +14,7 @@ from ninja.security import django_auth
 from ninja.throttling import AnonRateThrottle
 
 from acap import consolidado as datos_oficina
+from acap import tablero as datos_tablero
 from acap.models import Acap
 
 router = Router(tags=["sesion"])
@@ -55,7 +56,8 @@ def csrf(request):
 )
 def entrar(request, credenciales: Credenciales):
     usuario = authenticate(request, username=credenciales.usuario, password=credenciales.clave)
-    if usuario is None or not usuario.is_active:
+    # El usuario de la app de una ACAP solo registra celulares; no entra a la oficina.
+    if usuario is None or not usuario.is_active or usuario.acap_id is not None:
         return 401, {"mensaje": "Usuario o clave incorrectos."}
     login(request, usuario)
     return _yo(usuario)
@@ -102,3 +104,11 @@ def pendientes(request):
     if not _puede_ver(request.user):
         raise HttpError(403, "Este usuario no puede ver los pendientes.")
     return datos_oficina.bandeja()
+
+
+@router.get("/oficina/tablero", auth=django_auth, summary="Tablero de gerencia del panel")
+def tablero(request):
+    """Cifras, pulso por comunidad, hallazgos y series del panel. Sin datos personales."""
+    if not _puede_ver(request.user):
+        raise HttpError(403, "Este usuario no puede ver el tablero.")
+    return datos_tablero.tablero()

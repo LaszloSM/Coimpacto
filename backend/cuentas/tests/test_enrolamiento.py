@@ -363,3 +363,95 @@ def test_el_grupo_facilitador_puede_enrolar(db):
     usuaria = Usuario.objects.get(pk=usuaria.pk)
     assert usuaria.has_perm("cuentas.add_codigoenrolamiento")
     assert usuaria.has_perm("cuentas.add_llavecargo")
+
+
+class TestEntrarConClave:
+    """La Fundación crea el usuario de la ACAP; la junta entra a la app sin QR."""
+
+    @pytest.fixture
+    def cuenta_acap(self, ciclo):
+        return Usuario.objects.create_user(
+            username="las-brisas", password="clave-de-la-junta-1", acap=ciclo.acap
+        )
+
+    def entrar(self, usuario="las-brisas", clave="clave-de-la-junta-1", llave=None):
+        return Client().post(
+            "/api/enrolamiento/entrar",
+            {
+                "usuario": usuario,
+                "clave": clave,
+                "llave_publica": (llave or LlaveDePrueba()).publica,
+            },
+            content_type="application/json",
+            secure=True,
+        )
+
+    def test_registra_el_celular_y_autoriza_al_primer_presidente(
+        self, cuenta_acap, ciclo, nuevo_cargo
+    ):
+        celular = LlaveDePrueba()
+        respuesta = self.entrar(llave=celular)
+        assert respuesta.status_code == 200, respuesta.content
+        datos = respuesta.json()
+        assert datos["acap_id"] == str(ciclo.acap.id)
+        codigo = CodigoEnrolamiento.objects.get(dispositivo_id=datos["dispositivo_id"])
+        assert codigo.creado_por == cuenta_acap
+
+        cargo = nuevo_cargo(Cargo.Tipo.PRESIDENTE)
+        llave_id, presidente = uuid.uuid4(), LlaveDePrueba()
+        mensaje = servicio.mensaje_primer_presidente(
+            codigo=datos["codigo"],
+            llave_id=llave_id,
+            cargo_id=cargo.id,
+            llave_publica=presidente.publica,
+        )
+        llave = servicio.alta_primer_presidente(
+            dispositivo=codigo.dispositivo,
+            codigo=datos["codigo"],
+            llave_id=llave_id,
+            cargo=cargo,
+            llave_publica=presidente.publica,
+            firma=celular.firmar(mensaje),
+        )
+        assert llave.cargo == cargo
+
+    @pytest.mark.parametrize(
+        "usuario,clave", [("las-brisas", "otra-clave"), ("nadie", "clave-de-la-junta-1")]
+    )
+    def test_usuario_o_clave_incorrectos(self, cuenta_acap, usuario, clave):
+        respuesta = self.entrar(usuario=usuario, clave=clave)
+        assert respuesta.status_code == 400
+        assert respuesta.json()["motivo"] == "clave_invalida"
+        assert not CodigoEnrolamiento.objects.exists()
+
+    def test_usuario_sin_acap_o_inactivo_no_entra(self, cuenta_acap, facilitador):
+        assert self.entrar(usuario="facilitadora", clave="x" * 16).status_code == 400
+        cuenta_acap.is_active = False
+        cuenta_acap.save()
+        assert self.entrar().status_code == 400
+
+    def test_no_autoriza_cargos_de_otra_acap(self, cuenta_acap, dispositivo, nuevo_cargo):
+        from acap.models import Acap
+
+        cuenta_acap.acap = Acap.objects.create(nombre="Otra")
+        cuenta_acap.save()
+        assert (
+            motivo(
+                servicio.registrar_llave_cargo,
+                id=uuid.uuid4(),
+                dispositivo=dispositivo,
+                cargo=nuevo_cargo(Cargo.Tipo.PRESIDENTE),
+                llave_publica=LlaveDePrueba().publica,
+                facilitador=cuenta_acap,
+            )
+            == "sin_autorizacion"
+        )
+
+    def test_el_usuario_de_la_app_no_entra_al_panel(self, cuenta_acap):
+        respuesta = Client().post(
+            "/api/sesion/entrar",
+            {"usuario": "las-brisas", "clave": "clave-de-la-junta-1"},
+            content_type="application/json",
+            secure=True,
+        )
+        assert respuesta.status_code == 401

@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T00:00:00Z",
+  "title": "Design System: Credimpacto",
+  "extensions": {
+    "worlds": [
+      {
+        "name": "Cuaderno de la ACAP",
+        "governs": ["App Android Expo: reunión de la junta y vista del socio", "docs/designs/preview/sistema-de-diseno.html", "Páginas de gestión de /fundacion (Pendientes, Por aclarar, Personas, Celulares, Entrar) mientras no se migren"],
+        "tokenSource": "Frontmatter YAML de DESIGN.md -> packages/tokens"
+      },
+      {
+        "name": "Panel de la Fundación",
+        "governs": ["Web /fundacion: armazón (barra lateral), Panel de gerencia y secciones de análisis", "Toda pantalla nueva de /fundacion"],
+        "tokenSource": "Variables de .panel en web/src/app/(fundacion)/fundacion/panel.module.css (claves panel-* de este sidecar; no están en el frontmatter para no alterar packages/tokens)"
+      }
+    ],
+    "colorMeta": {
+      "tinta": { "role": "neutral", "displayName": "Tinta azul", "canonical": "#10213D", "world": "cuaderno" },
+      "navy": { "role": "primary", "displayName": "Azul de marca", "canonical": "#1B3A6B", "world": "cuaderno", "tonalRamp": ["#0A1830", "#10213D", "#1B3A6B", "#2F548F", "#5A7BB0", "#94AACD", "#C7D3E6", "#E4EAF3"] },
+      "naranja": { "role": "primary", "displayName": "Naranja de acción", "canonical": "#F07B22", "world": "cuaderno", "tonalRamp": ["#4A2104", "#7A370A", "#A94E10", "#D96A15", "#F07B22", "#F5A160", "#F9C8A0", "#FDEEE1"] },
+      "papel": { "role": "neutral", "displayName": "Papel", "canonical": "#FFFFFF", "world": "cuaderno" },
+      "renglon": { "role": "neutral", "displayName": "Renglón", "canonical": "#D5DCE6", "world": "cuaderno" },
+      "confirmado": { "role": "tertiary", "displayName": "Confirmado", "canonical": "#124B2E", "world": "cuaderno" },
+      "rechazado": { "role": "tertiary", "displayName": "Rechazado", "canonical": "#7E1712", "world": "cuaderno" },
+      "panel-naranja": { "role": "primary", "displayName": "Naranja CoimpactoB", "canonical": "#F66A03", "world": "panel", "cssVar": "--naranja", "tonalRamp": ["#3D1A00", "#6B2E00", "#9C4300", "#E05F00", "#F66A03", "#FF9A52", "#FFC49A", "#FFF1E6"] },
+      "panel-naranja-hover": { "role": "primary", "displayName": "Naranja presionado", "canonical": "#E05F00", "world": "panel", "cssVar": "--naranja-hover" },
+      "panel-naranja-suave": { "role": "primary", "displayName": "Naranja suave", "canonical": "#FFF1E6", "world": "panel", "cssVar": "--naranja-suave" },
+      "panel-carbon": { "role": "neutral", "displayName": "Carbón", "canonical": "#1C1C1C", "world": "panel", "cssVar": "--carbon", "tonalRamp": ["#0E0E0E", "#1C1C1C", "#2A2A2A", "#5F5E5A", "#A3A19B", "#DAD8D3", "#ECEBE8", "#FAFAF9"] },
+      "panel-carbon-2": { "role": "neutral", "displayName": "Carbón 2", "canonical": "#2A2A2A", "world": "panel", "cssVar": "--carbon-2" },
+      "panel-texto": { "role": "neutral", "displayName": "Texto", "canonical": "#252525", "world": "panel", "cssVar": "--texto" },
+      "panel-texto-suave": { "role": "neutral", "displayName": "Texto suave", "canonical": "#5F5E5A", "world": "panel", "cssVar": "--texto-suave" },
+      "panel-texto-tenue": { "role": "neutral", "displayName": "Texto tenue", "canonical": "#6B6A66", "world": "panel", "cssVar": "--texto-tenue" },
+      "panel-fondo": { "role": "neutral", "displayName": "Fondo", "canonical": "#FAFAF9", "world": "panel", "cssVar": "--fondo" },
+      "panel-superficie": { "role": "neutral", "displayName": "Superficie", "canonical": "#FFFFFF", "world": "panel", "cssVar": "--superficie" },
+      "panel-borde": { "role": "neutral", "displayName": "Borde", "canonical": "#ECEBE8", "world": "panel", "cssVar": "--borde" },
+      "panel-borde-fuerte": { "role": "neutral", "displayName": "Borde fuerte", "canonical": "#DAD8D3", "world": "panel", "cssVar": "--borde-fuerte" },
+      "panel-azul": { "role": "secondary", "displayName": "Azul CoimpactoB (serie de crédito)", "canonical": "#005FC5", "world": "panel", "cssVar": "--azul" },
+      "panel-verde": { "role": "secondary", "displayName": "Verde (al día)", "canonical": "#35A472", "world": "panel", "cssVar": "--verde" },
+      "panel-verde-suave": { "role": "secondary", "displayName": "Verde suave", "canonical": "#E8F5EE", "world": "panel", "cssVar": "--verde-suave" },
+      "panel-amarillo": { "role": "secondary", "displayName": "Amarillo (atención; nunca letra)", "canonical": "#F9C032", "world": "panel", "cssVar": "--amarillo" },
+      "panel-amarillo-suave": { "role": "secondary", "displayName": "Amarillo suave", "canonical": "#FEF6E1", "world": "panel", "cssVar": "--amarillo-suave" },
+      "panel-rojo": { "role": "secondary", "displayName": "Rojo (en mora; nunca letra)", "canonical": "#F53D45", "world": "panel", "cssVar": "--rojo" },
+      "panel-rojo-suave": { "role": "secondary", "displayName": "Rojo suave", "canonical": "#FEECEC", "world": "panel", "cssVar": "--rojo-suave" },
+      "panel-gris-datos": { "role": "secondary", "displayName": "Gris de datos (sin datos, falta para la meta)", "canonical": "#C9C7C1", "world": "panel", "cssVar": "--gris-datos" },
+      "panel-verde-texto": { "role": "tertiary", "displayName": "Verde texto (bien, sube; 5,3:1)", "canonical": "#227A52", "world": "panel" },
+      "panel-ambar-texto": { "role": "tertiary", "displayName": "Ámbar texto (atención; 5,9:1)", "canonical": "#8A5A00", "world": "panel" },
+      "panel-rojo-texto": { "role": "tertiary", "displayName": "Rojo texto (mora, baja; 5,8:1)", "canonical": "#C4202A", "world": "panel", "cssVar": "--rojo-texto" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Bitter)", "purpose": "Cuaderno: títulos grandes de la oficina del cuaderno." },
+      "body": { "displayName": "Cuerpo de campo (Atkinson Hyperlegible Next)", "purpose": "Cuaderno: todo el texto de la reunión, 18 px mínimo." },
+      "cifra-clave": { "displayName": "Cifra clave", "purpose": "Cuaderno: el monto que se está registrando, con tnum." },
+      "panel-cifra-destacada": { "displayName": "Cifra destacada (Poppins 700, 2,5rem, -0,03em)", "purpose": "Panel: solo el Ahorro del ciclo.", "world": "panel" },
+      "panel-titulo": { "displayName": "Título de página (Poppins 700, 2rem, -0,02em, 1,2)", "purpose": "Panel: título de cada vista.", "world": "panel" },
+      "panel-cifra": { "displayName": "Cifra (Poppins 600, 2rem, -0,02em, tabular-nums)", "purpose": "Panel: las cifras principales de la franja.", "world": "panel" },
+      "panel-bloque": { "displayName": "Título de bloque (Poppins 600, 1,0625rem, -0,01em)", "purpose": "Panel: Para mirar hoy, Pulso, gráficos.", "world": "panel" },
+      "panel-texto": { "displayName": "Texto (Roboto 400, 0,9375-1rem, tnum)", "purpose": "Panel: texto, tablas, filas y montos fuera de la franja.", "world": "panel" },
+      "panel-etiqueta": { "displayName": "Etiqueta (Roboto 400-500, 0,875rem)", "purpose": "Panel: nombres de cifras e indicadores, detalles.", "world": "panel" },
+      "panel-pequeno": { "displayName": "Pequeño (Roboto 0,8125rem)", "purpose": "Panel: chips, filtros, leyendas, encabezados de tabla.", "world": "panel" }
+    },
+    "shadows": [
+      { "name": "oficina-desplegable", "value": "0 4px 12px rgb(16 33 61 / 0.12)", "purpose": "Cuaderno: solo menús desplegables y diálogos de la oficina del cuaderno." },
+      { "name": "panel-bloque", "value": "0 1px 2px rgb(28 28 28 / 0.04), 0 4px 16px rgb(28 28 28 / 0.04)", "purpose": "Panel: franja de cifras, Para mirar hoy, Pulso y gráficos." },
+      { "name": "panel-globo", "value": "0 4px 16px rgb(28 28 28 / 0.1)", "purpose": "Panel: tooltip de los gráficos, lo único que flota." }
+    ],
+    "motion": [
+      { "name": "sello", "value": "320ms cubic-bezier(.2,.8,.2,1)", "purpose": "Cuaderno: el sello Bien contado cae de escala 1,25 a 1; sin animación con reducir movimiento." },
+      { "name": "paso-asistente", "value": "200ms ease-out", "purpose": "Cuaderno: el paso del asistente se desliza." },
+      { "name": "panel-curva", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Panel: toda escala o desplazamiento; duraciones por debajo de 300 ms." },
+      { "name": "panel-hover", "value": "160ms ease", "purpose": "Panel: cambios de color en hover, solo con puntero fino." },
+      { "name": "panel-presion", "value": "140ms cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Panel: escala al presionar (0,95 salir, 0,97 botones y filtros, 0,98 filas y chips)." },
+      { "name": "panel-entrada-cifras", "value": "260ms cubic-bezier(0.23, 1, 0.32, 1), 30ms de escalón", "purpose": "Panel: entrada única de las cifras desde opacidad 0,4 y 4px abajo." },
+      { "name": "panel-pulso-reacomodo", "value": "240ms cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Panel: al filtrar el Pulso, salida con opacidad y escala 0,98 (chips 0,96) y reacomodo con Motion layout; duración 0 con reducir movimiento." }
+    ],
+    "breakpoints": [
+      { "name": "oficina-tira", "value": "760px", "world": "cuaderno" },
+      { "name": "panel-graficos-una-columna", "value": "1180px", "world": "panel" },
+      { "name": "panel-tira", "value": "900px", "world": "panel" },
+      { "name": "panel-movil", "value": "520px", "world": "panel" },
+      { "name": "panel-minimo", "value": "340px", "world": "panel" }
+    ],
+    "panelStatus": {
+      "estados": [
+        { "estado": "mora", "palabra": "En mora", "marca": "panel-rojo", "letra": "panel-rojo-texto", "cuando": "cartera vencida > 10 % (UMBRAL_MORA)" },
+        { "estado": "atencion", "palabra": "Atención", "marca": "panel-amarillo", "letra": "panel-ambar-texto", "cuando": "mora > 0 % o datos de hace más de 14 días" },
+        { "estado": "sin_datos", "palabra": "Sin datos", "marca": "panel-gris-datos", "letra": "panel-texto-suave", "cuando": "sin ciclo, nunca sincronizó o más de 30 días sin datos" },
+        { "estado": "al_dia", "palabra": "Al día", "marca": "panel-verde", "letra": null, "cuando": "ninguna de las anteriores" }
+      ],
+      "orden": ["mora", "atencion", "sin_datos", "al_dia"],
+      "tonos": {
+        "moraGlobal": { "alerta": "> 10 %", "atencion": "> 0 %", "bien": "0 %" },
+        "moraZona": { "alerta": "> 6 %", "atencion": "> 2 %", "bien": "<= 2 %" },
+        "cumplimiento": { "alerta": "< 90 %", "bien": ">= 90 %" }
+      }
+    },
+    "panelFormats": {
+      "pesosCortos": ">= 1.000.000 -> \"$ 97,5 M\" (1 decimal máx.); >= 10.000 -> \"$ 850 mil\"; menor -> exacto \"$ 9.500\"; negativo con signo −",
+      "pesosExactos": "formatearPesos de @credimpacto/reglas: title, lector de pantalla y tooltip",
+      "porcentaje": "1 decimal máx., coma, espacio antes de %: \"91,6 %\"; nulo -> \"Sin datos\""
+    }
+  },
+  "components": [
+    {
+      "name": "Botón principal (cuaderno)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Cuaderno: la única acción principal de la pantalla; etiqueta en tinta, 20px/700, alto 56px.",
+      "html": "<button class=\"ds-btn-cuaderno\">Cerrar la reunión</button>",
+      "css": ".ds-btn-cuaderno { background: #F07B22; color: #10213D; font: 700 20px/1.2 'Atkinson Hyperlegible Next', system-ui, sans-serif; min-height: 56px; padding: 0 24px; border: 0; border-radius: 8px; cursor: pointer; } .ds-btn-cuaderno:active { background: #D96A15; } .ds-btn-cuaderno:focus-visible { outline: 3px solid #F07B22; outline-offset: 3px; }"
+    },
+    {
+      "name": "Renglón del libro (cuaderno)",
+      "kind": "custom",
+      "refersTo": "renglon",
+      "description": "Cuaderno: nombre a la izquierda, cifra con tnum a la derecha, renglón de 1px, 64px de alto.",
+      "html": "<div class=\"ds-renglon\"><span>María Cuesta</span><strong>$ 50.000</strong></div>",
+      "css": ".ds-renglon { display: flex; justify-content: space-between; align-items: center; min-height: 64px; border-bottom: 1px solid #D5DCE6; color: #10213D; font: 400 18px/1.5 'Atkinson Hyperlegible Next', system-ui, sans-serif; } .ds-renglon strong { font-size: 22px; font-weight: 700; font-feature-settings: 'tnum'; white-space: nowrap; }"
+    },
+    {
+      "name": "Barra lateral del Panel",
+      "kind": "nav",
+      "description": "Panel: barra carbón de 232px; ítem activo con naranja al 16 %, texto blanco e ícono naranja; contador de pendientes.",
+      "html": "<nav class=\"ds-p-barra\"><a class=\"ds-p-marca\" href=\"#\">Cred<span>i</span>mpacto</a><a class=\"ds-p-enlace\" aria-current=\"page\" href=\"#\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 256 256\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"40\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"40\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"40\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/><rect x=\"144\" y=\"144\" width=\"72\" height=\"72\" rx=\"8\"/></svg><span>Panel</span></a><a class=\"ds-p-enlace\" href=\"#\"><span>Pendientes</span><span class=\"ds-p-contador\">3</span></a></nav>",
+      "css": ".ds-p-barra { display: flex; flex-direction: column; gap: 2px; width: 232px; padding: 22px 14px 14px; background: #1C1C1C; color: #F4F3F0; font-family: Roboto, system-ui, sans-serif; } .ds-p-marca { font: 700 1.375rem Poppins, system-ui, sans-serif; letter-spacing: -0.02em; color: #fff; text-decoration: none; padding: 0 10px 22px; } .ds-p-marca span { color: #F66A03; } .ds-p-enlace { display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 0 10px; border-radius: 8px; color: #D9D7D2; text-decoration: none; font-size: 0.9375rem; transition: background-color 160ms ease, color 160ms ease; } .ds-p-enlace:hover { background: #2A2A2A; color: #fff; } .ds-p-enlace[aria-current='page'] { background: rgb(246 106 3 / 0.16); color: #fff; font-weight: 500; } .ds-p-enlace[aria-current='page'] svg { color: #F66A03; } .ds-p-enlace:focus-visible { outline: 2px solid #F66A03; outline-offset: 2px; } .ds-p-contador { margin-left: auto; min-width: 22px; padding: 0 6px; border-radius: 999px; background: #F66A03; color: #fff; font-size: 0.75rem; font-weight: 700; line-height: 22px; text-align: center; }"
+    },
+    {
+      "name": "Franja de cifras del Panel",
+      "kind": "card",
+      "description": "Panel: cuatro cifras en un solo bloque con divisores; la de ahorro es destacada con su marca naranja.",
+      "html": "<dl class=\"ds-p-cifras\"><div class=\"ds-p-cifra\"><dt><i class=\"ds-p-marca-ahorro\"></i>Ahorro del ciclo</dt><dd class=\"ds-p-valor ds-p-destacada\">$ 97,5 M</dd><dd class=\"ds-p-sube\">↗ 6,4 % <span>vs. mes pasado</span></dd></div><div class=\"ds-p-cifra\"><dt>Miembros</dt><dd class=\"ds-p-valor\">246</dd><dd class=\"ds-p-neutra\">con ciclo abierto</dd></div></dl>",
+      "css": ".ds-p-cifras { display: grid; grid-template-columns: 1.35fr 1fr; margin: 0; background: #fff; border: 1px solid #ECEBE8; border-radius: 14px; box-shadow: 0 1px 2px rgb(28 28 28 / 0.04), 0 4px 16px rgb(28 28 28 / 0.04); font-family: Roboto, system-ui, sans-serif; color: #252525; } .ds-p-cifra { display: grid; gap: 6px; padding: 22px 24px; } .ds-p-cifra + .ds-p-cifra { border-left: 1px solid #ECEBE8; } .ds-p-cifra dt { font-size: 0.875rem; color: #5F5E5A; } .ds-p-cifra dd { margin: 0; font-size: 0.8125rem; } .ds-p-valor { font: 600 2rem/1.1 Poppins, system-ui, sans-serif !important; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-p-destacada { font-weight: 700 !important; font-size: 2.5rem !important; letter-spacing: -0.03em; } .ds-p-marca-ahorro { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 3px; background: #F66A03; } .ds-p-sube { color: #227A52; font-weight: 500; } .ds-p-sube span, .ds-p-neutra { color: #6B6A66; font-weight: 400; }"
+    },
+    {
+      "name": "Filtro de estado del Pulso",
+      "kind": "chip",
+      "description": "Panel: píldora con marca, palabra y cuenta; presionada se invierte a texto oscuro.",
+      "html": "<div class=\"ds-p-filtros\"><button class=\"ds-p-filtro\" data-estado=\"mora\" aria-pressed=\"true\"><i></i>En mora <b>1</b></button><button class=\"ds-p-filtro\" data-estado=\"atencion\" aria-pressed=\"false\"><i></i>Atención <b>3</b></button><button class=\"ds-p-filtro\" data-estado=\"al_dia\" aria-pressed=\"false\"><i></i>Al día <b>13</b></button></div>",
+      "css": ".ds-p-filtros { display: flex; flex-wrap: wrap; gap: 6px; } .ds-p-filtro { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; border: 1px solid #DAD8D3; border-radius: 999px; background: #fff; color: #252525; font: 400 0.8125rem Roboto, system-ui, sans-serif; cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-p-filtro:hover { border-color: #6B6A66; } .ds-p-filtro:active { transform: scale(0.97); } .ds-p-filtro:focus-visible { outline: 2px solid #F66A03; outline-offset: 2px; } .ds-p-filtro[aria-pressed='true'] { background: #252525; border-color: #252525; color: #fff; } .ds-p-filtro i { width: 8px; height: 8px; border-radius: 2px; background: #C9C7C1; } .ds-p-filtro[data-estado='mora'] i { background: #F53D45; } .ds-p-filtro[data-estado='atencion'] i { background: #F9C032; } .ds-p-filtro[data-estado='al_dia'] i { background: #35A472; }"
+    },
+    {
+      "name": "Fila del Pulso",
+      "kind": "custom",
+      "description": "Panel: comunidad que necesita atención; nombre, estado con marca y palabra, por qué, y el ahorro al cierre.",
+      "html": "<a class=\"ds-p-renglon\" data-estado=\"mora\" href=\"#\"><span class=\"ds-p-nombre\">Yoduijoné</span><span class=\"ds-p-estado\"><i></i>En mora</span><span class=\"ds-p-detalle\">14,8 % de la cartera en mora</span><span class=\"ds-p-ahorro\">$ 5,3 M <small>ahorrados</small></span></a>",
+      "css": ".ds-p-renglon { display: grid; grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1.4fr) 140px; align-items: center; gap: 12px; min-height: 44px; padding: 0 8px; border-bottom: 1px solid #ECEBE8; border-radius: 8px; color: #252525; text-decoration: none; font: 400 1rem Roboto, system-ui, sans-serif; font-feature-settings: 'tnum'; transition: background-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-p-renglon:hover { background: #F6F5F2; } .ds-p-renglon:active { transform: scale(0.98); } .ds-p-renglon:focus-visible { outline: 2px solid #F66A03; outline-offset: 2px; } .ds-p-nombre { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-p-estado { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 700; } .ds-p-estado i { width: 8px; height: 8px; border-radius: 2px; background: #C9C7C1; } .ds-p-renglon[data-estado='mora'] .ds-p-estado { color: #C4202A; } .ds-p-renglon[data-estado='mora'] .ds-p-estado i { background: #F53D45; } .ds-p-renglon[data-estado='atencion'] .ds-p-estado { color: #8A5A00; } .ds-p-renglon[data-estado='atencion'] .ds-p-estado i { background: #F9C032; } .ds-p-detalle { font-size: 0.875rem; color: #5F5E5A; } .ds-p-ahorro { text-align: right; font-weight: 500; white-space: nowrap; } .ds-p-ahorro small { font-size: 0.8125rem; font-weight: 400; color: #5F5E5A; }"
+    },
+    {
+      "name": "Chip de comunidad al día",
+      "kind": "chip",
+      "description": "Panel: píldora de 30px con marca verde y nombre; el ahorro va en title.",
+      "html": "<a class=\"ds-p-chip\" href=\"#\" title=\"Kayetamana: $ 7,1 M ahorrados\"><i></i>Kayetamana</a>",
+      "css": ".ds-p-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 0 10px; border: 1px solid #ECEBE8; border-radius: 999px; background: #fff; color: #252525; font: 400 0.8125rem Roboto, system-ui, sans-serif; text-decoration: none; transition: border-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-p-chip:hover { border-color: #DAD8D3; } .ds-p-chip:active { transform: scale(0.98); } .ds-p-chip:focus-visible { outline: 2px solid #F66A03; outline-offset: 2px; } .ds-p-chip i { width: 8px; height: 8px; border-radius: 2px; background: #35A472; }"
+    },
+    {
+      "name": "Tabla de zonas",
+      "kind": "custom",
+      "description": "Panel: cumplimiento como barra verde sobre 100 % y mora con su tono; ordenada por cumplimiento.",
+      "html": "<table class=\"ds-p-zonas\"><thead><tr><th>Zona</th><th>Cumplimiento</th><th>Mora</th></tr></thead><tbody><tr><th>Norte<small>5 comunidades</small></th><td><span class=\"ds-p-barra-z\"><span style=\"transform:scaleX(.96)\"></span></span><b>96 %</b></td><td data-tono=\"bien\">1,2 %</td></tr><tr><th>Sur<small>4 comunidades</small></th><td><span class=\"ds-p-barra-z\"><span style=\"transform:scaleX(.82)\"></span></span><b>82 %</b></td><td data-tono=\"alerta\">9,8 %</td></tr></tbody></table>",
+      "css": ".ds-p-zonas { width: 100%; border-collapse: collapse; font: 400 0.9375rem Roboto, system-ui, sans-serif; font-feature-settings: 'tnum'; color: #252525; } .ds-p-zonas th, .ds-p-zonas td { padding: 10px 0; border-bottom: 1px solid #ECEBE8; text-align: left; } .ds-p-zonas thead th { font-size: 0.8125rem; font-weight: 500; color: #5F5E5A; } .ds-p-zonas th:last-child, .ds-p-zonas td:last-child { text-align: right; font-weight: 700; } .ds-p-zonas tbody th { font-weight: 500; } .ds-p-zonas small { display: block; font-size: 0.8125rem; font-weight: 400; color: #5F5E5A; } .ds-p-zonas td:nth-child(2) { width: 45%; padding-right: 16px; } .ds-p-barra-z { display: inline-block; vertical-align: middle; width: calc(100% - 64px); height: 6px; margin-right: 10px; border-radius: 3px; background: #F0EFEC; overflow: hidden; } .ds-p-barra-z span { display: block; height: 100%; background: #35A472; transform-origin: left center; } .ds-p-zonas td[data-tono='bien'] { color: #227A52; } .ds-p-zonas td[data-tono='atencion'] { color: #8A5A00; } .ds-p-zonas td[data-tono='alerta'] { color: #C4202A; }"
+    },
+    {
+      "name": "Botón secundario del Panel",
+      "kind": "button",
+      "description": "Panel: superficie blanca con borde fuerte; para reintentar o volver. El principal naranja tiene un defecto abierto de contraste en su etiqueta y no se reproduce aquí.",
+      "html": "<button class=\"ds-p-btn-sec\">Intentar de nuevo</button>",
+      "css": ".ds-p-btn-sec { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid #DAD8D3; border-radius: 8px; background: #fff; color: #252525; font: 500 1rem Roboto, system-ui, sans-serif; cursor: pointer; transition: border-color 160ms ease, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-p-btn-sec:hover { border-color: #6B6A66; } .ds-p-btn-sec:active { transform: scale(0.97); } .ds-p-btn-sec:focus-visible { outline: 2px solid #F66A03; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Cuaderno de la ACAP (app y vista previa) · El pulso de las comunidades (Panel de la Fundación, web)",
+    "overview": "Cuaderno: el cuaderno de la ACAP, en pantalla. Tinta azul sobre papel blanco, un renglón por movimiento, el billete real para contar la caja y un sello para cerrar. Las juntas ya confían en esos objetos. La app se ve como su libro, no como un banco, y eso hace visible el principio de que no custodiamos dinero.\n\nPanel: el panel se lee como el estado de salud de cada comunidad, no como una pared de tarjetas de métricas. Gerencia entiende en segundos cuánto ahorran y prestan las comunidades, cuáles están al día y cuáles necesitan una visita, y desde ahí entra a la comunidad para actuar.\n\nEs la marca CoimpactoB (coimpactob.com) en modo Operate: barra lateral carbón, fondo casi blanco, superficies blancas con borde fino y un solo naranja. La paleta secundaria de la marca existe solo para datos y estados. La densidad es de oficina, para un portátil de día: filas de 44 px y cifras grandes únicamente en la franja principal.",
+    "keyCharacteristics": [
+      "Una columna con renglones y sin tarjetas. Parece un cuaderno, no un dashboard.",
+      "Las cifras son lo más grande de la pantalla, siempre con el valor en letras debajo.",
+      "Hay un solo botón naranja por pantalla, y es lo que se hace ahora.",
+      "Siempre se ve si el dato está guardado aquí o ya llegó a la Fundación.",
+      "Errar no da miedo: corregir tacha, no borra.",
+      "Una franja de cuatro cifras con divisores, sin cajas de color.",
+      "Los estados van siempre con color, palabra y cifra; el color nunca va solo.",
+      "El naranja marca el ahorro, la selección y la acción principal. Nada más.",
+      "Todo dato viene del servidor. Si un bloque no tiene datos, lo dice y explica qué falta.",
+      "El movimiento es corto (menos de 300 ms), usa una curva propia y se apaga con «reducir movimiento»."
+    ],
+    "rules": [
+      { "name": "The Una Sola Voz Rule", "body": "El naranja aparece en un solo botón por vista. En los datos, el naranja siempre significa ahorro: ninguna otra serie lo usa.", "section": "colors" },
+      { "name": "The Color Con Palabra Rule", "body": "Los colores secundarios se usan como marca (un cuadrado de 8 px), serie o barra. La letra de estado usa la versión oscura de su tono y siempre trae la palabra al lado.", "section": "colors" },
+      { "name": "The Poppins Para Cifras Rule", "body": "Poppins solo va en títulos, en la marca y en las cifras de la franja principal. Los montos de las tablas, filas y gráficos van en Roboto con tnum.", "section": "typography" }
+    ],
+    "dos": [
+      "Usar un solo botón naranja por pantalla.",
+      "Mostrar cada monto de dinero en es-CO, con espacio no separable y el valor en letras debajo (en campo).",
+      "Mostrar cada estado con ícono, palabra y color, sacados de la tabla fija.",
+      "Cumplir los mínimos en campo: texto ≥ 18 px, cifras clave ≥ 32 px, toques ≥ 56 px y contraste ≥ 7:1.",
+      "Mostrar las correcciones como tachado más reverso, nunca como edición en sitio ni borrado.",
+      "Usar un solo botón naranja por vista y el naranja como el color del ahorro en todos los datos.",
+      "Mostrar cada estado con marca de color, palabra y, cuando la hay, cifra.",
+      "Mostrar el dinero con `pesosCortos` y dejar la cifra exacta en `title`, en el lector de pantalla y en el tooltip.",
+      "Decir qué falta en todo bloque sin datos, sin cifras de ejemplo.",
+      "Usar `--curva`, menos de 300 ms y desactivar con «reducir movimiento»."
+    ],
+    "donts": [
+      "No dar a entender que somos un banco: nada de bóvedas, «saldo disponible», «tu cuenta» ni íconos de banco. El dinero es del grupo y lo tiene la caja o la entidad aliada.",
+      "No poner tarjetas dentro de tarjetas ni dashboards de tarjetas en la superficie de reunión.",
+      "No poner texto blanco sobre naranja, ni naranja en algo que no sea la acción principal.",
+      "No usar el color del billete como único identificador, ni como fondo de texto.",
+      "No poner gráficos decorativos, anillos de progreso ni avatares falsos en campo. Si una cifra importa, se muestra la cifra.",
+      "No usar emojis como íconos.",
+      "No usar modo oscuro.",
+      "No usar el amarillo ni el rojo de marca como color de letra (no llegan a 4,5:1); para eso están ámbar texto y rojo texto.",
+      "No pintar en naranja otra serie que no sea el ahorro, ni poner un segundo botón naranja.",
+      "No armar una pared de tarjetas de KPI: las cifras van en una franja con divisores y los indicadores, sin caja.",
+      "No poner un control inerte (por ejemplo, un selector de periodo que el servidor todavía no recibe).",
+      "No mostrar «0 %» cuando el dato no existe; se dice «Sin datos»."
+    ]
+  }
+}

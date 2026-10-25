@@ -200,6 +200,49 @@
         }
       }
     },
+    "/api/enrolamiento/entrar": {
+      "post": {
+        "operationId": "cuentas_api_entrar",
+        "summary": "Registrar este celular con el usuario y la clave de la ACAP",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CelularConCodigo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rechazo"
+                }
+              }
+            }
+          }
+        },
+        "description": "Devuelve el código de un solo uso con el que el celular da de alta al primer Presidente.",
+        "tags": [
+          "enrolamiento"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PedidoEntrada"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
     "/api/enrolamiento/presidente": {
       "post": {
         "operationId": "cuentas_api_alta_presidente",
@@ -411,6 +454,27 @@
             "description": "OK"
           }
         },
+        "tags": [
+          "sesion"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/tablero": {
+      "get": {
+        "operationId": "cuentas_sesion_tablero",
+        "summary": "Tablero de gerencia del panel",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Cifras, pulso por comunidad, hallazgos y series del panel. Sin datos personales.",
         "tags": [
           "sesion"
         ],
@@ -1249,6 +1313,59 @@
           "llave_publica"
         ],
         "title": "PedidoCanje",
+        "type": "object"
+      },
+      "CelularConCodigo": {
+        "properties": {
+          "dispositivo_id": {
+            "format": "uuid",
+            "title": "Dispositivo Id",
+            "type": "string"
+          },
+          "acap_id": {
+            "format": "uuid",
+            "title": "Acap Id",
+            "type": "string"
+          },
+          "acap_nombre": {
+            "title": "Acap Nombre",
+            "type": "string"
+          },
+          "codigo": {
+            "title": "Codigo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dispositivo_id",
+          "acap_id",
+          "acap_nombre",
+          "codigo"
+        ],
+        "title": "CelularConCodigo",
+        "type": "object"
+      },
+      "PedidoEntrada": {
+        "properties": {
+          "usuario": {
+            "title": "Usuario",
+            "type": "string"
+          },
+          "clave": {
+            "title": "Clave",
+            "type": "string"
+          },
+          "llave_publica": {
+            "title": "Llave Publica",
+            "type": "string"
+          }
+        },
+        "required": [
+          "usuario",
+          "clave",
+          "llave_publica"
+        ],
+        "title": "PedidoEntrada",
         "type": "object"
       },
       "LlaveRegistrada": {

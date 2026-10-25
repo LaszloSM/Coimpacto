@@ -142,6 +142,8 @@ components:
 
 # Credimpacto
 
+> **Dos mundos, una marca de producto.** Todo lo que sigue hasta la sección «Panel de la Fundación (web, oficina)» es el mundo del **cuaderno de la ACAP**: gobierna la app Android (reunión y vista del socio) y la vista previa del sistema. La web de la Fundación (`/fundacion`) sigue el mundo del **Panel de la Fundación**, documentado en su propia sección; ver allí la tabla de alcance.
+
 ## Overview
 
 **Creative North Star:** el cuaderno de la ACAP, en pantalla. Tinta azul sobre papel blanco, un renglón por movimiento, el billete real para contar la caja y un sello para cerrar. Las juntas ya confían en esos objetos. La app se ve como *su* libro, no como un banco, y eso hace visible el principio de que no custodiamos dinero.
@@ -307,6 +309,209 @@ La reunión y la vista del socio corren en una app Expo para Android. Esta secci
 - **Usos:** el paso del asistente se desliza en 200 ms, el renglón nuevo aparece en 150 ms y el tachado se dibuja de izquierda a derecha en 250 ms.
 - **The one authored moment:** el sello «Bien contado» cae sobre la página al cerrar la reunión. Va de escala 1,25 a 1 con opacidad, en 320 ms, con `cubic-bezier(.2,.8,.2,1)`, sin rebote y con una vibración de 40 ms. Con `prefers-reduced-motion`, el sello aparece sin animación.
 
+## Panel de la Fundación (web, oficina)
+
+Este es el segundo mundo visual del proyecto. Se registró a partir de lo que se construyó y se aprobó en la revisión final (veredicto: *ship*). La fuente es `web/src/app/(fundacion)/fundacion/layout.tsx`, `panel.module.css`, `page.tsx` y la carpeta `_panel/`. Aquí se documenta lo que existe en el código, no lo que se planeó.
+
+### Alcance: qué mundo gobierna cada superficie
+
+| Superficie | Mundo | Fuente de los tokens |
+|---|---|---|
+| App Android (reunión de la junta, vista del socio) | Cuaderno de la ACAP (todo lo anterior a esta sección) | Bloque YAML de este archivo → `packages/tokens` |
+| Vista previa `docs/designs/preview/sistema-de-diseno.html` | Cuaderno de la ACAP | Bloque YAML |
+| Web `/fundacion`: armazón (barra lateral y marca), Panel de gerencia y secciones de análisis (Ahorro, Crédito, Cartera, Proyectos, Capacitaciones, Análisis, Evaluaciones, Reportes) | **Panel de la Fundación** (esta sección) | Variables de `.panel` en `panel.module.css` |
+| Web `/fundacion`: páginas de gestión (Pendientes, Por aclarar, Personas, Celulares, Entrar) | Hoy siguen con los tokens de la «Oficina» del cuaderno (azul, Bitter, Atkinson) dentro del armazón del Panel | `oficina.module.css` + `packages/tokens` |
+
+Las páginas de gestión mezclan los dos mundos, y eso es una deriva sin resolver, no una regla. El equipo decide si se migran al Panel. Mientras no lo decida, una pantalla nueva de `/fundacion` sigue al Panel.
+
+**Por qué los tokens del Panel no están en el bloque YAML:** el bloque YAML genera `packages/tokens` (CSS y React Native) y CI exige que esa salida coincida. Poppins y Roboto no forman parte de ese paquete; el Panel las carga con `next/font`. Por eso la fuente normativa del Panel son las variables CSS de `.panel` en `panel.module.css`, y los valores de abajo se copiaron de ahí. El sidecar `.impeccable/design.json` las guarda con el prefijo `panel-`.
+
+### Overview
+
+**Creative North Star: «El pulso de las comunidades».** El panel se lee como el estado de salud de cada comunidad, no como una pared de tarjetas de métricas. Gerencia entiende en segundos cuánto ahorran y prestan las comunidades, cuáles están al día y cuáles necesitan una visita, y desde ahí entra a la comunidad para actuar.
+
+Es la marca CoimpactoB (coimpactob.com) en modo *Operate*: barra lateral carbón, fondo casi blanco, superficies blancas con borde fino y un solo naranja. La paleta secundaria de la marca existe solo para datos y estados. La densidad es de oficina, para un portátil de día: filas de 44 px y cifras grandes únicamente en la franja principal.
+
+**Key Characteristics:**
+- Una franja de cuatro cifras con divisores, sin cajas de color.
+- Los estados van siempre con color, palabra y cifra; el color nunca va solo.
+- El naranja marca el ahorro, la selección y la acción principal. Nada más.
+- Todo dato viene del servidor. Si un bloque no tiene datos, lo dice y explica qué falta.
+- El movimiento es corto (menos de 300 ms), usa una curva propia y se apaga con «reducir movimiento».
+
+### Colors
+
+Neutros cálidos de carbón y piedra, un acento naranja de marca y cuatro colores secundarios que solo se usan para datos.
+
+**Primario**
+- **Naranja CoimpactoB** (`--naranja` #F66A03): la serie de ahorro en los gráficos y su marca cuadrada, la «i» del logo, el ícono del ítem activo, el contador de pendientes, el anillo de foco y el subrayado de los enlaces de texto. También es el fondo del único botón principal de cada vista.
+- **Naranja presionado** (`--naranja-hover` #E05F00): el hover del botón principal.
+- **Naranja suave** (`--naranja-suave` #FFF1E6): el fondo de la selección de texto. El ítem activo de la barra usa el naranja al 16 % sobre carbón (`rgb(246 106 3 / 0.16)`).
+
+**Secundarios (solo datos y estados)**
+- **Azul CoimpactoB** (`--azul` #005FC5): la serie de crédito en los gráficos.
+- **Verde** (`--verde` #35A472): la marca de «Al día», el ícono de hallazgo positivo y la barra de cumplimiento por zona. Su tinte es `--verde-suave` #E8F5EE.
+- **Amarillo** (`--amarillo` #F9C032): la marca de «Atención». Su tinte es `--amarillo-suave` #FEF6E1. **Nunca se usa como color de texto.**
+- **Rojo** (`--rojo` #F53D45): la marca de «En mora» y el ícono de hallazgo de alerta. Su tinte es `--rojo-suave` #FEECEC. **Nunca se usa como color de texto.**
+- **Gris de datos** (`--gris-datos` #C9C7C1): la marca de «Sin datos» y la barra «Falta para la meta».
+
+**Texto de estado** (versiones oscuras para letra, todas ≥ 4,5:1 sobre blanco)
+- **Verde texto** (#227A52, 5,3:1): «bien», «sube» y la mora baja.
+- **Ámbar texto** (#8A5A00, 5,9:1): «Atención» y la mora media.
+- **Rojo texto** (`--rojo-texto` #C4202A, 5,8:1): «En mora», «baja» y la mora alta.
+
+**Neutros**
+- **Carbón** (`--carbon` #1C1C1C): la barra lateral. **Carbón 2** (`--carbon-2` #2A2A2A): el hover y los divisores dentro de la barra.
+- **Texto** (`--texto` #252525): todo el texto principal y la serie de miembros en los gráficos.
+- **Texto suave** (`--texto-suave` #5F5E5A): subtítulos, etiquetas y detalles.
+- **Texto tenue** (`--texto-tenue` #6B6A66): las variaciones neutras, los ejes de los gráficos y los controles deshabilitados.
+- **Fondo** (`--fondo` #FAFAF9): el lienzo de la página. **Superficie** (`--superficie` #FFFFFF): los bloques.
+- **Borde** (`--borde` #ECEBE8): los bordes de bloque, los divisores y la cuadrícula de los gráficos. **Borde fuerte** (`--borde-fuerte` #DAD8D3): los bordes de los controles.
+- Dentro de la barra carbón, el texto va en #D9D7D2, el ítem activo y el hover en blanco, y las etiquetas de grupo en #A3A19B.
+
+**The Una Sola Voz Rule.** El naranja aparece en un solo botón por vista. En los datos, el naranja siempre significa ahorro: ninguna otra serie lo usa.
+
+**The Color Con Palabra Rule.** Los colores secundarios se usan como marca (un cuadrado de 8 px), serie o barra. La letra de estado usa la versión oscura de su tono y siempre trae la palabra al lado.
+
+### Typography
+
+**Fuente de títulos:** Poppins (500, 600, 700), cargada con `next/font`. Variable `--fuente-titulos`, con `system-ui` de respaldo.
+**Fuente de texto:** Roboto (400, 500, 700). Variable `--fuente-texto`, con `system-ui` de respaldo.
+
+**Carácter:** Poppins, geométrica y redonda, lleva la voz de la marca en los títulos y las cifras grandes. Roboto, neutra, lleva las tablas y el texto. Todo el panel activa `font-feature-settings: "tnum"`, así que las cifras se alinean en columna.
+
+**Jerarquía**
+- **Cifra destacada** (Poppins 700, 2,5 rem, −0,03 em, 1,1): solo el «Ahorro del ciclo».
+- **Título de página** (Poppins 700, 2 rem, −0,02 em, 1,2).
+- **Cifra** (Poppins 600, 2 rem, −0,02 em, 1,1, `tabular-nums`, sin partirse): las otras tres cifras principales.
+- **Marca** (Poppins 700, 1,375 rem, −0,02 em): «Credimpacto», con la «i» en naranja.
+- **Título de bloque** (Poppins 600, 1,0625 rem, −0,01 em): «Para mirar hoy», «Pulso de las comunidades» y los títulos de los gráficos.
+- **Texto** (Roboto 400, 0,9375–1 rem): subtítulos, hallazgos (interlineado 1,45), enlaces de la barra y tabla de zonas.
+- **Etiqueta** (Roboto 400–500, 0,875 rem, en `--texto-suave`): nombres de cifras e indicadores, detalles.
+- **Pequeño** (Roboto 400–700, 0,8125 rem): chips, filtros, leyendas, pies de cifra y encabezados de tabla.
+- **Mínimo** (Roboto 500–700, 0,75 rem): las etiquetas de grupo de la barra y el contador.
+
+Debajo de 520 px, la cifra pasa a 1,5 rem y la destacada a 2,25 rem.
+
+**The Poppins Para Cifras Rule.** Poppins solo va en títulos, en la marca y en las cifras de la franja principal. Los montos de las tablas, filas y gráficos van en Roboto con `tnum`.
+
+### Layout
+
+- **Armazón:** una cuadrícula de dos columnas, con la barra lateral de 232 px fija a la altura de la ventana y el contenido fluido. La página llega hasta 1360 px, con relleno de 32/40/56 px (arriba, lados, abajo).
+- **Orden del tablero:** cabecera (título y «Datos al …») → franja de cifras → indicadores → «Para mirar hoy» a todo el ancho → Pulso → gráficos en dos columnas.
+- **Franja de cifras:** cuatro columnas `1,35fr 1fr 1fr 1fr` dentro de un solo bloque, separadas por divisores de 1 px. Cada cifra lleva 22/24 px de relleno.
+- **Indicadores:** cuatro columnas sin caja, con divisores verticales.
+- **Ritmo:** 20 px entre bloques, 28 px después de la cabecera y de los indicadores, y 20/22 px de relleno dentro de cada bloque.
+- **≤ 1180 px:** los gráficos pasan a una columna.
+- **≤ 900 px:** la barra lateral sube y se vuelve una tira horizontal que se desplaza por su cuenta (sin etiquetas de grupo y sin pie de usuario). El relleno de la página baja a 24/16/40 px, y las cifras y los indicadores pasan a dos columnas.
+- **≤ 520 px:** la cifra destacada ocupa todo el ancho y las otras tres quedan en dos columnas. La fila del Pulso queda en nombre + estado, con el detalle debajo y sin el ahorro.
+- **≤ 340 px:** cifras e indicadores en una columna.
+- Los nombres largos se cortan con puntos suspensivos; las cifras nunca se parten (`nowrap`).
+
+### Elevation & Depth
+
+Es casi plano. Los bloques blancos se separan del fondo #FAFAF9 con un borde de 1 px y una sombra baja que sí tiene desplazamiento. No hay halos.
+
+- **Bloque** (`--sombra`: `0 1px 2px rgb(28 28 28 / 0.04), 0 4px 16px rgb(28 28 28 / 0.04)`): la franja de cifras, «Para mirar hoy», el Pulso y los gráficos.
+- **Globo del gráfico** (`0 4px 16px rgb(28 28 28 / 0.1)`): el tooltip, que es lo único que flota.
+- Los estados vacío y de error van con borde y sin sombra.
+
+### Shapes
+
+- `--radio` 14 px: bloques, estados vacío y de error, y esqueletos.
+- 10 px: el globo del gráfico y el fondo del gráfico vacío.
+- `--radio-sm` 8 px: ítems de la barra, filas del Pulso y botones.
+- Píldora (999 px): filtros, chips, el contador y las iniciales del usuario.
+- 2–3 px: las marcas de estado (8 px) y de leyenda (10 px), y la barra de cumplimiento (6 px de alto).
+- Barras de gráfico con 4 px de radio solo en el extremo libre.
+
+### Components
+
+**Barra lateral.** Fondo carbón, marca arriba y dos grupos: «Análisis» (9 secciones) y «Gestión». Cada ítem tiene un ícono Phosphor de 20 px y mide 40 px de alto como mínimo. *Hover* (solo con puntero fino): fondo carbón 2. *Activo* (`aria-current="page"`): naranja al 16 % sobre carbón, texto blanco 500 y el ícono en naranja relleno. El contador de pendientes es una píldora naranja. Abajo van las iniciales, el usuario y un botón para salir.
+
+**Cifras.** Las cuatro cifras principales en una sola franja (`dl`). Cada una lleva etiqueta, cifra en `pesosCortos` (la cifra exacta va en `title` y en texto para el lector de pantalla) y un pie con la variación: flecha y porcentaje en verde texto si sube, en rojo texto si baja, o texto tenue si no hay comparación. «Ahorro del ciclo» es la cifra destacada, con la marca cuadrada naranja.
+
+**Indicadores.** Cuatro pares de etiqueta y valor en negrita de 1 rem, sin caja. El tono del valor sale de los umbrales (ver Estados). Un módulo que aún no existe dice «Módulo en preparación» en peso 500, nunca muestra una cifra inventada.
+
+**Para mirar hoy.** Un bloque a todo el ancho con 2 o 3 hallazgos en frases cortas, en una cuadrícula `auto-fit` de 260 px como mínimo. Cada hallazgo lleva un ícono relleno de 20 px (alerta en rojo, bien en verde, neutro en tenue), el texto en 0,9375 rem y, si aplica, «Ver comunidad», subrayado en naranja. Si no hay hallazgos dice «Nada fuera de lo normal en las comunidades con datos».
+
+**Pulso de las comunidades.** Es el gesto característico del panel.
+- *Filtros:* una píldora por estado en orden mora → atención → sin datos → al día, con su marca, su palabra y su cuenta en negrita. Al presionarla se invierte (fondo de texto y letra blanca) y queda en `aria-pressed`. Se deshabilita si la cuenta es 0.
+- *Filas de atención:* las comunidades que no están al día, ordenadas por estado y luego por nombre. Es una cuadrícula de `nombre | estado (120 px) | detalle | ahorro (140 px)` con 44 px de alto como mínimo, separadas por renglones de 1 px y sin cajas. El estado va en negrita de 0,8125 rem con su marca y su color de texto. El detalle explica el porqué («14,8 % de la cartera en mora», «Sin datos hace 41 días», «Nunca ha sincronizado»). La fila cierra con el ahorro, como «$ 5,3 M ahorrados». La fila entera es un enlace a la comunidad.
+- *Chips de «Al día»:* debajo, con el título «Al día» y su cuenta, va una franja de píldoras de 30 px con la marca verde y el nombre. El ahorro va en el `title`.
+
+**Tabla de zonas («Desempeño por zona»).** Una lista ordenada por cumplimiento, de mayor a menor. La primera columna lleva la zona y «n comunidades» debajo. La segunda, el cumplimiento como barra verde de 6 px sobre 100 % y la cifra en negrita. La tercera, la mora alineada a la derecha y con su tono. Las dos medidas no comparten eje. Las ACAP «Sin zona» no se muestran; si ninguna tiene zona, el estado vacío pide asignarla en Configuración.
+
+**Gráficos** (Recharts, cada uno en una `figure` con título y subtítulo, leyenda propia con cuadrados de 10 px, lienzo de 240 px como mínimo, cuadrícula #ECEBE8 en un solo sentido, ejes sin línea en 12 px tenue y tooltip propio con la cifra exacta):
+- *Crecimiento de los últimos 6 meses:* áreas acumuladas. El ahorro va en naranja, con un relleno degradado del 18 % al 0 %; el crédito, en azul y sin relleno.
+- *Comunidades con más ahorro:* barras horizontales apiladas, con el ahorro en naranja y lo que falta para la meta en gris de datos.
+- *Nuevos miembros y créditos:* barras agrupadas, con los miembros en carbón (#252525) y los créditos en azul.
+- Cada gráfico sin datos muestra un recuadro #F7F6F4 con una frase que dice cuándo aparecerá.
+
+**Botones.** Ambos miden 40 px de alto como mínimo, con 16 px de relleno lateral, radio de 8 px y peso 500. *Principal:* fondo naranja, con hover en naranja presionado; hay uno por vista y solo cuando hay una acción que dar (por ejemplo, «Crear la primera ACAP» en el panel vacío). *Secundario:* superficie blanca con borde fuerte, y el borde pasa a tenue en hover. Al presionar cualquiera, escala 0,97.
+
+**Foco y selección.** Todo elemento enfocable muestra un contorno naranja de 2 px, separado 2 px y con radio de 6 px. La selección de texto usa el naranja suave.
+
+**Estados de carga, vacío y error.** *Carga:* un esqueleto con la forma del tablero (cuatro cifras, un bloque y dos gráficos) y un brillo de 1,2 s que se apaga con «reducir movimiento». *Vacío:* un bloque de 560 px como máximo que dice qué falta y qué hacer. *Error:* dice qué pasó, trae «Intentar de nuevo» como botón secundario y lleva `role="alert"`. Las secciones sin módulo (`EnConstruccion`) dicen qué van a mostrar y de dónde saldrá el dato, sin cifras de ejemplo.
+
+### Formatos de datos
+
+Todo va en es-CO, con pesos enteros y la cifra exacta siempre disponible.
+- **`pesosCortos`:** desde 1.000.000 → «$ 97,5 M» (un decimal como máximo); desde 10.000 → «$ 850 mil» (redondeado a miles); por debajo, el formato exacto «$ 9.500». Los negativos usan el signo menos tipográfico (−).
+- **`pesosExactos`:** es `formatearPesos` de `@credimpacto/reglas` («$ 97.512.000»). Se usa en el `title` de las cifras, en el texto para el lector de pantalla y en los tooltips de los gráficos.
+- **`porcentaje`:** un decimal como máximo, con coma y un espacio antes del signo («91,6 %»). Un valor nulo se muestra como «Sin datos», nunca como «0 %».
+- **Meses** en abreviatura minúscula («oct»); **fecha de corte** con día, mes en letras y hora («25 de octubre a las 09:32 a. m.»).
+
+### Estados y umbrales
+
+Cada comunidad tiene un estado, que se calcula en el servidor (`backend/acap/tablero.py`):
+
+| Estado | Palabra | Marca | Letra | Cuándo |
+|---|---|---|---|---|
+| `mora` | En mora | rojo | rojo texto | Más del 10 % de su cartera vencida (`UMBRAL_MORA`) |
+| `atencion` | Atención | amarillo | ámbar texto | Algo de mora (> 0 %) o datos de hace más de 14 días |
+| `sin_datos` | Sin datos | gris de datos | texto suave | Sin ciclo, nunca sincronizó o no sincroniza hace más de 30 días |
+| `al_dia` | Al día | verde | (chip) | Ninguna de las anteriores |
+
+**Tonos de los indicadores** (`bien` verde texto, `atencion` ámbar texto, `alerta` rojo texto):
+- *Índice de mora global:* más de 10 % = alerta; más de 0 % = atención; 0 % = bien.
+- *Mora por zona:* más de 6 % = alerta; más de 2 % = atención; 2 % o menos = bien.
+- *Cumplimiento de pagos:* menos de 90 % = alerta; si no, bien.
+
+Los umbrales por zona son más bajos que el global a propósito: una zona agrupa varias comunidades, así que 6 % ya significa varias en problemas.
+
+### Movimiento
+
+- **Curva:** `--curva` = `cubic-bezier(0.23, 1, 0.32, 1)`, una salida rápida que frena suave. Se usa en todo lo que se mueve o escala.
+- **Duración:** menos de 300 ms en toda la interfaz. Los cambios de color en hover duran 160 ms (`ease`) y la escala al presionar, 140 ms (0,95 en el botón de salir, 0,97 en botones y filtros, 0,98 en filas y chips).
+- **Entrada de las cifras:** ocurre una sola vez al cargar. Van de opacidad 0,4 y 4 px abajo a su lugar, en 260 ms y escalonadas cada 30 ms. Parten de un estado ya visible.
+- **Reacomodo del Pulso** (el momento del panel): al filtrar, lo que sale se desvanece (opacidad y escala 0,98, o 0,96 en los chips) y lo que queda se desliza a su lugar con Motion `layout`, en 240 ms con la curva.
+- **Hover** solo con `(hover: hover) and (pointer: fine)`. Lo que se usa a cada rato (la navegación) no se anima, solo cambia de color.
+- **Reducir movimiento:** con `prefers-reduced-motion`, el Pulso pasa a duración 0 y sin `layout`, las cifras no entran animadas, los gráficos se dibujan sin animación y el esqueleto no brilla.
+- *Divergencia actual:* los gráficos se dibujan en 450 ms, `ease-out`, escalonados a 0/120/240 ms, por encima de la regla de 300 ms. Queda registrado como algo que el código hace, no como modelo para componentes nuevos.
+
+### Do's and Don'ts
+
+**Do:**
+- Usar un solo botón naranja por vista y el naranja como el color del ahorro en todos los datos.
+- Mostrar cada estado con marca de color, palabra y, cuando la hay, cifra.
+- Mostrar el dinero con `pesosCortos` y dejar la cifra exacta en `title`, en el lector de pantalla y en el tooltip.
+- Decir qué falta en todo bloque sin datos, sin cifras de ejemplo.
+- Usar `--curva`, menos de 300 ms y desactivar con «reducir movimiento».
+
+**Don't:**
+- No usar el amarillo ni el rojo de marca como color de letra (no llegan a 4,5:1); para eso están ámbar texto y rojo texto.
+- No pintar en naranja otra serie que no sea el ahorro, ni poner un segundo botón naranja.
+- No armar una pared de tarjetas de KPI: las cifras van en una franja con divisores y los indicadores, sin caja.
+- No poner un control inerte (por ejemplo, un selector de periodo que el servidor todavía no recibe).
+- No mostrar «0 %» cuando el dato no existe; se dice «Sin datos».
+
+### Defectos conocidos (no son reglas)
+
+El código actual tiene estos defectos. No se copian en pantallas nuevas:
+- Corregido el 2026-10-25: el botón principal, el contador de pendientes y las iniciales llevan letra carbón #1C1C1C sobre naranja (6,3:1); nunca blanca (3,2:1). Todo el ámbar de texto es #8A5A00.
+- Los tonos de texto de estado (#227A52, #8A5A00) están escritos a mano y no son variables de `.panel`.
+
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
@@ -318,3 +523,4 @@ La reunión y la vista del socio corren en una app Expo para Android. Esta secci
 | 2026-10-06 | Solo modo claro | La escena de uso es sol y pantallas baratas (D del diseño aprobado). La vista previa trae un simulador de «celular barato al sol» en lugar del interruptor de modo oscuro. |
 | 2026-10-07 | Sección "Superficie nativa (Android)" | La reunión y la vista del socio pasaron a app Expo (D2 de alcance); N9 de la revisión de diseño nativo. |
 | 2026-10-06 | Excepción de contraste en el botón naranja: 5,8:1 | La etiqueta va siempre en negrita de 20 px o más, que es AAA para texto grande. Se conserva el naranja de marca. |
+| 2026-10-25 | Sección «Panel de la Fundación (web, oficina)» | Se registró desde el código del panel aprobado en la revisión final (marca CoimpactoB: naranja #F66A03, carbón, Poppins y Roboto). El cuaderno sigue rigiendo la app y la vista previa. Los tokens del Panel viven en `panel.module.css` y no en el YAML, para no alterar `packages/tokens` ni su verificación en CI. |

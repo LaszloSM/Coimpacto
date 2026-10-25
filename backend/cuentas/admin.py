@@ -5,7 +5,28 @@ from django.utils import timezone
 from cuentas.models import CodigoEnrolamiento, Dispositivo, LlaveCargo, Usuario
 from libro.models import Auditoria
 
-admin.site.register(Usuario, UserAdmin)
+
+@admin.register(Usuario)
+class UsuarioAdmin(UserAdmin):
+    """El usuario de la app de una ACAP se crea aquí: usuario, clave y la ACAP."""
+
+    list_display = ("username", "first_name", "last_name", "acap", "is_staff", "is_active")
+    list_filter = ("acap", "is_staff", "is_active", "groups")
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        ("App de la ACAP", {"fields": ("acap",)}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "password1", "password2", "acap"),
+                "description": "Para la app de una ACAP, elija la ACAP. Déjela vacía para "
+                "el personal de la Fundación.",
+            },
+        ),
+    )
 
 
 class SoloLectura(admin.ModelAdmin):

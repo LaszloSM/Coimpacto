@@ -107,6 +107,11 @@ export default function Miembros() {
       ) : null}
       {!acaps ? (
         <p className={estilos.detalle}>{t("miembros.cargando")}</p>
+      ) : acaps.length === 0 ? (
+        <div className={estilos.vacio} role="status">
+          <p>{t("armazon.sinAcap")}</p>
+          <a href="/admin/acap/acap/add/">{t("armazon.irConfiguracion")}</a>
+        </div>
       ) : (
         <label className={estilos.etiqueta}>
           {t("miembros.acap")}

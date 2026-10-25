@@ -12,30 +12,11 @@ test("clave incorrecta: lo dice sin culpar a nadie", async ({ page }) => {
   await expect(page.getByRole("alert").filter({ hasText: "Usuario o clave incorrectos." })).toBeVisible();
 });
 
-test("registrar un celular: elegir la ACAP y mostrar el QR que vence a los 15 minutos", async ({ page }) => {
-  await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
-  await page.route("**/api/acaps", (r) => r.fulfill({ json: [{ id: "a1", nombre: "ACAP Las Brisas" }] }));
-  let cuerpo: unknown = null;
-  await page.route("**/api/enrolamiento/codigos", async (r) => {
-    cuerpo = r.request().postDataJSON();
-    const vence = new Date(Date.now() + 15 * 60 * 1000).toISOString();
-    await r.fulfill({ json: { codigo: "abc123", qr: "credimpacto:enrolar:abc123", vence_en: vence } });
-  });
-
+test("acceso a la app: sin QR, lleva a crear el usuario de la ACAP", async ({ page }) => {
   await page.goto("/fundacion/celulares");
-  await page.getByLabel("ACAP").selectOption("a1");
-  await page.getByRole("button", { name: "Generar el código" }).click();
-
-  await expect(page.getByRole("img", { name: "Registrar un celular" }).locator("svg")).toBeVisible();
-  await expect(page.getByText(/^1[45]:\d\d$/)).toBeVisible();
-  await expect(page.getByText("abc123")).toBeVisible();
-  expect(cuerpo).toEqual({ acap_id: "a1" });
-});
-
-test("sin sesión, la página de celulares lleva a entrar", async ({ page }) => {
-  await page.route("**/api/acaps", (r) => r.fulfill({ status: 401, json: { detail: "Unauthorized" } }));
-  await page.goto("/fundacion/celulares");
-  await expect(page).toHaveURL(/\/fundacion\/entrar$/);
+  await expect(page.getByRole("heading", { name: "Acceso a la app", level: 1 })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Crear usuario" })).toHaveAttribute("href", "/admin/cuentas/usuario/add/");
+  await expect(page.getByText(/código QR/i)).toHaveCount(0);
 });
 
 test("subir una copia de seguridad: muestra cuántos registros entraron", async ({ page }) => {
@@ -67,7 +48,7 @@ test("bandeja de pendientes: por gravedad, con el código para el equipo", async
       ],
     }),
   );
-  await page.goto("/fundacion");
+  await page.goto("/fundacion/pendientes");
   await expect(page.getByText("No se aceptó · 2 registros")).toBeVisible();
   await expect(page.getByText("MAXIMO_ACCIONES")).toBeVisible();
   await expect(page.getByText("Sin datos hace 21 días")).toBeVisible();

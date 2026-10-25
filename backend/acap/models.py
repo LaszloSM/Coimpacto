@@ -4,6 +4,7 @@ Versión mínima para T4 (el libro necesita a quién y en qué reunión) más lo
 TX3. Política de firmas y quórum llegan después. Estas tablas sí se editan; las del libro no.
 """
 
+import datetime
 import uuid
 
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -14,6 +15,12 @@ class Acap(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nombre = models.CharField(max_length=200)
     creado_en = models.DateTimeField(auto_now_add=True)
+    # Ubicación para el tablero de la Fundación (desempeño por zona y mapa territorial).
+    zona = models.CharField(
+        max_length=60, blank=True, help_text="Zona territorial, p. ej. Zona Norte."
+    )
+    departamento = models.CharField(max_length=60, blank=True)
+    municipio = models.CharField(max_length=80, blank=True)
     # Reglamento de la votación de préstamos (ET2): por defecto, más de la mitad presente y
     # más votos a favor que en contra. Lo valida el celular y lo revalida el servidor.
     quorum_porcentaje = models.PositiveSmallIntegerField(
@@ -55,6 +62,8 @@ class Ciclo(models.Model):
     valor_multa = models.PositiveBigIntegerField()
     # Porcentaje mensual exacto ("2.5" = 2,5 %), igual que en Supabase (docs/reglas).
     tasa_interes = models.DecimalField(max_digits=6, decimal_places=3)
+    # Meta de ahorro del ciclo para todo el grupo (tablero: ahorro vs meta). Opcional.
+    meta_ahorro = models.PositiveBigIntegerField(null=True, blank=True)
     estado = models.CharField(max_length=10, choices=Estado.choices, default=Estado.BORRADOR)
 
     class Meta:
@@ -79,6 +88,8 @@ class Membresia(models.Model):
     )
     numero_miembro = models.PositiveSmallIntegerField()
     activa = models.BooleanField(default=True)
+    # Para "nuevos miembros" en el tablero; en la migración viene del sistema anterior.
+    fecha_ingreso = models.DateField(default=datetime.date.today)
 
     class Meta:
         verbose_name = "membresía"

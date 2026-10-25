@@ -118,6 +118,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/enrolamiento/entrar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Registrar este celular con el usuario y la clave de la ACAP
+         * @description Devuelve el código de un solo uso con el que el celular da de alta al primer Presidente.
+         */
+        post: operations["cuentas_api_entrar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/enrolamiento/presidente": {
         parameters: {
             query?: never;
@@ -254,6 +274,26 @@ export interface paths {
         };
         /** Bandeja de pendientes por gravedad (D2) */
         get: operations["cuentas_sesion_pendientes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/tablero": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tablero de gerencia del panel
+         * @description Cifras, pulso por comunidad, hallazgos y series del panel. Sin datos personales.
+         */
+        get: operations["cuentas_sesion_tablero"];
         put?: never;
         post?: never;
         delete?: never;
@@ -553,6 +593,32 @@ export interface components {
         PedidoCanje: {
             /** Codigo */
             codigo: string;
+            /** Llave Publica */
+            llave_publica: string;
+        };
+        /** CelularConCodigo */
+        CelularConCodigo: {
+            /**
+             * Dispositivo Id
+             * Format: uuid
+             */
+            dispositivo_id: string;
+            /**
+             * Acap Id
+             * Format: uuid
+             */
+            acap_id: string;
+            /** Acap Nombre */
+            acap_nombre: string;
+            /** Codigo */
+            codigo: string;
+        };
+        /** PedidoEntrada */
+        PedidoEntrada: {
+            /** Usuario */
+            usuario: string;
+            /** Clave */
+            clave: string;
             /** Llave Publica */
             llave_publica: string;
         };
@@ -882,6 +948,39 @@ export interface operations {
             };
         };
     };
+    cuentas_api_entrar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PedidoEntrada"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CelularConCodigo"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Rechazo"];
+                };
+            };
+        };
+    };
     cuentas_api_alta_presidente: {
         parameters: {
             query?: never;
@@ -1045,6 +1144,24 @@ export interface operations {
         };
     };
     cuentas_sesion_pendientes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_sesion_tablero: {
         parameters: {
             query?: never;
             header?: never;

@@ -1,6 +1,6 @@
 // Registro del celular y alta de cargos (TD1, D18, D26).
 //
-//   QR ──canjear──► celular registrado ──bajar el grupo──► base cifrada con DEK nueva
+//   usuario y clave de la ACAP (o QR) ──canjear──► celular registrado ──bajar el grupo──► base cifrada con DEK nueva
 //      ──primer Presidente: su PIN envuelve la DEK; el servidor lo acepta autorizado por el
 //        facilitador del QR, en los mismos 15 minutos
 //   después, sin señal: el Presidente da de alta a los demás cargos (firma el alta, que sube
@@ -18,7 +18,7 @@ import { registrarSincronizacion } from "../datos/caducidad";
 import type { AlmacenSeguro } from "../seguridad/almacen";
 import type { Cripto } from "../seguridad/cripto";
 import { firmarComoDispositivo, llaveDelDispositivo, secretoDelDispositivo } from "../seguridad/dispositivo";
-import { canjearCodigo, EnrolamientoFallido, leerQr, type Registro } from "../seguridad/enrolamiento";
+import { canjearCodigo, EnrolamientoFallido, entrarConClave, leerQr, type Registro } from "../seguridad/enrolamiento";
 import { firmar, mensajeAlta } from "../seguridad/firma";
 import { ControlIntentos } from "../seguridad/intentos";
 import { abrirCargo, altaCargo, crearDek } from "../seguridad/llavero";
@@ -62,6 +62,18 @@ export async function registrarCelular(deps: Dependencias, textoQr: string): Pro
   const codigo = leerQr(textoQr);
   const llavePublica = await llaveDelDispositivo(deps.cripto, deps.almacen);
   const registro = await canjearCodigo(deps.servidor, codigo, llavePublica, deps.pedir);
+  return bajarElGrupo(deps, codigo, registro);
+}
+
+/** Paso 1 sin QR: el usuario y la clave que la Fundación creó para la ACAP. */
+export async function registrarConClave(deps: Dependencias, usuario: string, clave: string): Promise<EnrolamientoEnCurso> {
+  if (!deps.servidor) throw new EnrolamientoFallido("servidor");
+  const llavePublica = await llaveDelDispositivo(deps.cripto, deps.almacen);
+  const { codigo, registro } = await entrarConClave(deps.servidor, usuario, clave, llavePublica, deps.pedir);
+  return bajarElGrupo(deps, codigo, registro);
+}
+
+async function bajarElGrupo(deps: Dependencias, codigo: string, registro: Registro): Promise<EnrolamientoEnCurso> {
   await deps.almacen.escribir(DISPOSITIVO_ID, registro.dispositivoId);
   await deps.borrarBase(); // una base vieja de otro registro no sirve
   const dek = crearDek(deps.cripto);

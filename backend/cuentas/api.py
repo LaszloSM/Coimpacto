@@ -1,4 +1,4 @@
-"""Enrolamiento de celulares por código QR (D18).
+"""Registro de celulares (D18): con el usuario y la clave de la ACAP o con un código QR.
 
 El QR lleva solo el código: la app tiene fija la dirección del servidor, así que un QR falso no
 puede mandar el celular a otro servidor.
@@ -80,6 +80,38 @@ def canjear_codigo(request, pedido: PedidoCanje):
     except servicio.EnrolamientoRechazado as rechazo:
         return 400, {"motivo": rechazo.motivo, "mensaje": str(rechazo)}
     return {
+        "dispositivo_id": dispositivo.id,
+        "acap_id": dispositivo.acap_id,
+        "acap_nombre": dispositivo.acap.nombre,
+    }
+
+
+class PedidoEntrada(Schema):
+    usuario: str
+    clave: str
+    llave_publica: str
+
+
+class CelularConCodigo(DispositivoRegistrado):
+    codigo: str
+
+
+@router.post(
+    "/enrolamiento/entrar",
+    response={200: CelularConCodigo, 400: Rechazo},
+    auth=None,
+    throttle=[AnonRateThrottle("5/m")],
+    summary="Registrar este celular con el usuario y la clave de la ACAP",
+)
+def entrar(request, pedido: PedidoEntrada):
+    """Devuelve el código de un solo uso con el que el celular da de alta al primer Presidente."""
+    try:
+        texto, _ = servicio.entrar_con_clave(usuario=pedido.usuario, clave=pedido.clave)
+        dispositivo = servicio.canjear_codigo(codigo=texto, llave_publica=pedido.llave_publica)
+    except servicio.EnrolamientoRechazado as rechazo:
+        return 400, {"motivo": rechazo.motivo, "mensaje": str(rechazo)}
+    return {
+        "codigo": texto,
         "dispositivo_id": dispositivo.id,
         "acap_id": dispositivo.acap_id,
         "acap_nombre": dispositivo.acap.nombre,
