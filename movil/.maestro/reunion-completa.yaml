@@ -45,14 +45,24 @@ name: Reunión completa sin señal
       id: "pide-9"
 - tapOn:
     id: "pide-9"
-# En pantallas bajas el teclado queda debajo del monto: se centra en su tecla del medio para
-# que se vean las cuatro filas (1-2-3 arriba, 000-0-borrar abajo).
+# En pantallas bajas el teclado no cabe entero bajo la barra de arriba: se trae cada fila a la
+# vista antes de tocarla (la del 1 hacia arriba, la del 0 y el 000 hacia abajo).
 - scrollUntilVisible:
     element:
       id: "capital-5"
     centerElement: true
+- scrollUntilVisible:
+    element:
+      id: "capital-1"
+    direction: UP
+    centerElement: true
 - tapOn:
     id: "capital-1"
+- scrollUntilVisible:
+    element:
+      id: "capital-000"
+    direction: DOWN
+    centerElement: true
 - tapOn:
     id: "capital-0"
 - tapOn:
