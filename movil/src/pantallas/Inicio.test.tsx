@@ -7,18 +7,18 @@ const PERFILES = [
   { cargoId: "k2", tipo: "portador_caja", numero: 2 },
 ];
 
-test("un celular sin registrar pide el código al facilitador", async () => {
+test("un celular sin registrar pide el usuario y la clave de la ACAP", async () => {
   const alRegistrar = jest.fn();
   await render(<Inicio alRegistrar={alRegistrar} />);
   expect(screen.getByRole("header", { name: "Credimpacto" })).toBeOnTheScreen();
-  expect(screen.getByText(/Pida el código al facilitador/)).toBeOnTheScreen();
+  expect(screen.getByText(/usuario y la clave de su ACAP/)).toBeOnTheScreen();
   await fireEvent.press(screen.getByTestId("registrar-celular"));
   expect(alRegistrar).toHaveBeenCalled();
 });
 
 test("con reunión abierta, el botón naranja es seguirla (N1); sin nombres completos", async () => {
   await render(<Inicio perfiles={PERFILES} elegido="k2" reunionAbierta="2026-10-04" />);
-  expect(screen.getByText("Seguir la reunión del 2026-10-04")).toBeOnTheScreen();
+  expect(screen.getByText("Seguir la reunión del 4 de octubre")).toBeOnTheScreen();
   expect(screen.getByText("Enviar a la Fundación")).toBeOnTheScreen();
   expect(screen.getByText("#02")).toBeOnTheScreen();
 });

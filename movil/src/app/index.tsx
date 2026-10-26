@@ -25,7 +25,7 @@ export default function PantallaInicio() {
         const lista = await leerPerfiles(entorno.almacen);
         if (await llavesPerdidas(entorno.almacen, lista.length > 0)) {
           setError(
-            "Este celular perdió sus llaves de seguridad. Lo guardado aquí no se puede abrir: pida al facilitador registrarlo de nuevo.",
+            "Este celular perdió sus llaves de seguridad. Lo guardado aquí no se puede abrir: regístrelo de nuevo con el usuario y la clave de la ACAP.",
           );
           setPerfiles([]);
           return;
