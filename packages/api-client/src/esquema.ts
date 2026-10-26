@@ -337,6 +337,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/miembros/{membresia_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Corregir los datos y el perfil de un miembro con autorización vigente */
+        put: operations["cuentas_miembros_api_editar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/miembros/{membresia_id}/estado": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retirar a un miembro de la ACAP o volver a activarlo (su historia queda) */
+        post: operations["cuentas_miembros_api_estado"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/miembros/{membresia_id}/revocar": {
         parameters: {
             query?: never;
@@ -761,6 +795,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/tipos-cargo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Catálogo de cargos */
+        get: operations["acap_oficina_api_tipos_cargo"];
+        put?: never;
+        /** Crear un cargo */
+        post: operations["acap_oficina_api_crear_tipo_cargo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/tipos-cargo/{clave}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un cargo */
+        put: operations["acap_oficina_api_editar_tipo_cargo"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/proyectos": {
         parameters: {
             query?: never;
@@ -988,6 +1057,24 @@ export interface components {
             consentimiento_id: string | null;
             /** Desde */
             desde: string | null;
+            /** Fecha Ingreso */
+            fecha_ingreso: string;
+            /** Nombres */
+            nombres: string | null;
+            /** Apellidos */
+            apellidos: string | null;
+            /** Documento */
+            documento: string | null;
+            /** Telefono */
+            telefono: string | null;
+            /** Genero */
+            genero: string | null;
+            /** Fecha Nacimiento */
+            fecha_nacimiento: string | null;
+            /** Etnia */
+            etnia: string | null;
+            /** Cabeza Hogar */
+            cabeza_hogar: boolean | null;
         };
         /** Error */
         Error: {
@@ -995,6 +1082,45 @@ export interface components {
             codigo: string;
             /** Mensaje */
             mensaje: string;
+        };
+        /** DatosMiembro */
+        DatosMiembro: {
+            /** Nombres */
+            nombres: string;
+            /**
+             * Apellidos
+             * @default
+             */
+            apellidos: string;
+            /**
+             * Documento
+             * @default
+             */
+            documento: string;
+            /**
+             * Telefono
+             * @default
+             */
+            telefono: string;
+            /**
+             * Genero
+             * @default
+             */
+            genero: string;
+            /** Fecha Nacimiento */
+            fecha_nacimiento?: string | null;
+            /**
+             * Etnia
+             * @default
+             */
+            etnia: string;
+            /** Cabeza Hogar */
+            cabeza_hogar?: boolean | null;
+        };
+        /** EstadoMiembro */
+        EstadoMiembro: {
+            /** Activo */
+            activo: boolean;
         };
         /** Comprobante */
         Comprobante: {
@@ -1160,6 +1286,46 @@ export interface components {
             usuario: string;
             /** Clave */
             clave: string;
+        };
+        /** DatosTipoCargo */
+        DatosTipoCargo: {
+            /** Nombre */
+            nombre: string;
+            /**
+             * Descripcion
+             * @default
+             */
+            descripcion: string;
+            /**
+             * Orden
+             * @default 0
+             */
+            orden: number;
+            /**
+             * Activo
+             * @default true
+             */
+            activo: boolean;
+            /**
+             * Autoriza Altas
+             * @default false
+             */
+            autoriza_altas: boolean;
+            /**
+             * Lleva Reunion
+             * @default true
+             */
+            lleva_reunion: boolean;
+            /**
+             * Firma Prestamos
+             * @default true
+             */
+            firma_prestamos: boolean;
+            /**
+             * Firma Cierre
+             * @default true
+             */
+            firma_cierre: boolean;
         };
         /** DatosProyecto */
         DatosProyecto: {
@@ -1711,6 +1877,20 @@ export interface operations {
                      */
                     telefono?: string;
                     /**
+                     * Genero
+                     * @default
+                     */
+                    genero?: string;
+                    /** Fecha Nacimiento */
+                    fecha_nacimiento?: string | null;
+                    /**
+                     * Etnia
+                     * @default
+                     */
+                    etnia?: string;
+                    /** Cabeza Hogar */
+                    cabeza_hogar?: boolean | null;
+                    /**
                      * Foto
                      * Format: binary
                      */
@@ -1795,6 +1975,71 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_editar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosMiembro"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_estado: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EstadoMiembro"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -2455,6 +2700,70 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_tipos_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_tipo_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosTipoCargo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_editar_tipo_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                clave: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosTipoCargo"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

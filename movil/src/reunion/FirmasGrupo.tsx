@@ -9,7 +9,9 @@ import { Alert, BackHandler, Pressable, ScrollView, Text, View } from "react-nat
 
 import type { FotoGrupo } from "../cola/grupo";
 import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
-import { NOMBRE_CARGO, perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
+import { nombreCargo, puede, type Permiso } from "../seguridad/cargos";
+import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
+import { useTiposCargo } from "../sesion/useTiposCargo";
 import { abrirFirmante } from "../sesion/abrir";
 import { TEXTO_CANCELAR_FIRMAS } from "../navegacion/atras";
 import { useSesion } from "../sesion/contexto";
@@ -34,7 +36,10 @@ export function FirmasGrupo(props: {
   beneficiarios?: string[];
   alFirmar: (firmantes: FirmanteCargo[]) => Promise<void>;
   alCancelar: () => void;
+  /** Permiso del catálogo que necesita cada firmante (por ejemplo, firmar préstamos). */
+  permiso?: Permiso;
 }) {
+  const tipos = useTiposCargo();
   const { entorno } = useSesion();
   const [perfiles, setPerfiles] = useState<Perfil[] | null>(null);
   const [firmantes, setFirmantes] = useState<FirmanteCargo[]>([]);
@@ -66,7 +71,7 @@ export function FirmasGrupo(props: {
   if (turno) {
     return (
       <TecladoPin
-        paraQuien={NOMBRE_CARGO[turno.tipo] ?? turno.tipo}
+        paraQuien={nombreCargo(tipos, turno.tipo)}
         aviso={aviso}
         verificando={verificando}
         alCompletar={async (pin) => {
@@ -110,7 +115,7 @@ export function FirmasGrupo(props: {
           <Parrafo>Un PIN quedó en pausa en este celular. Firma otro cargo en su reemplazo.</Parrafo>
         ) : null}
         <Text style={[base.titulo, { fontSize: 22 }]}>¿Quién firma?</Text>
-        {perfiles.map((p) => {
+        {perfiles.filter((p) => !props.permiso || puede(tipos, p.tipo, props.permiso)).map((p) => {
           const firmo = firmantes.some((f) => f.perfil.cargoId === p.cargoId);
           const motivo = firmo ? null : puedeFirmar(p, firmantes.map((f) => f.perfil), beneficiarios, props.foto);
           const pausado = enPausa.includes(p.cargoId);
@@ -125,7 +130,7 @@ export function FirmasGrupo(props: {
               onPress={() => setTurno(p)}
               style={[base.renglon, !disponible && { opacity: 0.6 }]}
             >
-              <Text style={[base.parrafo, { flex: 1 }]}>{NOMBRE_CARGO[p.tipo] ?? p.tipo}</Text>
+              <Text style={[base.parrafo, { flex: 1 }]}>{nombreCargo(tipos, p.tipo)}</Text>
               <Text style={[base.etiqueta, firmo && { color: color.confirmado }]}>
                 {firmo ? "Firmó" : pausado ? "En pausa" : motivo ? `No puede: ${MOTIVO[motivo]}` : "Falta firmar"}
               </Text>

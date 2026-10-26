@@ -13,6 +13,7 @@ import { programadorNativo } from "../avisos/programadorNativo";
 import { SERVIDOR } from "../config";
 import { borrarBase } from "../datos/baseNativa";
 import { altaPrimerPresidente, presidenteDe, registrarConClave, revisarPinDoble, type EnrolamientoEnCurso } from "../enrolamiento/flujo";
+import { nombreCargo } from "../seguridad/cargos";
 import { EnrolamientoFallido } from "../seguridad/enrolamiento";
 import { useSesion } from "../sesion/contexto";
 import { BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
@@ -57,7 +58,7 @@ export default function PantallaEnrolar() {
     return (
       <SafeAreaView style={base.pantalla}>
         <TecladoPin
-          paraQuien={`Presidente · #${String(presidente?.numero ?? 0).padStart(2, "0")}`}
+          paraQuien={`${nombreCargo(enCurso?.foto.tipos_cargo ?? [], presidente?.tipo ?? "presidente")} · #${String(presidente?.numero ?? 0).padStart(2, "0")}`}
           aviso={fase === "presidente" ? (error ?? "Cree su PIN de 6 números.") : "Escriba el PIN otra vez."}
           verificando={fase === "guardando"}
           alCompletar={async (escrito) => {
@@ -93,7 +94,7 @@ export default function PantallaEnrolar() {
       <SafeAreaView style={base.pantalla}>
         <View style={[base.contenido, { flex: 1 }]}>
           <Titulo>Celular registrado para {enCurso?.registro.acapNombre}</Titulo>
-          <Parrafo>El Presidente ya puede abrir la reunión y dar de alta a los demás cargos.</Parrafo>
+          <Parrafo>Ya se puede abrir la reunión y dar de alta a los demás cargos de la junta.</Parrafo>
           <Parrafo>Credimpacto puede avisarles el día antes de cada reunión. Los avisos nunca muestran plata ni nombres.</Parrafo>
           <BotonSecundario
             testID="activar-avisos"

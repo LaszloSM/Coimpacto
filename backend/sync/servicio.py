@@ -30,7 +30,7 @@ from dataclasses import dataclass
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 
-from acap.models import Cargo, Ciclo, Membresia, Reunion
+from acap.models import Cargo, Ciclo, Membresia, Reunion, TipoCargo
 from core import firmas
 from core.canonico import ValorNoCanonico, hash_canonico
 from cuentas import servicio as cuentas
@@ -226,9 +226,16 @@ def _firmas_distintas(firmantes: list[LlaveCargo]) -> None:
         raise Rechazo("FIRMAS_DE_LA_MISMA_PERSONA")
 
 
+def _con_permiso(firmantes: list[LlaveCargo], permiso: str) -> None:
+    """Cada firmante necesita el permiso en el catálogo de cargos (no un nombre fijo)."""
+    if any(not TipoCargo.puede(f.cargo.tipo, permiso) for f in firmantes):
+        raise Rechazo("CARGO_SIN_PERMISO")
+
+
 def _firmas_prestamo(firmantes: list[LlaveCargo], titular: Titular) -> None:
     """Préstamo: las firmas de _firmas_distintas, nunca del beneficiario."""
     _firmas_distintas(firmantes)
+    _con_permiso(firmantes, "firma_prestamos")
     if any(f.cargo.membresia.titular_id == titular.id for f in firmantes):
         raise Rechazo("FIRMA_DEL_BENEFICIARIO")
 
@@ -254,6 +261,7 @@ def _comun(ctx, firmantes, e: Elemento) -> dict:
 def _reunion(ctx, firmantes, e):
     ciclo = ctx.buscar(Ciclo, _ref(e.datos, "ciclo"), lambda c: c.acap_id)
     _del_ciclo(firmantes, ciclo)
+    _con_permiso(firmantes[:1], "lleva_reunion")
     numero = _campo(e.datos, "numero", int)
     try:
         fecha = datetime.date.fromisoformat(_campo(e.datos, "fecha", str))
@@ -392,6 +400,7 @@ def _cierre(ctx, firmantes, e):
     reunion = ctx.reunion(e.datos)
     _del_ciclo(firmantes, reunion.ciclo)
     _firmas_distintas(firmantes)
+    _con_permiso(firmantes, "firma_cierre")
     lista = _campo(e.datos, "movimientos", list)
     caja = _campo(e.datos, "caja_contada", int)
     if caja < 0:

@@ -212,11 +212,11 @@ export function PasoCierre(props: PropsPaso) {
   if (arqueo?.cerradaEn) {
     return (
       <>
-        <View style={[base.contenido, { flex: 1, alignItems: "center", justifyContent: "center" }]}>
+        <ScrollView contentContainerStyle={[base.contenido, { flexGrow: 1, alignItems: "center", justifyContent: "center", paddingTop: spacing.lg }]}>
           <Sello acap={props.foto.acap.nombre} fecha={props.reunion.fecha} />
           <Parrafo testID="reunion-cerrada">Reunión cerrada · Guardado en este celular</Parrafo>
           <ProximaReunion foto={props.foto} />
-        </View>
+        </ScrollView>
         <View style={base.acciones}>
           <BotonPrincipal testID="ver-resumen" texto="Ver el resumen de cada uno" alTocar={props.alSeguir} />
         </View>
@@ -228,6 +228,7 @@ export function PasoCierre(props: PropsPaso) {
     return (
       <FirmasGrupo
         titulo="Firmar el cierre"
+        permiso="firma_cierre"
         foto={props.foto}
         lista={<Parrafo>Caja contada: {formatearPesos(arqueo.contado)}. Con estas firmas la reunión se cierra.</Parrafo>}
         alFirmar={async (firmantes) => {
@@ -436,8 +437,8 @@ const estilos = StyleSheet.create({
   encabezado: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: spacing.lg },
   cifras: { gap: spacing.lg, marginVertical: spacing.lg },
   sello: {
-    width: 200,
-    height: 200,
+    width: 176,
+    height: 176,
     borderRadius: componentes.sello.rounded,
     borderWidth: 3,
     borderColor: componentes.sello.borderColor,

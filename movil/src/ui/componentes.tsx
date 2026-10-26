@@ -53,7 +53,7 @@ export function BotonSecundario(props: { texto: string; alTocar: () => void; det
       onPress={props.alTocar}
       style={({ pressed }) => [estilos.boton, estilos.botonSecundario, pressed && { backgroundColor: color["papel-oficina"] }]}
     >
-      <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={estilos.botonTexto}>
+      <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={estilos.botonTexto} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.75}>
         {props.texto}
       </Text>
       {props.detalle ? <Text style={estilos.cifraRenglonPequena}>{props.detalle}</Text> : null}
@@ -142,6 +142,8 @@ export function Contador(props: {
   testID?: string;
 }) {
   const minimo = props.minimo ?? 0;
+  const { width, fontScale } = useWindowDimensions();
+  const apilado = width < 360 || fontScale > 1.15;
   const tecla = (texto: string, delta: number, habilitada: boolean, nombre: string) => (
     <Pressable
       testID={`${props.testID ?? "contador"}-${delta > 0 ? "mas" : "menos"}`}
@@ -157,18 +159,33 @@ export function Contador(props: {
       </Text>
     </Pressable>
   );
+  const valor = (
+    <Text
+      testID={`${props.testID ?? "contador"}-valor`}
+      maxFontSizeMultiplier={TOPE_CIFRAS}
+      style={[estilos.cifraRenglon, { minWidth: 44, textAlign: "center" }]}
+      accessibilityLabel={`${props.etiqueta}: ${props.valor}`}
+    >
+      {props.valor}
+    </Text>
+  );
+  if (apilado) {
+    return (
+      <View style={[estilos.renglon, estilos.renglonApilado]}>
+        <Text style={estilos.parrafo}>{props.etiqueta}</Text>
+        <View style={estilos.filaTeclas}>
+          {tecla("−", -1, props.valor > minimo, "Menos")}
+          {valor}
+          {tecla("+", 1, props.valor < props.maximo, "Más")}
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={estilos.renglon}>
       <Text style={[estilos.parrafo, { flex: 1 }]}>{props.etiqueta}</Text>
       {tecla("−", -1, props.valor > minimo, "Menos")}
-      <Text
-        testID={`${props.testID ?? "contador"}-valor`}
-        maxFontSizeMultiplier={TOPE_CIFRAS}
-        style={[estilos.cifraRenglon, { minWidth: 44, textAlign: "center" }]}
-        accessibilityLabel={`${props.etiqueta}: ${props.valor}`}
-      >
-        {props.valor}
-      </Text>
+      {valor}
       {tecla("+", 1, props.valor < props.maximo, "Más")}
     </View>
   );
@@ -196,7 +213,14 @@ export function Casilla(props: { texto: string; marcada: boolean; alCambiar: (v:
 export const estilos = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: color.papel },
   contenido: { paddingHorizontal: 20, paddingBottom: spacing.lg },
-  acciones: { paddingHorizontal: 20, paddingVertical: spacing.md, gap: spacing.sm, borderTopWidth: 1, borderTopColor: color.renglon },
+  acciones: {
+    paddingHorizontal: 20,
+    paddingVertical: spacing.md,
+    gap: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: color.renglon,
+    backgroundColor: color.papel,
+  },
   boton: {
     minHeight: componentes["button-primary"].height,
     borderRadius: componentes["button-primary"].rounded,
@@ -232,6 +256,8 @@ export const estilos = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: componentes.renglon.borderColor,
   },
+  renglonApilado: { flexDirection: "column", alignItems: "stretch", gap: spacing.sm, paddingVertical: spacing.sm },
+  filaTeclas: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   teclaContador: {
     width: 64,
     height: 64,

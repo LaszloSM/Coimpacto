@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
-import { NOMBRE_CARGO, perfiles, type Perfil } from "../seguridad/perfiles";
+import { nombreCargo } from "../seguridad/cargos";
+import { perfiles, type Perfil } from "../seguridad/perfiles";
+import { useTiposCargo } from "../sesion/useTiposCargo";
 import { abrirSesion } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
 import { estilos } from "../ui/componentes";
@@ -16,6 +18,7 @@ export default function PantallaPin() {
   const [perfil, setPerfil] = useState<Perfil>();
   const [aviso, setAviso] = useState<string>();
   const [verificando, setVerificando] = useState(false);
+  const tipos = useTiposCargo();
 
   useEffect(() => {
     void perfiles(entorno.almacen).then((lista) => setPerfil(lista.find((p) => p.cargoId === cargo)));
@@ -25,7 +28,7 @@ export default function PantallaPin() {
   return (
     <SafeAreaView style={estilos.pantalla}>
       <TecladoPin
-        paraQuien={NOMBRE_CARGO[perfil.tipo] ?? perfil.tipo}
+        paraQuien={nombreCargo(tipos, perfil.tipo)}
         aviso={aviso}
         verificando={verificando}
         alCompletar={async (pin) => {

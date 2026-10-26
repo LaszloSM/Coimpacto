@@ -2,6 +2,7 @@
 migrados, revocación y la foto de la evidencia. Solo personal con permiso sobre datos personales
 (el Facilitador); Dirección y Analista ven cifras, no personas (mínimo privilegio)."""
 
+import datetime
 import uuid
 
 from django.http import HttpResponse
@@ -26,6 +27,30 @@ class Miembro(Schema):
     consentimiento: str
     consentimiento_id: str | None
     desde: str | None
+    fecha_ingreso: str
+    nombres: str | None
+    apellidos: str | None
+    documento: str | None
+    telefono: str | None
+    genero: str | None
+    fecha_nacimiento: str | None
+    etnia: str | None
+    cabeza_hogar: bool | None
+
+
+class DatosMiembro(Schema):
+    nombres: str
+    apellidos: str = ""
+    documento: str = ""
+    telefono: str = ""
+    genero: str = ""
+    fecha_nacimiento: datetime.date | None = None
+    etnia: str = ""
+    cabeza_hogar: bool | None = None
+
+
+class EstadoMiembro(Schema):
+    activo: bool
 
 
 class Error(Schema):
@@ -69,6 +94,10 @@ def alta(
     apellidos: Form[str] = "",
     documento: Form[str] = "",
     telefono: Form[str] = "",
+    genero: Form[str] = "",
+    fecha_nacimiento: Form[datetime.date | None] = None,
+    etnia: Form[str] = "",
+    cabeza_hogar: Form[bool | None] = None,
 ):
     _exigir(request, "cuentas.add_datospersonales")
     acap = get_object_or_404(Acap, id=acap_id)
@@ -81,6 +110,10 @@ def alta(
             documento=documento,
             telefono=telefono,
             foto=_leer(foto),
+            genero=genero,
+            fecha_nacimiento=fecha_nacimiento,
+            etnia=etnia,
+            cabeza_hogar=cabeza_hogar,
         )
     except miembros.MiembroInvalido as e:
         return 400, {"codigo": e.codigo, "mensaje": e.mensaje}
@@ -116,6 +149,34 @@ def capturar(
         )
     except miembros.MiembroInvalido as e:
         return 400, {"codigo": e.codigo, "mensaje": e.mensaje}
+    return 200, {"ok": True}
+
+
+@router.put(
+    "/oficina/miembros/{membresia_id}",
+    response={200: dict, 400: Error},
+    summary="Corregir los datos y el perfil de un miembro con autorización vigente",
+)
+def editar(request, membresia_id: uuid.UUID, datos: DatosMiembro):
+    _exigir(request, "cuentas.change_datospersonales")
+    membresia = get_object_or_404(Membresia, id=membresia_id)
+    try:
+        miembros.editar(membresia=membresia, usuario=request.user, **datos.dict())
+    except miembros.MiembroInvalido as e:
+        return 400, {"codigo": e.codigo, "mensaje": e.mensaje}
+    return 200, {"ok": True}
+
+
+@router.post(
+    "/oficina/miembros/{membresia_id}/estado",
+    response={200: dict},
+    summary="Retirar a un miembro de la ACAP o volver a activarlo (su historia queda)",
+)
+def estado(request, membresia_id: uuid.UUID, datos: EstadoMiembro):
+    _exigir(request, "acap.change_membresia")
+    membresia = get_object_or_404(Membresia, id=membresia_id)
+    membresia.activa = datos.activo
+    membresia.save(update_fields=["activa"])
     return 200, {"ok": True}
 
 

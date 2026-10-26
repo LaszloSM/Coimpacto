@@ -11,6 +11,7 @@ import { actualizadorNativo, conDatosMoviles } from "../actualizaciones/actualiz
 import { buscarActualizacion, type ResultadoActualizacion } from "../actualizaciones/actualizar";
 import { enviarPorHttp } from "../cola/cola";
 import { bajarPorHttp, sincronizarTodo, type ResultadoSincronizacion } from "../cola/grupo";
+import { recordarTiposCargo } from "../seguridad/cargos";
 import { SERVIDOR } from "../config";
 import { borrarBase } from "../datos/baseNativa";
 import { dispositivoRegistrado } from "../enrolamiento/flujo";
@@ -37,6 +38,7 @@ export default function PantallaEnviar() {
           bajar: bajarPorHttp({ servidor: SERVIDOR, dispositivoId, firmarComoDispositivo: firmarCuerpo }),
           nuevoId: entorno.nuevoId,
           ahora: entorno.ahora,
+          alBajar: (foto) => recordarTiposCargo(entorno.almacen, foto.tipos_cargo),
         });
         if (r.fin === "retirado") {
           await sesion.base.cerrar();

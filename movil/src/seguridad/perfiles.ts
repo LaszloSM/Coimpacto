@@ -14,14 +14,6 @@ export interface Perfil {
 const INDICE = "perfiles.indice";
 const entrada = (cargoId: string) => `llavero.${cargoId}`;
 
-export const NOMBRE_CARGO: Record<string, string> = {
-  presidente: "Presidente",
-  portador_caja: "Portador de Caja",
-  registrador: "Registrador",
-  contador_1: "Contador 1",
-  contador_2: "Contador 2",
-};
-
 export async function perfiles(almacen: AlmacenSeguro): Promise<Perfil[]> {
   const texto = await almacen.leer(INDICE);
   return texto ? (JSON.parse(texto) as Perfil[]) : [];

@@ -102,8 +102,48 @@ class Membresia(models.Model):
         return f"{self.acap} · miembro {self.numero_miembro}"
 
 
+class TipoCargo(models.Model):
+    """Catálogo de cargos de junta, editable desde el panel: un cargo nuevo no toca el software.
+
+    Las reglas del libro preguntan por el permiso, nunca por el nombre del cargo. Los cinco
+    cargos de base se siembran en la migración con los permisos que ya tenían.
+    """
+
+    PERMISOS = ("autoriza_altas", "lleva_reunion", "firma_prestamos", "firma_cierre")
+
+    clave = models.SlugField(max_length=30, unique=True, help_text="No cambia una vez creada.")
+    nombre = models.CharField(max_length=60)
+    descripcion = models.CharField(max_length=200, blank=True)
+    orden = models.PositiveSmallIntegerField(default=0)
+    activo = models.BooleanField(default=True)
+    autoriza_altas = models.BooleanField(
+        default=False,
+        help_text="Se registra primero en el celular y da de alta a los demás cargos.",
+    )
+    lleva_reunion = models.BooleanField(default=True, help_text="Abre y lleva la reunión.")
+    firma_prestamos = models.BooleanField(default=True, help_text="Firma los préstamos.")
+    firma_cierre = models.BooleanField(default=True, help_text="Firma el cierre de la reunión.")
+
+    class Meta:
+        ordering = ["orden", "nombre"]
+        verbose_name = "tipo de cargo"
+        verbose_name_plural = "tipos de cargo"
+
+    def __str__(self) -> str:
+        return self.nombre
+
+    @classmethod
+    def puede(cls, clave: str, permiso: str) -> bool:
+        assert permiso in cls.PERMISOS, permiso
+        return cls.objects.filter(clave=clave, activo=True, **{permiso: True}).exists()
+
+
 class Cargo(models.Model):
-    """Cargo de junta de una membresía en un ciclo. Cada cargo firma con su propia llave (D17)."""
+    """Cargo de junta de una membresía en un ciclo. Cada cargo firma con su propia llave (D17).
+
+    `tipo` es la clave de un TipoCargo del catálogo; `Tipo` guarda las claves de los cargos de
+    base para el código y las pruebas.
+    """
 
     class Tipo(models.TextChoices):
         PRESIDENTE = "presidente", "Presidente"
@@ -115,7 +155,7 @@ class Cargo(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ciclo = models.ForeignKey(Ciclo, on_delete=models.PROTECT, related_name="cargos")
     membresia = models.ForeignKey(Membresia, on_delete=models.PROTECT, related_name="cargos")
-    tipo = models.CharField(max_length=20, choices=Tipo.choices)
+    tipo = models.CharField(max_length=30)
     vigente = models.BooleanField(default=True)
 
     class Meta:
@@ -133,7 +173,12 @@ class Cargo(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.ciclo} · {self.get_tipo_display()}"
+        return f"{self.ciclo} · {self.nombre_tipo}"
+
+    @property
+    def nombre_tipo(self) -> str:
+        tipo = TipoCargo.objects.filter(clave=self.tipo).first()
+        return tipo.nombre if tipo else self.tipo
 
     @property
     def es_vigente(self) -> bool:

@@ -56,7 +56,7 @@ test("registro con el QR, bajada del grupo y primer Presidente autorizado por el
   const enCurso = await registrarCelular(deps, `credimpacto:enrolar:${CODIGO}`);
   expect(await dispositivoRegistrado(deps.almacen)).toBe("d1");
   expect(enCurso.foto.miembros).toHaveLength(20);
-  expect(presidenteDe(enCurso.foto)).toEqual({ cargoId: FOTO_PRUEBA.cargos[0].id, numero: 1 });
+  expect(presidenteDe(enCurso.foto)).toEqual({ cargoId: FOTO_PRUEBA.cargos[0].id, tipo: "presidente", numero: 1 });
 
   const perfil = await altaPrimerPresidente(deps, enCurso, "482916");
   expect(perfil).toMatchObject({ tipo: "presidente", numero: 1 });
@@ -122,4 +122,16 @@ test("sin señal, el Presidente da de alta a la Portadora de Caja; la llave sube
   // La Portadora abre la misma base con su propio PIN.
   const suya = await abrirSesion(deps, caja, "730185");
   expect(await suya.base.primera("SELECT count(*) AS n FROM pendientes;")).toEqual({ n: 1 });
+});
+
+test("roles del catálogo: el cargo que autoriza altas puede tener otro nombre", () => {
+  const foto = {
+    ...FOTO_PRUEBA,
+    tipos_cargo: [
+      { clave: "lider", nombre: "Líder", orden: 1, autoriza_altas: true, lleva_reunion: true, firma_prestamos: true, firma_cierre: true },
+      { clave: "presidente", nombre: "Presidente", orden: 2, autoriza_altas: false, lleva_reunion: true, firma_prestamos: true, firma_cierre: true },
+    ],
+    cargos: [{ ...FOTO_PRUEBA.cargos[1], tipo: "lider" }, FOTO_PRUEBA.cargos[0]],
+  };
+  expect(presidenteDe(foto)).toMatchObject({ cargoId: FOTO_PRUEBA.cargos[1].id, tipo: "lider" });
 });

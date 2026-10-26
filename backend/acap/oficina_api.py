@@ -19,7 +19,7 @@ from ninja.errors import HttpError
 from ninja.security import django_auth
 
 from acap import analitica
-from acap.models import Acap, Cargo, Ciclo, Membresia
+from acap.models import Acap, Cargo, Ciclo, Membresia, TipoCargo
 from cuentas import miembros as servicio_miembros
 from cuentas.models import Dispositivo, Usuario
 from libro.models import Auditoria
@@ -219,7 +219,7 @@ def detalle_comunidad(request, acap_id: uuid.UUID):
                 {
                     "id": str(cargo.id),
                     "tipo": cargo.tipo,
-                    "texto": cargo.get_tipo_display(),
+                    "texto": cargo.nombre_tipo,
                     "membresia_id": str(cargo.membresia_id),
                     "numero": cargo.membresia.numero_miembro,
                     "nombre": persona.get("nombre_corto"),
@@ -247,7 +247,10 @@ def detalle_comunidad(request, acap_id: uuid.UUID):
         "ciclos": [_ciclo_json(c) for c in ciclos],
         "ciclo_activo": str(activo.id) if activo else None,
         "cargos": cargos,
-        "tipos_cargo": [{"tipo": t, "texto": texto} for t, texto in Cargo.Tipo.choices],
+        "tipos_cargo": [
+            {"tipo": t.clave, "texto": t.nombre, "descripcion": t.descripcion}
+            for t in TipoCargo.objects.filter(activo=True)
+        ],
         "miembros": personas,
         "usuarios_app": usuarios,
         "celulares": celulares,
@@ -327,8 +330,8 @@ def cierre_ciclo(request, ciclo_id: uuid.UUID):
 def asignar_cargo(request, ciclo_id: uuid.UUID, datos: DatosCargo):
     _exigir(request.user, "acap.change_cargo")
     ciclo = get_object_or_404(Ciclo, id=ciclo_id)
-    if datos.tipo not in Cargo.Tipo.values:
-        raise HttpError(400, "Cargo desconocido.")
+    if not TipoCargo.objects.filter(clave=datos.tipo, activo=True).exists():
+        raise HttpError(400, "Ese cargo no está en el catálogo.")
     with transaction.atomic():
         Cargo.objects.filter(ciclo=ciclo, tipo=datos.tipo, vigente=True).update(vigente=False)
         if datos.membresia_id is None:
@@ -389,6 +392,77 @@ def retirar_celular(request, dispositivo_id: uuid.UUID):
         dispositivo.save(update_fields=["revocado_en"])
         _auditar(request.user, "cuentas_dispositivo", dispositivo.id, "retirar", {})
     return {"ok": True}
+
+
+# ---------------------------------------------------------------- Catálogo de cargos
+
+
+class DatosTipoCargo(Schema):
+    nombre: str
+    descripcion: str = ""
+    orden: int = 0
+    activo: bool = True
+    autoriza_altas: bool = False
+    lleva_reunion: bool = True
+    firma_prestamos: bool = True
+    firma_cierre: bool = True
+
+
+def _tipo_json(t: TipoCargo) -> dict:
+    return {
+        "clave": t.clave,
+        "nombre": t.nombre,
+        "descripcion": t.descripcion,
+        "orden": t.orden,
+        "activo": t.activo,
+        **{p: getattr(t, p) for p in TipoCargo.PERMISOS},
+        "en_uso": Cargo.objects.filter(tipo=t.clave, vigente=True).count(),
+    }
+
+
+def _validar_catalogo(excepto: str | None, datos: DatosTipoCargo) -> None:
+    if not datos.nombre.strip():
+        raise HttpError(400, "Escriba el nombre del cargo.")
+    otros = TipoCargo.objects.filter(activo=True, autoriza_altas=True)
+    if excepto:
+        otros = otros.exclude(clave=excepto)
+    if not (datos.activo and datos.autoriza_altas) and not otros.exists():
+        raise HttpError(
+            400, "Al menos un cargo activo debe autorizar las altas (registra el celular)."
+        )
+
+
+@router.get("/oficina/tipos-cargo", auth=django_auth, summary="Catálogo de cargos")
+def tipos_cargo(request):
+    _exigir(request.user, "acap.view_acap")
+    return [_tipo_json(t) for t in TipoCargo.objects.all()]
+
+
+@router.post("/oficina/tipos-cargo", auth=django_auth, summary="Crear un cargo")
+def crear_tipo_cargo(request, datos: DatosTipoCargo):
+    _exigir(request.user, "acap.add_tipocargo")
+    _validar_catalogo(None, datos)
+    from django.utils.text import slugify
+
+    base = slugify(datos.nombre).replace("-", "_")[:24] or "cargo"
+    clave, n = base, 2
+    while TipoCargo.objects.filter(clave=clave).exists():
+        clave, n = f"{base}_{n}", n + 1
+    t = TipoCargo.objects.create(clave=clave, **datos.dict())
+    _auditar(request.user, "acap_tipocargo", t.clave, "INSERT", datos.dict())
+    return _tipo_json(t)
+
+
+@router.put("/oficina/tipos-cargo/{clave}", auth=django_auth, summary="Editar un cargo")
+def editar_tipo_cargo(request, clave: str, datos: DatosTipoCargo):
+    _exigir(request.user, "acap.change_tipocargo")
+    t = get_object_or_404(TipoCargo, clave=clave)
+    _validar_catalogo(clave, datos)
+    for campo, valor in datos.dict().items():
+        setattr(t, campo, valor)
+    t.save()
+    _auditar(request.user, "acap_tipocargo", t.clave, "UPDATE", datos.dict())
+    return _tipo_json(t)
 
 
 # ---------------------------------------------------------------- Programas

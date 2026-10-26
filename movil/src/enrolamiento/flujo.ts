@@ -21,6 +21,7 @@ import { firmarComoDispositivo, llaveDelDispositivo, secretoDelDispositivo } fro
 import { canjearCodigo, EnrolamientoFallido, entrarConClave, leerQr, type Registro } from "../seguridad/enrolamiento";
 import { firmar, mensajeAlta } from "../seguridad/firma";
 import { ControlIntentos } from "../seguridad/intentos";
+import { puede, recordarTiposCargo } from "../seguridad/cargos";
 import { abrirCargo, altaCargo, crearDek } from "../seguridad/llavero";
 import { guardarPerfil, llaveroDe, type Perfil } from "../seguridad/perfiles";
 import { calibrar, revisarPinNuevo, type PinRechazado } from "../seguridad/pin";
@@ -86,15 +87,17 @@ async function bajarElGrupo(deps: Dependencias, codigo: string, registro: Regist
   });
   const foto = await bajar();
   await guardarFoto(base, foto);
+  await recordarTiposCargo(deps.almacen, foto.tipos_cargo);
   await registrarSincronizacion(base, deps.ahora());
   return { codigo, registro, base, dek, foto };
 }
 
-/** El cargo de Presidente del ciclo y el número de miembro de quien lo tiene. */
-export function presidenteDe(foto: FotoGrupo): { cargoId: string; numero: number } | null {
-  const cargo = foto.cargos.find((c) => c.tipo === "presidente");
+/** El cargo que autoriza las altas (por defecto la Presidencia) y el número de quien lo tiene. */
+export function presidenteDe(foto: FotoGrupo): { cargoId: string; tipo: string; numero: number } | null {
+  const tipos = foto.tipos_cargo ?? [];
+  const cargo = foto.cargos.find((c) => puede(tipos, c.tipo, "autoriza_altas"));
   const numero = foto.miembros.find((m) => m.membresia_id === cargo?.membresia_id)?.numero;
-  return cargo && numero !== undefined ? { cargoId: cargo.id, numero } : null;
+  return cargo && numero !== undefined ? { cargoId: cargo.id, tipo: cargo.tipo, numero } : null;
 }
 
 /** Revisa el PIN nuevo y su confirmación (D26). Devuelve el texto del problema o null. */
@@ -112,7 +115,7 @@ export async function altaPrimerPresidente(
   pin: string,
 ): Promise<Perfil> {
   const presidente = presidenteDe(enCurso.foto);
-  if (!presidente) throw new Error("El ciclo no tiene Presidente. Avise al facilitador.");
+  if (!presidente) throw new Error("El ciclo no tiene un cargo que autorice las altas. Avise a la Fundación.");
   const secreto = await secretoDelDispositivo(deps.cripto, deps.almacen);
   const params = await calibrar(deps.cripto);
   const llavero = await altaCargo(deps.cripto, { cargoId: presidente.cargoId, pin, secreto, dek: enCurso.dek, params });
@@ -145,7 +148,7 @@ export async function altaPrimerPresidente(
     const cuerpo = (await respuesta.json().catch(() => ({}))) as { motivo?: string };
     throw new EnrolamientoFallido(cuerpo.motivo === "codigo_invalido" ? "codigo_invalido" : "servidor");
   }
-  const perfil: Perfil = { cargoId: presidente.cargoId, tipo: "presidente", numero: presidente.numero };
+  const perfil: Perfil = { cargoId: presidente.cargoId, tipo: presidente.tipo, numero: presidente.numero };
   await guardarPerfil(deps.almacen, perfil, llavero);
   enCurso.dek.fill(0);
   return perfil;

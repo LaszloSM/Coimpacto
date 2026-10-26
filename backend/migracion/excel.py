@@ -44,6 +44,15 @@ CARGOS = {
 }
 
 
+def _cargo_del_catalogo(texto: str) -> str | None:
+    from acap.models import TipoCargo
+
+    for t in TipoCargo.objects.filter(activo=True):
+        if _norma(t.nombre) == texto:
+            return t.clave
+    return None
+
+
 def _norma(texto) -> str:
     texto = unicodedata.normalize("NFKD", str(texto or "")).encode("ascii", "ignore").decode()
     return re.sub(r"\s+", " ", texto).strip().lower()
@@ -188,7 +197,7 @@ def leer(ruta: str, *, duracion_meses: int | None = None) -> Libro:
         partes = str(f[1]).strip().split()
         nombres, apellidos = partes[0], " ".join(partes[1:])
         cargo_texto = _norma(f[4] if len(f) > 4 else "")
-        cargo = CARGOS.get(cargo_texto)
+        cargo = CARGOS.get(cargo_texto) or _cargo_del_catalogo(cargo_texto)
         if cargo_texto and cargo is None and not cargo_texto.startswith("miembro"):
             avisos.append(f"Miembro {numero}: cargo «{f[4]}» no reconocido; queda como miembro.")
         miembros.append(
