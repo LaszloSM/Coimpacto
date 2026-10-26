@@ -4,14 +4,16 @@
 // corregir, registrar la autorización de datos (Ley 1581) o su revocación, y retirar a alguien.
 // Sin autorización vigente solo se ve el número de miembro.
 
-import { MagnifyingGlass, Plus, UserPlus, UsersThree } from "@phosphor-icons/react";
+import { LockSimple, MagnifyingGlass, Plus, UserPlus, UsersThree } from "@phosphor-icons/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { api } from "@/lib/api";
 
 import { Etiqueta, Lateral, useDatos, modulo as m } from "./comunes";
-import { Campo, Foto, Iniciales, Interruptor, Seccion, Segmentado, Vacio } from "./formas";
+import { fechaCorta } from "./prestamos";
+import { Campo, Foto, Iniciales, Interruptor, Seccion, Segmentado, Selector, Vacio } from "./formas";
 import p from "./personas.module.css";
 import estilos from "./tablero.module.css";
 
@@ -96,14 +98,25 @@ export function Personas(props: { acapId: string; cargos?: Record<string, string
     (datos ?? []).filter((x) => (f === "activas" ? x.activo : f === "retiradas" ? !x.activo : f === "sin_autorizacion" ? x.consentimiento !== "vigente" : true))
       .length;
 
-  const listo = () => {
+  const listo = (mensaje: string) => {
     setAbierta(null);
     recargar();
     props.alCambiar?.();
+    toast.success(mensaje);
   };
 
+  const activas = (datos ?? []).filter((x) => x.activo);
+  const autorizadas = activas.filter((x) => x.consentimiento === "vigente").length;
+
   if (error) return <p className={m.errorFormulario}>{error}</p>;
-  if (!datos) return <div className={estilos.esqueletoBloque} aria-busy="true" />;
+  if (!datos)
+    return (
+      <div className={estilos.esqueletoTabla} aria-busy="true" aria-label="Cargando personas">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span key={i} style={{ "--i": i } as React.CSSProperties} />
+        ))}
+      </div>
+    );
 
   return (
     <section className={p.directorio} aria-label="Personas de la comunidad">
@@ -121,6 +134,19 @@ export function Personas(props: { acapId: string; cargos?: Record<string, string
         />
       ) : (
         <>
+          <div className={p.resumen}>
+            <span>
+              <strong>{activas.length}</strong> {activas.length === 1 ? "persona activa" : "personas activas"}
+            </span>
+            <span className={p.cobertura}>
+              <span className={p.coberturaBarra} role="img" aria-label={`${autorizadas} de ${activas.length} autorizaron sus datos`}>
+                <span style={{ transform: `scaleX(${activas.length ? autorizadas / activas.length : 0})` }} />
+              </span>
+              <span>
+                <strong>{autorizadas}</strong> de {activas.length} autorizaron sus datos
+              </span>
+            </span>
+          </div>
           <div className={p.barra}>
             <label className={p.buscar}>
               <MagnifyingGlass size={16} aria-hidden />
@@ -176,31 +202,35 @@ export function Personas(props: { acapId: string; cargos?: Record<string, string
                         .slice(0, 2)
                         .map((s) => s[0]?.toUpperCase())
                         .join("")
-                    : String(x.numero).padStart(2, "0");
+                    : "··";
                   const anios = edad(x.fecha_nacimiento);
                   const cargo = props.cargos?.[x.id];
                   return (
                     <motion.li
                       key={x.id}
                       layout={!reducir}
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={reducir ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{
-                        duration: reducir ? 0 : 0.2,
+                        duration: reducir ? 0 : 0.16,
                         ease: [0.23, 1, 0.32, 1],
                       }}
                     >
                       <button type="button" className={p.persona} data-retirada={!x.activo || undefined} onClick={() => setAbierta(x)}>
-                        <Iniciales texto={iniciales} semilla={x.numero} />
-                        <span className={p.personaNombre}>
-                          <span className={p.personaPrincipal}>
-                            {nombre ?? <span className={m.tenue}>Miembro {numero(x.numero)}</span>}
-                            <span className={p.numero}>{numero(x.numero)}</span>
+                        <span className={p.numero}>{String(x.numero).padStart(2, "0")}</span>
+                        {nombre ? (
+                          <Iniciales texto={iniciales} semilla={x.numero} />
+                        ) : (
+                          <span className={p.sinDatos} aria-hidden>
+                            <LockSimple size={16} />
                           </span>
+                        )}
+                        <span className={p.personaNombre}>
+                          <span className={p.personaPrincipal}>{nombre ?? `Miembro ${numero(x.numero)}`}</span>
                           <span className={p.personaDetalle}>
                             {[x.documento ? `CC ${x.documento}` : null, x.telefono, anios !== null ? `${anios} años` : null].filter(Boolean).join(" · ") ||
-                              (x.consentimiento === "vigente" ? "Sin datos de contacto" : "Datos ocultos hasta registrar su autorización")}
+                              (x.consentimiento === "vigente" ? `Desde el ${fechaCorta(x.fecha_ingreso)}` : "Datos ocultos hasta registrar su autorización")}
                           </span>
                         </span>
                         <span className={p.personaEtiquetas}>
@@ -246,7 +276,7 @@ export function Personas(props: { acapId: string; cargos?: Record<string, string
   );
 }
 
-function FichaPersona(props: { acapId: string; persona: Persona | null; alGuardar: () => void; alCancelar: () => void }) {
+function FichaPersona(props: { acapId: string; persona: Persona | null; alGuardar: (mensaje: string) => void; alCancelar: () => void }) {
   const x = props.persona;
   const vigente = x?.consentimiento === "vigente";
   const [forma, setForma] = useState(() =>
@@ -271,12 +301,12 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
   const cambiar = (campo: keyof typeof VACIA) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForma({ ...forma, [campo]: e.target.value });
 
-  const enviar = async (accion: () => Promise<unknown>) => {
+  const enviar = async (accion: () => Promise<unknown>, mensaje: string) => {
     setEnviando(true);
     setError(undefined);
     try {
       await accion();
-      props.alGuardar();
+      props.alGuardar(mensaje);
     } catch (e) {
       setError(e instanceof Error ? e.message : "No se pudo guardar.");
     } finally {
@@ -294,24 +324,30 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
   const guardar = (e: React.FormEvent) => {
     e.preventDefault();
     if (!x)
-      return void enviar(() =>
-        api(`/oficina/acaps/${props.acapId}/miembros`, {
-          metodo: "POST",
-          cuerpo: multipart(),
-        }),
+      return void enviar(
+        () =>
+          api(`/oficina/acaps/${props.acapId}/miembros`, {
+            metodo: "POST",
+            cuerpo: multipart(),
+          }),
+        "Persona agregada con su autorización.",
       );
     if (!vigente)
-      return void enviar(() =>
-        api(`/oficina/miembros/${x.id}/consentimiento`, {
-          metodo: "POST",
-          cuerpo: multipart(),
-        }),
+      return void enviar(
+        () =>
+          api(`/oficina/miembros/${x.id}/consentimiento`, {
+            metodo: "POST",
+            cuerpo: multipart(),
+          }),
+        `Autorización de ${numero(x.numero)} registrada.`,
       );
-    return void enviar(() =>
-      api(`/oficina/miembros/${x.id}`, {
-        metodo: "PUT",
-        cuerpo: { ...forma, fecha_nacimiento: forma.fecha_nacimiento || null },
-      }),
+    return void enviar(
+      () =>
+        api(`/oficina/miembros/${x.id}`, {
+          metodo: "PUT",
+          cuerpo: { ...forma, fecha_nacimiento: forma.fecha_nacimiento || null },
+        }),
+      `Datos de ${numero(x.numero)} guardados.`,
     );
   };
 
@@ -324,11 +360,13 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
           const datos = new FormData();
           datos.append("nota", nota);
           if (foto) datos.append("foto", foto);
-          void enviar(() =>
-            api(`/oficina/miembros/${x.id}/revocar`, {
-              metodo: "POST",
-              cuerpo: datos,
-            }),
+          void enviar(
+            () =>
+              api(`/oficina/miembros/${x.id}/revocar`, {
+                metodo: "POST",
+                cuerpo: datos,
+              }),
+            `Revocación de ${numero(x.numero)} registrada. Sus datos personales se borraron.`,
           );
         }}
       >
@@ -360,6 +398,17 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
 
   return (
     <form className={m.formulario} onSubmit={guardar}>
+      {x ? (
+        <div className={p.ficha}>
+          <span className={p.fichaNumero}>{numero(x.numero)}</span>
+          <span className={p.fichaEstado}>
+            <Etiqueta tono={x.activo ? "bien" : "neutro"}>{x.activo ? "Activa en la ACAP" : "Retirada"}</Etiqueta>
+            <Etiqueta tono={vigente ? "bien" : "atencion"}>
+              {vigente ? `Autorizó${x.desde ? ` el ${new Date(`${x.desde.slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" })}` : ""}` : x.consentimiento === "revocado" ? "Revocó su autorización" : "Falta la autorización"}
+            </Etiqueta>
+          </span>
+        </div>
+      ) : null}
       <Seccion titulo="Identificación">
         <div className={m.fila2}>
           <Campo etiqueta="Nombres">
@@ -389,13 +438,7 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
             <input type="date" max={new Date().toISOString().slice(0, 10)} value={forma.fecha_nacimiento} onChange={cambiar("fecha_nacimiento")} />
           </Campo>
           <Campo etiqueta="Pertenencia étnica">
-            <select value={forma.etnia} onChange={cambiar("etnia")}>
-              {ETNIAS.map((o) => (
-                <option key={o.valor} value={o.valor}>
-                  {o.texto}
-                </option>
-              ))}
-            </select>
+            <Selector valor={forma.etnia} vacio="Sin dato" opciones={ETNIAS.filter((o) => o.valor)} alCambiar={(etnia) => setForma({ ...forma, etnia })} />
           </Campo>
         </div>
         <Interruptor
@@ -422,11 +465,13 @@ function FichaPersona(props: { acapId: string; persona: Persona | null; alGuarda
             ayuda="Al retirarla deja de aparecer en la reunión; su historia en el libro se queda."
             valor={x.activo}
             alCambiar={(activo) =>
-              void enviar(() =>
-                api(`/oficina/miembros/${x.id}/estado`, {
-                  metodo: "POST",
-                  cuerpo: { activo },
-                }),
+              void enviar(
+                () =>
+                  api(`/oficina/miembros/${x.id}/estado`, {
+                    metodo: "POST",
+                    cuerpo: { activo },
+                  }),
+                activo ? `${numero(x.numero)} vuelve a la reunión.` : `${numero(x.numero)} quedó retirada. Su historia en el libro se queda.`,
               )
             }
           />

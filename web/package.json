@@ -12,15 +12,19 @@
     "e2e": "playwright test"
   },
   "dependencies": {
+    "@base-ui/react": "^1.9.0",
     "@credimpacto/reglas": "*",
     "@credimpacto/tokens": "*",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
+    "cmdk": "^1.1.1",
     "motion": "^14.0.0",
     "next": "16.3.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-is": "^19.2.3",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

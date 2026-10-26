@@ -1,0 +1,132 @@
+/* Buscador (Ctrl K). Sin animación de entrada ni salida: se abre decenas de veces al día. */
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: var(--capa-dialogo);
+  background: rgb(16 33 61 / 0.24);
+}
+
+.ventana {
+  position: fixed;
+  top: min(16vh, 140px);
+  left: 50%;
+  z-index: var(--capa-dialogo);
+  width: min(620px, calc(100vw - 24px));
+  transform: translateX(-50%);
+  overflow: hidden;
+  background: var(--color-papel);
+  border: 1px solid var(--color-renglon);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgb(16 33 61 / 0.06), 0 24px 64px -16px rgb(16 33 61 / 0.32);
+  font-family: var(--fuente-atkinson-next);
+  color: var(--color-tinta);
+  outline: none;
+}
+
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.entrada {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--color-renglon);
+  color: var(--color-tinta-tenue);
+}
+
+.entrada input {
+  flex: 1;
+  height: 56px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-tinta);
+  font-size: 1rem;
+}
+
+.entrada input::placeholder {
+  color: var(--color-tinta-tenue);
+}
+
+.tecla {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--color-renglon);
+  border-radius: 6px;
+  background: var(--color-mesa);
+  font-family: var(--fuente-atkinson-mono);
+  font-size: 0.6875rem;
+  color: var(--color-tinta-suave);
+}
+
+.lista {
+  max-height: min(420px, 56vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  scroll-padding-block: 8px;
+}
+
+.grupo [cmdk-group-heading] {
+  padding: 10px 10px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-tinta-tenue);
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--color-tinta-suave);
+  cursor: pointer;
+  user-select: none;
+}
+
+.opcion svg {
+  flex: none;
+  color: var(--color-tinta-tenue);
+}
+
+.opcion[data-selected="true"] {
+  background: var(--color-hueco);
+  color: var(--color-tinta);
+}
+
+.opcion[data-selected="true"] svg {
+  color: var(--color-naranja);
+}
+
+.detalle {
+  font-size: 0.8125rem;
+  color: var(--color-tinta-tenue);
+}
+
+.ir {
+  margin-left: auto;
+  opacity: 0;
+}
+
+.opcion[data-selected="true"] .ir {
+  opacity: 1;
+  color: var(--color-tinta-suave);
+}
+
+.vacio {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-tinta-tenue);
+}

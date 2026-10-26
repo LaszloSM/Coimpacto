@@ -4,15 +4,15 @@ import { join } from "node:path";
 import type { ExpoConfig } from "expo/config";
 
 // Fuentes estáticas por peso (packages/tokens/fuentes/nativas). Android registra cada archivo
-// con su nombre como familia, que es el que usan los tokens (p. ej. "Bitter-700").
+// con su nombre como familia, que es el que usan los tokens (p. ej. "BricolageGrotesque-800").
 const FUENTES = [
   "AtkinsonHyperlegibleNext-400",
   "AtkinsonHyperlegibleNext-600",
   "AtkinsonHyperlegibleNext-700",
   "AtkinsonHyperlegibleNext-800",
   "AtkinsonHyperlegibleMono-400",
-  "Bitter-600",
-  "Bitter-700",
+  "BricolageGrotesque-700",
+  "BricolageGrotesque-800",
 ].map((nombre) => `../packages/tokens/fuentes/nativas/${nombre}.ttf`);
 
 // Actualizaciones de JavaScript con el servidor propio (TX9, EX6): solo si hay servidor y
@@ -43,8 +43,10 @@ const config: ExpoConfig = {
   name: DEMOSTRACION ? "Credimpacto (demostración)" : "Credimpacto",
   slug: "credimpacto",
   scheme: "credimpacto",
-  version: "0.1.0",
-  // Una actualización de JavaScript solo llega a binarios con la misma versión nativa.
+  // 0.2.0: entran Reanimated, worklets, hápticos y SVG (módulos nativos). Una actualización de
+  // JavaScript solo llega a binarios con la misma versión nativa, así que las de esta versión
+  // nunca llegan a un APK 0.1.0 que no los trae.
+  version: "0.2.0",
   runtimeVersion: { policy: "appVersion" },
   updates: actualizaciones,
   orientation: "portrait",

@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { Bloque, Cabecera, Campo, Cargando, Cifras, Etiqueta, Lateral, Tabla, useDatos, useEnvio, modulo as m } from "../_panel/comunes";
 import { BarrasHorizontales, COLOR } from "../_panel/GraficosModulo";
 import { fechaCorta } from "../_panel/prestamos";
-import { Seccion, Vacio } from "../_panel/formas";
+import { Seccion, Selector, Vacio } from "../_panel/formas";
 import estilos from "../_panel/tablero.module.css";
 
 interface Capacitacion {
@@ -223,23 +223,15 @@ export default function Capacitaciones() {
                     </Campo>
                     <div className={m.fila2}>
                       <Campo etiqueta="Tema">
-                        <select value={forma.tema} onChange={cambiar("tema")}>
-                          {d.temas.map((t) => (
-                            <option key={t.valor} value={t.valor}>
-                              {t.texto}
-                            </option>
-                          ))}
-                        </select>
+                        <Selector valor={forma.tema} opciones={d.temas} alCambiar={(tema) => setForma({ ...forma, tema })} />
                       </Campo>
                       <Campo etiqueta="Comunidad">
-                        <select value={forma.acap_id} onChange={cambiar("acap_id")}>
-                          <option value="">Varias comunidades</option>
-                          {comunidades.datos?.map((c) => (
-                            <option key={c.id} value={c.id}>
-                              {c.nombre}
-                            </option>
-                          ))}
-                        </select>
+                        <Selector
+                          valor={forma.acap_id}
+                          vacio="Varias comunidades"
+                          opciones={(comunidades.datos ?? []).map((c) => ({ valor: c.id, texto: c.nombre }))}
+                          alCambiar={(acap_id) => setForma({ ...forma, acap_id })}
+                        />
                       </Campo>
                     </div>
                     <div className={m.fila2}>

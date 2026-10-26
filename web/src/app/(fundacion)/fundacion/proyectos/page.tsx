@@ -8,7 +8,7 @@ import { useState } from "react";
 
 import { Avance, Bloque, Cabecera, Campo, Cargando, Cifras, Etiqueta, Lateral, useDatos, useEnvio, modulo as m } from "../_panel/comunes";
 import { pesosCortos } from "../_panel/formato";
-import { CampoPesos, Segmentado, Vacio } from "../_panel/formas";
+import { CampoPesos, Segmentado, Selector, Vacio } from "../_panel/formas";
 import estilos from "../_panel/tablero.module.css";
 
 interface Opcion {
@@ -181,13 +181,12 @@ export default function Proyectos() {
               <Lateral abierto={abierto} titulo={editando ? "Actualizar proyecto" : "Nuevo proyecto"} alCerrar={() => setAbierto(false)}>
                 <form className={m.formulario} onSubmit={guardar}>
                   <Campo etiqueta="Comunidad">
-                    <select required value={forma.acap_id} onChange={cambiar("acap_id")}>
-                      {comunidades.datos?.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.nombre}
-                        </option>
-                      ))}
-                    </select>
+                    <Selector
+                      requerido
+                      valor={forma.acap_id}
+                      opciones={(comunidades.datos ?? []).map((c) => ({ valor: c.id, texto: c.nombre }))}
+                      alCambiar={(acap_id) => setForma({ ...forma, acap_id })}
+                    />
                   </Campo>
                   <Campo etiqueta="Nombre del proyecto">
                     <input required maxLength={120} value={forma.nombre} onChange={cambiar("nombre")} />

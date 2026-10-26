@@ -4,7 +4,7 @@
 import { usePreventScreenCapture } from "expo-screen-capture";
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
@@ -13,7 +13,9 @@ import { dispositivoRegistrado, revisarPinDoble } from "../enrolamiento/flujo";
 import { leerFoto } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
 import { altaSocio, perfilesSocio } from "../socio/socio";
-import { BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonSecundario, estilos as base, Estado, Nota, Parrafo, Renglon, Titulo } from "../ui/componentes";
+import { Ir, Llave } from "../ui/iconos";
+import { c } from "../ui/tema";
 import { TecladoPin } from "../ui/TecladoPin";
 
 type Fase = "elegir" | "pin" | "confirmar" | "guardando" | "listo";
@@ -52,6 +54,7 @@ export default function PantallaAltaSocio() {
           paraQuien={`Voltee el celular hacia ${num(socio.numero)}`}
           verificando={fase === "guardando"}
           aviso={fase === "pin" ? (aviso ?? "Cree su PIN de 6 números.") : "Escriba el PIN otra vez."}
+          guia={!(fase === "pin" && aviso)}
           alCompletar={async (escrito) => {
             if (fase === "pin") {
               setPin(escrito);
@@ -93,33 +96,37 @@ export default function PantallaAltaSocio() {
   return (
     <SafeAreaView style={base.pantalla}>
       <ScrollView contentContainerStyle={base.contenido}>
-        <Titulo>{fase === "listo" ? "Acceso listo" : "Dar acceso a un socio"}</Titulo>
         {fase === "listo" ? (
-          <Parrafo testID="socio-alta-lista">Listo. {num(socio!.numero)} ya puede ver lo suyo en este celular con su PIN.</Parrafo>
+          <Estado titulo="Acceso listo" tono="bien" icono={<Llave size={38} color={c.bien} weight="duotone" />}>
+            <Parrafo testID="socio-alta-lista">Listo. {num(socio!.numero)} ya puede ver lo suyo en este celular con su PIN.</Parrafo>
+          </Estado>
         ) : (
           <>
-            <Parrafo>¿Qué socio va a ver lo suyo en este celular?</Parrafo>
+            <Titulo>Dar acceso a un socio</Titulo>
+            {aviso ? <Nota tono="mal">{aviso}</Nota> : null}
+            <Parrafo tenue>¿Qué socio va a ver lo suyo en este celular? Solo ve lo de él, con su propio PIN.</Parrafo>
             {disponibles.map((m) => (
-              <Pressable
+              <Renglon
                 key={m.membresia_id}
+                numero={String(m.numero).padStart(2, "0")}
                 testID={`dar-acceso-${m.numero}`}
-                accessibilityRole="button"
-                onPress={() => {
+                accesible={`Dar acceso a ${num(m.numero)}`}
+                alTocar={() => {
                   setSocio(m);
                   setAviso(undefined);
                   setFase("pin");
                 }}
-                style={base.renglon}
+                derecha={<Ir size={20} color={c.tenue} weight="bold" />}
               >
-                <Text style={base.cifraRenglon}>{num(m.numero)}</Text>
-              </Pressable>
+                <Text style={base.parrafo}>{m.nombre_corto ?? `Miembro ${num(m.numero)}`}</Text>
+              </Renglon>
             ))}
           </>
         )}
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonSecundario testID="socio-alta-volver" texto="Volver al inicio" alTocar={salir} />
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }

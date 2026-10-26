@@ -3,9 +3,8 @@
 // su reemplazo. Cancelar descarta el grupo entero (N11): nunca firmas a medias.
 // Lo usan los préstamos (paso 6) y el cierre (paso 8).
 
-import { tokens } from "@credimpacto/tokens";
 import { useEffect, useState, type ReactNode } from "react";
-import { Alert, BackHandler, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import type { FotoGrupo } from "../cola/grupo";
 import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
@@ -15,11 +14,11 @@ import { useTiposCargo } from "../sesion/useTiposCargo";
 import { abrirFirmante } from "../sesion/abrir";
 import { TEXTO_CANCELAR_FIRMAS } from "../navegacion/atras";
 import { useSesion } from "../sesion/contexto";
-import { BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonSecundario, estilos as base, Etiqueta, Nota, Renglon, Rotulo, Titulo } from "../ui/componentes";
+import { Pluma } from "../ui/iconos";
 import { TecladoPin } from "../ui/TecladoPin";
+import { c, t } from "../ui/tema";
 import { FIRMAS_PRESTAMO, puedeFirmar, type FirmanteCargo, type MotivoFirmaInvalida } from "./prestamos";
-
-const { color } = tokens;
 
 const MOTIVO: Record<MotivoFirmaInvalida, string> = {
   mismo_cargo: "ya firmó ese cargo",
@@ -105,42 +104,79 @@ export function FirmasGrupo(props: {
     <>
       <ScrollView contentContainerStyle={base.contenido}>
         <Titulo>{props.titulo}</Titulo>
-        {props.lista}
-        <Parrafo testID="firmas-faltan">
-          {firmantes.length === 0
-            ? `Faltan ${FIRMAS_PRESTAMO} firmas.`
-            : `Falta ${FIRMAS_PRESTAMO - firmantes.length} firma de ${FIRMAS_PRESTAMO}.`}
-        </Parrafo>
-        {enPausa.length > 0 ? (
-          <Parrafo>Un PIN quedó en pausa en este celular. Firma otro cargo en su reemplazo.</Parrafo>
-        ) : null}
-        <Text style={[base.titulo, { fontSize: 22 }]}>¿Quién firma?</Text>
+        <View style={estilos.documento}>{props.lista}</View>
+        <View style={estilos.rayas} accessible accessibilityLabel={firmantes.length === 0 ? `Faltan ${FIRMAS_PRESTAMO} firmas` : `Falta ${FIRMAS_PRESTAMO - firmantes.length} firma de ${FIRMAS_PRESTAMO}`}>
+          {Array.from({ length: FIRMAS_PRESTAMO }, (_, i) => {
+            const f = firmantes[i];
+            return (
+              <View key={i} style={estilos.raya}>
+                <View style={estilos.rayaLinea}>
+                  {f ? <Pluma size={22} color={c.bien} weight="duotone" /> : null}
+                  {f ? <Text style={estilos.rayaFirma}>{nombreCargo(tipos, f.perfil.tipo)}</Text> : null}
+                </View>
+                <Text style={estilos.rayaPie}>Firma {i + 1}</Text>
+              </View>
+            );
+          })}
+        </View>
+        <Text style={estilos.faltan} testID="firmas-faltan">
+          {firmantes.length === 0 ? `Faltan ${FIRMAS_PRESTAMO} firmas.` : `Falta ${FIRMAS_PRESTAMO - firmantes.length} firma de ${FIRMAS_PRESTAMO}.`}
+        </Text>
+        {enPausa.length > 0 ? <Nota tono="aviso">Un PIN quedó en pausa en este celular. Firma otro cargo en su reemplazo.</Nota> : null}
+        <Rotulo>¿Quién firma?</Rotulo>
         {perfiles.filter((p) => !props.permiso || puede(tipos, p.tipo, props.permiso)).map((p) => {
           const firmo = firmantes.some((f) => f.perfil.cargoId === p.cargoId);
           const motivo = firmo ? null : puedeFirmar(p, firmantes.map((f) => f.perfil), beneficiarios, props.foto);
           const pausado = enPausa.includes(p.cargoId);
           const disponible = !firmo && !motivo && !pausado;
           return (
-            <Pressable
+            <Renglon
               key={p.cargoId}
               testID={`firma-${p.tipo}`}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !disponible }}
-              disabled={!disponible}
-              onPress={() => setTurno(p)}
-              style={[base.renglon, !disponible && { opacity: 0.6 }]}
+              deshabilitado={!disponible}
+              alTocar={() => setTurno(p)}
+              accesible={`Firma ${nombreCargo(tipos, p.tipo)}`}
+              derecha={
+                <Etiqueta tono={firmo ? "bien" : pausado || motivo ? "aviso" : "neutro"}>
+                  {firmo ? "Firmó" : pausado ? "En pausa" : motivo ? `No puede: ${MOTIVO[motivo]}` : "Falta firmar"}
+                </Etiqueta>
+              }
             >
-              <Text style={[base.parrafo, { flex: 1 }]}>{nombreCargo(tipos, p.tipo)}</Text>
-              <Text style={[base.etiqueta, firmo && { color: color.confirmado }]}>
-                {firmo ? "Firmó" : pausado ? "En pausa" : motivo ? `No puede: ${MOTIVO[motivo]}` : "Falta firmar"}
-              </Text>
-            </Pressable>
+              <Text style={base.parrafo}>{nombreCargo(tipos, p.tipo)}</Text>
+              <Text style={base.detalleRenglon}>#{String(p.numero).padStart(2, "0")}</Text>
+            </Renglon>
           );
         })}
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonSecundario testID="cancelar-firmas" texto="Cancelar estas firmas" alTocar={props.alCancelar} />
-      </View>
+      </Acciones>
     </>
   );
 }
+
+const estilos = StyleSheet.create({
+  documento: {
+    marginTop: 4,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    backgroundColor: c.mesa,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: c.renglonFuerte,
+    overflow: "hidden",
+  },
+  rayas: { flexDirection: "row", gap: 14, marginTop: 22 },
+  raya: { flex: 1, gap: 6 },
+  rayaLinea: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderBottomWidth: 2,
+    borderBottomColor: c.tinta,
+    paddingBottom: 4,
+  },
+  rayaFirma: { ...t["body-fuerte"], fontSize: 16, color: c.bien, flexShrink: 1 },
+  rayaPie: { ...t.label, fontSize: 14, color: c.suave },
+  faltan: { ...t["body-fuerte"], color: c.tinta, marginTop: 14, marginBottom: 6 },
+});

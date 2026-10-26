@@ -3,7 +3,6 @@
 // segundo plano o tras 60 s sin tocar.
 
 import { formatearPesos } from "@credimpacto/reglas";
-import { tokens } from "@credimpacto/tokens";
 import { usePreventScreenCapture } from "expo-screen-capture";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -25,10 +24,11 @@ import {
   type PerfilSocio,
   type SesionSocio,
 } from "../socio/socio";
-import { BotonPrincipal, BotonSecundario, Dinero, estilos as base, Parrafo } from "../ui/componentes";
+import { Acciones, BotonPrincipal, Dinero, estilos as base, Etiqueta, Nota, Parrafo, Pulsable, Renglon, Rotulo } from "../ui/componentes";
+import { Chulo, Libreta } from "../ui/iconos";
+import { c, LADO, t } from "../ui/tema";
 import { TecladoPin } from "../ui/TecladoPin";
 
-const { color, spacing, tipo } = tokens;
 const INACTIVIDAD_MS = 60_000;
 
 const fecha = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short" });
@@ -105,23 +105,33 @@ export default function PantallaSocio() {
   return (
     <SafeAreaView style={base.pantalla} onTouchStart={reiniciarReloj}>
       <View style={estilos.cabecera}>
-        <Text style={base.cifraRenglon} accessibilityRole="header">
-          {quien}
-        </Text>
-        <BotonSecundario testID="socio-salir" texto="Salir" alTocar={salir} />
+        <View style={estilos.cabeceraIzq}>
+          <Libreta size={24} color={c.naranja} weight="duotone" />
+          <View>
+            <Text style={estilos.cabeceraTitulo}>Mi libreta</Text>
+            <Text style={estilos.cabeceraNumero} accessibilityRole="header">
+              Socio {quien}
+            </Text>
+          </View>
+        </View>
+        <Pulsable testID="socio-salir" accessibilityRole="button" onPress={salir} vibra="paso" style={estilos.salir} estiloPresionado={{ backgroundColor: c.renglon }}>
+          <Text style={estilos.salirTexto}>Salir</Text>
+        </Pulsable>
       </View>
       <ScrollView contentContainerStyle={base.contenido}>
         {!datos || !vigencia ? (
-          <Parrafo>Sus datos se actualizan cuando el celular tenga señal.</Parrafo>
+          <View style={{ marginTop: 20 }}>
+            <Nota>Sus datos se actualizan cuando el celular tenga señal.</Nota>
+          </View>
         ) : (
           <>
             <Text style={estilos.fecha} testID="socio-fecha">
               {datos.datos_hasta ? `Datos hasta la reunión del ${fecha(datos.datos_hasta)}` : "Aún no hay reuniones en este ciclo"}
             </Text>
             {vigencia.aviso === "viejos" ? (
-              <Text style={estilos.avisoViejo} testID="socio-aviso">
+              <Nota tono="aviso" testID="socio-aviso">
                 Estos datos son de hace {vigencia.dias} días. Lleve el celular a señal para actualizarlos.
-              </Text>
+              </Nota>
             ) : null}
             {vigencia.aviso === "caducados" ? (
               <Parrafo testID="socio-caducados">
@@ -129,28 +139,41 @@ export default function PantallaSocio() {
               </Parrafo>
             ) : (
               <>
-                <View style={estilos.bloque}>
+                <View style={estilos.ahorro}>
                   <Dinero testID="socio-ahorrado" pesos={datos.ahorrado_ciclo} etiqueta="Lo que he ahorrado este ciclo" grande />
                 </View>
                 {datos.prestamo ? (
-                  <View style={estilos.bloque}>
-                    <Dinero pesos={datos.prestamo.me_falta_pagar} etiqueta="Me falta pagar" />
-                    <Text style={base.etiqueta}>Cuota: {formatearPesos(datos.prestamo.cuota)}</Text>
+                  <View style={estilos.prestamo}>
+                    <Dinero pesos={datos.prestamo.me_falta_pagar} etiqueta="Me falta pagar del préstamo" />
+                    <Text style={base.detalleRenglon}>Cuota de {formatearPesos(datos.prestamo.cuota)}</Text>
                   </View>
                 ) : null}
-                <Text style={[base.titulo, { fontSize: 22 }]}>Mis aportes</Text>
+                <Rotulo>Mis aportes</Rotulo>
                 {datos.aportes.length === 0 ? (
-                  <Parrafo>Todavía no hay aportes en este ciclo.</Parrafo>
+                  <Parrafo tenue>Todavía no hay aportes en este ciclo.</Parrafo>
                 ) : (
                   datos.aportes.map((a, i) => (
-                    <View key={i} style={base.renglon}>
-                      <Text style={[base.parrafo, { width: 72 }]}>{fecha(a.fecha)}</Text>
-                      <Text style={[base.parrafo, { flex: 1 }]}>{a.acciones} acciones</Text>
-                      <View style={{ alignItems: "flex-end" }}>
-                        <Text style={base.cifraRenglonPequena}>{formatearPesos(a.pesos)}</Text>
-                        <Text style={base.etiqueta}>{a.estado === "confirmado" ? "Confirmado" : "Guardado aquí"}</Text>
+                    <Renglon
+                      key={i}
+                      numero={fecha(a.fecha)}
+                      derecha={
+                        <View style={{ alignItems: "flex-end", gap: 4 }}>
+                          <Text style={base.cifraRenglonPequena}>{formatearPesos(a.pesos)}</Text>
+                          <Etiqueta tono={a.estado === "confirmado" ? "bien" : "neutro"}>{a.estado === "confirmado" ? "Confirmado" : "Guardado aquí"}</Etiqueta>
+                        </View>
+                      }
+                    >
+                      <View style={estilos.sellos} accessible accessibilityLabel={`${a.acciones} acciones`}>
+                        {Array.from({ length: Math.min(a.acciones, 10) }, (_, j) => (
+                          <View key={j} style={estilos.sello}>
+                            <Chulo size={10} color={c.papel} weight="bold" />
+                          </View>
+                        ))}
                       </View>
-                    </View>
+                      <Text style={base.detalleRenglon}>
+                        {a.acciones} {a.acciones === 1 ? "acción" : "acciones"}
+                      </Text>
+                    </Renglon>
                   ))
                 )}
               </>
@@ -159,7 +182,8 @@ export default function PantallaSocio() {
         )}
         <Text style={estilos.pie}>El dinero lo guarda la caja del grupo.</Text>
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
+        {aviso ? <Nota tono="aviso">{aviso}</Nota> : null}
         <BotonPrincipal
           testID="socio-actualizar"
           texto={actualizando ? "Actualizando…" : "Actualizar mis datos"}
@@ -168,6 +192,7 @@ export default function PantallaSocio() {
             setActualizando(true);
             try {
               setDatos(await actualizarSocio(sesion, { cripto: entorno.cripto, servidor: SERVIDOR, ahora: entorno.ahora }));
+              setAviso(undefined);
             } catch {
               setAviso("Necesita señal para actualizar.");
             } finally {
@@ -175,8 +200,7 @@ export default function PantallaSocio() {
             }
           }}
         />
-        {aviso ? <Parrafo>{aviso}</Parrafo> : null}
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }
@@ -186,21 +210,20 @@ const estilos = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: color.renglon,
-    paddingBottom: spacing.sm,
+    paddingHorizontal: LADO,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: c.renglonFuerte,
   },
-  fecha: { ...tipo.label, fontSize: 18, color: color["tinta-suave"], marginTop: spacing.lg },
-  avisoViejo: {
-    ...tipo.body,
-    color: color["por-validar"],
-    backgroundColor: color["por-validar-tinte"],
-    padding: spacing.sm,
-    borderRadius: 4,
-    marginTop: spacing.sm,
-  },
-  bloque: { marginTop: spacing.lg, paddingBottom: spacing.md, borderBottomWidth: 1, borderBottomColor: color.renglon },
-  pie: { ...tipo.label, color: color["tinta-suave"], marginTop: spacing["2xl"] },
+  cabeceraIzq: { flexDirection: "row", alignItems: "center", gap: 10 },
+  cabeceraTitulo: { ...t.label, fontSize: 14, color: c.suave },
+  cabeceraNumero: { ...t["campo-subtitulo"], color: c.tinta },
+  salir: { minHeight: 48, paddingHorizontal: 18, borderRadius: 14, backgroundColor: c.hueco, alignItems: "center", justifyContent: "center" },
+  salirTexto: { ...t["body-fuerte"], fontSize: 17, color: c.tinta },
+  fecha: { ...t.label, fontSize: 16, color: c.suave, marginTop: 20, marginBottom: 10 },
+  ahorro: { marginTop: 6, padding: 18, borderRadius: 20, backgroundColor: c.naranjaTinte },
+  prestamo: { marginTop: 10, padding: 16, borderRadius: 18, backgroundColor: c.mesa, gap: 4 },
+  sellos: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
+  sello: { width: 18, height: 18, borderRadius: 5, backgroundColor: c.naranja, alignItems: "center", justifyContent: "center" },
+  pie: { ...t.label, fontSize: 15, color: c.suave, marginTop: 28, textAlign: "center" },
 });

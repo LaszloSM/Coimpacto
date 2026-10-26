@@ -173,12 +173,14 @@ test("por aclarar: proponer a la junta quitar un registro, con motivo en palabra
   });
 
   await page.goto("/fundacion/por-aclarar");
-  await page.getByLabel("ACAP").selectOption("a1");
+  // Con una sola ACAP queda elegida; el selector la muestra.
+  await expect(page.getByLabel("ACAP")).toHaveText(/ACAP Las Brisas/);
   await expect(page.getByText("Fondo social · $ 2.000 · #07")).toBeVisible();
   await page.getByRole("button", { name: "Proponer a la junta" }).click();
-  await page.getByLabel("Quitarlo del cuaderno").check();
+  await page.getByRole("radio", { name: "Quitarlo del cuaderno" }).click();
   await page.getByLabel("Motivo").fill("Se anotó dos veces");
   await page.getByRole("button", { name: "Enviar a la junta" }).click();
-  await expect(page.getByText("Quitarlo del cuaderno · Espera a la junta")).toBeVisible();
+  await expect(page.getByText("Espera a la junta")).toBeVisible();
+  await expect(page.getByText("Propuesta: Quitarlo del cuaderno")).toBeVisible();
   expect(propuesta).toEqual({ movimiento_id: "m1", accion: "anular", motivo: "Se anotó dos veces" });
 });

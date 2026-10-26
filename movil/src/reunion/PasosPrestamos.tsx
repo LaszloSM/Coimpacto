@@ -4,15 +4,30 @@
 // en pausa firma otro cargo válido en su reemplazo (D10, D13).
 
 import { formatearPesos, ReglaInvalida } from "@credimpacto/reglas";
-import { tokens } from "@credimpacto/tokens";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import type { FotoGrupo, MiembroFoto } from "../cola/grupo";
 import type { Sesion } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, Contador, Dinero, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import {
+  Acciones,
+  BotonPrincipal,
+  BotonSecundario,
+  BotonVolver,
+  Contador,
+  Dinero,
+  estilos as base,
+  Etiqueta,
+  Nota,
+  Parrafo,
+  Renglon,
+  Rotulo,
+  Titulo,
+} from "../ui/componentes";
+import { Ir, Mas } from "../ui/iconos";
 import { TecladoDinero } from "../ui/TecladoDinero";
+import { c } from "../ui/tema";
 import { FirmasGrupo } from "./FirmasGrupo";
 import {
   abonoRegistrado,
@@ -29,9 +44,10 @@ import {
 } from "./prestamos";
 import { asistencia as leerAsistencia, PASOS, type ReunionLocal } from "./reunion";
 
-const { color, spacing } = tokens;
 const num = (n: number) => `#${String(n).padStart(2, "0")}`;
-const numeroDe = (foto: FotoGrupo, titularId: string) => foto.miembros.find((m) => m.titular_id === titularId)?.numero ?? 0;
+const dos = (n: number) => String(n).padStart(2, "0");
+const miembroDe = (foto: FotoGrupo, titularId: string) => foto.miembros.find((m) => m.titular_id === titularId);
+const numeroDe = (foto: FotoGrupo, titularId: string) => miembroDe(foto, titularId)?.numero ?? 0;
 
 interface PropsPaso {
   sesion: Sesion;
@@ -68,51 +84,62 @@ export function PasoAbonos(props: PropsPaso) {
     } catch (e) {
       if (e instanceof ReglaInvalida) aviso = `Es más que lo que debe (${formatearPesos(editando.saldo)}).`;
     }
+    const quien = miembroDe(props.foto, editando.titular_id);
     return (
       <>
-        <ScrollView contentContainerStyle={base.contenido}>
+        <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
           <Titulo>Abono de {num(numeroDe(props.foto, editando.titular_id))}</Titulo>
-          <Parrafo>
-            Debe {formatearPesos(editando.saldo)}. Cuota: {formatearPesos(editando.cuota_mensual)}.
-          </Parrafo>
-          <View style={estilos.atajos}>
-            <BotonSecundario testID="abono-cuota" texto={`Una cuota`} alTocar={() => setBorrador(editando.cuota_mensual)} />
+          {quien?.nombre_corto ? <Parrafo tenue>{quien.nombre_corto}</Parrafo> : null}
+          <View style={estilos.ficha}>
+            <View style={estilos.fichaDato}>
+              <Text style={base.etiqueta}>Debe</Text>
+              <Text style={base.cifraRenglon}>{formatearPesos(editando.saldo)}</Text>
+            </View>
+            <View style={estilos.fichaDato}>
+              <Text style={base.etiqueta}>Cuota</Text>
+              <Text style={base.cifraRenglon}>{formatearPesos(editando.cuota_mensual)}</Text>
+            </View>
           </View>
+          <BotonSecundario testID="abono-cuota" texto="Abona una cuota" detalle={formatearPesos(editando.cuota_mensual)} alTocar={() => setBorrador(editando.cuota_mensual)} />
           <TecladoDinero testID="abono" etiqueta="Abona hoy" valor={borrador} alCambiar={setBorrador} aviso={aviso} />
           {partes ? (
-            <Parrafo testID="abono-partes">
-              Capital {formatearPesos(partes.capital)} · Interés {formatearPesos(partes.interes)}
-            </Parrafo>
+            <View style={estilos.partes} testID="abono-partes" accessible accessibilityLabel={`Capital ${formatearPesos(partes.capital)}, interés ${formatearPesos(partes.interes)}`}>
+              <View style={estilos.parte}>
+                <Text style={base.etiqueta}>Capital</Text>
+                <Text style={base.cifraRenglonPequena}>{formatearPesos(partes.capital)}</Text>
+              </View>
+              <View style={estilos.parte}>
+                <Text style={base.etiqueta}>Interés</Text>
+                <Text style={base.cifraRenglonPequena}>{formatearPesos(partes.interes)}</Text>
+              </View>
+            </View>
           ) : null}
         </ScrollView>
-        <View style={[base.acciones, estilos.dosBotones]}>
-          <View style={{ flex: 1 }}>
-            <BotonSecundario texto="Cancelar" alTocar={() => setEditando(null)} />
-          </View>
-          <View style={{ flex: 2 }}>
-            <BotonPrincipal
-              testID="guardar-abono"
-              texto="Guardar abono"
-              falta={borrador > 0 && !partes ? "Revise el monto" : undefined}
-              alTocar={async () => {
-                try {
-                  await registrarAbono(props.sesion.base, props.sesion.cripto, {
-                    reunion: props.reunion,
-                    prestamo: editando,
-                    monto: borrador,
-                    firmante: props.sesion.firmante,
-                    ahora: entorno.ahora(),
-                  });
-                  setMontos({ ...montos, [editando.id]: borrador });
-                  setEditando(null);
-                  props.alCambiar();
-                } catch {
-                  setError("No se pudo guardar el abono. Revise el monto.");
-                }
-              }}
-            />
-          </View>
-        </View>
+        <Acciones fila>
+          <BotonVolver texto="Cancelar" alTocar={() => setEditando(null)} />
+          <BotonPrincipal
+            testID="guardar-abono"
+            texto="Guardar abono"
+            sinFlecha
+            falta={borrador > 0 && !partes ? "Revise el monto" : undefined}
+            alTocar={async () => {
+              try {
+                await registrarAbono(props.sesion.base, props.sesion.cripto, {
+                  reunion: props.reunion,
+                  prestamo: editando,
+                  monto: borrador,
+                  firmante: props.sesion.firmante,
+                  ahora: entorno.ahora(),
+                });
+                setMontos({ ...montos, [editando.id]: borrador });
+                setEditando(null);
+                props.alCambiar();
+              } catch {
+                setError("No se pudo guardar el abono. Revise el monto.");
+              }
+            }}
+          />
+        </Acciones>
       </>
     );
   }
@@ -122,42 +149,51 @@ export function PasoAbonos(props: PropsPaso) {
       <ScrollView contentContainerStyle={base.contenido}>
         <Titulo>{PASOS[4]}</Titulo>
         {prestamos.length === 0 ? (
-          <Parrafo testID="sin-prestamos">Nadie tiene préstamo vigente.</Parrafo>
+          <Nota testID="sin-prestamos">Nadie tiene préstamo vigente.</Nota>
         ) : (
-          prestamos.map((p) => (
-            <Pressable
-              key={p.id}
-              testID={`abonar-${numeroDe(props.foto, p.titular_id)}`}
-              accessibilityRole="button"
-              onPress={() => {
-                setError(undefined);
-                setBorrador(montos[p.id] ?? 0);
-                setEditando(p);
-              }}
-              style={base.renglon}
-            >
-              <Text style={[base.cifraRenglon, { width: 56 }]}>{num(numeroDe(props.foto, p.titular_id))}</Text>
-              <View style={{ flex: 1 }}>
-                <Text style={base.parrafo}>Debe {formatearPesos(p.saldo)}</Text>
-                <Text style={base.etiqueta}>{montos[p.id] ? `Abonó hoy ${formatearPesos(montos[p.id])}` : "Sin abono hoy"}</Text>
-              </View>
-            </Pressable>
-          ))
+          <>
+            <Parrafo tenue>Toque a quien abona hoy.</Parrafo>
+            <View style={{ marginTop: 12 }}>
+              {prestamos.map((p) => {
+                const n = numeroDe(props.foto, p.titular_id);
+                const abono = montos[p.id];
+                return (
+                  <Renglon
+                    key={p.id}
+                    numero={dos(n)}
+                    testID={`abonar-${n}`}
+                    accesible={`Abono de ${num(n)}. Debe ${formatearPesos(p.saldo)}`}
+                    alTocar={() => {
+                      setError(undefined);
+                      setBorrador(montos[p.id] ?? 0);
+                      setEditando(p);
+                    }}
+                    derecha={abono ? <Etiqueta tono="bien">Abonó {formatearPesos(abono)}</Etiqueta> : <Ir size={20} color={c.tenue} weight="bold" />}
+                  >
+                    <Text style={base.parrafo}>Debe {formatearPesos(p.saldo)}</Text>
+                    <Text style={base.detalleRenglon}>{abono ? "Abono anotado" : `Cuota de ${formatearPesos(p.cuota_mensual)}`}</Text>
+                  </Renglon>
+                );
+              })}
+            </View>
+          </>
         )}
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          <BotonSecundario testID="paso-anterior" texto="Anterior" alTocar={props.alVolver} />
-        </View>
-        <View style={{ flex: 2 }}>
-          <BotonPrincipal testID="seguir-prestamos" texto="Seguir a préstamos" alTocar={props.alSeguir} />
-        </View>
-      </View>
+      <Acciones fila>
+        <BotonVolver testID="paso-anterior" alTocar={props.alVolver} />
+        <BotonPrincipal testID="seguir-prestamos" texto="Seguir a préstamos" alTocar={props.alSeguir} />
+      </Acciones>
     </>
   );
 }
 
 // --- paso 6: préstamos ----------------------------------------------------------------------
+
+const ESTADO: Record<Solicitud["estado"], { texto: string; tono: "bien" | "aviso" | "mal" }> = {
+  aprobada: { texto: "Aprobada · falta firmar", tono: "aviso" },
+  no_aprobada: { texto: "No aprobada", tono: "mal" },
+  firmada: { texto: "Firmada · entregar el efectivo", tono: "bien" },
+};
 
 export function PasoPrestamos(props: PropsPaso) {
   const [lista, setLista] = useState<Solicitud[] | null>(null);
@@ -200,55 +236,51 @@ export function PasoPrestamos(props: PropsPaso) {
     );
   }
 
-  const ESTADO: Record<Solicitud["estado"], string> = {
-    aprobada: "Aprobada · falta firmar",
-    no_aprobada: "No aprobada",
-    firmada: "Firmada · entregar el efectivo",
-  };
-
   return (
     <>
       <ScrollView contentContainerStyle={base.contenido}>
         <Titulo>{PASOS[5]}</Titulo>
-        {lista.length === 0 ? <Parrafo testID="sin-solicitudes">Hoy nadie pidió préstamo.</Parrafo> : null}
-        {lista.map((s) => (
-          <View key={s.id} style={base.renglon} testID={`solicitud-${numeroDe(props.foto, s.titularId)}`}>
-            <Text style={[base.cifraRenglon, { width: 56 }]}>{num(numeroDe(props.foto, s.titularId))}</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={base.parrafo}>
-                {formatearPesos(s.capital)} en {s.numCuotas} cuotas
-              </Text>
-              <Text style={base.etiqueta}>{ESTADO[s.estado]}</Text>
-            </View>
+        {lista.length === 0 ? (
+          <Parrafo tenue testID="sin-solicitudes">
+            Hoy nadie pidió préstamo.
+          </Parrafo>
+        ) : (
+          <View style={{ marginTop: 8 }}>
+            {lista.map((s) => (
+              <Renglon key={s.id} numero={dos(numeroDe(props.foto, s.titularId))} testID={`solicitud-${numeroDe(props.foto, s.titularId)}`}>
+                <Text style={base.parrafo}>
+                  {formatearPesos(s.capital)} en {s.numCuotas} cuotas
+                </Text>
+                <View style={{ flexDirection: "row", marginTop: 4 }}>
+                  <Etiqueta tono={ESTADO[s.estado].tono}>{ESTADO[s.estado].texto}</Etiqueta>
+                </View>
+              </Renglon>
+            ))}
           </View>
-        ))}
-        <View style={{ marginTop: spacing.md }}>
-          <BotonSecundario testID="agregar-solicitud" texto="Agregar una solicitud" alTocar={() => setModo("nueva")} />
+        )}
+        <View style={{ marginTop: 18 }}>
+          <BotonSecundario testID="agregar-solicitud" texto="Agregar una solicitud" icono={<Mas size={20} color={c.tinta} weight="bold" />} alTocar={() => setModo("nueva")} />
         </View>
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          <BotonSecundario testID="paso-anterior" texto="Anterior" alTocar={props.alVolver} />
-        </View>
-        <View style={{ flex: 2 }}>
-          {porFirmar.length > 0 ? (
-            <BotonPrincipal
-              testID="firmar-aprobaciones"
-              texto={`Firmar ${porFirmar.length === 1 ? "la aprobación" : `las ${porFirmar.length} aprobaciones`} de hoy`}
-              alTocar={() => setModo("firmas")}
-            />
-          ) : (
-            <BotonPrincipal testID="seguir-arqueo" texto="Seguir al arqueo" alTocar={props.alSeguir} />
-          )}
-        </View>
-      </View>
+      <Acciones fila>
+        <BotonVolver testID="paso-anterior" alTocar={props.alVolver} />
+        {porFirmar.length > 0 ? (
+          <BotonPrincipal
+            testID="firmar-aprobaciones"
+            texto={`Firmar ${porFirmar.length === 1 ? "la aprobación" : `las ${porFirmar.length} aprobaciones`}`}
+            alTocar={() => setModo("firmas")}
+          />
+        ) : (
+          <BotonPrincipal testID="seguir-arqueo" texto="Seguir al arqueo" alTocar={props.alSeguir} />
+        )}
+      </Acciones>
     </>
   );
 }
 
 function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: () => void }) {
   const ciclo = props.foto.ciclo!;
-  const activos = props.foto.miembros.filter((m) => m.activo);
+  const activos = props.foto.miembros.filter((m) => m.activo).sort((a, b) => a.numero - b.numero);
   const conPrestamo = new Set(props.foto.prestamos.filter((p) => p.saldo > 0).map((p) => p.titular_id));
   const [presentes, setPresentes] = useState<Map<string, boolean> | null>(null);
   const [quien, setQuien] = useState<MiembroFoto | null>(null);
@@ -269,24 +301,28 @@ function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: (
       <>
         <ScrollView contentContainerStyle={base.contenido}>
           <Titulo>¿Quién pide préstamo?</Titulo>
-          {pueden.map((m) => (
-            <Pressable
-              key={m.titular_id}
-              testID={`pide-${m.numero}`}
-              accessibilityRole="button"
-              onPress={() => {
-                setQuien(m);
-                setVoto({ aFavor: 0, enContra: 0, abstenciones: 0, presentes: cuantosVinieron });
-              }}
-              style={base.renglon}
-            >
-              <Text style={base.cifraRenglon}>{num(m.numero)}</Text>
-            </Pressable>
-          ))}
+          <Parrafo tenue>No aparecen quienes ya deben un préstamo ni quienes ya pidieron hoy.</Parrafo>
+          <View style={{ marginTop: 12 }}>
+            {pueden.map((m) => (
+              <Renglon
+                key={m.titular_id}
+                numero={dos(m.numero)}
+                testID={`pide-${m.numero}`}
+                accesible={`Pide ${num(m.numero)}`}
+                alTocar={() => {
+                  setQuien(m);
+                  setVoto({ aFavor: 0, enContra: 0, abstenciones: 0, presentes: cuantosVinieron });
+                }}
+                derecha={<Ir size={20} color={c.tenue} weight="bold" />}
+              >
+                <Text style={base.parrafo}>{m.nombre_corto ?? `Miembro ${num(m.numero)}`}</Text>
+              </Renglon>
+            ))}
+          </View>
         </ScrollView>
-        <View style={base.acciones}>
+        <Acciones>
           <BotonSecundario texto="Cancelar" alTocar={props.alTerminar} />
-        </View>
+        </Acciones>
       </>
     );
   }
@@ -309,61 +345,69 @@ function NuevaSolicitud(props: PropsPaso & { yaPidieron: string[]; alTerminar: (
         : resultado.aprobada
           ? "Aprobado por la asamblea."
           : "No aprobado.";
+  const tonoVoto = !resultado ? "neutro" : resultado.aprobada && resultado.quorum && resultado.votosCuadran ? "bien" : resultado.quorum && resultado.votosCuadran ? "mal" : "aviso";
 
   return (
     <>
-      <ScrollView contentContainerStyle={base.contenido}>
+      <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
         <Titulo>Préstamo para {num(quien.numero)}</Titulo>
+        {quien.nombre_corto ? <Parrafo tenue>{quien.nombre_corto}</Parrafo> : null}
         <TecladoDinero testID="capital" etiqueta="Cuánto pide" valor={capital} alCambiar={setCapital} />
-        <Contador testID="cuotas" etiqueta="Cuotas (reuniones)" valor={cuotas} minimo={1} maximo={ciclo.duracion_meses} alCambiar={setCuotas} />
+        <Contador testID="cuotas" etiqueta="Cuotas" detalle="Una por reunión" valor={cuotas} minimo={1} maximo={ciclo.duracion_meses} alCambiar={setCuotas} />
         {plan ? (
           <View style={estilos.plan} testID="plan-cuotas">
             <Dinero pesos={plan.cuota_mensual} etiqueta={`Paga ${cuotas} cuotas de`} />
+            <View style={estilos.planLinea} />
             <Dinero pesos={plan.total_pagar} etiqueta="Total a pagar" />
           </View>
         ) : null}
-        <Text style={[base.titulo, { fontSize: 22 }]}>Votación</Text>
+        <Rotulo>Votación de la asamblea</Rotulo>
         {voto ? (
           <>
             <Contador testID="voto-presentes" etiqueta="Presentes" valor={voto.presentes} maximo={activos.length} alCambiar={(n) => setVoto({ ...voto, presentes: n })} />
             <Contador testID="voto-favor" etiqueta="A favor" valor={voto.aFavor} maximo={voto.presentes} alCambiar={(n) => setVoto({ ...voto, aFavor: n })} />
             <Contador testID="voto-contra" etiqueta="En contra" valor={voto.enContra} maximo={voto.presentes} alCambiar={(n) => setVoto({ ...voto, enContra: n })} />
             <Contador testID="voto-abstencion" etiqueta="Abstención" valor={voto.abstenciones} maximo={voto.presentes} alCambiar={(n) => setVoto({ ...voto, abstenciones: n })} />
-            <Parrafo testID="resultado-voto">{textoVoto}</Parrafo>
+            <View style={{ marginTop: 14 }}>
+              <Nota tono={tonoVoto} testID="resultado-voto">
+                {textoVoto}
+              </Nota>
+            </View>
           </>
         ) : null}
-        {error ? <Parrafo>{error}</Parrafo> : null}
+        {error ? (
+          <View style={{ marginTop: 12 }}>
+            <Nota tono="mal">{error}</Nota>
+          </View>
+        ) : null}
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          <BotonSecundario texto="Cancelar" alTocar={props.alTerminar} />
-        </View>
-        <View style={{ flex: 2 }}>
-          <BotonPrincipal
-            testID="guardar-solicitud"
-            texto="Guardar la votación"
-            falta={!plan ? "Falta cuánto pide" : resultado && !resultado.votosCuadran ? "Revise los votos" : undefined}
-            alTocar={async () => {
-              try {
-                await guardarSolicitud(props.sesion.base, props.sesion.cripto, {
-                  reunion: props.reunion,
-                  titularId: quien.titular_id,
-                  capital,
-                  numCuotas: cuotas,
-                  votacion: voto!,
-                  activos: activos.length,
-                  ciclo,
-                  prestamosVigentes: props.foto.prestamos,
-                  politica: props.foto.acap,
-                });
-                props.alTerminar();
-              } catch {
-                setError("No se pudo guardar la solicitud.");
-              }
-            }}
-          />
-        </View>
-      </View>
+      <Acciones fila>
+        <BotonVolver texto="Cancelar" alTocar={props.alTerminar} />
+        <BotonPrincipal
+          testID="guardar-solicitud"
+          texto="Guardar la votación"
+          sinFlecha
+          falta={!plan ? "Falta cuánto pide" : resultado && !resultado.votosCuadran ? "Revise los votos" : undefined}
+          alTocar={async () => {
+            try {
+              await guardarSolicitud(props.sesion.base, props.sesion.cripto, {
+                reunion: props.reunion,
+                titularId: quien.titular_id,
+                capital,
+                numCuotas: cuotas,
+                votacion: voto!,
+                activos: activos.length,
+                ciclo,
+                prestamosVigentes: props.foto.prestamos,
+                politica: props.foto.acap,
+              });
+              props.alTerminar();
+            } catch {
+              setError("No se pudo guardar la solicitud.");
+            }
+          }}
+        />
+      </Acciones>
     </>
   );
 }
@@ -377,12 +421,11 @@ function FirmasAgrupadas(props: PropsPaso & { solicitudes: Solicitud[]; alTermin
       foto={props.foto}
       beneficiarios={props.solicitudes.map((s) => s.titularId)}
       lista={props.solicitudes.map((s) => (
-        <View key={s.id} style={base.renglon}>
-          <Text style={[base.cifraRenglon, { width: 56 }]}>{num(numeroDe(props.foto, s.titularId))}</Text>
-          <Text style={[base.parrafo, { flex: 1 }]}>
+        <Renglon key={s.id} numero={dos(numeroDe(props.foto, s.titularId))}>
+          <Text style={base.parrafo}>
             {formatearPesos(s.capital)} en {s.numCuotas} cuotas
           </Text>
-        </View>
+        </Renglon>
       ))}
       alFirmar={async (firmantes) => {
         await firmarPrestamos(props.sesion.base, props.sesion.cripto, {
@@ -399,7 +442,26 @@ function FirmasAgrupadas(props: PropsPaso & { solicitudes: Solicitud[]; alTermin
 }
 
 const estilos = StyleSheet.create({
-  dosBotones: { flexDirection: "row", gap: spacing.sm },
-  atajos: { flexDirection: "row", gap: spacing.sm, marginBottom: spacing.md },
-  plan: { gap: spacing.md, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: color.renglon },
+  ficha: {
+    flexDirection: "row",
+    marginTop: 8,
+    marginBottom: 14,
+    borderRadius: 16,
+    backgroundColor: c.mesa,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: c.renglonFuerte,
+  },
+  fichaDato: { flex: 1, paddingHorizontal: 16, paddingVertical: 12, gap: 2 },
+  partes: { flexDirection: "row", gap: 10, marginTop: 4 },
+  parte: { flex: 1, padding: 12, borderRadius: 14, backgroundColor: c.mesa, gap: 2 },
+  plan: {
+    marginTop: 12,
+    padding: 16,
+    gap: 12,
+    borderRadius: 16,
+    backgroundColor: c.naranjaTinte,
+    borderWidth: 1,
+    borderColor: "rgba(246, 106, 3, 0.25)",
+  },
+  planLinea: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(246, 106, 3, 0.35)" },
 });

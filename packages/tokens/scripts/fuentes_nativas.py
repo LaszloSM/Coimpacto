@@ -25,8 +25,12 @@ DESTINO = FUENTES / "nativas"
 INSTANCIAS = {
     "AtkinsonHyperlegibleNext": ("atkinson-next-latin.woff2", [400, 600, 700, 800]),
     "AtkinsonHyperlegibleMono": ("atkinson-mono-latin.woff2", [400]),
-    "Bitter": ("bitter-latin.woff2", [600, 700]),
+    "BricolageGrotesque": ("bricolage-latin.woff2", [700, 800]),
 }
+
+# Ejes fijos además del peso. Bricolage trae tamaño óptico y ancho: los títulos de la app miden
+# entre 22 y 32 dp, así que se fija el corte de 28 (ni el de texto ni el de cartel) y ancho normal.
+EJES_FIJOS = {"BricolageGrotesque": {"opsz": 28, "wdth": 100}}
 
 
 def main() -> None:
@@ -34,7 +38,8 @@ def main() -> None:
     for familia, (archivo, pesos) in INSTANCIAS.items():
         for peso in pesos:
             fuente = TTFont(FUENTES / archivo)
-            estatica = instantiateVariableFont(fuente, {"wght": peso}, updateFontNames=False)
+            ejes = {"wght": peso, **EJES_FIJOS.get(familia, {})}
+            estatica = instantiateVariableFont(fuente, ejes, updateFontNames=False)
             estatica.flavor = None
             nombre = f"{familia}-{peso}"
             # Nombre de familia propio por peso: así Android no mezcla ni engrosa pesos.

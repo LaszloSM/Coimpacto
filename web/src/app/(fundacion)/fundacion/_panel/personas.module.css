@@ -1,8 +1,53 @@
-/* Directorio de personas de una comunidad. */
+/* Directorio de personas de una comunidad: renglones del cuaderno con el número a la izquierda
+   del margen naranja, como en la lista de la ACAP. */
 
 .directorio {
   display: grid;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  padding: 14px 18px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.resumen strong {
+  color: var(--texto);
+}
+
+.cobertura {
+  display: flex;
+  flex: 1 1 260px;
+  align-items: center;
+  gap: 12px;
+}
+
+.coberturaBarra {
+  position: relative;
+  flex: 1;
+  max-width: 220px;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--hueco);
+}
+
+.coberturaBarra > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--verde);
+  transform-origin: left;
+  transition: transform 500ms var(--curva);
 }
 
 .barra {
@@ -19,20 +64,17 @@
   gap: 8px;
   min-height: 40px;
   padding: 0 12px;
-  border-radius: 10px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--radio-sm);
   background: var(--superficie);
-  border: 1px solid var(--borde);
+  box-shadow: var(--sombra-xs);
   color: var(--texto-tenue);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .buscar:focus-within {
   border-color: var(--naranja);
-  box-shadow: 0 0 0 3px rgb(246 106 3 / 0.14);
-}
-
-.buscar input:focus-visible {
-  outline: none;
+  box-shadow: 0 0 0 3px var(--naranja-suave);
 }
 
 .buscar input {
@@ -41,91 +83,157 @@
   border: 0;
   outline: 0;
   background: none;
-  font: inherit;
   font-size: 0.9375rem;
   color: var(--texto);
 }
 
+.buscar input::placeholder {
+  color: var(--texto-tenue);
+}
+
+.buscar input:focus-visible {
+  outline: none;
+}
+
 .filtros {
   display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
   gap: 2px;
   padding: 3px;
-  border-radius: 10px;
-  background: var(--fondo);
-  border: 1px solid var(--borde);
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border-radius: 12px;
+  background: var(--hueco);
+  scrollbar-width: none;
 }
 
 .filtro {
   position: relative;
-  min-height: 32px;
+  flex: none;
+  min-height: 34px;
   padding: 0 12px;
   border: 0;
-  border-radius: 8px;
-  background: none;
-  font: inherit;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  border-radius: 9px;
+  background: transparent;
   color: var(--texto-suave);
-  cursor: pointer;
+  font-size: 0.875rem;
   white-space: nowrap;
+  cursor: pointer;
+  transition: color 120ms ease;
 }
 
 .filtro[aria-selected="true"] {
   color: var(--texto);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filtro:hover {
+    color: var(--texto);
+  }
 }
 
 .filtroMarca {
   position: absolute;
   inset: 0;
-  border-radius: 8px;
+  border-radius: 9px;
   background: var(--superficie);
-  box-shadow: 0 1px 2px rgb(28 28 28 / 0.08), 0 2px 8px rgb(28 28 28 / 0.06);
+  box-shadow: 0 1px 2px rgb(16 33 61 / 0.08), 0 0 0 1px rgb(16 33 61 / 0.04);
 }
 
 .filtroTexto {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .filtroCuenta {
-  margin-left: 2px;
-  color: var(--texto-tenue);
-  font-variant-numeric: tabular-nums;
+  min-width: 20px;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: rgb(16 33 61 / 0.06);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  color: var(--texto-suave);
 }
 
+/* La hoja de la lista: el margen naranja corre de arriba abajo. */
 .lista {
-  list-style: none;
+  position: relative;
+  display: grid;
   margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--borde);
+  padding: 4px 0;
+  list-style: none;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background:
+    linear-gradient(to right, transparent 63px, rgb(246 106 3 / 0.35) 63px 64px, transparent 64px),
+    var(--superficie);
+  overflow: hidden;
+}
+
+.lista > li:not(:last-child) .persona {
+  border-bottom: 1px solid var(--borde);
 }
 
 .persona {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-columns: 64px 40px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
+  gap: 0 14px;
   width: 100%;
-  padding: 12px 8px;
+  min-height: 64px;
+  padding: 10px 16px 10px 0;
   border: 0;
-  border-bottom: 1px solid var(--borde);
-  background: none;
-  font: inherit;
+  background: transparent;
   color: inherit;
   text-align: left;
   cursor: pointer;
-  border-radius: 0;
-  transition: background-color 140ms ease;
+  transition: background-color 100ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .persona:hover {
-    background: rgb(28 28 28 / 0.025);
+    background: rgb(16 33 61 / 0.025);
   }
+}
+
+.persona:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: -2px;
 }
 
 .persona[data-retirada] {
   opacity: 0.6;
+}
+
+.numero {
+  padding-right: 14px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--texto-tenue);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.persona[data-retirada] .personaPrincipal {
+  text-decoration: line-through;
+  text-decoration-color: var(--rojo);
+}
+
+.sinDatos {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--hueco);
+  color: var(--texto-tenue);
 }
 
 .personaNombre {
@@ -135,29 +243,20 @@
 }
 
 .personaPrincipal {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-weight: 500;
-  color: var(--texto);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.numero {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--texto-tenue);
-  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--texto);
 }
 
 .personaDetalle {
-  font-size: 0.8125rem;
-  color: var(--texto-tenue);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
 }
 
 .personaEtiquetas {
@@ -169,13 +268,73 @@
 
 .peligro {
   justify-self: start;
-  color: var(--rojo-texto);
-  border-color: rgb(196 32 42 / 0.3);
+  border-color: rgb(126 23 18 / 0.3) !important;
+  color: var(--rojo-texto) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .peligro:hover {
+    background: var(--rojo-suave) !important;
+  }
+}
+
+/* Cabeza de la ficha: el número del cuaderno y el estado de la persona. */
+.ficha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -4px 0 4px;
+  padding: 14px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background:
+    linear-gradient(to right, transparent 67px, rgb(246 106 3 / 0.35) 67px 68px, transparent 68px),
+    var(--mesa);
+}
+
+.fichaNumero {
+  width: 54px;
+  flex: none;
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--texto);
+  text-align: right;
+}
+
+.fichaEstado {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-left: 10px;
+}
+
+.oculto {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  background: var(--amarillo-suave);
+  color: var(--amarillo-texto);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
 @media (max-width: 640px) {
   .persona {
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 4px 12px;
+    padding-right: 12px;
+  }
+
+  .lista {
+    background:
+      linear-gradient(to right, transparent 51px, rgb(246 106 3 / 0.35) 51px 52px, transparent 52px),
+      var(--superficie);
+  }
+
+  .persona > [aria-hidden]:nth-child(2) {
+    display: none;
   }
 
   .personaEtiquetas {

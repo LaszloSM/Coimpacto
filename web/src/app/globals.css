@@ -1,4 +1,53 @@
 /* Base del sistema. Los valores salen de tokens.css (generado desde DESIGN.md). */
+
+/* Nombres por papel en el panel de la Fundación. Van en :root (no en el armazón) para que los
+   cajones, selectores y diálogos, que se pintan fuera del armazón, los hereden igual. */
+:root {
+  --naranja: var(--color-naranja);
+  --naranja-hover: var(--color-naranja-presionado);
+  --naranja-suave: var(--color-naranja-tinte);
+  --naranja-texto: var(--color-naranja-texto);
+  --texto: var(--color-tinta);
+  --texto-suave: var(--color-tinta-suave);
+  --texto-tenue: var(--color-tinta-tenue);
+  --mesa: var(--color-mesa);
+  --superficie: var(--color-papel);
+  --hueco: var(--color-hueco);
+  --borde: var(--color-renglon);
+  --borde-fuerte: var(--color-renglon-fuerte);
+  --fila-hover: #f6f7f9;
+  /* Datos: naranja = ahorro, azul = crédito, verde = fondo social y lo que va bien. */
+  --azul: var(--color-azul);
+  --azul-suave: var(--color-azul-tinte);
+  --verde: #2f8a5b;
+  --verde-texto: var(--color-confirmado);
+  --verde-suave: var(--color-confirmado-tinte);
+  --amarillo: #e3a21a;
+  --amarillo-texto: var(--color-por-validar);
+  --amarillo-suave: var(--color-por-validar-tinte);
+  --rojo: #d4483b;
+  --rojo-texto: var(--color-rechazado);
+  --rojo-suave: var(--color-rechazado-tinte);
+  --gris-datos: #c5cdd9;
+
+  --radio: var(--rounded-lg);
+  --radio-sm: var(--rounded-md);
+  --radio-xs: var(--rounded-sm);
+  --sombra-xs: 0 1px 1px rgb(16 33 61 / 0.04);
+  --sombra: 0 1px 2px rgb(16 33 61 / 0.05), 0 6px 20px -8px rgb(16 33 61 / 0.1);
+  --sombra-flotante: 0 1px 2px rgb(16 33 61 / 0.06), 0 16px 40px -12px rgb(16 33 61 / 0.22);
+  --curva: cubic-bezier(0.23, 1, 0.32, 1);
+  --curva-cajon: cubic-bezier(0.32, 0.72, 0, 1);
+  --fuente-titulos-pila: var(--fuente-bricolage);
+  --fuente-texto-pila: var(--fuente-atkinson-next);
+  /* Capas, de abajo arriba: la barra fija, el cajón lateral, los diálogos y el buscador, los avisos
+     y, encima de todo, las listas de un selector (se abren también dentro de un cajón o diálogo). */
+  --capa-barra: 10;
+  --capa-cajon: 50;
+  --capa-dialogo: 55;
+  --capa-aviso: 60;
+  --capa-menu: 70;
+}
 *,
 *::before,
 *::after {
@@ -8,29 +57,142 @@
 html {
   color-scheme: light;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   margin: 0;
-  background: var(--color-papel);
+  background: var(--color-mesa);
   color: var(--color-tinta);
-  font-family: var(--tipo-body-familia), system-ui, sans-serif;
-  font-size: var(--tipo-body-size);
-  line-height: var(--tipo-body-line-height);
+  font-family: var(--tipo-body-oficina-familia), system-ui, sans-serif;
+  font-size: var(--tipo-body-oficina-size);
+  line-height: var(--tipo-body-oficina-line-height);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Controles en el celular: responden al instante (sin la espera del doble toque) y un toque
+   largo no selecciona su texto. El texto de contenido sigue seleccionable. */
+button,
+a,
+[role="button"],
+[role="tab"],
+[role="radio"],
+[role="switch"],
+[role="option"],
+[role="combobox"] {
+  touch-action: manipulation;
+}
+
+button,
+[role="button"],
+[role="tab"],
+[role="radio"],
+[role="switch"],
+[role="option"],
+[role="combobox"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* iOS acerca la página si un campo tiene letra de menos de 16 px, y no la vuelve a alejar. */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+::selection {
+  background: var(--color-naranja-tinte);
+  color: var(--color-tinta);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-naranja);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-tinta);
+  outline-offset: 2px;
 }
 
+/* Solo para lectores de pantalla. */
+.oculto-visual {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Avisos del panel (Sonner sin estilos propios): una hoja pequeña con su ícono. */
+.aviso-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: var(--width, 356px);
+  padding: 12px 14px;
+  background: var(--color-papel);
+  border: 1px solid var(--color-renglon);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgb(16 33 61 / 0.06), 0 16px 40px -12px rgb(16 33 61 / 0.24);
+  font-family: var(--fuente-atkinson-next);
+  font-size: 0.875rem;
+  color: var(--color-tinta);
+}
+
+.aviso-panel [data-icon] {
+  flex: none;
+  margin-top: 1px;
+}
+
+.aviso-panel[data-type="success"] [data-icon] {
+  color: var(--color-confirmado);
+}
+
+.aviso-panel[data-type="error"] [data-icon] {
+  color: var(--color-rechazado);
+}
+
+.aviso-panel-titulo {
+  font-weight: 700;
+}
+
+.aviso-panel-detalle {
+  margin-top: 2px;
+  color: var(--color-tinta-suave);
+}
+
+/* Quitar animaciones: nada se desliza ni escala; solo cambian opacidad y color. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }

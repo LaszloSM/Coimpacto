@@ -4,10 +4,8 @@
 
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { tokens } from "@credimpacto/tokens";
 
 import { programadorNativo } from "../avisos/programadorNativo";
 import { SERVIDOR } from "../config";
@@ -16,10 +14,10 @@ import { altaPrimerPresidente, presidenteDe, registrarConClave, revisarPinDoble,
 import { nombreCargo } from "../seguridad/cargos";
 import { EnrolamientoFallido } from "../seguridad/enrolamiento";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonPrincipal, BotonSecundario, CampoTexto, estilos as base, Estado, Nota, Parrafo, Titulo } from "../ui/componentes";
+import { Campana, Celular, Listo } from "../ui/iconos";
+import { c } from "../ui/tema";
 import { TecladoPin } from "../ui/TecladoPin";
-
-const { color, spacing, tipo, componentes } = tokens;
 
 type Fase = "entrar" | "registrando" | "presidente" | "confirmar" | "guardando" | "listo";
 
@@ -60,6 +58,7 @@ export default function PantallaEnrolar() {
         <TecladoPin
           paraQuien={`${nombreCargo(enCurso?.foto.tipos_cargo ?? [], presidente?.tipo ?? "presidente")} · #${String(presidente?.numero ?? 0).padStart(2, "0")}`}
           aviso={fase === "presidente" ? (error ?? "Cree su PIN de 6 números.") : "Escriba el PIN otra vez."}
+          guia={!(fase === "presidente" && error)}
           verificando={fase === "guardando"}
           alCompletar={async (escrito) => {
             if (fase === "presidente") {
@@ -92,39 +91,47 @@ export default function PantallaEnrolar() {
   if (fase === "listo") {
     return (
       <SafeAreaView style={base.pantalla}>
-        <View style={[base.contenido, { flex: 1 }]}>
-          <Titulo>Celular registrado para {enCurso?.registro.acapNombre}</Titulo>
-          <Parrafo>Ya se puede abrir la reunión y dar de alta a los demás cargos de la junta.</Parrafo>
-          <Parrafo>Credimpacto puede avisarles el día antes de cada reunión. Los avisos nunca muestran plata ni nombres.</Parrafo>
-          <BotonSecundario
-            testID="activar-avisos"
-            texto="Activar los avisos"
-            alTocar={() => void programadorNativo.pedirPermiso().catch(() => false)}
-          />
-        </View>
-        <View style={base.acciones}>
+        <ScrollView contentContainerStyle={[base.contenido, { flexGrow: 1 }]}>
+          <Estado titulo={`Celular registrado para ${enCurso?.registro.acapNombre ?? "la ACAP"}`} tono="bien" icono={<Listo size={38} color={c.bien} weight="duotone" />}>
+            <Parrafo>Ya se puede abrir la reunión y dar de alta a los demás cargos de la junta.</Parrafo>
+          </Estado>
+          <View style={{ marginTop: 22, gap: 12 }}>
+            <Parrafo tenue>Credimpacto puede avisarles el día antes de cada reunión. Los avisos nunca muestran plata ni nombres.</Parrafo>
+            <BotonSecundario
+              testID="activar-avisos"
+              texto="Activar los avisos"
+              icono={<Campana size={20} color={c.tinta} weight="bold" />}
+              alTocar={() => void programadorNativo.pedirPermiso().catch(() => false)}
+            />
+          </View>
+        </ScrollView>
+        <Acciones>
           <BotonPrincipal testID="enrolar-listo" texto="Ir al inicio" alTocar={() => router.replace("/")} />
-        </View>
+        </Acciones>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={base.pantalla}>
-      <ScrollView contentContainerStyle={base.contenido}>
-        <Titulo>Registrar este celular</Titulo>
+      <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
         {fase === "registrando" ? (
-          <Parrafo testID="enrolar-estado">Bajando la lista del grupo…</Parrafo>
+          <Estado titulo="Registrando este celular" trabajando icono={<Celular size={38} color={c.naranja} weight="duotone" />}>
+            <Parrafo testID="enrolar-estado">Bajando la lista del grupo…</Parrafo>
+          </Estado>
         ) : (
           <>
-            <Parrafo>Escriba el usuario y la clave que le dio la Fundación para esta ACAP.</Parrafo>
+            <Titulo>Registrar este celular</Titulo>
+            <Parrafo tenue>Escriba el usuario y la clave que le dio la Fundación para esta ACAP.</Parrafo>
             {error ? (
-              <Text style={estilos.error} testID="enrolar-error" accessibilityLiveRegion="polite">
-                {error}
-              </Text>
+              <View style={{ marginTop: 14 }}>
+                <Nota tono="mal" testID="enrolar-error">
+                  {error}
+                </Nota>
+              </View>
             ) : null}
-            <Text style={estilos.etiqueta}>Usuario</Text>
-            <TextInput
+            <CampoTexto
+              etiqueta="Usuario"
               testID="enrolar-usuario"
               value={usuario}
               onChangeText={setUsuario}
@@ -132,11 +139,9 @@ export default function PantallaEnrolar() {
               autoCorrect={false}
               autoComplete="username"
               textContentType="username"
-              style={estilos.campo}
-              accessibilityLabel="Usuario"
             />
-            <Text style={estilos.etiqueta}>Clave</Text>
-            <TextInput
+            <CampoTexto
+              etiqueta="Clave"
               testID="enrolar-clave"
               value={clave}
               onChangeText={setClave}
@@ -145,47 +150,19 @@ export default function PantallaEnrolar() {
               autoCorrect={false}
               autoComplete="password"
               textContentType="password"
-              style={estilos.campo}
-              accessibilityLabel="Clave"
               onSubmitEditing={() => usuario.trim() && clave && void registrar()}
             />
           </>
         )}
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonPrincipal
           testID="enrolar-entrar"
           texto="Registrar este celular"
           falta={fase === "registrando" ? "Registrando…" : usuario.trim() && clave ? undefined : "Escriba el usuario y la clave"}
           alTocar={() => void registrar()}
         />
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }
-
-const estilos = StyleSheet.create({
-  etiqueta: {
-    ...tipo.body,
-    color: color.tinta,
-    marginTop: spacing.md,
-    marginBottom: spacing.xs,
-  },
-  campo: {
-    ...tipo.body,
-    color: color.tinta,
-    borderWidth: 2,
-    borderColor: componentes.dinero.borderColor,
-    borderRadius: componentes.dinero.rounded,
-    minHeight: 56,
-    paddingHorizontal: spacing.md,
-  },
-  error: {
-    ...tipo.body,
-    color: color.rechazado,
-    backgroundColor: color["rechazado-tinte"],
-    padding: spacing.sm,
-    borderRadius: 4,
-    marginVertical: spacing.sm,
-  },
-});

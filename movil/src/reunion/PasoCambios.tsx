@@ -3,19 +3,18 @@
 // firmas de la junta (D10); "No aceptar" pide un motivo de la lista y una nota (D3 = A).
 
 import { formatearPesos } from "@credimpacto/reglas";
-import { tokens } from "@credimpacto/tokens";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 import type { FotoGrupo, PropuestaFoto } from "../cola/grupo";
 import type { Sesion } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Pulsable, Rotulo, Titulo } from "../ui/componentes";
+import { Chulo, Megafono } from "../ui/iconos";
+import { c, t } from "../ui/tema";
 import { FirmasGrupo } from "./FirmasGrupo";
 import { aceptar, MOTIVOS_NO_ACEPTAR, noAceptar, nombreDelRegistro, porResponder, type MotivoNoAceptar } from "./propuestas";
 import { PASOS } from "./reunion";
-
-const { color, spacing, tipo } = tokens;
 
 const fecha = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "long" });
 
@@ -89,20 +88,27 @@ export function PasoCambios(props: { sesion: Sesion; foto: FotoGrupo; alTerminar
       <>
         <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
           <Titulo>¿Por qué no lo aceptan?</Titulo>
-          {MOTIVOS_NO_ACEPTAR.map((m) => (
-            <Pressable
-              key={m.id}
-              testID={`motivo-${m.id}`}
-              accessibilityRole="radio"
-              accessibilityState={{ checked: motivo === m.id }}
-              onPress={() => setMotivo(m.id)}
-              style={estilos.opcion}
-            >
-              <View style={[estilos.radio, motivo === m.id && estilos.radioElegido]} />
-              <Text style={estilos.opcionTexto}>{m.texto}</Text>
-            </Pressable>
-          ))}
-          <Text style={estilos.etiqueta}>Nota (opcional)</Text>
+          <View style={{ marginTop: 6 }}>
+            {MOTIVOS_NO_ACEPTAR.map((m) => {
+              const elegido = motivo === m.id;
+              return (
+                <Pulsable
+                  key={m.id}
+                  testID={`motivo-${m.id}`}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: elegido }}
+                  onPress={() => setMotivo(m.id)}
+                  vibra="paso"
+                  escala={0.985}
+                  style={[estilos.opcion, elegido && estilos.opcionElegida]}
+                >
+                  <View style={[estilos.radio, elegido && estilos.radioElegido]}>{elegido ? <Chulo size={16} color={c.papel} weight="bold" /> : null}</View>
+                  <Text style={estilos.opcionTexto}>{m.texto}</Text>
+                </Pulsable>
+              );
+            })}
+          </View>
+          <Rotulo>Nota (opcional)</Rotulo>
           <TextInput
             testID="nota-no-aceptar"
             style={estilos.nota}
@@ -110,13 +116,16 @@ export function PasoCambios(props: { sesion: Sesion; foto: FotoGrupo; alTerminar
             onChangeText={setNota}
             maxLength={300}
             multiline
+            placeholder="Lo que la junta quiere que sepa la Fundación"
+            placeholderTextColor={c.tenue}
             accessibilityLabel="Nota"
           />
         </ScrollView>
-        <View style={base.acciones}>
+        <Acciones>
           <BotonPrincipal
             testID="guardar-no-aceptar"
             texto="Guardar"
+            sinFlecha
             falta={motivo ? undefined : "Elija un motivo"}
             alTocar={async () => {
               if (!motivo) return;
@@ -131,42 +140,79 @@ export function PasoCambios(props: { sesion: Sesion; foto: FotoGrupo; alTerminar
             }}
           />
           <BotonSecundario testID="volver-cambio" texto="Volver" alTocar={() => setModo("ver")} />
-        </View>
+        </Acciones>
       </>
     );
   }
 
+  const registro = `${nombreDelRegistro(actual.movimiento.tipo)} · ${formatearPesos(Math.abs(actual.movimiento.monto))}${
+    quien(props.foto, actual.movimiento.titular_id) ? ` · ${quien(props.foto, actual.movimiento.titular_id)}` : ""
+  } · reunión ${actual.movimiento.reunion}`;
   return (
     <>
       <ScrollView contentContainerStyle={base.contenido}>
         <Titulo>{PASOS[1]}</Titulo>
         <Text style={estilos.cuenta}>{lista.length === 1 ? "1 cambio por revisar" : `${lista.length} cambios por revisar`}</Text>
-        <Text style={estilos.etiqueta}>Lo que se anotó</Text>
-        <Parrafo testID="cambio-registro">
-          {nombreDelRegistro(actual.movimiento.tipo)} · {formatearPesos(Math.abs(actual.movimiento.monto))}
-          {quien(props.foto, actual.movimiento.titular_id) ? ` · ${quien(props.foto, actual.movimiento.titular_id)}` : ""} · reunión{" "}
-          {actual.movimiento.reunion}
-        </Parrafo>
-        <Text style={estilos.etiqueta}>Lo que propone la Fundación</Text>
-        <Parrafo testID="cambio-propuesta">{actual.accion === "anular" ? "Quitarlo del cuaderno" : "Dejarlo como está"}</Parrafo>
-        <Text style={estilos.etiqueta}>Para leer en voz alta</Text>
-        <Parrafo testID="cambio-voz-alta">{textoEnVozAlta(props.foto, actual)}</Parrafo>
+        <View style={estilos.tarjeta}>
+          <Text style={estilos.etiqueta}>Lo que se anotó</Text>
+          <Text style={[estilos.registro, actual.accion === "anular" && estilos.tachado]} testID="cambio-registro">
+            {registro}
+          </Text>
+          <View style={estilos.linea} />
+          <Text style={estilos.etiqueta}>Lo que propone la Fundación</Text>
+          <Text style={estilos.propuesta} testID="cambio-propuesta">
+            {actual.accion === "anular" ? "Quitarlo del cuaderno" : "Dejarlo como está"}
+          </Text>
+        </View>
+        <View style={estilos.vozAlta}>
+          <View style={estilos.vozAltaCabeza}>
+            <Megafono size={20} color={c.naranja} weight="duotone" />
+            <Text style={estilos.vozAltaTitulo}>Para leer en voz alta</Text>
+          </View>
+          <Parrafo testID="cambio-voz-alta">{textoEnVozAlta(props.foto, actual)}</Parrafo>
+        </View>
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonPrincipal testID="aceptar-cambio" texto="Aceptar y firmar" alTocar={() => setModo("firmar")} />
         <BotonSecundario testID="no-aceptar-cambio" texto="No aceptar" alTocar={() => setModo("no_aceptar")} />
-      </View>
+      </Acciones>
     </>
   );
 }
 
 const estilos = StyleSheet.create({
-  cuenta: { ...tipo.body, color: color["tinta-suave"], marginBottom: spacing.md },
-  etiqueta: { ...tipo.label, color: color["tinta-suave"], marginTop: spacing.md },
-  opcion: { minHeight: 64, flexDirection: "row", alignItems: "center", gap: spacing.md, borderBottomWidth: 1, borderBottomColor: color.renglon },
-  opcionTexto: { ...tipo.body, color: color.tinta, flex: 1 },
-  // Cuadrado: el sello es el único elemento redondo del sistema (DESIGN.md, Shapes).
-  radio: { width: 28, height: 28, borderRadius: 4, borderWidth: 2, borderColor: color.tinta },
-  radioElegido: { borderWidth: 9 },
-  nota: { ...tipo.body, color: color.tinta, minHeight: 96, borderWidth: 2, borderColor: color.tinta, borderRadius: 8, padding: spacing.sm, textAlignVertical: "top" },
+  cuenta: { ...t.label, fontSize: 16, color: c.suave, marginBottom: 14 },
+  tarjeta: { padding: 16, borderRadius: 18, backgroundColor: c.mesa, gap: 6 },
+  etiqueta: { ...t.label, fontSize: 14, color: c.suave },
+  registro: { ...t["body-fuerte"], color: c.tinta },
+  tachado: { textDecorationLine: "line-through", textDecorationColor: c.mal },
+  propuesta: { ...t["campo-subtitulo"], color: c.tinta },
+  linea: { height: StyleSheet.hairlineWidth, backgroundColor: c.renglonFuerte, marginVertical: 8 },
+  vozAlta: { marginTop: 14, padding: 16, borderRadius: 18, borderWidth: 1.5, borderColor: "rgba(246, 106, 3, 0.35)", gap: 8 },
+  vozAltaCabeza: { flexDirection: "row", alignItems: "center", gap: 8 },
+  vozAltaTitulo: { ...t.label, fontSize: 15, color: c.naranjaTexto },
+  opcion: {
+    minHeight: 64,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingHorizontal: 14,
+    marginBottom: 8,
+    borderRadius: 16,
+    backgroundColor: c.hueco,
+  },
+  opcionElegida: { backgroundColor: c.naranjaTinte },
+  opcionTexto: { ...t.body, color: c.tinta, flex: 1 },
+  radio: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: c.renglonFuerte,
+    backgroundColor: c.papel,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioElegido: { borderColor: c.tinta, backgroundColor: c.tinta },
+  nota: { ...t.body, color: c.tinta, minHeight: 96, borderWidth: 2, borderColor: c.tinta, borderRadius: 16, padding: 14, textAlignVertical: "top" },
 });
