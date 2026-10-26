@@ -29,7 +29,19 @@ interface Ciclo {
   reuniones: number;
 }
 
+interface ReunionLinea {
+  id: string;
+  fecha: string;
+  ciclo: number;
+  numero: number;
+  ahorro: number;
+  fondo_social: number;
+  multas: number;
+  ahorraron: number;
+}
+
 interface Ficha {
+  reuniones: ReunionLinea[];
   id: string;
   nombre: string;
   zona: string;
@@ -60,11 +72,41 @@ function Mensajes({ error, exito }: { error?: string; exito?: string }) {
   return null;
 }
 
+/** Las últimas reuniones como hojas del cuaderno: la altura es lo que se ahorró. */
+function LineaDeReuniones({ reuniones, miembros }: { reuniones: ReunionLinea[]; miembros: number }) {
+  if (!reuniones.length) return <p className={estilos.graficoVacio}>Todavía no hay reuniones registradas.</p>;
+  const max = Math.max(...reuniones.map((r) => r.ahorro), 1);
+  return (
+    <ol className={m.linea}>
+      {reuniones.map((r, i) => (
+        <li
+          key={r.id}
+          className={m.hoja}
+          data-ciclo-par={r.ciclo % 2 === 0}
+          title={`Ciclo ${r.ciclo}, reunión ${r.numero}: ahorro ${pesosExactos(r.ahorro)}, fondo social ${pesosExactos(r.fondo_social)}, multas ${pesosExactos(r.multas)}`}
+        >
+          <span className={m.hojaMonto}>{pesosCortos(r.ahorro)}</span>
+          <span className={m.hojaBarra} style={{ height: Math.max(6, (120 * r.ahorro) / max), "--i": i } as React.CSSProperties} />
+          <span className={m.hojaFecha}>{new Date(`${r.fecha}T12:00:00`).toLocaleDateString("es-CO", { month: "short", year: "2-digit" })}</span>
+          <span>
+            {r.ahorraron}
+            {miembros ? ` de ${miembros}` : ""} ahorraron
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const { enviar, enviando, error } = useEnvio();
   const [exito, setExito] = useState<string>();
   const [forma, setForma] = useState({ nombre: f.nombre, zona: f.zona, departamento: f.departamento, municipio: f.municipio });
   return (
+    <>
+    <Bloque titulo="Reuniones" sub="Lo que se ahorró en cada una; los dos tonos separan los ciclos">
+      <LineaDeReuniones reuniones={f.reuniones} miembros={f.miembros.filter((p) => p.activo).length} />
+    </Bloque>
     <Bloque titulo="Datos de la comunidad">
       <form
         className={m.formulario}
@@ -100,6 +142,7 @@ function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
         </div>
       </form>
     </Bloque>
+    </>
   );
 }
 

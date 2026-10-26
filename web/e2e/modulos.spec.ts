@@ -82,6 +82,11 @@ const COMUNIDADES = [
 
 const FICHA = {
   id: "a2",
+  reuniones: [
+    { id: "r1", fecha: "2025-08-30", ciclo: 1, numero: 1, ahorro: 240_000, fondo_social: 30_000, multas: 3_000, ahorraron: 6 },
+    { id: "r2", fecha: "2025-12-06", ciclo: 1, numero: 3, ahorro: 930_000, fondo_social: 70_000, multas: 6_000, ahorraron: 12 },
+    { id: "r3", fecha: "2026-08-30", ciclo: 2, numero: 1, ahorro: 330_000, fondo_social: 55_000, multas: 0, ahorraron: 8 },
+  ],
   nombre: "Shiliwai",
   zona: "Norte",
   departamento: "La Guajira",
@@ -184,6 +189,8 @@ test("ficha: asignar un cargo y crear el usuario de la app", async ({ page }, in
   });
   await page.goto("/fundacion/comunidades/a2");
   await expect(page.getByRole("heading", { name: "Shiliwai", level: 1 })).toBeVisible();
+  await expect(page.getByText("12 de 2 ahorraron")).toBeVisible();
+  await capturar(page, "ficha-datos", info);
   await page.getByRole("tab", { name: "Junta" }).click();
   await page.getByLabel("Portador de Caja").selectOption("m2");
   await expect(page.getByText(/Junta actualizada/)).toBeVisible();

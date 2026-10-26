@@ -53,6 +53,9 @@ En `.claude/skills/`: `taste-skill`, `soft-skill`, `minimalist-skill`, `redesign
 ### Emil Kowalski — diseño e interacción
 En `.claude/skills/`: `emil-design-eng`, `animate`, `animate-expo` (app móvil), `review-animations`, `improve-animations`, `mobile-native`, `apple-design`, `pick-ui-library`, `prototype`, `break-ui`.
 
+### Ponytail (Dietrich Gebert) — menos código
+En `.claude/skills/ponytail*` (solo las skills, sin los hooks del plugin). **Siempre activo**: el cambio más pequeño que resuelve todo, reusar lo que ya existe, nada de abstracciones ni código "para después"; nunca recortar validación, seguridad, accesibilidad ni manejo de errores. `/ponytail-review` y `/ponytail-audit` para revisar.
+
 ### Flujo por defecto para cada funcionalidad
 1. `/office-hours` o `spec-driven-development` → especificación.
 2. `/autoplan` (o las revisiones de plan) → plan aprobado por el equipo.

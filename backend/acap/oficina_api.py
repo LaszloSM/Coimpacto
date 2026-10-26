@@ -243,6 +243,7 @@ def detalle_comunidad(request, acap_id: uuid.UUID):
         "zona": acap.zona,
         "departamento": acap.departamento,
         "municipio": acap.municipio,
+        "reuniones": analitica.reuniones_de(acap),
         "ciclos": [_ciclo_json(c) for c in ciclos],
         "ciclo_activo": str(activo.id) if activo else None,
         "cargos": cargos,

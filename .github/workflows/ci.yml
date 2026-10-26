@@ -215,7 +215,7 @@ jobs:
           disable-animations: true
           script: |
             adb install credimpacto-*.apk
-            mkdir -p "$GITHUB_WORKSPACE/maestro-salida"
+            mkdir -p "$GITHUB_WORKSPACE/maestro-salida/capturas"
             maestro test movil/.maestro --exclude-tags=subflujo --format junit --output "$GITHUB_WORKSPACE/maestro-salida/reporte.xml" --debug-output "$GITHUB_WORKSPACE/maestro-salida/depuracion" || { adb logcat -d -v time > "$GITHUB_WORKSPACE/maestro-salida/logcat.txt"; adb logcat -d -v time -s ReactNativeJS:V ReactNative:V AndroidRuntime:E > "$GITHUB_WORKSPACE/maestro-salida/logcat-app.txt"; exit 1; }
       - uses: actions/upload-artifact@v7
         if: always()

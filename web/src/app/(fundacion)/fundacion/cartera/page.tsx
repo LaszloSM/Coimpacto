@@ -17,6 +17,8 @@ interface DatosCartera {
   prestamos: Prestamo[];
 }
 
+const COLOR_TRAMO: Record<string, string> = { al_dia: "var(--verde)", "1_30": "var(--amarillo)", "31_60": "#E09A00", "61_90": "var(--rojo)", mas_90: "#B0141C" };
+
 const TONO_TRAMO: Record<string, string> = { al_dia: "bien", "1_30": "atencion", "31_60": "atencion", "61_90": "alerta", mas_90: "alerta" };
 
 export default function Cartera() {
@@ -37,13 +39,36 @@ export default function Cartera() {
           <>
             <Cifras
               cifras={[
-                { etiqueta: "Cartera activa", valor: pesosCortos(d.resumen.activa), exacto: pesosExactos(d.resumen.activa), pie: `${d.resumen.prestamos} préstamos vigentes`, destacada: true },
+                { etiqueta: "Cartera activa", valor: pesosCortos(d.resumen.activa), numero: d.resumen.activa, formato: pesosCortos, exacto: pesosExactos(d.resumen.activa), pie: `${d.resumen.prestamos} préstamos vigentes`, destacada: true },
                 { etiqueta: "Cartera vencida", valor: pesosCortos(d.resumen.vencida), exacto: pesosExactos(d.resumen.vencida), pie: `${d.resumen.en_mora} préstamos con atraso` },
                 { etiqueta: "Índice de mora", valor: porcentaje(d.resumen.mora), pie: "vencida sobre activa" },
                 { etiqueta: "Cuotas atrasadas", valor: pesosCortos(d.resumen.atraso_total), pie: "lo que ya debió pagarse" },
               ]}
             />
+            {d.resumen.prestamos ? (
+              <p className={m.titular}>
+                <strong>{porcentaje(d.resumen.mora)}</strong> de la cartera está en mora.{" "}
+                {d.resumen.en_mora ? (
+                  <>
+                    <strong>{d.resumen.en_mora} préstamos</strong> deben {pesosExactos(d.resumen.atraso_total)} en cuotas vencidas.
+                  </>
+                ) : (
+                  "Todos los préstamos vigentes van al día."
+                )}
+              </p>
+            ) : (
+              <p className={m.titular}>No hay préstamos vigentes: la cartera está en cero.</p>
+            )}
             <Bloque titulo="Tramos de atraso" sub="Préstamos vigentes según los días desde la cuota que no se pagó">
+              {d.resumen.activa ? (
+                <div className={m.tramosBarra} role="img" aria-label={d.tramos.map((t) => `${t.texto}: ${pesosCortos(t.saldo)}`).join(", ")}>
+                  {d.tramos
+                    .filter((t) => t.saldo > 0)
+                    .map((t) => (
+                      <span key={t.tramo} title={`${t.texto}: ${pesosExactos(t.saldo)}`} style={{ flex: t.saldo, background: COLOR_TRAMO[t.tramo] }} />
+                    ))}
+                </div>
+              ) : null}
               <dl className={m.tramos}>
                 {d.tramos.map((t) => (
                   <div key={t.tramo} className={m.tramo} data-tono={TONO_TRAMO[t.tramo]}>

@@ -701,3 +701,37 @@ def cierre_ciclo(ciclo: Ciclo, hoy: datetime.date | None = None) -> dict:
     for fila in resultado["detalle"]:
         fila["nombre"] = nombres.get(por_numero.get(fila["numero_miembro"], ""))
     return {**base, **resultado}
+
+
+def reuniones_de(acap: Acap, cuantas: int = 12) -> list[dict]:
+    """Las últimas reuniones de la ACAP con lo que entró y cuántos ahorraron (línea de tiempo)."""
+    reuniones = list(
+        Reunion.objects.filter(ciclo__acap=acap)
+        .select_related("ciclo")
+        .order_by("-fecha")[:cuantas]
+    )
+    totales = defaultdict(lambda: {"ahorro": 0, "fondo_social": 0, "multas": 0, "ahorraron": set()})
+    for m in _efectivos(Q(reunion__in=reuniones)):
+        t = totales[m["reunion"].id]
+        if m["tipo"] == T.AHORRO:
+            t["ahorro"] += m["monto"]
+            if m["monto"] > 0:
+                t["ahorraron"].add(m["titular_id"])
+        elif m["tipo"] == T.FONDO_SOCIAL:
+            t["fondo_social"] += m["monto"]
+        elif m["tipo"] == T.MULTA:
+            t["multas"] += m["monto"]
+    return [
+        {
+            "id": str(r.id),
+            "fecha": r.fecha.isoformat(),
+            "ciclo": r.ciclo.numero,
+            "numero": r.numero,
+            "estado": r.estado,
+            "ahorro": totales[r.id]["ahorro"],
+            "fondo_social": totales[r.id]["fondo_social"],
+            "multas": totales[r.id]["multas"],
+            "ahorraron": len(totales[r.id]["ahorraron"]),
+        }
+        for r in reversed(reuniones)
+    ]
