@@ -182,6 +182,33 @@ class DatosPersonales(models.Model):
     apellidos = models.CharField(max_length=80, blank=True)
     documento = models.CharField(max_length=20, blank=True)
     telefono = models.CharField(max_length=20, blank=True)
+    # Perfil para los informes de impacto. La pertenencia étnica es un dato sensible (Ley 1581,
+    # art. 5): solo con la autorización expresa del formato y se suprime con la revocación.
+    genero = models.CharField(
+        max_length=20,
+        blank=True,
+        choices=[
+            ("femenino", "Femenino"),
+            ("masculino", "Masculino"),
+            ("otro", "Otro"),
+            ("no_dice", "Prefiere no decir"),
+        ],
+    )
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    etnia = models.CharField(
+        max_length=20,
+        blank=True,
+        choices=[
+            ("ninguna", "Ninguna"),
+            ("indigena", "Indígena"),
+            ("afro", "Negra, afrocolombiana"),
+            ("raizal", "Raizal"),
+            ("palenquera", "Palenquera"),
+            ("rrom", "Rrom (gitana)"),
+            ("no_dice", "Prefiere no decir"),
+        ],
+    )
+    cabeza_hogar = models.BooleanField(null=True, blank=True)
     actualizado_en = models.DateTimeField(auto_now=True)
     suprimido_en = models.DateTimeField(null=True, blank=True)
 

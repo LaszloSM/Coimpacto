@@ -15,7 +15,7 @@ import secrets
 from django.db import transaction
 from django.utils import timezone
 
-from acap.models import Acap, Cargo
+from acap.models import Acap, Cargo, TipoCargo
 from core import firmas
 from cuentas.models import CodigoEnrolamiento, Dispositivo, LlaveCargo, Usuario
 from libro.models import Auditoria
@@ -142,8 +142,10 @@ def alta_primer_presidente(
         or ahora > registro.usado_en + VIGENCIA_CODIGO
     ):
         raise EnrolamientoRechazado("codigo_invalido", "Este código ya no sirve.")
-    if cargo.tipo != Cargo.Tipo.PRESIDENTE:
-        raise EnrolamientoRechazado("sin_autorizacion", "Primero se registra el Presidente.")
+    if not TipoCargo.puede(cargo.tipo, "autoriza_altas"):
+        raise EnrolamientoRechazado(
+            "sin_autorizacion", "Primero se registra el cargo que autoriza las altas."
+        )
     mensaje = mensaje_primer_presidente(
         codigo=codigo, llave_id=llave_id, cargo_id=cargo.id, llave_publica=llave_publica
     )
@@ -246,12 +248,12 @@ def _validar_presidente(autoriza: LlaveCargo, cargo: Cargo, dispositivo: Disposi
     if (
         autoriza.revocada_en is not None
         or not autoriza.dispositivo.activo
-        or presidente.tipo != Cargo.Tipo.PRESIDENTE
+        or not TipoCargo.puede(presidente.tipo, "autoriza_altas")
         or not presidente.es_vigente
         or presidente.ciclo_id != cargo.ciclo_id
     ):
         raise EnrolamientoRechazado(
-            "sin_autorizacion", "Solo el Presidente vigente del ciclo autoriza el alta."
+            "sin_autorizacion", "Solo un cargo vigente que autoriza altas da el alta."
         )
     if presidente.membresia_id == cargo.membresia_id:
         raise EnrolamientoRechazado(

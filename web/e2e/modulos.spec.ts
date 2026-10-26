@@ -122,7 +122,25 @@ async function preparar(page: Page) {
   await page.route("**/api/oficina/analisis", (r) => r.fulfill({ json: ANALISIS }));
   await page.route("**/api/oficina/comunidades", (r) => r.fulfill({ json: COMUNIDADES }));
   await page.route("**/api/oficina/comunidades/a2", (r) => r.fulfill({ json: FICHA }));
+  await page.route("**/api/oficina/acaps/a2/miembros", (r) => r.fulfill({ json: PERSONAS }));
+  await page.route("**/api/oficina/tipos-cargo", (r) => r.fulfill({ json: TIPOS }));
+  for (const vacio of ["proyectos", "capacitaciones", "evaluaciones"])
+    await page.route(`**/api/oficina/${vacio}`, (r) =>
+      r.fulfill({ json: { proyectos: [], capacitaciones: [], evaluaciones: [], estados: [], lineas: [], temas: [], criterios: [] } }),
+    );
 }
+
+const PERSONA = { activo: true, consentimiento_id: null, desde: null, fecha_ingreso: "2025-07-17", telefono: null, fecha_nacimiento: null, etnia: null, cabeza_hogar: null, genero: null };
+const PERSONAS = [
+  { ...PERSONA, id: "m1", numero: 1, nombre_corto: null, nombres: null, apellidos: null, documento: null, consentimiento: "falta" },
+  { ...PERSONA, id: "m2", numero: 2, nombre_corto: "Persona D.", nombres: "Persona", apellidos: "De Prueba", documento: "123", consentimiento: "vigente", genero: "femenino", fecha_nacimiento: "1988-03-02" },
+];
+
+const TIPO = { descripcion: "", activo: true, lleva_reunion: true, firma_prestamos: true, firma_cierre: true, en_uso: 1 };
+const TIPOS = [
+  { ...TIPO, clave: "presidente", nombre: "Presidente", orden: 1, autoriza_altas: true },
+  { ...TIPO, clave: "portador_caja", nombre: "Portador de Caja", orden: 2, autoriza_altas: false },
+];
 
 async function capturar(page: Page, nombre: string, info: { project: { name: string } }) {
   if (process.env.CAPTURAR && info.project.name === "escritorio") {
@@ -196,7 +214,7 @@ test("ficha: asignar un cargo y crear el usuario de la app", async ({ page }, in
   await expect(page.getByText(/Junta actualizada/)).toBeVisible();
   await capturar(page, "ficha-junta", info);
   await page.getByRole("tab", { name: "Acceso a la app" }).click();
-  await page.getByLabel("Clave").fill("una-clave-larga-1");
+  await page.getByLabel("Clave", { exact: true }).fill("una-clave-larga-1");
   await page.getByRole("button", { name: "Crear usuario" }).click();
   await expect(page.getByText(/Usuario creado/)).toBeVisible();
   expect(pedidos.map((p) => p.cuerpo)).toEqual([
@@ -224,11 +242,108 @@ test("proyectos: registrar uno nuevo desde el panel lateral", async ({ page }, i
   });
   await page.goto("/fundacion/proyectos");
   await expect(page.getByText(/Todavía no hay proyectos/)).toBeVisible();
-  await page.getByRole("button", { name: "Nuevo proyecto" }).click();
+  await page.getByRole("button", { name: "Nuevo proyecto" }).first().click();
   await page.getByLabel("Nombre del proyecto").fill("Huerta comunitaria");
-  await page.getByLabel("Línea").selectOption("agricola");
-  await page.getByLabel("Estado").selectOption("ejecucion");
+  await page.getByRole("radio", { name: "Agrícola" }).click();
+  await page.getByRole("radio", { name: "En ejecución" }).click();
   await page.getByRole("button", { name: "Guardar" }).click();
   await expect(page.getByRole("heading", { name: "Huerta comunitaria" })).toBeVisible();
   await capturar(page, "proyectos", info);
+});
+
+
+test("cargos: la matriz cambia un permiso y crea un cargo nuevo", async ({ page }, info) => {
+  await preparar(page);
+  const pedidos: { metodo: string; cuerpo: unknown }[] = [];
+  await page.route(/\/api\/oficina\/tipos-cargo(\/.*)?$/, async (r) => {
+    if (r.request().method() === "GET") return r.fulfill({ json: TIPOS });
+    pedidos.push({ metodo: r.request().method(), cuerpo: r.request().postDataJSON() });
+    return r.fulfill({ json: { ...TIPO, clave: "fiscal", nombre: "Fiscal", orden: 3, autoriza_altas: false } });
+  });
+  await page.goto("/fundacion/cargos");
+  await expect(page.getByRole("heading", { name: "Cargos de la junta", level: 1 })).toBeVisible();
+  await capturar(page, "cargos", info);
+  await page.getByRole("switch", { name: "Firma préstamos: Portador de Caja" }).click();
+  await expect.poll(() => pedidos.length).toBe(1);
+  expect(pedidos[0]).toMatchObject({ metodo: "PUT", cuerpo: { firma_prestamos: false } });
+  await page.getByRole("button", { name: "Nuevo cargo" }).click();
+  await page.getByLabel("Nombre del cargo").fill("Fiscal");
+  await page.getByRole("button", { name: "Crear cargo" }).click();
+  await expect.poll(() => pedidos.length).toBe(2);
+  expect(pedidos[1]).toMatchObject({ metodo: "POST", cuerpo: { nombre: "Fiscal" } });
+});
+
+test("ficha: la pestaña personas es el directorio con su búsqueda", async ({ page }, info) => {
+  await preparar(page);
+  await page.goto("/fundacion/comunidades/a2");
+  await page.getByRole("tab", { name: "Personas" }).click();
+  await expect(page.getByText("Persona De Prueba")).toBeVisible();
+  await page.getByLabel("Buscar personas").fill("123");
+  await expect(page.getByText("Persona De Prueba")).toBeVisible();
+  await capturar(page, "ficha-personas", info);
+  await page.getByText("Persona De Prueba").click();
+  await expect(page.getByRole("dialog", { name: "Miembro #02" })).toBeVisible();
+  await expect(page.getByLabel("Nombres")).toHaveValue("Persona");
+  await capturar(page, "ficha-persona-editar", info);
+});
+
+test("módulos sin datos: la página en blanco con su acción, no filas de ceros", async ({ page }, info) => {
+  await preparar(page);
+  await page.goto("/fundacion/capacitaciones");
+  await expect(page.getByRole("heading", { name: "Registre la primera capacitación" })).toBeVisible();
+  await expect(page.getByText("0 en total")).toHaveCount(0);
+  await capturar(page, "vacio-capacitaciones", info);
+  await page.getByRole("button", { name: "Registrar capacitación" }).last().click();
+  await expect(page.getByRole("dialog", { name: "Registrar capacitación" })).toBeVisible();
+  await capturar(page, "formulario-capacitacion", info);
+});
+
+for (const ancho of [1024, 768, 390]) {
+  test(`sin desplazamiento horizontal a ${ancho} px en cada módulo`, async ({ page }, info) => {
+    test.skip(info.project.name !== "escritorio", "una vez basta");
+    await preparar(page);
+    await page.setViewportSize({ width: ancho, height: 900 });
+    for (const ruta of ["ahorro", "credito", "cartera", "analisis", "comunidades", "comunidades/a2", "cargos", "proyectos", "capacitaciones", "evaluaciones", "reportes"]) {
+      await page.goto(`/fundacion/${ruta}`);
+      await page.waitForTimeout(300);
+      const sobra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(sobra, `/fundacion/${ruta} a ${ancho} px`).toBeLessThanOrEqual(1);
+    }
+  });
+}
+
+test("usuarios: el administrador crea un usuario con su rol", async ({ page }, info) => {
+  await preparar(page);
+  await page.route("**/api/sesion", (r) => r.fulfill({ json: { usuario: "admin", nombre: "Ana Admin", rol: "Administrador", es_admin: true, puede_enrolar: true } }));
+  let creado: unknown = null;
+  const roles = [
+    { valor: "Administrador", texto: "Administrador", ayuda: "Todo." },
+    { valor: "Facilitador", texto: "Facilitador", ayuda: "Personas y programas." },
+  ];
+  await page.route("**/api/oficina/usuarios", async (r) => {
+    if (r.request().method() === "POST") {
+      creado = r.request().postDataJSON();
+      return r.fulfill({ json: { id: "u2" } });
+    }
+    return r.fulfill({ json: { usuarios: [{ id: "u1", usuario: "admin", nombres: "Ana", apellidos: "Admin", correo: "", rol: "Administrador", activo: true, ultimo_ingreso: null }], roles } });
+  });
+  await page.goto("/fundacion/usuarios");
+  await expect(page.getByRole("link", { name: "Usuarios" })).toBeVisible();
+  await capturar(page, "usuarios", info);
+  await page.getByRole("button", { name: "Nuevo usuario" }).click();
+  await page.getByLabel("Nombres").fill("Luis");
+  await page.getByLabel("Usuario", { exact: true }).fill("luis");
+  await page.getByLabel("Clave inicial").fill("una-clave-larga-1");
+  await page.getByLabel("Rol", { exact: true }).selectOption("Facilitador");
+  await page.getByRole("button", { name: "Crear usuario" }).click();
+  await expect.poll(() => creado).toMatchObject({ usuario: "luis", rol: "Facilitador", nombres: "Luis" });
+});
+
+test("entrar: la ficha con la marca y el ojo para ver la clave", async ({ page }, info) => {
+  await page.goto("/fundacion/entrar");
+  await expect(page.getByRole("heading", { name: "Entrar a la oficina" })).toBeVisible();
+  await page.getByLabel("Clave", { exact: true }).fill("secreta");
+  await page.getByRole("button", { name: "Mostrar la clave" }).click();
+  await expect(page.getByLabel("Clave", { exact: true })).toHaveAttribute("type", "text");
+  await capturar(page, "entrar", info);
 });

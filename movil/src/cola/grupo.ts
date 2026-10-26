@@ -5,6 +5,7 @@
 // Primero se sube y después se baja: así un celular retirado (E3) entrega lo suyo antes de
 // borrar sus datos. La foto reemplaza la copia anterior en una sola transacción.
 
+import type { TipoCargo } from "../seguridad/cargos";
 import type { ValorJson } from "@credimpacto/reglas";
 
 import type { BaseLocal } from "../datos/base";
@@ -38,6 +39,8 @@ export interface FotoGrupo {
   } | null;
   miembros: MiembroFoto[];
   cargos: { id: string; tipo: string; membresia_id: string; llaves: string[] }[];
+  /** Catálogo de cargos con sus permisos (servidores que ya lo mandan). */
+  tipos_cargo?: TipoCargo[];
   reuniones: { id: string; numero: number; fecha: string; estado: string }[];
   prestamos: {
     id: string;
@@ -129,6 +132,7 @@ export async function guardarFoto(base: BaseLocal, foto: FotoGrupo): Promise<voi
       ["acap", foto.acap],
       ["ciclo", foto.ciclo],
       ["cargos", foto.cargos],
+      ["tipos_cargo", foto.tipos_cargo ?? null],
       ["reuniones", foto.reuniones],
       ["prestamos", foto.prestamos],
       ["caja", foto.caja ?? 0],
@@ -172,7 +176,14 @@ export type ResultadoSincronizacion =
 
 export async function sincronizarTodo(
   base: BaseLocal,
-  dependencias: { enviar: EnviarLote; bajar: BajarGrupo; nuevoId: () => string; ahora: () => Date },
+  dependencias: {
+    enviar: EnviarLote;
+    bajar: BajarGrupo;
+    nuevoId: () => string;
+    ahora: () => Date;
+    /** Lo que se hace con la foto recién bajada fuera de la base (el catálogo de cargos). */
+    alBajar?: (foto: FotoGrupo) => Promise<void>;
+  },
 ): Promise<ResultadoSincronizacion> {
   let subida: Resumen;
   try {
@@ -183,7 +194,9 @@ export async function sincronizarTodo(
   }
   if (subida.fin === "sin_senal") return { fin: "sin_senal", subida };
   try {
-    await guardarFoto(base, await dependencias.bajar());
+    const foto = await dependencias.bajar();
+    await guardarFoto(base, foto);
+    await dependencias.alBajar?.(foto);
   } catch (error) {
     if (error instanceof CelularRetirado) return { fin: "retirado", subida };
     if (error instanceof SinSenal) return { fin: "sin_senal", subida };

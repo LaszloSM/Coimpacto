@@ -80,6 +80,7 @@ def capturar(
     documento: str,
     telefono: str,
     foto: bytes,
+    **perfil,
 ) -> Consentimiento:
     """Guarda los datos y el consentimiento con su foto. Sirve para el alta y para quien vino
     migrado sin consentimiento válido."""
@@ -95,6 +96,7 @@ def capturar(
             "documento": _limpio(documento, 20),
             "telefono": _limpio(telefono, 20),
             "suprimido_en": None,
+            **perfil_limpio(perfil),
         },
     )
     return Consentimiento.objects.create(
@@ -121,6 +123,41 @@ def alta(*, acap: Acap, usuario: Usuario, **datos) -> Membresia:
     return membresia
 
 
+def perfil_limpio(perfil: dict) -> dict:
+    """Solo los campos del perfil de impacto, con valores del catálogo."""
+    generos = {g for g, _ in DatosPersonales._meta.get_field("genero").choices}
+    etnias = {e for e, _ in DatosPersonales._meta.get_field("etnia").choices}
+    salida = {}
+    if "genero" in perfil:
+        salida["genero"] = perfil["genero"] if perfil["genero"] in generos else ""
+    if "etnia" in perfil:
+        salida["etnia"] = perfil["etnia"] if perfil["etnia"] in etnias else ""
+    if "fecha_nacimiento" in perfil:
+        salida["fecha_nacimiento"] = perfil["fecha_nacimiento"] or None
+    if "cabeza_hogar" in perfil:
+        salida["cabeza_hogar"] = perfil["cabeza_hogar"]
+    return salida
+
+
+@transaction.atomic
+def editar(*, membresia: Membresia, usuario: Usuario, **datos) -> None:
+    """Corrige los datos de alguien con autorización vigente; sin ella, primero se captura."""
+    if not consentimiento_vigente(membresia.titular_id):
+        raise MiembroInvalido(
+            "SIN_AUTORIZACION", "Primero registre la autorización de datos de esta persona."
+        )
+    nombres = _limpio(datos.get("nombres", ""), 80)
+    if not nombres:
+        raise MiembroInvalido("FALTA_NOMBRE", "Escriba al menos el nombre.")
+    DatosPersonales.objects.filter(titular_id=membresia.titular_id).update(
+        nombres=nombres,
+        apellidos=_limpio(datos.get("apellidos", ""), 80),
+        documento=_limpio(datos.get("documento", ""), 20),
+        telefono=_limpio(datos.get("telefono", ""), 20),
+        **perfil_limpio(datos),
+    )
+
+
 @transaction.atomic
 def revocar(
     *, membresia: Membresia, usuario: Usuario, nota: str, foto: bytes | None = None
@@ -138,18 +175,34 @@ def revocar(
         registrado_por=usuario,
     )
     DatosPersonales.objects.filter(titular_id=membresia.titular_id).update(
-        nombres="", apellidos="", documento="", telefono="", suprimido_en=timezone.now()
+        nombres="",
+        apellidos="",
+        documento="",
+        telefono="",
+        genero="",
+        fecha_nacimiento=None,
+        etnia="",
+        cabeza_hogar=None,
+        suprimido_en=timezone.now(),
     )
     return evento
 
 
 def lista(acap: Acap) -> list[dict]:
-    """Miembros por número; el nombre solo con consentimiento vigente."""
+    """Miembros por número; nombre y perfil solo con consentimiento vigente."""
     filas = []
     membresias = Membresia.objects.filter(acap=acap).order_by("numero_miembro")
     nombres = nombres_cortos([m.titular_id for m in membresias])
+    datos = {
+        d.titular_id: d
+        for d in DatosPersonales.objects.filter(
+            titular_id__in=[m.titular_id for m in membresias], suprimido_en=None
+        )
+    }
     for m in membresias:
         ultimo = ultimo_consentimiento(m.titular_id)
+        vigente = ultimo is not None and ultimo.tipo == Consentimiento.Tipo.OTORGADO
+        d = datos.get(m.titular_id) if vigente else None
         filas.append(
             {
                 "id": str(m.id),
@@ -157,14 +210,21 @@ def lista(acap: Acap) -> list[dict]:
                 "activo": m.activa,
                 "nombre_corto": nombres.get(str(m.titular_id)),
                 "consentimiento": (
-                    "falta"
-                    if ultimo is None
-                    else "vigente"
-                    if ultimo.tipo == Consentimiento.Tipo.OTORGADO
-                    else "revocado"
+                    "falta" if ultimo is None else "vigente" if vigente else "revocado"
                 ),
                 "consentimiento_id": str(ultimo.id) if ultimo and ultimo.foto_sha256 else None,
                 "desde": ultimo.creado_en.isoformat() if ultimo else None,
+                "fecha_ingreso": m.fecha_ingreso.isoformat(),
+                "nombres": d.nombres if d else None,
+                "apellidos": d.apellidos if d else None,
+                "documento": d.documento if d else None,
+                "telefono": d.telefono if d else None,
+                "genero": d.genero if d else None,
+                "fecha_nacimiento": d.fecha_nacimiento.isoformat()
+                if d and d.fecha_nacimiento
+                else None,
+                "etnia": d.etnia if d else None,
+                "cabeza_hogar": d.cabeza_hogar if d else None,
             }
         )
     return filas

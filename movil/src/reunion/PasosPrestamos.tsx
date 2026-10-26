@@ -373,6 +373,7 @@ function FirmasAgrupadas(props: PropsPaso & { solicitudes: Solicitud[]; alTermin
   return (
     <FirmasGrupo
       titulo="Firmar las aprobaciones"
+      permiso="firma_prestamos"
       foto={props.foto}
       beneficiarios={props.solicitudes.map((s) => s.titularId)}
       lista={props.solicitudes.map((s) => (

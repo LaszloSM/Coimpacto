@@ -592,6 +592,39 @@
                     "title": "Telefono",
                     "type": "string"
                   },
+                  "genero": {
+                    "default": "",
+                    "title": "Genero",
+                    "type": "string"
+                  },
+                  "fecha_nacimiento": {
+                    "anyOf": [
+                      {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Fecha Nacimiento"
+                  },
+                  "etnia": {
+                    "default": "",
+                    "title": "Etnia",
+                    "type": "string"
+                  },
+                  "cabeza_hogar": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "title": "Cabeza Hogar"
+                  },
                   "foto": {
                     "format": "binary",
                     "title": "Foto",
@@ -693,6 +726,116 @@
                   "nombres",
                   "foto"
                 ]
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/miembros/{membresia_id}": {
+      "put": {
+        "operationId": "cuentas_miembros_api_editar",
+        "summary": "Corregir los datos y el perfil de un miembro con autorización vigente",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membresia_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Membresia Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosMiembro"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/miembros/{membresia_id}/estado": {
+      "post": {
+        "operationId": "cuentas_miembros_api_estado",
+        "summary": "Retirar a un miembro de la ACAP o volver a activarlo (su historia queda)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "membresia_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Membresia Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "miembros"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstadoMiembro"
               }
             }
           },
@@ -1644,6 +1787,94 @@
         ]
       }
     },
+    "/api/oficina/tipos-cargo": {
+      "get": {
+        "operationId": "acap_oficina_api_tipos_cargo",
+        "summary": "Catálogo de cargos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "acap_oficina_api_crear_tipo_cargo",
+        "summary": "Crear un cargo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosTipoCargo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/tipos-cargo/{clave}": {
+      "put": {
+        "operationId": "acap_oficina_api_editar_tipo_cargo",
+        "summary": "Editar un cargo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "clave",
+            "schema": {
+              "title": "Clave",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "oficina"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosTipoCargo"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
     "/api/oficina/proyectos": {
       "get": {
         "operationId": "acap_oficina_api_proyectos",
@@ -1817,6 +2048,95 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DatosEvaluacion"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/usuarios": {
+      "get": {
+        "operationId": "cuentas_usuarios_api_usuarios",
+        "summary": "Usuarios de la oficina",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "cuentas_usuarios_api_crear",
+        "summary": "Crear un usuario de la oficina",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosUsuario"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/usuarios/{usuario_id}": {
+      "put": {
+        "operationId": "cuentas_usuarios_api_editar",
+        "summary": "Editar un usuario de la oficina",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "usuario_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Usuario Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosUsuario"
               }
             }
           },
@@ -2061,6 +2381,21 @@
           "puede_enrolar": {
             "title": "Puede Enrolar",
             "type": "boolean"
+          },
+          "nombre": {
+            "default": "",
+            "title": "Nombre",
+            "type": "string"
+          },
+          "rol": {
+            "default": "",
+            "title": "Rol",
+            "type": "string"
+          },
+          "es_admin": {
+            "default": false,
+            "title": "Es Admin",
+            "type": "boolean"
           }
         },
         "required": [
@@ -2157,6 +2492,98 @@
               }
             ],
             "title": "Desde"
+          },
+          "fecha_ingreso": {
+            "title": "Fecha Ingreso",
+            "type": "string"
+          },
+          "nombres": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apellidos"
+          },
+          "documento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documento"
+          },
+          "telefono": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefono"
+          },
+          "genero": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Genero"
+          },
+          "fecha_nacimiento": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Nacimiento"
+          },
+          "etnia": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Etnia"
+          },
+          "cabeza_hogar": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabeza Hogar"
           }
         },
         "required": [
@@ -2166,7 +2593,16 @@
           "nombre_corto",
           "consentimiento",
           "consentimiento_id",
-          "desde"
+          "desde",
+          "fecha_ingreso",
+          "nombres",
+          "apellidos",
+          "documento",
+          "telefono",
+          "genero",
+          "fecha_nacimiento",
+          "etnia",
+          "cabeza_hogar"
         ],
         "title": "Miembro",
         "type": "object"
@@ -2187,6 +2623,80 @@
           "mensaje"
         ],
         "title": "Error",
+        "type": "object"
+      },
+      "DatosMiembro": {
+        "properties": {
+          "nombres": {
+            "title": "Nombres",
+            "type": "string"
+          },
+          "apellidos": {
+            "default": "",
+            "title": "Apellidos",
+            "type": "string"
+          },
+          "documento": {
+            "default": "",
+            "title": "Documento",
+            "type": "string"
+          },
+          "telefono": {
+            "default": "",
+            "title": "Telefono",
+            "type": "string"
+          },
+          "genero": {
+            "default": "",
+            "title": "Genero",
+            "type": "string"
+          },
+          "fecha_nacimiento": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Nacimiento"
+          },
+          "etnia": {
+            "default": "",
+            "title": "Etnia",
+            "type": "string"
+          },
+          "cabeza_hogar": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cabeza Hogar"
+          }
+        },
+        "required": [
+          "nombres"
+        ],
+        "title": "DatosMiembro",
+        "type": "object"
+      },
+      "EstadoMiembro": {
+        "properties": {
+          "activo": {
+            "title": "Activo",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "activo"
+        ],
+        "title": "EstadoMiembro",
         "type": "object"
       },
       "Comprobante": {
@@ -2571,6 +3081,54 @@
         "title": "DatosUsuarioApp",
         "type": "object"
       },
+      "DatosTipoCargo": {
+        "properties": {
+          "nombre": {
+            "title": "Nombre",
+            "type": "string"
+          },
+          "descripcion": {
+            "default": "",
+            "title": "Descripcion",
+            "type": "string"
+          },
+          "orden": {
+            "default": 0,
+            "title": "Orden",
+            "type": "integer"
+          },
+          "activo": {
+            "default": true,
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "autoriza_altas": {
+            "default": false,
+            "title": "Autoriza Altas",
+            "type": "boolean"
+          },
+          "lleva_reunion": {
+            "default": true,
+            "title": "Lleva Reunion",
+            "type": "boolean"
+          },
+          "firma_prestamos": {
+            "default": true,
+            "title": "Firma Prestamos",
+            "type": "boolean"
+          },
+          "firma_cierre": {
+            "default": true,
+            "title": "Firma Cierre",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "nombre"
+        ],
+        "title": "DatosTipoCargo",
+        "type": "object"
+      },
       "DatosProyecto": {
         "properties": {
           "acap_id": {
@@ -2754,6 +3312,49 @@
           "reglamento"
         ],
         "title": "DatosEvaluacion",
+        "type": "object"
+      },
+      "DatosUsuario": {
+        "properties": {
+          "usuario": {
+            "default": "",
+            "title": "Usuario",
+            "type": "string"
+          },
+          "nombres": {
+            "default": "",
+            "title": "Nombres",
+            "type": "string"
+          },
+          "apellidos": {
+            "default": "",
+            "title": "Apellidos",
+            "type": "string"
+          },
+          "correo": {
+            "default": "",
+            "title": "Correo",
+            "type": "string"
+          },
+          "rol": {
+            "title": "Rol",
+            "type": "string"
+          },
+          "activo": {
+            "default": true,
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "clave": {
+            "default": "",
+            "title": "Clave",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rol"
+        ],
+        "title": "DatosUsuario",
         "type": "object"
       }
     },

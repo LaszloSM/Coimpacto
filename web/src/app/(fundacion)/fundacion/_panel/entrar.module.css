@@ -1,0 +1,177 @@
+/* Entrar a la oficina: marca a la izquierda sobre renglones, ficha a la derecha. */
+
+.pagina {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100dvh;
+}
+
+.marca {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 48px;
+  overflow: hidden;
+  color: #f4f3f0;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 39px, rgb(255 255 255 / 0.05) 39px 40px),
+    var(--carbon);
+}
+
+/* El margen rojo del cuaderno, en naranja de la marca. */
+.marca::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 88px;
+  width: 1px;
+  background: rgb(246 106 3 / 0.45);
+}
+
+.logo {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.logo span {
+  color: var(--naranja);
+}
+
+.frase {
+  position: relative;
+  z-index: 1;
+  max-width: 460px;
+  margin-left: 64px;
+  animation: subir 600ms var(--curva) both;
+}
+
+.frase p {
+  margin: 0;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.frase .fraseSub {
+  margin-top: 16px;
+  font-family: var(--fuente-texto-pila);
+  font-weight: 400;
+  font-size: 0.9375rem;
+  letter-spacing: 0;
+  color: #a3a19b;
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.lado {
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+  background: var(--fondo);
+}
+
+.ficha {
+  display: grid;
+  gap: 16px;
+  width: min(380px, 100%);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitulo {
+  margin: -8px 0 8px;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.clave {
+  position: relative;
+  display: block;
+}
+
+.clave input {
+  padding-right: 44px;
+}
+
+.ver {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--texto-tenue);
+  cursor: pointer;
+}
+
+.ver:hover {
+  background: var(--borde);
+  color: var(--texto);
+}
+
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radio-sm);
+  background: var(--rojo-suave);
+  color: var(--rojo-texto);
+  font-size: 0.875rem;
+}
+
+.boton {
+  justify-content: center;
+  min-height: 46px;
+  margin-top: 4px;
+}
+
+@media (max-width: 860px) {
+  .pagina {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .marca {
+    min-height: 220px;
+    padding: 28px 24px;
+  }
+
+  .marca::after {
+    left: 40px;
+  }
+
+  .frase {
+    margin-left: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frase {
+    animation: none;
+  }
+}

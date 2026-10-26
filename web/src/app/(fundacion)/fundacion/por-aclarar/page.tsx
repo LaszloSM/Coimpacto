@@ -41,7 +41,12 @@ interface Registro {
 
 const TIPOS = ["ahorro", "fondo_social", "multa", "abono", "desembolso", "venta", "faltante", "sobrante"];
 const tipo = (x: string) => (TIPOS.includes(x) ? t(`porAclarar.tipos.${x}` as ClaveTexto) : x);
-const fecha = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "short", year: "numeric" });
+const fecha = (iso: string) =>
+  new Date(`${iso}T12:00:00`).toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
 export default function PorAclarar() {
   const router = useRouter();
@@ -79,7 +84,11 @@ export default function PorAclarar() {
     try {
       await api("/oficina/propuestas", {
         metodo: "POST",
-        cuerpo: { movimiento_id: movimientoId, accion: datos.get("accion"), motivo: datos.get("motivo") },
+        cuerpo: {
+          movimiento_id: movimientoId,
+          accion: datos.get("accion"),
+          motivo: datos.get("motivo"),
+        },
       });
       setAbierto(null);
       cargar(acap);
@@ -147,8 +156,7 @@ export default function PorAclarar() {
                     {r.numero_miembro ? ` · #${String(r.numero_miembro).padStart(2, "0")}` : ""}
                   </strong>
                   <span>
-                    {t("porAclarar.reunion").replace("{n}", String(r.reunion)).replace("{fecha}", fecha(r.fecha))} ·{" "}
-                    {t(`fundacion.pendiente.${r.estado}`)}
+                    {t("porAclarar.reunion").replace("{n}", String(r.reunion)).replace("{fecha}", fecha(r.fecha))} · {t(`fundacion.pendiente.${r.estado}`)}
                   </span>
                   {r.codigo ? <code className={estilos.codigo}>{r.codigo}</code> : null}
                   {r.propuesta ? (

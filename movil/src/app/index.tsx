@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Inicio } from "../pantallas/Inicio";
 import { llavesPerdidas } from "../seguridad/dispositivo";
+import { tiposCargo, type TipoCargo } from "../seguridad/cargos";
 import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { useSesion } from "../sesion/contexto";
 import { reunionAbiertaMarcada } from "../sesion/marcas";
@@ -17,6 +18,7 @@ export default function PantallaInicio() {
   const [error, setError] = useState<string>();
   const [abierta, setAbierta] = useState<string | null>(null);
   const [socios, setSocios] = useState<PerfilSocio[]>([]);
+  const [tipos, setTipos] = useState<TipoCargo[]>([]);
 
   useEffect(() => {
     void (async () => {
@@ -32,6 +34,7 @@ export default function PantallaInicio() {
         }
         setAbierta(await reunionAbiertaMarcada(entorno.almacen));
         setSocios(await perfilesSocio(entorno.almacen));
+        setTipos(await tiposCargo(entorno.almacen));
         setPerfiles(lista);
         if (lista.length === 1) setElegido(lista[0].cargoId);
       } catch (e) {
@@ -48,6 +51,7 @@ export default function PantallaInicio() {
     <Inicio
       error={error}
       perfiles={perfiles}
+      tipos={tipos}
       elegido={elegido}
       alElegir={setElegido}
       reunionAbierta={abierta}

@@ -7,7 +7,8 @@
 import { tokens } from "@credimpacto/tokens";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { NOMBRE_CARGO, type Perfil } from "../seguridad/perfiles";
+import { nombreCargo, puede, type TipoCargo } from "../seguridad/cargos";
+import type { Perfil } from "../seguridad/perfiles";
 import { BotonPrincipal, BotonSecundario, estilos as base } from "../ui/componentes";
 
 const { color, tipo, spacing } = tokens;
@@ -32,6 +33,8 @@ function Opcion(props: { texto: string; alTocar?: () => void; testID: string }) 
 export function Inicio(props: {
   error?: string;
   perfiles?: Perfil[];
+  /** Catálogo de cargos: nombre y quién puede llevar la reunión. */
+  tipos?: TipoCargo[];
   elegido?: string;
   /** Fecha de la reunión abierta en este celular, si hay una. */
   reunionAbierta?: string | null;
@@ -47,7 +50,8 @@ export function Inicio(props: {
   alVerSocio?: (llaveId: string) => void;
   alAltaSocio?: () => void;
 }) {
-  const perfiles = props.perfiles ?? [];
+  const tipos = props.tipos ?? [];
+  const perfiles = (props.perfiles ?? []).filter((p) => puede(tipos, p.tipo, "lleva_reunion"));
   const falta = props.elegido ? undefined : "Elija quién lleva la reunión";
   return (
     <View style={estilos.pagina} testID="inicio">
@@ -77,7 +81,7 @@ export function Inicio(props: {
                   style={base.renglon}
                 >
                   <View style={[estilos.radio, elegido && estilos.radioElegido]} />
-                  <Text style={[base.parrafo, { flex: 1 }]}>{NOMBRE_CARGO[p.tipo] ?? p.tipo}</Text>
+                  <Text style={[base.parrafo, { flex: 1 }]}>{nombreCargo(tipos, p.tipo)}</Text>
                   <Text style={base.cifraRenglonPequena}>#{String(p.numero).padStart(2, "0")}</Text>
                 </Pressable>
               );

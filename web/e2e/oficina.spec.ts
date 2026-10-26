@@ -7,7 +7,7 @@ test("clave incorrecta: lo dice sin culpar a nadie", async ({ page }) => {
   await page.route("**/api/sesion/entrar", (r) => r.fulfill({ status: 401, json: { mensaje: "Usuario o clave incorrectos." } }));
   await page.goto("/fundacion/entrar");
   await page.getByLabel("Usuario").fill("ana");
-  await page.getByLabel("Clave").fill("equivocada");
+  await page.getByLabel("Clave", { exact: true }).fill("equivocada");
   await page.getByRole("button", { name: "Entrar" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "Usuario o clave incorrectos." })).toBeVisible();
 });
@@ -108,47 +108,46 @@ test("comprobante vencido: lo dice y a quién pedir otro", async ({ page }) => {
   await expect(page.getByRole("alert").filter({ hasText: "venció" })).toHaveText("Este comprobante venció. Pida uno nuevo a su junta.");
 });
 
-test("miembros: alta con la foto de la autorización y revocación que borra el nombre", async ({ page }) => {
+test("personas: agregar con la foto de la autorización y registrar la revocación", async ({ page }) => {
   await page.route("**/api/sesion/csrf", (r) => r.fulfill({ json: { csrf: "x" }, headers: { "set-cookie": "csrftoken=x; Path=/" } }));
-  await page.route("**/api/acaps", (r) => r.fulfill({ json: [{ id: "a1", nombre: "ACAP Las Brisas" }] }));
-  type Fila = { id: string; numero: number; activo: boolean; nombre_corto: string | null; consentimiento: string; consentimiento_id: string | null; desde: string | null };
-  let lista: Fila[] = [
-    { id: "m5", numero: 5, activo: true, nombre_corto: null, consentimiento: "falta", consentimiento_id: null, desde: null },
-  ];
+  await page.route("**/api/oficina/comunidades", (r) => r.fulfill({ json: [{ id: "a1", nombre: "ACAP Las Brisas", miembros: 1 }] }));
+  const base = { activo: true, consentimiento_id: null, desde: null, fecha_ingreso: "2026-01-10", documento: null, telefono: null, genero: null, fecha_nacimiento: null, etnia: null, cabeza_hogar: null };
+  type Fila = Record<string, unknown>;
+  let lista: Fila[] = [{ ...base, id: "m5", numero: 5, nombre_corto: null, nombres: null, apellidos: null, consentimiento: "falta" }];
   let alta: string | null = null;
   await page.route("**/api/oficina/acaps/a1/miembros", async (r) => {
     if (r.request().method() === "POST") {
       alta = r.request().headers()["content-type"] ?? "";
-      lista = [
-        ...lista,
-        { id: "m6", numero: 6, activo: true, nombre_corto: "Yuliana I.", consentimiento: "vigente", consentimiento_id: "c6", desde: "2026-10-19T10:00:00Z" },
-      ];
+      lista = [...lista, { ...base, id: "m6", numero: 6, nombre_corto: "Yuliana I.", nombres: "Yuliana Andrea", apellidos: "Ibarra", consentimiento: "vigente", genero: "femenino" }];
       return r.fulfill({ status: 201, json: lista[1] });
     }
     return r.fulfill({ json: lista });
   });
   await page.route("**/api/oficina/miembros/m6/revocar", (r) => {
-    lista = [lista[0], { ...lista[1], nombre_corto: null, consentimiento: "revocado", consentimiento_id: null }];
+    lista = [lista[0], { ...lista[1], nombre_corto: null, nombres: null, apellidos: null, consentimiento: "revocado" }];
     return r.fulfill({ json: { ok: true } });
   });
 
   await page.goto("/fundacion/miembros");
-  await page.getByLabel("ACAP").selectOption("a1");
-  await expect(page.getByText("Falta la autorización de datos: se ve solo el número")).toBeVisible();
+  await page.getByRole("tab", { name: /Todas/ }).click();
+  await expect(page.getByText("Datos ocultos hasta registrar su autorización")).toBeVisible();
 
-  await page.getByRole("button", { name: "Dar de alta un miembro" }).click();
-  await page.getByLabel("Nombres").fill("Yuliana Andrea");
-  await page.getByLabel("Apellidos").fill("Ibarra");
-  await page.getByLabel(/Foto del formato/).setInputFiles({ name: "formato.png", mimeType: "image/png", buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47]) });
-  await page.getByRole("button", { name: "Guardar" }).click();
-  await expect(page.getByText("#06 Yuliana I.")).toBeVisible();
+  await page.getByRole("button", { name: "Agregar persona" }).first().click();
+  const ficha = page.getByRole("dialog", { name: "Agregar persona" });
+  await ficha.getByLabel("Nombres").fill("Yuliana Andrea");
+  await ficha.getByLabel("Apellidos").fill("Ibarra");
+  await ficha.getByRole("radio", { name: "Mujer" }).click();
+  await ficha.locator('input[type="file"]').setInputFiles({ name: "formato.png", mimeType: "image/png", buffer: Buffer.from([0x89, 0x50, 0x4e, 0x47]) });
+  await ficha.getByRole("button", { name: "Agregar persona" }).click();
+  await expect(page.getByText("Yuliana Andrea Ibarra")).toBeVisible();
   expect(alta).toContain("multipart/form-data");
 
-  await page.getByRole("button", { name: "Registrar que revocó" }).click();
+  await page.getByText("Yuliana Andrea Ibarra").click();
+  await page.getByRole("button", { name: "Registrar que revocó la autorización" }).click();
   await page.getByLabel("Cómo lo pidió").fill("De palabra ante la facilitadora");
-  await page.getByRole("button", { name: "Guardar" }).click();
-  await expect(page.getByText("Revocación guardada. Sus datos se borraron.")).toBeVisible();
-  await expect(page.getByText("Yuliana I.")).toHaveCount(0);
+  await page.getByRole("button", { name: "Guardar la revocación" }).click();
+  await expect(page.getByText("Yuliana Andrea Ibarra")).toHaveCount(0);
+  await expect(page.getByText("Revocó", { exact: true })).toBeVisible();
 });
 
 test("por aclarar: proponer a la junta quitar un registro, con motivo en palabras sencillas", async ({ page }) => {

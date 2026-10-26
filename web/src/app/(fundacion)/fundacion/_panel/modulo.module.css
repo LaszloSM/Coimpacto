@@ -344,16 +344,19 @@
 .velo {
   position: fixed;
   inset: 0;
-  background: rgb(28 28 28 / 0.32);
+  background: rgb(28 28 28 / 0.28);
+  backdrop-filter: blur(2px);
   z-index: 40;
 }
 
 .lateral {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: min(480px, 100vw);
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  width: min(520px, calc(100vw - 16px));
+  border-radius: 18px;
+  overflow: hidden;
   background: var(--superficie);
   z-index: 41;
   display: flex;
@@ -364,22 +367,47 @@
 .lateralCabeza {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 24px 18px;
   border-bottom: 1px solid var(--borde);
+  background: var(--superficie);
 }
 
 .lateralCabeza h2 {
   margin: 0;
   font-family: var(--fuente-titulos-pila);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.lateralCabeza p {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+  line-height: 1.5;
+  max-width: 44ch;
 }
 
 .lateralCuerpo {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 24px 32px;
+  padding: 20px 24px 0;
+  overscroll-behavior: contain;
+  /* Lo que se trae a la vista queda encima del pie fijo, no debajo. */
+  scroll-padding-bottom: 96px;
+}
+
+/* El pie del formulario queda fijo abajo del panel lateral. */
+.lateralCuerpo .botonera {
+  position: sticky;
+  bottom: 0;
+  margin: 8px -24px 0;
+  padding: 14px 24px;
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--borde);
 }
 
 .cerrar {

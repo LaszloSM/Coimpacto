@@ -169,6 +169,13 @@
   font-weight: 700;
 }
 
+.rol {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #a3a19b;
+}
+
 .usuario {
   flex: 1;
   min-width: 0;

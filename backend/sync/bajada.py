@@ -16,7 +16,7 @@ from django.db import transaction
 from django.db.models import Q, Sum
 from django.utils import timezone
 
-from acap.models import Cargo, Ciclo, Membresia, Reunion
+from acap.models import Cargo, Ciclo, Membresia, Reunion, TipoCargo
 from core import firmas
 from cuentas import miembros
 from cuentas.models import Dispositivo
@@ -135,6 +135,17 @@ def foto_del_grupo(dispositivo: Dispositivo) -> dict:
         "ciclo": None,
         "miembros": [],
         "cargos": [],
+        # Catálogo de cargos con sus permisos: el celular nombra y habilita cargos nuevos sin
+        # actualizar la app.
+        "tipos_cargo": [
+            {
+                "clave": t.clave,
+                "nombre": t.nombre,
+                "orden": t.orden,
+                **{p: getattr(t, p) for p in TipoCargo.PERMISOS},
+            }
+            for t in TipoCargo.objects.filter(activo=True)
+        ],
         "reuniones": [],
         "prestamos": [],
         "caja": 0,

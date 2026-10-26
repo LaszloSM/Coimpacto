@@ -51,7 +51,11 @@ function Cifra(props: { etiqueta: string; valor: string; exacto?: string; pie: R
   );
 }
 
-const ICONO_HALLAZGO = { alerta: WarningCircle, bien: CheckCircle, neutro: Info } as const;
+const ICONO_HALLAZGO = {
+  alerta: WarningCircle,
+  bien: CheckCircle,
+  neutro: Info,
+} as const;
 
 function Hallazgos({ hallazgos }: { hallazgos: Hallazgo[] }) {
   return (
@@ -136,9 +140,7 @@ export default function Panel() {
       <header className={estilos.cabeza}>
         <div>
           <h1 className={estilos.titulo}>Panel de gerencia</h1>
-          <p className={estilos.subtitulo}>
-            {datos?.datos_al ? `Datos al ${fechaLarga(datos.datos_al)}` : "Ciclo actual de todas las comunidades"}
-          </p>
+          <p className={estilos.subtitulo}>{datos?.datos_al ? `Datos al ${fechaLarga(datos.datos_al)}` : "Ciclo actual de todas las comunidades"}</p>
         </div>
       </header>
 
@@ -208,15 +210,11 @@ export default function Panel() {
             </div>
             <div>
               <dt>Capacitaciones</dt>
-              <dd data-tono="vacio">
-                {datos.indicadores.capacitaciones ?? "Módulo en preparación"}
-              </dd>
+              <dd data-tono="vacio">{datos.indicadores.capacitaciones ?? <Link href="/fundacion/capacitaciones">Sin registros todavía</Link>}</dd>
             </div>
             <div>
               <dt>Proyectos activos</dt>
-              <dd data-tono="vacio">
-                {datos.indicadores.proyectos ?? "Módulo en preparación"}
-              </dd>
+              <dd data-tono="vacio">{datos.indicadores.proyectos ?? <Link href="/fundacion/proyectos">Sin registros todavía</Link>}</dd>
             </div>
           </dl>
 

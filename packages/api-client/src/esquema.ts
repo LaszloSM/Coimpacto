@@ -337,6 +337,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/miembros/{membresia_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Corregir los datos y el perfil de un miembro con autorización vigente */
+        put: operations["cuentas_miembros_api_editar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/miembros/{membresia_id}/estado": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retirar a un miembro de la ACAP o volver a activarlo (su historia queda) */
+        post: operations["cuentas_miembros_api_estado"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/miembros/{membresia_id}/revocar": {
         parameters: {
             query?: never;
@@ -761,6 +795,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/tipos-cargo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Catálogo de cargos */
+        get: operations["acap_oficina_api_tipos_cargo"];
+        put?: never;
+        /** Crear un cargo */
+        post: operations["acap_oficina_api_crear_tipo_cargo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/tipos-cargo/{clave}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un cargo */
+        put: operations["acap_oficina_api_editar_tipo_cargo"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/oficina/proyectos": {
         parameters: {
             query?: never;
@@ -826,6 +895,41 @@ export interface paths {
         put?: never;
         /** Registrar una evaluación */
         post: operations["acap_oficina_api_crear_evaluacion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/usuarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usuarios de la oficina */
+        get: operations["cuentas_usuarios_api_usuarios"];
+        put?: never;
+        /** Crear un usuario de la oficina */
+        post: operations["cuentas_usuarios_api_crear"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/usuarios/{usuario_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un usuario de la oficina */
+        put: operations["cuentas_usuarios_api_editar"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -954,6 +1058,21 @@ export interface components {
             usuario: string;
             /** Puede Enrolar */
             puede_enrolar: boolean;
+            /**
+             * Nombre
+             * @default
+             */
+            nombre: string;
+            /**
+             * Rol
+             * @default
+             */
+            rol: string;
+            /**
+             * Es Admin
+             * @default false
+             */
+            es_admin: boolean;
         };
         /** Credenciales */
         Credenciales: {
@@ -988,6 +1107,24 @@ export interface components {
             consentimiento_id: string | null;
             /** Desde */
             desde: string | null;
+            /** Fecha Ingreso */
+            fecha_ingreso: string;
+            /** Nombres */
+            nombres: string | null;
+            /** Apellidos */
+            apellidos: string | null;
+            /** Documento */
+            documento: string | null;
+            /** Telefono */
+            telefono: string | null;
+            /** Genero */
+            genero: string | null;
+            /** Fecha Nacimiento */
+            fecha_nacimiento: string | null;
+            /** Etnia */
+            etnia: string | null;
+            /** Cabeza Hogar */
+            cabeza_hogar: boolean | null;
         };
         /** Error */
         Error: {
@@ -995,6 +1132,45 @@ export interface components {
             codigo: string;
             /** Mensaje */
             mensaje: string;
+        };
+        /** DatosMiembro */
+        DatosMiembro: {
+            /** Nombres */
+            nombres: string;
+            /**
+             * Apellidos
+             * @default
+             */
+            apellidos: string;
+            /**
+             * Documento
+             * @default
+             */
+            documento: string;
+            /**
+             * Telefono
+             * @default
+             */
+            telefono: string;
+            /**
+             * Genero
+             * @default
+             */
+            genero: string;
+            /** Fecha Nacimiento */
+            fecha_nacimiento?: string | null;
+            /**
+             * Etnia
+             * @default
+             */
+            etnia: string;
+            /** Cabeza Hogar */
+            cabeza_hogar?: boolean | null;
+        };
+        /** EstadoMiembro */
+        EstadoMiembro: {
+            /** Activo */
+            activo: boolean;
         };
         /** Comprobante */
         Comprobante: {
@@ -1161,6 +1337,46 @@ export interface components {
             /** Clave */
             clave: string;
         };
+        /** DatosTipoCargo */
+        DatosTipoCargo: {
+            /** Nombre */
+            nombre: string;
+            /**
+             * Descripcion
+             * @default
+             */
+            descripcion: string;
+            /**
+             * Orden
+             * @default 0
+             */
+            orden: number;
+            /**
+             * Activo
+             * @default true
+             */
+            activo: boolean;
+            /**
+             * Autoriza Altas
+             * @default false
+             */
+            autoriza_altas: boolean;
+            /**
+             * Lleva Reunion
+             * @default true
+             */
+            lleva_reunion: boolean;
+            /**
+             * Firma Prestamos
+             * @default true
+             */
+            firma_prestamos: boolean;
+            /**
+             * Firma Cierre
+             * @default true
+             */
+            firma_cierre: boolean;
+        };
         /** DatosProyecto */
         DatosProyecto: {
             /**
@@ -1274,6 +1490,41 @@ export interface components {
              * @default
              */
             compromisos: string;
+        };
+        /** DatosUsuario */
+        DatosUsuario: {
+            /**
+             * Usuario
+             * @default
+             */
+            usuario: string;
+            /**
+             * Nombres
+             * @default
+             */
+            nombres: string;
+            /**
+             * Apellidos
+             * @default
+             */
+            apellidos: string;
+            /**
+             * Correo
+             * @default
+             */
+            correo: string;
+            /** Rol */
+            rol: string;
+            /**
+             * Activo
+             * @default true
+             */
+            activo: boolean;
+            /**
+             * Clave
+             * @default
+             */
+            clave: string;
         };
     };
     responses: never;
@@ -1711,6 +1962,20 @@ export interface operations {
                      */
                     telefono?: string;
                     /**
+                     * Genero
+                     * @default
+                     */
+                    genero?: string;
+                    /** Fecha Nacimiento */
+                    fecha_nacimiento?: string | null;
+                    /**
+                     * Etnia
+                     * @default
+                     */
+                    etnia?: string;
+                    /** Cabeza Hogar */
+                    cabeza_hogar?: boolean | null;
+                    /**
                      * Foto
                      * Format: binary
                      */
@@ -1795,6 +2060,71 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_editar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosMiembro"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cuentas_miembros_api_estado: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                membresia_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EstadoMiembro"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -2465,6 +2795,70 @@ export interface operations {
             };
         };
     };
+    acap_oficina_api_tipos_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_crear_tipo_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosTipoCargo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    acap_oficina_api_editar_tipo_cargo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                clave: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosTipoCargo"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     acap_oficina_api_proyectos: {
         parameters: {
             query?: never;
@@ -2597,6 +2991,70 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["DatosEvaluacion"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_usuarios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_crear: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosUsuario"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_editar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                usuario_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosUsuario"];
             };
         };
         responses: {

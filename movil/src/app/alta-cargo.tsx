@@ -11,7 +11,9 @@ import type { FotoGrupo } from "../cola/grupo";
 import { altaOtroCargo, dispositivoRegistrado, revisarPinDoble } from "../enrolamiento/flujo";
 import { CargoEnPausa, PinFallido } from "../seguridad/intentos";
 import { PinIncorrecto } from "../seguridad/llavero";
-import { NOMBRE_CARGO, perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
+import { nombreCargo, puede } from "../seguridad/cargos";
+import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
+import { useTiposCargo } from "../sesion/useTiposCargo";
 import { leerFoto } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
 import { BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
@@ -38,9 +40,11 @@ export default function PantallaAltaCargo() {
     });
   }, [sesion, entorno]);
 
+  const catalogo = useTiposCargo();
   if (!sesion) return <Redirect href="/" />;
   if (!foto) return <SafeAreaView style={base.pantalla} />;
-  const presidente = perfiles.find((p) => p.tipo === "presidente");
+  const tipos = foto.tipos_cargo ?? catalogo;
+  const presidente = perfiles.find((p) => puede(tipos, p.tipo, "autoriza_altas"));
   const numeroDe = (membresiaId: string) => foto.miembros.find((m) => m.membresia_id === membresiaId)?.numero ?? 0;
   const libres = foto.cargos.filter((c) => !perfiles.some((p) => p.cargoId === c.id));
   const cargo = foto.cargos.find((c) => c.id === cargoId);
@@ -53,8 +57,8 @@ export default function PantallaAltaCargo() {
     return (
       <SafeAreaView style={base.pantalla}>
         <TecladoPin
-          paraQuien="Presidente"
-          aviso={aviso ?? "El Presidente autoriza el alta."}
+          paraQuien={nombreCargo(tipos, presidente?.tipo ?? "presidente")}
+          aviso={aviso ?? `${nombreCargo(tipos, presidente?.tipo ?? "presidente")} autoriza el alta.`}
           alCompletar={(pin) => {
             setPinPresidente(pin);
             setAviso(undefined);
@@ -65,7 +69,7 @@ export default function PantallaAltaCargo() {
     );
   }
   if (fase === "pin-nuevo" || fase === "confirmar" || fase === "guardando") {
-    const quien = `${NOMBRE_CARGO[cargo!.tipo] ?? cargo!.tipo} · #${String(numeroDe(cargo!.membresia_id)).padStart(2, "0")}`;
+    const quien = `${nombreCargo(tipos, cargo!.tipo)} · #${String(numeroDe(cargo!.membresia_id)).padStart(2, "0")}`;
     return (
       <SafeAreaView style={base.pantalla}>
         <TecladoPin
@@ -139,7 +143,7 @@ export default function PantallaAltaCargo() {
                 }}
                 style={base.renglon}
               >
-                <Text style={[base.parrafo, { flex: 1 }]}>{NOMBRE_CARGO[c.tipo] ?? c.tipo}</Text>
+                <Text style={[base.parrafo, { flex: 1 }]}>{nombreCargo(tipos, c.tipo)}</Text>
                 <Text style={base.cifraRenglonPequena}>#{String(numeroDe(c.membresia_id)).padStart(2, "0")}</Text>
               </Pressable>
             ))}
