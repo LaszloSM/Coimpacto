@@ -53,7 +53,7 @@ export function BotonSecundario(props: { texto: string; alTocar: () => void; det
       onPress={props.alTocar}
       style={({ pressed }) => [estilos.boton, estilos.botonSecundario, pressed && { backgroundColor: color["papel-oficina"] }]}
     >
-      <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={estilos.botonTexto} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.75}>
+      <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={estilos.botonTexto} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
         {props.texto}
       </Text>
       {props.detalle ? <Text style={estilos.cifraRenglonPequena}>{props.detalle}</Text> : null}

@@ -37,11 +37,13 @@ name: Reunión sin señal hasta los aportes
 - tapOn:
     id: "acciones-mas"
 # El dinero es un solo nodo accesible con su etiqueta ("Total de #01 hoy: …", TD6).
-- assertVisible: ".*veintidós mil pesos.*"
+- scrollUntilVisible:
+    element: ".*veintidós mil pesos.*"
 - tapOn:
     id: "guardar-siguiente"
 - assertVisible: "#02"
-- assertVisible: ".*: dos mil pesos.*"
+- scrollUntilVisible:
+    element: ".*: dos mil pesos.*"
 - assertVisible: ".*Guardado en este celular · 3 por subir.*"
 # La app se cierra a mitad de la reunión: al volver, sigue en el mismo miembro.
 - stopApp
