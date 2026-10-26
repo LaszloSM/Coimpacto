@@ -901,6 +901,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/oficina/usuarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usuarios de la oficina */
+        get: operations["cuentas_usuarios_api_usuarios"];
+        put?: never;
+        /** Crear un usuario de la oficina */
+        post: operations["cuentas_usuarios_api_crear"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/oficina/usuarios/{usuario_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Editar un usuario de la oficina */
+        put: operations["cuentas_usuarios_api_editar"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1023,6 +1058,21 @@ export interface components {
             usuario: string;
             /** Puede Enrolar */
             puede_enrolar: boolean;
+            /**
+             * Nombre
+             * @default
+             */
+            nombre: string;
+            /**
+             * Rol
+             * @default
+             */
+            rol: string;
+            /**
+             * Es Admin
+             * @default false
+             */
+            es_admin: boolean;
         };
         /** Credenciales */
         Credenciales: {
@@ -1440,6 +1490,41 @@ export interface components {
              * @default
              */
             compromisos: string;
+        };
+        /** DatosUsuario */
+        DatosUsuario: {
+            /**
+             * Usuario
+             * @default
+             */
+            usuario: string;
+            /**
+             * Nombres
+             * @default
+             */
+            nombres: string;
+            /**
+             * Apellidos
+             * @default
+             */
+            apellidos: string;
+            /**
+             * Correo
+             * @default
+             */
+            correo: string;
+            /** Rol */
+            rol: string;
+            /**
+             * Activo
+             * @default true
+             */
+            activo: boolean;
+            /**
+             * Clave
+             * @default
+             */
+            clave: string;
         };
     };
     responses: never;
@@ -2906,6 +2991,70 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["DatosEvaluacion"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_usuarios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_crear: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosUsuario"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cuentas_usuarios_api_editar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                usuario_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DatosUsuario"];
             };
         };
         responses: {

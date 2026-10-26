@@ -28,7 +28,13 @@ def test_entrar_ver_y_salir(facilitadora):
     cliente = Client()
     r = entrar(cliente)
     assert r.status_code == 200
-    assert r.json() == {"usuario": "ana", "puede_enrolar": True}
+    assert r.json() == {
+        "usuario": "ana",
+        "puede_enrolar": True,
+        "nombre": "",
+        "rol": "Facilitador",
+        "es_admin": False,
+    }
     assert cliente.get("/api/sesion", secure=True).json()["usuario"] == "ana"
     assert cliente.post("/api/sesion/salir", secure=True).status_code == 200
     assert cliente.get("/api/sesion", secure=True).status_code == 401

@@ -1,0 +1,185 @@
+/* Directorio de personas de una comunidad. */
+
+.directorio {
+  display: grid;
+  gap: 14px;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.buscar {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  color: var(--texto-tenue);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.buscar:focus-within {
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 3px rgb(246 106 3 / 0.14);
+}
+
+.buscar input:focus-visible {
+  outline: none;
+}
+
+.buscar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--texto);
+}
+
+.filtros {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  overflow-x: auto;
+}
+
+.filtro {
+  position: relative;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filtro[aria-selected="true"] {
+  color: var(--texto);
+}
+
+.filtroMarca {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--superficie);
+  box-shadow: 0 1px 2px rgb(28 28 28 / 0.08), 0 2px 8px rgb(28 28 28 / 0.06);
+}
+
+.filtroTexto {
+  position: relative;
+}
+
+.filtroCuenta {
+  margin-left: 2px;
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--borde);
+}
+
+.persona {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--borde);
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 140ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .persona:hover {
+    background: rgb(28 28 28 / 0.025);
+  }
+}
+
+.persona[data-retirada] {
+  opacity: 0.6;
+}
+
+.personaNombre {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.personaPrincipal {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--texto);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.numero {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+.personaDetalle {
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.personaEtiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.peligro {
+  justify-self: start;
+  color: var(--rojo-texto);
+  border-color: rgb(196 32 42 / 0.3);
+}
+
+@media (max-width: 640px) {
+  .persona {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .personaEtiquetas {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}

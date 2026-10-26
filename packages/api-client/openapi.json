@@ -2059,6 +2059,95 @@
           }
         ]
       }
+    },
+    "/api/oficina/usuarios": {
+      "get": {
+        "operationId": "cuentas_usuarios_api_usuarios",
+        "summary": "Usuarios de la oficina",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "cuentas_usuarios_api_crear",
+        "summary": "Crear un usuario de la oficina",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosUsuario"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
+    },
+    "/api/oficina/usuarios/{usuario_id}": {
+      "put": {
+        "operationId": "cuentas_usuarios_api_editar",
+        "summary": "Editar un usuario de la oficina",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "usuario_id",
+            "schema": {
+              "format": "uuid",
+              "title": "Usuario Id",
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatosUsuario"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "SessionAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -2291,6 +2380,21 @@
           },
           "puede_enrolar": {
             "title": "Puede Enrolar",
+            "type": "boolean"
+          },
+          "nombre": {
+            "default": "",
+            "title": "Nombre",
+            "type": "string"
+          },
+          "rol": {
+            "default": "",
+            "title": "Rol",
+            "type": "string"
+          },
+          "es_admin": {
+            "default": false,
+            "title": "Es Admin",
             "type": "boolean"
           }
         },
@@ -3208,6 +3312,49 @@
           "reglamento"
         ],
         "title": "DatosEvaluacion",
+        "type": "object"
+      },
+      "DatosUsuario": {
+        "properties": {
+          "usuario": {
+            "default": "",
+            "title": "Usuario",
+            "type": "string"
+          },
+          "nombres": {
+            "default": "",
+            "title": "Nombres",
+            "type": "string"
+          },
+          "apellidos": {
+            "default": "",
+            "title": "Apellidos",
+            "type": "string"
+          },
+          "correo": {
+            "default": "",
+            "title": "Correo",
+            "type": "string"
+          },
+          "rol": {
+            "title": "Rol",
+            "type": "string"
+          },
+          "activo": {
+            "default": true,
+            "title": "Activo",
+            "type": "boolean"
+          },
+          "clave": {
+            "default": "",
+            "title": "Clave",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rol"
+        ],
+        "title": "DatosUsuario",
         "type": "object"
       }
     },

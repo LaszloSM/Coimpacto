@@ -16,6 +16,7 @@ from ninja.throttling import AnonRateThrottle
 from acap import consolidado as datos_oficina
 from acap import tablero as datos_tablero
 from acap.models import Acap
+from cuentas.usuarios_api import rol_de
 
 router = Router(tags=["sesion"])
 
@@ -28,6 +29,9 @@ class Credenciales(Schema):
 class Yo(Schema):
     usuario: str
     puede_enrolar: bool
+    nombre: str = ""
+    rol: str = ""
+    es_admin: bool = False
 
 
 class AcapResumen(Schema):
@@ -39,6 +43,9 @@ def _yo(user) -> dict:
     return {
         "usuario": user.get_username(),
         "puede_enrolar": user.has_perm("cuentas.add_codigoenrolamiento"),
+        "nombre": user.get_full_name(),
+        "rol": rol_de(user),
+        "es_admin": user.is_superuser,
     }
 
 

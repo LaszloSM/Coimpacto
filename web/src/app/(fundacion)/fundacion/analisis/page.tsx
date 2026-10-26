@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import { Bloque, Cabecera, Cargando, Cifras, useDatos, modulo as m } from "../_panel/comunes";
 import { fechaLarga, pesosCortos, porcentaje } from "../_panel/formato";
+import { Vacio } from "../_panel/formas";
 import estilos from "../_panel/tablero.module.css";
 
 interface Lectura {
@@ -20,10 +21,19 @@ interface Lectura {
 interface DatosAnalisis {
   generado_en: string;
   lecturas: Lectura[];
-  indicadores: { participacion: number | null; por_miembro: number; mora: number; comunidades_sin_reunion: number };
+  indicadores: {
+    participacion: number | null;
+    por_miembro: number;
+    mora: number;
+    comunidades_sin_reunion: number;
+  };
 }
 
-const ICONO = { alerta: WarningCircle, neutro: Info, bien: CheckCircle } as const;
+const ICONO = {
+  alerta: WarningCircle,
+  neutro: Info,
+  bien: CheckCircle,
+} as const;
 
 export default function Analisis() {
   const { datos, error, recargar } = useDatos<DatosAnalisis>("/oficina/analisis");
@@ -35,15 +45,37 @@ export default function Analisis() {
           <>
             <Cifras
               cifras={[
-                { etiqueta: "Participación", valor: porcentaje(d.indicadores.participacion), pie: "promedio en la última reunión", destacada: true },
-                { etiqueta: "Ahorro por miembro", valor: pesosCortos(d.indicadores.por_miembro), pie: "promedio del ciclo" },
-                { etiqueta: "Índice de mora", valor: porcentaje(d.indicadores.mora), pie: "de la cartera activa" },
-                { etiqueta: "Sin reunión reciente", valor: String(d.indicadores.comunidades_sin_reunion), pie: "comunidades, más de 45 días" },
+                {
+                  etiqueta: "Participación",
+                  valor: porcentaje(d.indicadores.participacion),
+                  pie: "promedio en la última reunión",
+                  destacada: true,
+                },
+                {
+                  etiqueta: "Ahorro por miembro",
+                  valor: pesosCortos(d.indicadores.por_miembro),
+                  pie: "promedio del ciclo",
+                },
+                {
+                  etiqueta: "Índice de mora",
+                  valor: porcentaje(d.indicadores.mora),
+                  pie: "de la cartera activa",
+                },
+                {
+                  etiqueta: "Sin reunión reciente",
+                  valor: String(d.indicadores.comunidades_sin_reunion),
+                  pie: "comunidades, más de 45 días",
+                },
               ]}
             />
             <Bloque titulo="Lecturas de hoy" sub={`Calculadas el ${fechaLarga(d.generado_en)}`}>
               {d.lecturas.length === 0 ? (
-                <p className={estilos.graficoVacio}>Con los datos actuales no hay nada fuera de lo normal.</p>
+                <Vacio
+                  compacto
+                  icono={CheckCircle}
+                  titulo="Nada fuera de lo normal"
+                  texto="Con los datos de hoy ninguna comunidad pide atención. Las lecturas cambian cada vez que una junta sincroniza."
+                />
               ) : (
                 <ul className={m.lecturas}>
                   {d.lecturas.map((l) => {

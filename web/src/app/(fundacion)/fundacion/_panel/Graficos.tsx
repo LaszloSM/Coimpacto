@@ -4,17 +4,7 @@
 // crédito; carbón para miembros. Se dibujan escalonados (0, 120, 240 ms), 450 ms ease-out, y
 // no se animan con "reducir movimiento".
 
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useSyncExternalStore } from "react";
 
 import { mesCorto, pesosCortos, pesosExactos } from "./formato";
@@ -97,7 +87,12 @@ export function Crecimiento({ serie }: { serie: Tablero["series"]["mensual"] }) 
       </figcaption>
       {hayDatos ? (
         <>
-          <Leyenda items={[{ color: NARANJA, texto: "Ahorro" }, { color: AZUL, texto: "Crédito" }]} />
+          <Leyenda
+            items={[
+              { color: NARANJA, texto: "Ahorro" },
+              { color: AZUL, texto: "Crédito" },
+            ]}
+          />
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={datos} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -111,8 +106,30 @@ export function Crecimiento({ serie }: { serie: Tablero["series"]["mensual"] }) 
                 <XAxis dataKey="etiqueta" tick={EJE} axisLine={false} tickLine={false} />
                 <YAxis tick={EJE} axisLine={false} tickLine={false} width={76} tickFormatter={pesosCortos} />
                 <Tooltip content={<Globo formato={pesosExactos} />} cursor={{ stroke: "#DAD8D3" }} />
-                <Area name="Ahorro" type="monotone" dataKey="ahorro" stroke={NARANJA} strokeWidth={2} fill="url(#relleno-ahorro)" isAnimationActive={animar} animationBegin={0} animationDuration={450} animationEasing="ease-out" />
-                <Area name="Crédito" type="monotone" dataKey="credito" stroke={AZUL} strokeWidth={2} fill="transparent" isAnimationActive={animar} animationBegin={0} animationDuration={450} animationEasing="ease-out" />
+                <Area
+                  name="Ahorro"
+                  type="monotone"
+                  dataKey="ahorro"
+                  stroke={NARANJA}
+                  strokeWidth={2}
+                  fill="url(#relleno-ahorro)"
+                  isAnimationActive={animar}
+                  animationBegin={0}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
+                <Area
+                  name="Crédito"
+                  type="monotone"
+                  dataKey="credito"
+                  stroke={AZUL}
+                  strokeWidth={2}
+                  fill="transparent"
+                  isAnimationActive={animar}
+                  animationBegin={0}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -126,7 +143,12 @@ export function Crecimiento({ serie }: { serie: Tablero["series"]["mensual"] }) 
 
 export function Top({ top }: { top: Tablero["series"]["top"] }) {
   const animar = useAnimar();
-  const datos = top.filter((t) => t.ahorro > 0).map((t) => ({ ...t, faltante: t.meta ? Math.max(0, t.meta - t.ahorro) : 0 }));
+  const datos = top
+    .filter((t) => t.ahorro > 0)
+    .map((t) => ({
+      ...t,
+      faltante: t.meta ? Math.max(0, t.meta - t.ahorro) : 0,
+    }));
   return (
     <figure className={estilos.grafico}>
       <figcaption className={estilos.graficoCabeza}>
@@ -135,7 +157,12 @@ export function Top({ top }: { top: Tablero["series"]["top"] }) {
       </figcaption>
       {datos.length ? (
         <>
-          <Leyenda items={[{ color: NARANJA, texto: "Ahorro" }, { color: GRIS, texto: "Falta para la meta" }]} />
+          <Leyenda
+            items={[
+              { color: NARANJA, texto: "Ahorro" },
+              { color: GRIS, texto: "Falta para la meta" },
+            ]}
+          />
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datos} layout="vertical" margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
@@ -143,8 +170,29 @@ export function Top({ top }: { top: Tablero["series"]["top"] }) {
                 <XAxis type="number" tick={EJE} axisLine={false} tickLine={false} tickFormatter={pesosCortos} tickCount={4} />
                 <YAxis type="category" dataKey="nombre" tick={EJE} axisLine={false} tickLine={false} width={96} />
                 <Tooltip content={<Globo formato={pesosExactos} />} cursor={{ fill: "#F4F3F0" }} />
-                <Bar name="Ahorro" dataKey="ahorro" stackId="a" fill={NARANJA} maxBarSize={18} isAnimationActive={animar} animationBegin={120} animationDuration={450} animationEasing="ease-out" />
-                <Bar name="Falta para la meta" dataKey="faltante" stackId="a" fill={GRIS} radius={[0, 4, 4, 0]} maxBarSize={18} isAnimationActive={animar} animationBegin={120} animationDuration={450} animationEasing="ease-out" />
+                <Bar
+                  name="Ahorro"
+                  dataKey="ahorro"
+                  stackId="a"
+                  fill={NARANJA}
+                  maxBarSize={18}
+                  isAnimationActive={animar}
+                  animationBegin={120}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
+                <Bar
+                  name="Falta para la meta"
+                  dataKey="faltante"
+                  stackId="a"
+                  fill={GRIS}
+                  radius={[0, 4, 4, 0]}
+                  maxBarSize={18}
+                  isAnimationActive={animar}
+                  animationBegin={120}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -168,7 +216,12 @@ export function Nuevos({ serie }: { serie: Tablero["series"]["nuevos"] }) {
       </figcaption>
       {hayDatos ? (
         <>
-          <Leyenda items={[{ color: CARBON, texto: "Miembros nuevos" }, { color: AZUL, texto: "Créditos nuevos" }]} />
+          <Leyenda
+            items={[
+              { color: CARBON, texto: "Miembros nuevos" },
+              { color: AZUL, texto: "Créditos nuevos" },
+            ]}
+          />
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datos} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barGap={4}>
@@ -176,8 +229,28 @@ export function Nuevos({ serie }: { serie: Tablero["series"]["nuevos"] }) {
                 <XAxis dataKey="etiqueta" tick={EJE} axisLine={false} tickLine={false} />
                 <YAxis tick={EJE} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
                 <Tooltip content={<Globo formato={(v) => String(v)} />} cursor={{ fill: "#F4F3F0" }} />
-                <Bar name="Miembros nuevos" dataKey="miembros" fill={CARBON} radius={[4, 4, 0, 0]} maxBarSize={22} isAnimationActive={animar} animationBegin={240} animationDuration={450} animationEasing="ease-out" />
-                <Bar name="Créditos nuevos" dataKey="creditos" fill={AZUL} radius={[4, 4, 0, 0]} maxBarSize={22} isAnimationActive={animar} animationBegin={240} animationDuration={450} animationEasing="ease-out" />
+                <Bar
+                  name="Miembros nuevos"
+                  dataKey="miembros"
+                  fill={CARBON}
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={22}
+                  isAnimationActive={animar}
+                  animationBegin={240}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
+                <Bar
+                  name="Créditos nuevos"
+                  dataKey="creditos"
+                  fill={AZUL}
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={22}
+                  isAnimationActive={animar}
+                  animationBegin={240}
+                  animationDuration={450}
+                  animationEasing="ease-out"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

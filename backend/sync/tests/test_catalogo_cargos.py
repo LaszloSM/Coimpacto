@@ -130,3 +130,34 @@ def test_sin_autorizacion_no_se_editan_los_datos(admin):
     r = enviar(admin, f"/api/oficina/miembros/{m.id}", {"nombres": "X"}, "put")
     assert r.status_code == 400
     assert r.json()["codigo"] == "SIN_AUTORIZACION"
+
+
+def test_usuarios_de_la_oficina_con_rol(admin):
+    r = enviar(
+        admin,
+        "/api/oficina/usuarios",
+        {
+            "usuario": "coordi",
+            "nombres": "Ana",
+            "rol": "Coordinador territorial",
+            "clave": "una-clave-larga-9",
+        },
+    )
+    assert r.status_code == 200, r.content
+    u = Usuario.objects.get(username="coordi")
+    assert u.has_perm("acap.add_acap") and not u.is_superuser
+    lista = admin.get("/api/oficina/usuarios", secure=True).json()["usuarios"]
+    assert {f["usuario"]: f["rol"] for f in lista}["coordi"] == "Coordinador territorial"
+    r = enviar(admin, f"/api/oficina/usuarios/{u.id}", {"rol": "Dirección", "activo": False}, "put")
+    assert r.status_code == 200
+    u.refresh_from_db()
+    assert not u.is_active and not Usuario.objects.get(id=u.id).has_perm("acap.add_acap")
+    yo = Usuario.objects.get(username="adm")
+    r = enviar(admin, f"/api/oficina/usuarios/{yo.id}", {"rol": "Analista"}, "put")
+    assert r.status_code == 400
+
+
+def test_solo_el_admin_maneja_usuarios(db):
+    cliente = Client()
+    cliente.force_login(Usuario.objects.create_user(username="x", password="x" * 16))
+    assert cliente.get("/api/oficina/usuarios", secure=True).status_code == 403

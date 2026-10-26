@@ -39,7 +39,12 @@ export function Pulso({ comunidades }: { comunidades: Comunidad[] }) {
   const transicion = reducir ? { duration: 0 } : CURVA;
 
   const conteo = useMemo(() => {
-    const c: Record<EstadoComunidad, number> = { mora: 0, atencion: 0, sin_datos: 0, al_dia: 0 };
+    const c: Record<EstadoComunidad, number> = {
+      mora: 0,
+      atencion: 0,
+      sin_datos: 0,
+      al_dia: 0,
+    };
     for (const x of comunidades) c[x.estado] += 1;
     return c;
   }, [comunidades]);

@@ -8,6 +8,7 @@ from core.api import router as core_router
 from cuentas.api import router as cuentas_router
 from cuentas.miembros_api import router as miembros_router
 from cuentas.sesion import router as sesion_router
+from cuentas.usuarios_api import router as usuarios_router
 from libro.api import router as libro_router
 from sync.api import router as sync_router
 from sync.propuestas_api import router as propuestas_router
@@ -28,3 +29,4 @@ api.add_router("/", libro_router)
 api.add_router("/", sync_router)
 api.add_router("/", propuestas_router)
 api.add_router("/", oficina_router)
+api.add_router("/", usuarios_router)

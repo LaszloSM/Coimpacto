@@ -6,7 +6,10 @@
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useSyncExternalStore } from "react";
 
+import { ChartBar } from "@phosphor-icons/react";
+
 import { mesCorto, pesosCortos, pesosExactos } from "./formato";
+import { Vacio } from "./formas";
 import estilos from "./tablero.module.css";
 
 export const COLOR = {
@@ -27,7 +30,11 @@ function suscribir(aviso: () => void) {
 }
 
 function useAnimar(): boolean {
-  return useSyncExternalStore(suscribir, () => window.matchMedia("(prefers-reduced-motion: no-preference)").matches, () => false);
+  return useSyncExternalStore(
+    suscribir,
+    () => window.matchMedia("(prefers-reduced-motion: no-preference)").matches,
+    () => false,
+  );
 }
 
 export interface Serie {
@@ -49,7 +56,13 @@ function Leyenda({ series }: { series: Serie[] }) {
   );
 }
 
-function Globo(props: { active?: boolean; payload?: { name?: string; value?: number; color?: string }[]; label?: string; formato: (v: number) => string; etiqueta?: (l: string) => string }) {
+function Globo(props: {
+  active?: boolean;
+  payload?: { name?: string; value?: number; color?: string }[];
+  label?: string;
+  formato: (v: number) => string;
+  etiqueta?: (l: string) => string;
+}) {
   if (!props.active || !props.payload?.length) return null;
   return (
     <div className={estilos.globo}>
@@ -119,7 +132,7 @@ export function BarrasPorMes(props: {
           </div>
         </>
       ) : (
-        <p className={estilos.graficoVacio}>{props.vacio}</p>
+        <Vacio compacto icono={ChartBar} fantasma="barras" titulo="Sin datos todavía" texto={props.vacio} />
       )}
     </figure>
   );
@@ -167,7 +180,7 @@ export function BarrasHorizontales(props: {
           </ResponsiveContainer>
         </div>
       ) : (
-        <p className={estilos.graficoVacio}>{props.vacio}</p>
+        <Vacio compacto icono={ChartBar} fantasma="barras" titulo="Sin datos todavía" texto={props.vacio} />
       )}
     </figure>
   );

@@ -11,6 +11,7 @@ import {
   FileText,
   GearSix,
   HandCoins,
+  IdentificationBadge,
   Lightbulb,
   ListChecks,
   MagnifyingGlass,
@@ -18,6 +19,7 @@ import {
   SignOut,
   SquaresFour,
   Tray,
+  UserGear,
   UsersThree,
   Wallet,
   type Icon,
@@ -31,8 +33,16 @@ import { api, SinSesion } from "@/lib/api";
 
 import estilos from "./panel.module.css";
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--fuente-titulos" });
-const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--fuente-texto" });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--fuente-titulos",
+});
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--fuente-texto",
+});
 
 interface Seccion {
   ruta: string;
@@ -47,7 +57,11 @@ const ANALISIS: Seccion[] = [
   { ruta: "/fundacion/credito", texto: "Crédito", icono: HandCoins },
   { ruta: "/fundacion/cartera", texto: "Cartera", icono: Wallet },
   { ruta: "/fundacion/proyectos", texto: "Proyectos", icono: Plant },
-  { ruta: "/fundacion/capacitaciones", texto: "Capacitaciones", icono: ChalkboardTeacher },
+  {
+    ruta: "/fundacion/capacitaciones",
+    texto: "Capacitaciones",
+    icono: ChalkboardTeacher,
+  },
   { ruta: "/fundacion/analisis", texto: "Análisis", icono: Lightbulb },
   { ruta: "/fundacion/evaluaciones", texto: "Evaluaciones", icono: ListChecks },
   { ruta: "/fundacion/reportes", texto: "Reportes", icono: FileText },
@@ -56,22 +70,36 @@ const ANALISIS: Seccion[] = [
 const GESTION: Seccion[] = [
   { ruta: "/fundacion/comunidades", texto: "Comunidades", icono: ChartLineUp },
   { ruta: "/fundacion/miembros", texto: "Personas", icono: UsersThree },
-  { ruta: "/fundacion/pendientes", texto: "Pendientes", icono: Tray, contador: true },
-  { ruta: "/fundacion/por-aclarar", texto: "Por aclarar", icono: MagnifyingGlass },
-  { ruta: "/fundacion/respaldos", texto: "Copias de seguridad", icono: ClipboardText },
+  { ruta: "/fundacion/cargos", texto: "Cargos", icono: IdentificationBadge },
+  {
+    ruta: "/fundacion/pendientes",
+    texto: "Pendientes",
+    icono: Tray,
+    contador: true,
+  },
+  {
+    ruta: "/fundacion/por-aclarar",
+    texto: "Por aclarar",
+    icono: MagnifyingGlass,
+  },
+  {
+    ruta: "/fundacion/respaldos",
+    texto: "Copias de seguridad",
+    icono: ClipboardText,
+  },
 ];
 
 export default function Armazon({ children }: Readonly<{ children: React.ReactNode }>) {
   const ruta = usePathname();
   const router = useRouter();
-  const [usuario, setUsuario] = useState<string>();
+  const [yo, setYo] = useState<{ usuario: string; nombre: string; rol: string; es_admin: boolean }>();
   const [pendientes, setPendientes] = useState<number>();
   const sinBarra = ruta === "/fundacion/entrar";
 
   useEffect(() => {
     if (sinBarra) return;
-    api<{ usuario: string }>("/sesion")
-      .then((yo) => setUsuario(yo.usuario))
+    api<{ usuario: string; nombre: string; rol: string; es_admin: boolean }>("/sesion")
+      .then(setYo)
       .catch((e) => (e instanceof SinSesion ? router.replace("/fundacion/entrar") : undefined));
     api<unknown[]>("/oficina/pendientes")
       .then((filas) => setPendientes(filas.length))
@@ -116,19 +144,32 @@ export default function Armazon({ children }: Readonly<{ children: React.ReactNo
           </p>
           <ul aria-labelledby="grupo-gestion">
             {GESTION.map(enlace)}
-            <li>
-              <a href="/admin/" className={estilos.enlace}>
-                <GearSix size={20} aria-hidden />
-                <span>Configuración</span>
-              </a>
-            </li>
+            {yo?.es_admin ? (
+              <>
+                {enlace({ ruta: "/fundacion/usuarios", texto: "Usuarios", icono: UserGear })}
+                <li>
+                  <a href="/admin/" className={estilos.enlace}>
+                    <GearSix size={20} aria-hidden />
+                    <span>Configuración</span>
+                  </a>
+                </li>
+              </>
+            ) : null}
           </ul>
         </nav>
         <div className={estilos.pie}>
           <span className={estilos.iniciales} aria-hidden>
-            {(usuario ?? "·").slice(0, 2).toUpperCase()}
+            {(yo?.nombre || yo?.usuario || "·")
+              .split(/\s+/)
+              .slice(0, 2)
+              .map((p) => p[0])
+              .join("")
+              .toUpperCase()}
           </span>
-          <span className={estilos.usuario}>{usuario ?? "…"}</span>
+          <span className={estilos.usuario}>
+            {yo?.nombre || yo?.usuario || "…"}
+            {yo?.rol ? <span className={estilos.rol}>{yo.rol}</span> : null}
+          </span>
           <button type="button" className={estilos.salir} onClick={salir} aria-label="Salir del panel">
             <SignOut size={20} aria-hidden />
           </button>

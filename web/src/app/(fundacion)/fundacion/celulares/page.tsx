@@ -19,7 +19,8 @@ const PASOS = [
   },
   {
     titulo: "En el celular de la junta",
-    texto: "Con señal, se toca «Registrar este celular» y se escriben el usuario y la clave. La Presidencia crea su PIN y da de alta a los demás cargos. Después la reunión funciona sin señal.",
+    texto:
+      "Con señal, se toca «Registrar este celular» y se escriben el usuario y la clave. La Presidencia crea su PIN y da de alta a los demás cargos. Después la reunión funciona sin señal.",
   },
   {
     titulo: "Si se pierde el celular",

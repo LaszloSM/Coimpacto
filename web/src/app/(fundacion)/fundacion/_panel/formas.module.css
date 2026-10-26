@@ -1,0 +1,512 @@
+/* Formularios y estados vacíos del panel: el mundo del libro (renglones, raya que se vuelve
+   naranja al escribir, página en blanco). Fichas de panel.module.css. */
+
+/* ---------- Página en blanco ---------- */
+
+.vacio {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  padding: 40px 24px;
+  border-radius: var(--radio);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+}
+
+/* Renglones del cuaderno: solo en el fondo, se desvanecen hacia abajo. */
+.vacio::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(to bottom, transparent 0 31px, rgb(28 28 28 / 0.05) 31px 32px);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+
+.vacio[data-compacto] {
+  min-height: 200px;
+  padding: 28px 20px;
+  border: 0;
+}
+
+.vacioCuerpo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  max-width: 420px;
+  text-align: center;
+  animation: aparecer 420ms var(--curva) both;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(2px);
+  }
+}
+
+.vacioIcono {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  color: var(--naranja);
+  box-shadow: 0 6px 16px -6px rgb(246 106 3 / 0.35);
+}
+
+/* La hoja de atrás: dos hojas apiladas, la de atrás un poco girada. */
+.vacioIconoFondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--naranja-suave);
+  transform: rotate(-9deg) translate(-5px, 3px);
+}
+
+.vacioTitulo {
+  margin: 0;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--texto);
+}
+
+.vacioTexto {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.vacioAccion {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Siluetas de lo que aparecerá (tabla, barras, tarjetas), muy tenues detrás del texto. */
+.fantasmaTabla,
+.fantasmaBarras,
+.fantasmaTarjetas {
+  position: absolute;
+  inset: 24px 28px;
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+  /* Hueco en el centro: la silueta rodea el texto, nunca pasa por debajo de él. */
+  mask-image: radial-gradient(ellipse 46% 52% at 50% 50%, transparent 55%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse 46% 52% at 50% 50%, transparent 55%, #000 100%);
+}
+
+.fantasmaTabla {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding-top: 8px;
+}
+
+.fantasmaTabla span {
+  display: grid;
+  grid-template-columns: 28px 1fr 80px;
+  gap: 14px;
+  align-items: center;
+}
+
+.fantasmaTabla i {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--borde);
+}
+
+.fantasmaTabla i:first-child {
+  height: 28px;
+  border-radius: 8px;
+}
+
+.fantasmaBarras {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 0 8%;
+}
+
+.fantasmaBarras span {
+  flex: 1;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(to top, var(--borde), transparent);
+}
+
+.fantasmaTarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-content: start;
+}
+
+.fantasmaTarjetas span {
+  height: 120px;
+  border-radius: 12px;
+  border: 1px dashed var(--borde-fuerte);
+}
+
+/* ---------- Campos ---------- */
+
+.campo {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.etiqueta {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.ayuda {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--texto-tenue);
+  line-height: 1.4;
+}
+
+/* Renglón de la ficha: fondo apenas tibio, raya abajo; al escribir, la raya se vuelve naranja
+   de izquierda a derecha y el fondo se aclara. */
+.entrada,
+.campo input:not([type="range"]):not([type="file"]),
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--texto);
+  background: var(--fondo);
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--borde-fuerte);
+  border-radius: 8px 8px 2px 2px;
+  background-image: linear-gradient(var(--naranja), var(--naranja));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0% 2px;
+  transition:
+    background-size 260ms var(--curva),
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.campo textarea {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.campo select {
+  appearance: none;
+  padding-right: 36px;
+  background-image:
+    linear-gradient(var(--naranja), var(--naranja)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 256 256'%3E%3Cpath fill='%235f5e5a' d='M213.7 101.7l-80 80a8 8 0 0 1-11.4 0l-80-80a8 8 0 0 1 11.4-11.4L128 164.7l74.3-74.4a8 8 0 0 1 11.4 11.4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat;
+  background-position: left bottom, right 12px center;
+  background-size: 0% 2px, 12px;
+}
+
+.entrada:hover,
+.campo input:not([type="range"]):not([type="file"]):hover,
+.campo select:hover,
+.campo textarea:hover {
+  border-bottom-color: var(--texto-tenue);
+}
+
+.entrada:focus,
+.campo input:not([type="range"]):not([type="file"]):focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: none;
+  background-color: var(--superficie);
+  border-color: var(--borde);
+  background-size: 100% 2px;
+}
+
+.campo select:focus {
+  background-size: 100% 2px, 12px;
+}
+
+.campo input[type="range"] {
+  accent-color: var(--naranja);
+  width: 100%;
+}
+
+.pesos {
+  position: relative;
+  display: block;
+}
+
+.pesosSigno {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--texto-tenue);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.pesos .entrada {
+  padding-left: 26px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* ---------- Segmentos ---------- */
+
+.segmentos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+}
+
+.segmento {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 160ms ease;
+}
+
+.segmento:hover {
+  color: var(--texto);
+}
+
+.segmento[aria-checked="true"] {
+  color: var(--texto);
+}
+
+.segmentoMarca {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--superficie);
+  box-shadow: 0 1px 2px rgb(28 28 28 / 0.08), 0 2px 8px rgb(28 28 28 / 0.06);
+}
+
+.segmentoTexto {
+  position: relative;
+}
+
+/* ---------- Interruptor ---------- */
+
+.interruptorFila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.interruptorFila > div {
+  display: grid;
+  gap: 2px;
+}
+
+.interruptorEtiqueta {
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.interruptor {
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--borde-fuerte);
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+
+.interruptor[aria-checked="true"] {
+  background: var(--carbon);
+}
+
+.interruptor:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.interruptorBola {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(28 28 28 / 0.25);
+  transition: transform 220ms var(--curva);
+}
+
+.interruptor[aria-checked="true"] .interruptorBola {
+  transform: translateX(18px);
+}
+
+.interruptor:active .interruptorBola {
+  width: 22px;
+}
+
+.interruptor[aria-checked="true"]:active .interruptorBola {
+  transform: translateX(14px);
+}
+
+/* ---------- Foto del formato ---------- */
+
+.foto {
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.fotoEntrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.fotoVacia {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 22px 16px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+  border: 1.5px dashed var(--borde-fuerte);
+  border-radius: 12px;
+  background: var(--fondo);
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.fotoVacia svg {
+  color: var(--naranja);
+}
+
+.foto:hover .fotoVacia,
+.foto[data-encima] .fotoVacia {
+  border-color: var(--naranja);
+  background: var(--naranja-suave);
+}
+
+.foto:focus-within .fotoVacia {
+  outline: 2px solid var(--naranja);
+  outline-offset: 2px;
+}
+
+.fotoVista {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--borde);
+}
+
+/* ---------- Secciones de formulario ---------- */
+
+.seccion {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.seccion + .seccion {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--borde);
+}
+
+.seccionTitulo {
+  padding: 0;
+  margin-bottom: 4px;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--texto);
+}
+
+.seccionTexto {
+  margin: 0 0 12px;
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
+  line-height: 1.5;
+}
+
+.seccionCuerpo {
+  display: grid;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+/* ---------- Iniciales ---------- */
+
+.iniciales {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-family: var(--fuente-titulos-pila);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vacioCuerpo {
+    animation: none;
+  }
+
+  .entrada,
+  .campo input,
+  .campo select,
+  .campo textarea,
+  .interruptorBola {
+    transition: none;
+  }
+}

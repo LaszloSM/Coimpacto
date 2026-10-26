@@ -1,0 +1,105 @@
+/* Matriz de permisos por cargo. */
+
+.matrizMarco {
+  overflow-x: auto;
+  margin: 0 -4px;
+}
+
+.matriz {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.matriz thead th {
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+
+.matriz thead th:first-child {
+  text-align: left;
+}
+
+.matriz tbody th,
+.matriz td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+.matriz td {
+  text-align: center;
+}
+
+.matriz tr:last-child th,
+.matriz tr:last-child td {
+  border-bottom: 0;
+}
+
+.matriz tr[data-inactivo] {
+  opacity: 0.55;
+}
+
+.nombre {
+  display: grid;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: var(--texto);
+}
+
+.nombre > span:first-child {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 160ms ease;
+}
+
+.nombre:hover > span:first-child {
+  text-decoration-color: var(--naranja);
+}
+
+.descripcion {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--texto-tenue);
+  max-width: 34ch;
+}
+
+.matriz .numero {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.leyenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 28px;
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+}
+
+.leyenda dt {
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.leyenda dd {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  color: var(--texto-tenue);
+  line-height: 1.5;
+}

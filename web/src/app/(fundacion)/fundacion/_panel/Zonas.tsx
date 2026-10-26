@@ -38,7 +38,11 @@ export function Zonas({ zonas }: { zonas: Tablero["series"]["zonas"] }) {
                 </th>
                 <td>
                   <span className={estilos.zonaBarra} aria-hidden>
-                    <span style={{ transform: `scaleX(${(z.cumplimiento ?? 0) / 100})` }} />
+                    <span
+                      style={{
+                        transform: `scaleX(${(z.cumplimiento ?? 0) / 100})`,
+                      }}
+                    />
                   </span>
                   <span className={estilos.zonaValor}>{porcentaje(z.cumplimiento)}</span>
                 </td>

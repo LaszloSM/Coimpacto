@@ -3,15 +3,18 @@
 // Piezas comunes de los módulos del panel: carga con su esqueleto y reintento, cabecera,
 // franja de cifras, tablas ordenables, barras de avance y el panel lateral de formularios.
 
-import { ArrowDown, ArrowUp, X } from "@phosphor-icons/react";
+import { ArrowDown, ArrowUp, Rows, X, type Icon } from "@phosphor-icons/react";
 import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { api, SinSesion } from "@/lib/api";
 
+import { Vacio } from "./formas";
 import estilos from "./tablero.module.css";
 import m from "./modulo.module.css";
+
+export { Campo } from "./formas";
 
 /** Trae una ruta de la API; si no hay sesión lleva a entrar. `recargar` vuelve a pedirla. */
 export function useDatos<T>(ruta: string) {
@@ -120,7 +123,15 @@ export function Chispa({ serie, color = "var(--naranja)" }: { serie: number[]; c
   const [ux, uy] = puntos[puntos.length - 1];
   return (
     <svg className={m.chispa} viewBox="-2 0 104 30" preserveAspectRatio="none" aria-hidden>
-      <polyline points={puntos.map((p) => p.join(",")).join(" ")} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+      <polyline
+        points={puntos.map((p) => p.join(",")).join(" ")}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        vectorEffect="non-scaling-stroke"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
       <circle cx={ux} cy={uy} r="3" fill={color} vectorEffect="non-scaling-stroke" />
     </svg>
   );
@@ -184,10 +195,18 @@ export interface Columna<F> {
   numero?: boolean;
 }
 
-export function Tabla<F>(props: { filas: F[]; columnas: Columna<F>[]; clave: (f: F) => string; vacio: string; alElegir?: (f: F) => void; ordenInicial?: string }) {
-  const [orden, setOrden] = useState<{ clave: string; asc: boolean } | null>(
-    props.ordenInicial ? { clave: props.ordenInicial, asc: false } : null,
-  );
+export function Tabla<F>(props: {
+  filas: F[];
+  columnas: Columna<F>[];
+  clave: (f: F) => string;
+  vacio: string;
+  vacioTexto?: string;
+  vacioIcono?: Icon;
+  vacioAccion?: React.ReactNode;
+  alElegir?: (f: F) => void;
+  ordenInicial?: string;
+}) {
+  const [orden, setOrden] = useState<{ clave: string; asc: boolean } | null>(props.ordenInicial ? { clave: props.ordenInicial, asc: false } : null);
   const filas = useMemo(() => {
     if (!orden) return props.filas;
     const col = props.columnas.find((c) => c.clave === orden.clave);
@@ -200,7 +219,18 @@ export function Tabla<F>(props: { filas: F[]; columnas: Columna<F>[]; clave: (f:
       return orden.asc ? r : -r;
     });
   }, [props.filas, props.columnas, orden]);
-  if (props.filas.length === 0) return <p className={estilos.graficoVacio}>{props.vacio}</p>;
+  if (props.filas.length === 0) {
+    return (
+      <Vacio
+        compacto
+        fantasma="tabla"
+        icono={props.vacioIcono ?? Rows}
+        titulo={props.vacio}
+        texto={props.vacioTexto ?? "Aparece aquí en cuanto haya registros."}
+        accion={props.vacioAccion}
+      />
+    );
+  }
   return (
     <div className={m.tablaMarco}>
       <table className={m.tabla}>
@@ -211,7 +241,16 @@ export function Tabla<F>(props: { filas: F[]; columnas: Columna<F>[]; clave: (f:
               return (
                 <th key={c.clave} scope="col" data-numero={c.numero || undefined} aria-sort={activa ? (orden!.asc ? "ascending" : "descending") : undefined}>
                   {c.orden ? (
-                    <button type="button" className={m.ordenar} onClick={() => setOrden({ clave: c.clave, asc: activa ? !orden!.asc : false })}>
+                    <button
+                      type="button"
+                      className={m.ordenar}
+                      onClick={() =>
+                        setOrden({
+                          clave: c.clave,
+                          asc: activa ? !orden!.asc : false,
+                        })
+                      }
+                    >
                       {c.titulo}
                       {activa ? orden!.asc ? <ArrowUp size={12} weight="bold" aria-hidden /> : <ArrowDown size={12} weight="bold" aria-hidden /> : null}
                     </button>
@@ -257,7 +296,7 @@ export function Etiqueta({ tono, children }: { tono: "bien" | "atencion" | "aler
 }
 
 /** Panel lateral para crear o editar. Se cierra con Escape o con la X. */
-export function Lateral(props: { abierto: boolean; titulo: string; alCerrar: () => void; children: React.ReactNode }) {
+export function Lateral(props: { abierto: boolean; titulo: string; descripcion?: string; alCerrar: () => void; children: React.ReactNode }) {
   const reducir = useReducedMotion();
   const { abierto, alCerrar } = props;
   useEffect(() => {
@@ -286,10 +325,16 @@ export function Lateral(props: { abierto: boolean; titulo: string; alCerrar: () 
             initial={{ transform: "translateX(100%)" }}
             animate={{ transform: "translateX(0%)" }}
             exit={{ transform: "translateX(100%)" }}
-            transition={{ duration: reducir ? 0 : 0.28, ease: [0.32, 0.72, 0, 1] }}
+            transition={{
+              duration: reducir ? 0 : 0.28,
+              ease: [0.32, 0.72, 0, 1],
+            }}
           >
             <div className={m.lateralCabeza}>
-              <h2>{props.titulo}</h2>
+              <div>
+                <h2>{props.titulo}</h2>
+                {props.descripcion ? <p>{props.descripcion}</p> : null}
+              </div>
               <button type="button" className={m.cerrar} onClick={props.alCerrar} aria-label="Cerrar">
                 <X size={20} />
               </button>
@@ -299,16 +344,6 @@ export function Lateral(props: { abierto: boolean; titulo: string; alCerrar: () 
         </>
       ) : null}
     </AnimatePresence>
-  );
-}
-
-export function Campo(props: { etiqueta: string; ayuda?: string; children: React.ReactNode }) {
-  return (
-    <label className={m.campo}>
-      <span className={m.campoEtiqueta}>{props.etiqueta}</span>
-      {props.children}
-      {props.ayuda ? <span className={m.campoAyuda}>{props.ayuda}</span> : null}
-    </label>
   );
 }
 
