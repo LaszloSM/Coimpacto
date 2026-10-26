@@ -11,7 +11,7 @@ name: Reunión completa sin señal
     visible:
       id: "perfil-portador_caja"
     timeout: 30000
-- takeScreenshot: maestro-salida/capturas/01-inicio
+- takeScreenshot: 01-inicio
 - tapOn:
     id: "perfil-portador_caja"
 - tapOn:
@@ -21,17 +21,17 @@ name: Reunión completa sin señal
     visible:
       id: "abrir-reunion"
     timeout: 30000
-- takeScreenshot: maestro-salida/capturas/02-abrir-reunion
+- takeScreenshot: 02-abrir-reunion
 - tapOn:
     id: "abrir-reunion"
 - extendedWaitUntil:
     visible:
       id: "seguir-aportes"
     timeout: 15000
-- takeScreenshot: maestro-salida/capturas/03-asistencia
+- takeScreenshot: 03-asistencia
 - tapOn:
     id: "seguir-aportes"
-- takeScreenshot: maestro-salida/capturas/04-aporte
+- takeScreenshot: 04-aporte
 - repeat:
     times: 20
     commands:
@@ -44,7 +44,7 @@ name: Reunión completa sin señal
     id: "seguir-prestamos"
 - tapOn:
     id: "agregar-solicitud"
-- takeScreenshot: maestro-salida/capturas/05-solicitud
+- takeScreenshot: 05-solicitud
 - scrollUntilVisible:
     element:
       id: "pide-9"
@@ -88,7 +88,7 @@ name: Reunión completa sin señal
           id: "voto-favor-mas"
 - scrollUntilVisible:
     element: ".*Aprobado por la asamblea..*"
-- takeScreenshot: maestro-salida/capturas/06-votacion
+- takeScreenshot: 06-votacion
 - tapOn:
     id: "guardar-solicitud"
 - tapOn:
@@ -114,7 +114,7 @@ name: Reunión completa sin señal
 - tapOn:
     id: "seguir-arqueo"
 - assertVisible: ".*Cuenten los billetes.*"
-- takeScreenshot: maestro-salida/capturas/07-arqueo
+- takeScreenshot: 07-arqueo
 - scrollUntilVisible:
     element:
       id: "cuenta-50000-mas"
@@ -154,7 +154,7 @@ name: Reunión completa sin señal
     element:
       id: "firmar-cierre"
     centerElement: true
-- takeScreenshot: maestro-salida/capturas/08-cierre
+- takeScreenshot: 08-cierre
 - tapOn:
     id: "firmar-cierre"
 - scrollUntilVisible:
@@ -176,7 +176,7 @@ name: Reunión completa sin señal
     visible:
       id: "reunion-cerrada"
     timeout: 30000
-- takeScreenshot: maestro-salida/capturas/09-reunion-cerrada
+- takeScreenshot: 09-reunion-cerrada
 - scrollUntilVisible:
     element:
       id: "ver-resumen"
@@ -184,7 +184,7 @@ name: Reunión completa sin señal
 - tapOn:
     id: "ver-resumen"
 - assertVisible: "#01"
-- takeScreenshot: maestro-salida/capturas/10-resumen
+- takeScreenshot: 10-resumen
 - repeat:
     times: 19
     commands:

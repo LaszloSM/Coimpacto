@@ -1,7 +1,8 @@
 // Inicio por prioridad (N1, TD1). El único botón naranja es lo que toca ahora: "Seguir la
 // reunión del …" si hay una abierta; si no, "Abrir reunión". "Enviar a la Fundación" siempre
-// a la vista (N15). Perfiles por número y cargo, nunca nombres completos. Sin perfiles: el
-// estado vacío de enrolamiento con "Registrar este celular".
+// a la vista (N15). Perfiles por número y cargo, nunca nombres completos. Las demás acciones
+// van como renglones en "Más opciones", no como una pila de botones. Sin perfiles: el estado
+// vacío de registro con "Registrar este celular" (usuario y clave de la ACAP).
 
 import { tokens } from "@credimpacto/tokens";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -10,6 +11,23 @@ import { NOMBRE_CARGO, type Perfil } from "../seguridad/perfiles";
 import { BotonPrincipal, BotonSecundario, estilos as base } from "../ui/componentes";
 
 const { color, tipo, spacing } = tokens;
+
+/** "2026-10-04" → "4 de octubre"; cualquier otro texto queda igual. */
+function fechaReunion(texto: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(texto)) return texto;
+  return new Date(`${texto}T12:00:00`).toLocaleDateString("es-CO", { day: "numeric", month: "long" });
+}
+
+function Opcion(props: { texto: string; alTocar?: () => void; testID: string }) {
+  return (
+    <Pressable testID={props.testID} accessibilityRole="button" onPress={props.alTocar} style={base.renglon}>
+      <Text style={[base.parrafo, { flex: 1 }]}>{props.texto}</Text>
+      <Text style={estilos.flecha} accessibilityElementsHidden importantForAccessibility="no">
+        ›
+      </Text>
+    </Pressable>
+  );
+}
 
 export function Inicio(props: {
   error?: string;
@@ -43,7 +61,7 @@ export function Inicio(props: {
             No se pudo preparar este celular. Avise al facilitador. ({props.error})
           </Text>
         ) : perfiles.length === 0 ? (
-          <Text style={estilos.mensaje}>Este celular aún no está registrado. Pida el código al facilitador.</Text>
+          <Text style={estilos.mensaje}>Este celular aún no está registrado. Pida a la Fundación el usuario y la clave de su ACAP.</Text>
         ) : (
           <>
             <Text style={estilos.mensaje}>¿Quién lleva la reunión?</Text>
@@ -82,6 +100,11 @@ export function Inicio(props: {
                 ))}
               </>
             ) : null}
+            <Text style={[estilos.mensaje, { marginTop: spacing.lg }]}>Más opciones</Text>
+            <Opcion testID="comprobantes" texto="Comprobantes de la reunión pasada" alTocar={props.alComprobantes} />
+            <Opcion testID="alta-cargo" texto="Dar de alta un cargo" alTocar={props.alAltaCargo} />
+            <Opcion testID="alta-socio" texto="Dar acceso a un socio" alTocar={props.alAltaSocio} />
+            <Opcion testID="respaldo" texto="Copia de seguridad" alTocar={props.alRespaldo} />
           </>
         )}
       </ScrollView>
@@ -92,19 +115,11 @@ export function Inicio(props: {
           <>
             <BotonPrincipal
               testID="ir-a-reunion"
-              texto={props.reunionAbierta ? `Seguir la reunión del ${props.reunionAbierta}` : "Abrir reunión"}
+              texto={props.reunionAbierta ? `Seguir la reunión del ${fechaReunion(props.reunionAbierta)}` : "Abrir reunión"}
               falta={falta}
               alTocar={() => props.alAbrir?.()}
             />
             <BotonSecundario testID="enviar-fundacion" texto="Enviar a la Fundación" alTocar={() => props.alEnviar?.()} />
-            <BotonSecundario
-              testID="comprobantes"
-              texto="Comprobantes de la reunión pasada"
-              alTocar={() => props.alComprobantes?.()}
-            />
-            <BotonSecundario testID="respaldo" texto="Copia de seguridad" alTocar={() => props.alRespaldo?.()} />
-            <BotonSecundario testID="alta-cargo" texto="Dar de alta un cargo" alTocar={() => props.alAltaCargo?.()} />
-            <BotonSecundario testID="alta-socio" texto="Dar acceso a un socio" alTocar={() => props.alAltaSocio?.()} />
           </>
         )}
       </View>
@@ -121,4 +136,5 @@ const estilos = StyleSheet.create({
   // Cuadrado: el sello es el único elemento redondo del sistema (DESIGN.md, Shapes).
   radio: { width: 28, height: 28, borderRadius: 4, borderWidth: 2, borderColor: color.tinta },
   radioElegido: { borderWidth: 9 },
+  flecha: { ...tipo.body, fontSize: 28, color: color["tinta-suave"] },
 });

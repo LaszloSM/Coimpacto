@@ -88,7 +88,7 @@ test("si el servidor no acepta al Presidente, no queda ningún perfil", async ()
   const { pedir } = servidorFalso({ presidente: 400 });
   const deps = dependencias(pedir);
   const enCurso = await registrarCelular(deps, `credimpacto:enrolar:${CODIGO}`);
-  await expect(altaPrimerPresidente(deps, enCurso, "482916")).rejects.toThrow("Este código ya no sirve");
+  await expect(altaPrimerPresidente(deps, enCurso, "482916")).rejects.toThrow("El registro venció");
   expect(await perfiles(deps.almacen)).toEqual([]);
 });
 

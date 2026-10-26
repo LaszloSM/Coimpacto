@@ -218,9 +218,9 @@ describe("enrolamiento por QR", () => {
   });
 
   test("código vencido → texto de la tabla de estados", async () => {
-    const pedir = responder(400, { motivo: "codigo_vencido", mensaje: "Este código ya no sirve." });
+    const pedir = responder(400, { motivo: "codigo_vencido", mensaje: "El registro venció." });
     await expect(canjearCodigo("https://api.example", codigo, "llave", pedir)).rejects.toThrow(
-      "Este código ya no sirve. Pida uno nuevo al facilitador.",
+      "El registro venció. Escriba otra vez el usuario y la clave de la ACAP.",
     );
   });
 

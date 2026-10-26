@@ -23,8 +23,8 @@ export type MotivoRechazo =
 /** Textos de la tabla de estados nativos (revisión de diseño nativo, pasada 2). */
 export const TEXTO_RECHAZO: Record<MotivoRechazo, string> = {
   clave_invalida: "El usuario o la clave no son correctos. Revíselos con la Fundación.",
-  codigo_invalido: "Este código ya no sirve. Pida uno nuevo al facilitador.",
-  codigo_vencido: "Este código ya no sirve. Pida uno nuevo al facilitador.",
+  codigo_invalido: "El registro venció. Escriba otra vez el usuario y la clave de la ACAP.",
+  codigo_vencido: "El registro venció. Escriba otra vez el usuario y la clave de la ACAP.",
   llave_invalida: "No se pudo registrar este celular. Intente de nuevo.",
   qr_ajeno: "Este código no es de Credimpacto.",
   sin_senal: "Necesita señal solo para este paso.",
