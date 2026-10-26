@@ -6,17 +6,21 @@ export const tokens = {
   "color": {
     "tinta": "#10213D",
     "tinta-suave": "#3D4A60",
-    "navy": "#1B3A6B",
-    "navy-tinte": "#E4EAF3",
-    "naranja": "#F07B22",
-    "naranja-presionado": "#D96A15",
-    "on-naranja": "#10213D",
+    "tinta-tenue": "#5B6678",
     "papel": "#FFFFFF",
-    "papel-oficina": "#F2F4F7",
-    "renglon": "#D5DCE6",
-    "renglon-fuerte": "#AEB9C8",
+    "mesa": "#F2F3F0",
+    "hueco": "#ECEEF1",
+    "renglon": "#E1E5EC",
+    "renglon-fuerte": "#C5CDD9",
+    "naranja": "#F66A03",
+    "naranja-presionado": "#DB5E00",
+    "naranja-tinte": "#FFF0E3",
+    "naranja-texto": "#A84500",
+    "on-naranja": "#10213D",
+    "azul": "#005FC5",
+    "azul-tinte": "#E7EFFA",
     "confirmado": "#124B2E",
-    "confirmado-tinte": "#E8F4EC",
+    "confirmado-tinte": "#E3F2E8",
     "provisional": "#3D4A60",
     "provisional-tinte": "#ECEFF4",
     "rechazado": "#7E1712",
@@ -36,55 +40,74 @@ export const tokens = {
   },
   "tipo": {
     "display": {
-      "fontFamily": "Bitter-700",
+      "fontFamily": "BricolageGrotesque-800",
       "fontSize": 32,
-      "letterSpacing": -0.32
+      "lineHeight": 34,
+      "letterSpacing": -0.96
     },
     "heading": {
-      "fontFamily": "Bitter-600",
-      "fontSize": 28
+      "fontFamily": "BricolageGrotesque-700",
+      "fontSize": 20,
+      "lineHeight": 24,
+      "letterSpacing": -0.3
+    },
+    "campo-titulo": {
+      "fontFamily": "BricolageGrotesque-800",
+      "fontSize": 30,
+      "lineHeight": 33,
+      "letterSpacing": -0.6
+    },
+    "campo-subtitulo": {
+      "fontFamily": "BricolageGrotesque-700",
+      "fontSize": 22,
+      "lineHeight": 25,
+      "letterSpacing": -0.22
     },
     "body": {
       "fontFamily": "AtkinsonHyperlegibleNext-400",
       "fontSize": 18,
-      "lineHeight": 27
+      "lineHeight": 26
+    },
+    "body-fuerte": {
+      "fontFamily": "AtkinsonHyperlegibleNext-700",
+      "fontSize": 18,
+      "lineHeight": 24
     },
     "body-oficina": {
       "fontFamily": "AtkinsonHyperlegibleNext-400",
-      "fontSize": 16,
-      "lineHeight": 24
-    },
-    "campo-titulo": {
-      "fontFamily": "AtkinsonHyperlegibleNext-700",
-      "fontSize": 26,
-      "lineHeight": 31
+      "fontSize": 15,
+      "lineHeight": 23
     },
     "cifra-clave": {
       "fontFamily": "AtkinsonHyperlegibleNext-800",
       "fontSize": 44,
-      "lineHeight": 48,
+      "lineHeight": 46,
+      "letterSpacing": -0.88,
       "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     },
     "cifra-renglon": {
       "fontFamily": "AtkinsonHyperlegibleNext-700",
       "fontSize": 22,
+      "lineHeight": 26,
       "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     },
     "label": {
       "fontFamily": "AtkinsonHyperlegibleNext-600",
       "fontSize": 14,
-      "letterSpacing": 0
+      "lineHeight": 18,
+      "letterSpacing": 0.14
     },
     "mono": {
       "fontFamily": "AtkinsonHyperlegibleMono-400",
-      "fontSize": 14,
+      "fontSize": 13,
       "fontVariant": ["tabular-nums"] as "tabular-nums"[]
     }
   },
   "rounded": {
-    "sm": 4,
-    "md": 8,
-    "lg": 12,
+    "sm": 6,
+    "md": 10,
+    "lg": 14,
+    "xl": 20,
     "sello": 9999
   },
   "spacing": {
@@ -99,61 +122,55 @@ export const tokens = {
   },
   "componentes": {
     "button-primary": {
-      "backgroundColor": "#F07B22",
+      "backgroundColor": "#F66A03",
       "textColor": "#10213D",
-      "rounded": 8,
+      "rounded": 14,
       "height": 56
     },
     "button-primary-active": {
-      "backgroundColor": "#D96A15"
+      "backgroundColor": "#DB5E00"
     },
     "button-secondary": {
-      "backgroundColor": "#FFFFFF",
+      "backgroundColor": "#ECEEF1",
       "textColor": "#10213D",
-      "borderColor": "#10213D",
-      "rounded": 8,
+      "borderColor": "#C5CDD9",
+      "rounded": 14,
       "height": 56
     },
     "button-disabled": {
-      "backgroundColor": "#ECEFF4",
+      "backgroundColor": "#ECEEF1",
       "textColor": "#3D4A60",
-      "borderColor": "#AEB9C8"
+      "borderColor": "#E1E5EC"
     },
     "tecla": {
-      "backgroundColor": "#F2F4F7",
+      "backgroundColor": "#ECEEF1",
       "textColor": "#10213D",
-      "borderColor": "#AEB9C8",
-      "rounded": 8,
+      "borderColor": "#E1E5EC",
+      "rounded": 14,
       "height": 56
     },
     "renglon": {
-      "borderColor": "#D5DCE6",
+      "borderColor": "#E1E5EC",
       "height": 64
+    },
+    "margen": {
+      "borderColor": "#F66A03"
     },
     "dinero": {
       "borderColor": "#10213D",
-      "rounded": 8
+      "rounded": 14
     },
     "estado": {
-      "rounded": 4
+      "rounded": 6
     },
     "billete": {
-      "borderColor": "#AEB9C8",
-      "rounded": 4
+      "borderColor": "#C5CDD9",
+      "rounded": 10
     },
     "sello": {
       "borderColor": "#124B2E",
       "textColor": "#124B2E",
       "rounded": 9999
-    },
-    "sidebar-oficina": {
-      "backgroundColor": "#1B3A6B",
-      "textColor": "#FFFFFF"
-    },
-    "nav-link-activo": {
-      "backgroundColor": "#FFFFFF",
-      "textColor": "#1B3A6B",
-      "rounded": 4
     }
   }
 } as const;

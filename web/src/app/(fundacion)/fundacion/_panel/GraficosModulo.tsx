@@ -1,41 +1,18 @@
 "use client";
 
 // Gráficos de los módulos (Recharts), con la misma voz que el tablero: naranja para el ahorro,
-// azul para el crédito, carbón y gris para lo demás. Sin animación con "reducir movimiento".
+// azul para el crédito, tinta y gris para lo demás. Sin animación con "reducir movimiento".
 
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useSyncExternalStore } from "react";
-
 import { ChartBar } from "@phosphor-icons/react";
 
 import { mesCorto, pesosCortos, pesosExactos } from "./formato";
 import { Vacio } from "./formas";
+import { COLOR, CURSOR_BARRA, EJE, REJILLA, useAnimar } from "./graficoTema";
 import estilos from "./tablero.module.css";
 
-export const COLOR = {
-  naranja: "#F66A03",
-  azul: "#005FC5",
-  carbon: "#252525",
-  gris: "#C9C7C1",
-  verde: "#35A472",
-  amarillo: "#F9C032",
-  rojo: "#F53D45",
-};
-const EJE = { fontSize: 12, fill: "#6B6A66" };
+export { COLOR };
 
-function suscribir(aviso: () => void) {
-  const consulta = window.matchMedia("(prefers-reduced-motion: no-preference)");
-  consulta.addEventListener("change", aviso);
-  return () => consulta.removeEventListener("change", aviso);
-}
-
-function useAnimar(): boolean {
-  return useSyncExternalStore(
-    suscribir,
-    () => window.matchMedia("(prefers-reduced-motion: no-preference)").matches,
-    () => false,
-  );
-}
 
 export interface Serie {
   clave: string;
@@ -70,7 +47,8 @@ function Globo(props: {
       {props.payload.map((p) => (
         <p key={p.name} className={estilos.globoFila}>
           <span className={estilos.leyendaMuestra} style={{ background: p.color }} aria-hidden />
-          {p.name}: {props.formato(Number(p.value))}
+          {p.name}
+          <strong>{props.formato(Number(p.value))}</strong>
         </p>
       ))}
     </div>
@@ -102,7 +80,7 @@ export function BarrasPorMes(props: {
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={props.datos} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
-                <CartesianGrid vertical={false} stroke="#ECEBE8" />
+                <CartesianGrid vertical={false} stroke={REJILLA} />
                 <XAxis dataKey="mes" tickFormatter={mesCorto} tick={EJE} axisLine={false} tickLine={false} />
                 <YAxis
                   tick={EJE}
@@ -112,7 +90,7 @@ export function BarrasPorMes(props: {
                   tickCount={4}
                   tickFormatter={(v: number) => (props.pesos === false ? String(v) : pesosCortos(v))}
                 />
-                <Tooltip cursor={{ fill: "rgb(28 28 28 / 0.04)" }} content={<Globo formato={formato} etiqueta={mesCorto} />} />
+                <Tooltip cursor={CURSOR_BARRA} content={<Globo formato={formato} etiqueta={mesCorto} />} />
                 {props.series.map((s, i) => (
                   <Bar
                     key={s.clave}
@@ -160,7 +138,7 @@ export function BarrasHorizontales(props: {
         <div className={estilos.lienzo} style={{ minHeight: Math.max(200, props.datos.length * 40) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={props.datos} layout="vertical" margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
-              <CartesianGrid horizontal={false} stroke="#ECEBE8" />
+              <CartesianGrid horizontal={false} stroke={REJILLA} />
               <XAxis
                 type="number"
                 tick={EJE}
@@ -170,7 +148,7 @@ export function BarrasHorizontales(props: {
                 tickFormatter={(v: number) => (props.pesos === false ? String(v) : pesosCortos(v))}
               />
               <YAxis type="category" dataKey="nombre" tick={EJE} axisLine={false} tickLine={false} width={120} />
-              <Tooltip cursor={{ fill: "rgb(28 28 28 / 0.04)" }} content={<Globo formato={formato} />} />
+              <Tooltip cursor={CURSOR_BARRA} content={<Globo formato={formato} />} />
               <Bar dataKey="valor" name={props.titulo} radius={[0, 4, 4, 0]} maxBarSize={22} isAnimationActive={animar} animationDuration={420}>
                 {props.datos.map((d) => (
                   <Cell key={d.nombre} fill={d.color ?? props.color ?? COLOR.naranja} />

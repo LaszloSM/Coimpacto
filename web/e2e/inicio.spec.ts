@@ -23,8 +23,9 @@ test("las fuentes de DESIGN.md se cargan desde la app", async ({ page }) => {
   await page.goto("/");
   const cargadas = await page.evaluate(async () => {
     await document.fonts.ready;
-    return ["Atkinson Hyperlegible Next", "Bitter"].map((familia) =>
-      document.fonts.check(`700 18px "${familia}"`),
+    // check() da verdadero también si la familia no existe: se pide que esté declarada y cargada.
+    return ["Atkinson Hyperlegible Next", "Bricolage Grotesque"].map((familia) =>
+      [...document.fonts].some((f) => f.family.replace(/"/g, "") === familia && f.status === "loaded"),
     );
   });
 

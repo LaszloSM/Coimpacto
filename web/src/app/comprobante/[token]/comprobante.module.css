@@ -1,85 +1,232 @@
-/* Comprobante por enlace (DESIGN.md: superficie READ; una columna de renglones, sin tarjetas,
-   Atkinson con cifras tabulares; se abre en el celular del miembro). */
-.pagina {
-  max-width: 30rem;
-  margin: 0 auto;
-  padding: var(--spacing-xl) 20px var(--spacing-2xl);
-  font-family: var(--tipo-body-familia);
+/* Comprobante por enlace: un recibo de papel sobre la mesa, con los bordes perforados, los
+   sellos de las acciones y el total con la doble raya del libro. Se abre en el celular del
+   miembro: letra grande, cifras tabulares, una sola columna. */
+
+.mesa {
+  min-height: 100dvh;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(48px + env(safe-area-inset-bottom, 0px))
+    calc(16px + env(safe-area-inset-left, 0px));
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgb(246 106 3 / 0.07), transparent 60%),
+    var(--color-mesa);
+  font-family: var(--fuente-atkinson-next);
   color: var(--color-tinta);
 }
 
+.recibo {
+  position: relative;
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 26px 22px 22px;
+  background: var(--color-papel);
+  border-radius: 6px;
+  /* Bordes perforados arriba y abajo, como un recibo arrancado del talonario. */
+  mask:
+    radial-gradient(circle 6px at 50% 0, transparent 98%, #000) top / 18px 51% repeat-x,
+    radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) bottom / 18px 51% repeat-x;
+  animation: llegar 360ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes llegar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recibo {
+    animation-name: aparecer;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+/* La sombra va en una envoltura: la máscara de las perforaciones también recortaría la sombra. */
+.sombra {
+  max-width: 26rem;
+  margin: 0 auto;
+  filter: drop-shadow(0 1px 1px rgb(16 33 61 / 0.08)) drop-shadow(0 18px 24px rgb(16 33 61 / 0.14));
+}
+
+.cabeza {
+  padding-bottom: 18px;
+  border-bottom: 2px dashed var(--color-renglon-fuerte);
+}
+
 .acap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--color-tinta-suave);
-  font-size: var(--tipo-label-size);
-  font-weight: var(--tipo-label-weight);
-  letter-spacing: var(--tipo-label-letter-spacing);
+}
+
+.acap svg {
+  color: var(--color-naranja);
 }
 
 .titulo {
-  margin: var(--spacing-xs) 0;
-  font-family: var(--tipo-campo-titulo-familia);
-  font-size: var(--tipo-campo-titulo-size);
-  font-weight: var(--tipo-campo-titulo-weight);
-  line-height: var(--tipo-campo-titulo-line-height);
+  margin: 10px 0 4px;
+  font-family: var(--fuente-bricolage);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 
 .reunion {
   margin: 0;
+  font-size: 1.0625rem;
+  color: var(--color-tinta-suave);
 }
 
 .confirmado {
-  display: inline-block;
-  margin: var(--spacing-md) 0 0;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--estado-rounded);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 6px 10px;
+  border-radius: 8px;
   background: var(--color-confirmado-tinte);
   color: var(--color-confirmado);
+  font-size: 0.9375rem;
   font-weight: 700;
 }
 
 .renglones {
-  margin: var(--spacing-lg) 0 0;
-  border-top: 1px solid var(--color-renglon-fuerte);
+  margin: 8px 0 0;
 }
 
 .renglon,
-.renglonFuerte {
+.total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-md);
-  min-height: 56px;
+  gap: 16px;
+  min-height: 58px;
   border-bottom: 1px solid var(--color-renglon);
+  font-size: 1.0625rem;
 }
 
 .renglon dt,
-.renglonFuerte dt {
+.total dt {
+  display: grid;
+  gap: 6px;
   margin: 0;
 }
 
 .renglon dd,
-.renglonFuerte dd {
+.total dd {
   margin: 0;
-  font-family: var(--tipo-cifra-renglon-familia);
-  font-size: var(--tipo-cifra-renglon-size);
-  font-weight: var(--tipo-cifra-renglon-weight);
-  font-feature-settings: var(--tipo-cifra-renglon-rasgos);
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   text-align: right;
+  white-space: nowrap;
 }
 
-.renglonFuerte {
+.total {
+  margin-top: 6px;
+  border-top: 3px double var(--color-tinta);
+  border-bottom: 0;
   font-weight: 700;
 }
 
-.pie {
-  margin: var(--spacing-lg) 0 0;
+.total dd {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.sellos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sellos i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--color-naranja);
+  transform: rotate(-4deg);
+}
+
+.resumen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 18px 0 0;
+}
+
+.resumen > div {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--color-mesa);
+}
+
+.resumen dt {
+  font-size: 0.875rem;
   color: var(--color-tinta-suave);
-  font-size: 0.9375rem;
+}
+
+.resumen dd {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.pie {
+  margin-top: 20px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-tinta-suave);
+}
+
+.pie p {
+  margin: 0 0 6px;
+}
+
+.reciboError {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+}
+
+.iconoError {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--color-naranja-tinte);
+  color: var(--color-naranja-texto);
+}
+
+.mensaje {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--color-tinta-suave);
 }
 
 .esqueleto {
   height: 56px;
   border-bottom: 1px solid var(--color-renglon);
-  background: linear-gradient(var(--color-papel-oficina), var(--color-papel-oficina)) left center / 60% 16px no-repeat;
+  background: linear-gradient(var(--color-hueco), var(--color-hueco)) left center / 60% 14px no-repeat;
+}
+
+@media (max-width: 380px) {
+  .resumen {
+    grid-template-columns: 1fr;
+  }
 }

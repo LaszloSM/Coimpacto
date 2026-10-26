@@ -7,7 +7,7 @@ import { Plus, UserGear } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import { Bloque, Cabecera, Cargando, Etiqueta, Lateral, Tabla, useDatos, useEnvio, modulo as m } from "../_panel/comunes";
-import { Campo, Iniciales, Interruptor, Seccion, Vacio } from "../_panel/formas";
+import { Campo, Iniciales, Interruptor, Seccion, Selector, Vacio } from "../_panel/formas";
 import estilos from "../_panel/tablero.module.css";
 
 interface Usuario {
@@ -153,17 +153,12 @@ export default function Usuarios() {
                       />
                     </Campo>
                     <Campo etiqueta="Rol">
-                      <select value={forma.rol} onChange={(e) => setForma({ ...forma, rol: e.target.value })}>
-                        {d.roles.map((r) => (
-                          <option key={r.valor} value={r.valor}>
-                            {r.texto}
-                          </option>
-                        ))}
-                      </select>
+                      <Selector
+                        valor={forma.rol}
+                        opciones={d.roles.map((r) => ({ valor: r.valor, texto: r.texto, detalle: r.ayuda }))}
+                        alCambiar={(rol) => setForma({ ...forma, rol })}
+                      />
                     </Campo>
-                    <p className={m.tenue} style={{ margin: 0 }}>
-                      {d.roles.find((r) => r.valor === forma.rol)?.ayuda}
-                    </p>
                     {editando !== "nuevo" ? <Interruptor etiqueta="Activo" ayuda="Un usuario desactivado no puede entrar." valor={forma.activo} alCambiar={(v) => setForma({ ...forma, activo: v })} /> : null}
                   </Seccion>
                   {errorEnvio ? (

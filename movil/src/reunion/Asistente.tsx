@@ -1,12 +1,12 @@
-// Asistente de 9 pasos de la reunión (D1 de diseño). Esta versión trae los pasos 1 a 4:
-// abrir, cambios (se salta solo si no hay), asistencia y aportes por miembro con toques (D11).
-// Cada "Guardar y siguiente" guarda y también guarda la posición, así una llamada entrante a
-// mitad de la reunión no pierde nada (D14).
+// Asistente de 9 pasos de la reunión (D1 de diseño). Aquí van los pasos 1 a 4: abrir (una hoja
+// nueva del cuaderno), cambios (se salta solo si no hay), asistencia (la lista de la ACAP) y el
+// aporte de cada miembro con la planilla arriba (D11). Cada "Guardar y siguiente" guarda y
+// también guarda la posición, así una llamada entrante a mitad de la reunión no pierde nada (D14).
 
 import { formatearPesos } from "@credimpacto/reglas";
-import { tokens } from "@credimpacto/tokens";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, BackHandler, ScrollView, View } from "react-native";
+import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -17,21 +17,31 @@ import { marcarReunionAbierta, quitarReunionAbierta } from "../sesion/marcas";
 import { PasoArqueo, PasoCierre, PasoResumen } from "./PasosCierre";
 import { PasoAbonos, PasoPrestamos } from "./PasosPrestamos";
 import { PasoCambios } from "./PasoCambios";
+import { HojaNueva } from "./piezas";
 import { porResponder } from "./propuestas";
 import { useSesion } from "../sesion/contexto";
 import {
+  Acciones,
   BotonPrincipal,
   BotonSecundario,
+  BotonVolver,
+  CabezaMiembro,
   Casilla,
   Contador,
-  Dinero,
   estilos as base,
   Franja,
+  Nota,
   Parrafo,
+  Planilla,
+  Rotulo,
+  Sellos,
   Titulo,
+  Total,
 } from "../ui/componentes";
+import { SALIDA } from "../ui/tema";
 import {
   abrirReunion,
+  anotadosDeLaReunion,
   aportesDeLaPasada,
   aportesRegistrados,
   asistencia as leerAsistencia,
@@ -50,10 +60,11 @@ import {
   type ReunionLocal,
 } from "./reunion";
 
-const { color, spacing, tipo } = tokens;
-
 const fechaDeHoy = (d: Date) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+
+const num = (n: number) => `#${String(n).padStart(2, "0")}`;
 
 interface Estado {
   foto: FotoGrupo | null;
@@ -71,6 +82,9 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
   const { entorno, setSesion } = useSesion();
   const router = useRouter();
   const [estado, setEstado] = useState<Estado | null>(null);
+  // Hacia dónde se mueve la planilla: el miembro siguiente entra por la derecha, el anterior por
+  // la izquierda (como pasar renglones del cuaderno).
+  const [direccion, setDireccion] = useState<1 | -1>(1);
 
   const [version, setVersion] = useState(0);
   const recargar = useCallback(async () => setVersion((v) => v + 1), []);
@@ -97,7 +111,10 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
   const paso = estado.reunion?.paso ?? 1;
 
   const irA = async (siguiente: number, miembro = 0) => {
-    if (estado.reunion) await guardarPosicion(sesion.base, estado.reunion.id, siguiente, miembro);
+    if (estado.reunion) {
+      setDireccion(siguiente > estado.reunion.paso || (siguiente === estado.reunion.paso && miembro >= estado.reunion.miembro) ? 1 : -1);
+      await guardarPosicion(sesion.base, estado.reunion.id, siguiente, miembro);
+    }
     await recargar();
   };
 
@@ -108,6 +125,8 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
     contenido = (
       <PasoAbrir
         foto={estado.foto}
+        sesion={sesion}
+        hoy={entorno.ahora()}
         alAbrir={async () => {
           const ciclo = estado.foto!.ciclo!;
           const reunion = await abrirReunion(sesion.base, sesion.cripto, {
@@ -137,6 +156,7 @@ function AsistenteConSesion({ sesion }: { sesion: Sesion }) {
         sesion={sesion}
         foto={estado.foto}
         reunion={estado.reunion}
+        direccion={direccion}
         alMover={(miembro) => irA(4, miembro)}
         alTerminar={() => irA(5)}
         alVolver={() => irA(3)}
@@ -225,20 +245,31 @@ function SinLista() {
   );
 }
 
-function PasoAbrir(props: { foto: FotoGrupo; alAbrir: () => Promise<void> }) {
+/** Paso 1: la hoja nueva del cuaderno, con el número de la reunión, la fecha y la ACAP. */
+function PasoAbrir(props: { foto: FotoGrupo; sesion: Sesion; hoy: Date; alAbrir: () => Promise<void> }) {
   const [abriendo, setAbriendo] = useState(false);
+  const [numero, setNumero] = useState<number | null>(null);
+  const ciclo = props.foto.ciclo!;
+  useEffect(() => {
+    void siguienteNumero(props.sesion.base, props.foto, ciclo.id).then(setNumero);
+  }, [props.sesion, props.foto, ciclo.id]);
+  const miembros = activos(props.foto).length;
   return (
     <>
-      <ScrollView contentContainerStyle={base.contenido}>
+      <ScrollView contentContainerStyle={[base.contenido, { flexGrow: 1 }]}>
         <Titulo>{PASOS[0]}</Titulo>
-        <Parrafo>{props.foto.acap.nombre}</Parrafo>
-        <Parrafo>
-          {props.foto.reuniones.length === 0
-            ? `Primera reunión de ${props.foto.acap.nombre} en Credimpacto.`
-            : `Van ${props.foto.reuniones.length} reuniones en este ciclo.`}
-        </Parrafo>
+        <HojaNueva
+          acap={props.foto.acap.nombre}
+          numero={numero}
+          hoy={props.hoy}
+          ciclo={ciclo.numero}
+          valorAccion={ciclo.valor_accion}
+          miembros={miembros}
+          reuniones={props.foto.reuniones.length}
+        />
+        <Parrafo tenue>Todo lo de hoy queda guardado en este celular, aunque no haya señal.</Parrafo>
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonPrincipal
           testID="abrir-reunion"
           texto={abriendo ? "Abriendo…" : "Abrir la reunión"}
@@ -248,11 +279,12 @@ function PasoAbrir(props: { foto: FotoGrupo; alAbrir: () => Promise<void> }) {
             await props.alAbrir();
           }}
         />
-      </View>
+      </Acciones>
     </>
   );
 }
 
+/** Paso 3: la lista de la ACAP. Todos empiezan presentes; se toca a quien no vino. */
 function PasoAsistencia(props: { sesion: Sesion; foto: FotoGrupo; reunion: ReunionLocal; alSeguir: () => void }) {
   const lista = activos(props.foto);
   const [presentes, setPresentes] = useState<Map<string, boolean> | null>(null);
@@ -268,23 +300,28 @@ function PasoAsistencia(props: { sesion: Sesion; foto: FotoGrupo; reunion: Reuni
   return (
     <>
       <ScrollView contentContainerStyle={base.contenido}>
-        <Titulo>{PASOS[2]}</Titulo>
-        <Parrafo>Toque a quien no vino. Hoy están {cuantos} de {lista.length}.</Parrafo>
-        {lista.map((m) => (
-          <Casilla
-            key={m.membresia_id}
-            testID={`asistencia-${m.numero}`}
-            texto={[`#${String(m.numero).padStart(2, "0")}`, m.nombre_corto].filter(Boolean).join(" ")}
-            detalle={esta(m) ? "Vino" : "No vino"}
-            marcada={esta(m)}
-            alCambiar={async (v) => {
-              await marcarAsistencia(props.sesion.base, props.reunion.id, m.membresia_id, v);
-              setPresentes(new Map(presentes).set(m.membresia_id, v));
-            }}
-          />
-        ))}
+        <Titulo>¿Quién vino hoy?</Titulo>
+        <Parrafo tenue>
+          Toque a quien no vino. Hoy están {cuantos} de {lista.length}.
+        </Parrafo>
+        <View style={{ marginTop: 12 }}>
+          {lista.map((m) => (
+            <Casilla
+              key={m.membresia_id}
+              testID={`asistencia-${m.numero}`}
+              numero={String(m.numero).padStart(2, "0")}
+              texto={m.nombre_corto ?? `Miembro ${num(m.numero)}`}
+              detalle={esta(m) ? "Vino" : "No vino"}
+              marcada={esta(m)}
+              alCambiar={async (v) => {
+                await marcarAsistencia(props.sesion.base, props.reunion.id, m.membresia_id, v);
+                setPresentes(new Map(presentes).set(m.membresia_id, v));
+              }}
+            />
+          ))}
+        </View>
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonPrincipal
           testID="seguir-aportes"
           texto="Seguir a los aportes"
@@ -298,15 +335,18 @@ function PasoAsistencia(props: { sesion: Sesion; foto: FotoGrupo; reunion: Reuni
             props.alSeguir();
           }}
         />
-      </View>
+      </Acciones>
     </>
   );
 }
 
+/** Paso 4: el aporte de un miembro, como el renglón del cuaderno pero grande: cuántas acciones
+ * compra (sellos), el fondo social, las multas y el total del día. */
 function PasoAportes(props: {
   sesion: Sesion;
   foto: FotoGrupo;
   reunion: ReunionLocal;
+  direccion: 1 | -1;
   alMover: (miembro: number) => void;
   alTerminar: () => void;
   alVolver: () => void;
@@ -318,108 +358,109 @@ function PasoAportes(props: {
   const ciclo = props.foto.ciclo!;
   const [aportes, setAportes] = useState<Aportes | null>(null);
   const [pasada, setPasada] = useState<Aportes | null>(null);
+  const [anotados, setAnotados] = useState<Map<string, number>>(new Map());
+  const [vino, setVino] = useState(true);
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     void (async () => {
+      setAnotados(await anotadosDeLaReunion(props.sesion.base, props.reunion.id, ciclo));
       setPasada(await aportesDeLaPasada(props.sesion.base, props.foto, props.reunion.id, miembro.titular_id));
+      const presente = (await leerAsistencia(props.sesion.base, props.reunion.id)).get(miembro.membresia_id) ?? true;
+      setVino(presente);
       const previo = await aportesRegistrados(props.sesion.base, props.reunion.id, miembro.titular_id);
       if (previo) return setAportes(previo);
-      const vino = (await leerAsistencia(props.sesion.base, props.reunion.id)).get(miembro.membresia_id) ?? true;
       // Quien no vino: sin acciones ni fondo y la multa de inasistencia ya marcada (D11).
-      setAportes(vino ? SIN_APORTES : { acciones: 0, fondoSocial: false, multas: { no_asistio: 1 } });
+      setAportes(presente ? SIN_APORTES : { acciones: 0, fondoSocial: false, multas: { no_asistio: 1 } });
     })();
-  }, [props.sesion, props.foto, props.reunion.id, miembro]);
+  }, [props.sesion, props.foto, props.reunion.id, miembro, ciclo]);
 
   if (!aportes) return null;
   const calculo = montos(ciclo, aportes);
   const cambiar = (parcial: Partial<Aportes>) => setAportes({ ...aportes, ...parcial });
-  const numero = `#${String(miembro.numero).padStart(2, "0")}`;
+  const numero = num(miembro.numero);
+  const ultimo = indice + 1 === lista.length;
+  const Entrada = props.direccion === 1 ? FadeInRight : FadeInLeft;
 
   return (
     <>
-      <ScrollView contentContainerStyle={base.contenido}>
-        <View style={estilos.encabezado}>
-          <Text style={estilos.numero} testID="aporte-numero" accessibilityRole="header">
-            {numero}
-          </Text>
-          <Text style={estilos.cuenta}>
-            {indice + 1}/{lista.length}
-          </Text>
-        </View>
-        {miembro.nombre_corto ? (
-          <Text style={estilos.nombre} testID="aporte-nombre">
-            {miembro.nombre_corto}
-          </Text>
-        ) : null}
-        {pasada && !iguales(pasada, { ...aportes, multas: {} }) ? (
-          // Rellena acciones y fondo; se ve antes de guardar (D11). Las multas quedan como están.
-          <BotonSecundario
-            testID="igual-pasada"
-            texto="Igual que la reunión pasada"
-            detalle={`${pasada.acciones} ${pasada.acciones === 1 ? "acción" : "acciones"}${
-              pasada.fondoSocial ? " y fondo social" : ""
-            }`}
-            alTocar={() => cambiar({ acciones: pasada.acciones, fondoSocial: pasada.fondoSocial })}
+      <Planilla
+        numeros={lista.map((m) => m.numero)}
+        actual={indice}
+        anotados={lista.map((m) => anotados.has(m.titular_id))}
+        alElegir={(i) => i !== indice && props.alMover(i)}
+      />
+      <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
+        <Animated.View entering={Entrada.duration(200).easing(SALIDA).withInitialValues({ transform: [{ translateX: 28 * props.direccion }] })}>
+          <CabezaMiembro
+            numero={miembro.numero}
+            nombre={miembro.nombre_corto}
+            detalle={`${indice + 1} de ${lista.length}${vino ? "" : " · no vino hoy"}`}
+            testID="aporte-numero"
+            testIDNombre="aporte-nombre"
           />
-        ) : null}
-        <Contador
-          testID="acciones"
-          etiqueta="Acciones"
-          valor={aportes.acciones}
-          maximo={ciclo.max_acciones_reunion}
-          alCambiar={(acciones) => cambiar({ acciones })}
-        />
-        <Casilla
-          testID="fondo-social"
-          texto="Fondo social"
-          detalle={formatearPesos(ciclo.valor_fondo_social)}
-          marcada={aportes.fondoSocial}
-          alCambiar={(fondoSocial) => cambiar({ fondoSocial })}
-        />
-        {MOTIVOS_MULTA.map((m) => (
-          <Contador
-            key={m.id}
-            testID={`multa-${m.id}`}
-            etiqueta={`Multa: ${m.texto}`}
-            valor={aportes.multas[m.id] ?? 0}
-            maximo={3}
-            alCambiar={(n) => cambiar({ multas: { ...aportes.multas, [m.id]: n } })}
+          {pasada && !iguales(pasada, { ...aportes, multas: {} }) ? (
+            // Rellena acciones y fondo; se ve antes de guardar (D11). Las multas quedan como están.
+            <View style={{ marginBottom: 6 }}>
+              <BotonSecundario
+                testID="igual-pasada"
+                texto="Igual que la reunión pasada"
+                detalle={`${pasada.acciones} ${pasada.acciones === 1 ? "acción" : "acciones"}${pasada.fondoSocial ? " y fondo social" : ""}`}
+                alTocar={() => cambiar({ acciones: pasada.acciones, fondoSocial: pasada.fondoSocial })}
+              />
+            </View>
+          ) : null}
+          <Rotulo>¿Cuántas acciones compra hoy?</Rotulo>
+          <Sellos
+            testID="acciones"
+            valor={aportes.acciones}
+            maximo={ciclo.max_acciones_reunion}
+            valorUnidad={ciclo.valor_accion}
+            alCambiar={(acciones) => cambiar({ acciones })}
           />
-        ))}
-        <View style={estilos.total}>
-          <Dinero testID="aporte-total" pesos={calculo.total} etiqueta={`Total de ${numero} hoy`} grande />
-        </View>
+          <Casilla
+            testID="fondo-social"
+            texto="Fondo social"
+            detalle={formatearPesos(ciclo.valor_fondo_social)}
+            marcada={aportes.fondoSocial}
+            alCambiar={(fondoSocial) => cambiar({ fondoSocial })}
+          />
+          <Rotulo>Multas</Rotulo>
+          {MOTIVOS_MULTA.map((m) => (
+            <Contador
+              key={m.id}
+              testID={`multa-${m.id}`}
+              etiqueta={`Multa: ${m.texto}`}
+              detalle={formatearPesos(ciclo.valor_multa)}
+              valor={aportes.multas[m.id] ?? 0}
+              maximo={3}
+              alCambiar={(n) => cambiar({ multas: { ...aportes.multas, [m.id]: n } })}
+            />
+          ))}
+          <Total testID="aporte-total" pesos={calculo.total} etiqueta={`Total de ${numero} hoy`} />
+        </Animated.View>
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          <BotonSecundario
-            testID="aporte-anterior"
-            texto="Anterior"
-            alTocar={() => (indice === 0 ? props.alVolver() : props.alMover(indice - 1))}
-          />
-        </View>
-        <View style={{ flex: 2 }}>
-          <BotonPrincipal
-            testID="guardar-siguiente"
-            texto={guardando ? "Guardando…" : "Guardar y siguiente"}
-            alTocar={async () => {
-              if (guardando) return;
-              setGuardando(true);
-              await registrarAportes(props.sesion.base, props.sesion.cripto, {
-                reunion: props.reunion,
-                ciclo,
-                miembro,
-                aportes,
-                firmante: props.sesion.firmante,
-                ahora: entorno.ahora(),
-              });
-              if (indice + 1 < lista.length) props.alMover(indice + 1);
-              else props.alTerminar();
-            }}
-          />
-        </View>
-      </View>
+      <Acciones fila>
+        <BotonVolver testID="aporte-anterior" texto={indice === 0 ? "Volver a la asistencia" : "Miembro anterior"} alTocar={() => (indice === 0 ? props.alVolver() : props.alMover(indice - 1))} />
+        <BotonPrincipal
+          testID="guardar-siguiente"
+          texto={guardando ? "Guardando…" : ultimo ? "Guardar y terminar" : "Guardar y siguiente"}
+          alTocar={async () => {
+            if (guardando) return;
+            setGuardando(true);
+            await registrarAportes(props.sesion.base, props.sesion.cripto, {
+              reunion: props.reunion,
+              ciclo,
+              miembro,
+              aportes,
+              firmante: props.sesion.firmante,
+              ahora: entorno.ahora(),
+            });
+            if (!ultimo) props.alMover(indice + 1);
+            else props.alTerminar();
+          }}
+        />
+      </Acciones>
     </>
   );
 }
@@ -429,23 +470,13 @@ function PasoPendiente(props: { paso: number; alVolver: () => void }) {
     <>
       <View style={base.contenido}>
         <Titulo>{PASOS[props.paso - 1]}</Titulo>
-        <Parrafo testID="paso-pendiente">
-          Este paso todavía no está en esta versión de la app. Lo registrado hasta aquí quedó guardado en este
-          celular.
-        </Parrafo>
+        <Nota testID="paso-pendiente">
+          Este paso todavía no está en esta versión de la app. Lo registrado hasta aquí quedó guardado en este celular.
+        </Nota>
       </View>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonSecundario testID="paso-anterior" texto="Volver al paso anterior" alTocar={props.alVolver} />
-      </View>
+      </Acciones>
     </>
   );
 }
-
-const estilos = StyleSheet.create({
-  encabezado: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: spacing.lg },
-  numero: { ...tipo["cifra-clave"], color: color.tinta },
-  cuenta: { ...tipo["cifra-renglon"], color: color["tinta-suave"] },
-  nombre: { ...tipo["campo-titulo"], color: color.tinta, marginBottom: spacing.sm },
-  total: { marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 3, borderTopColor: color.tinta },
-  dosBotones: { flexDirection: "row", gap: spacing.sm },
-});

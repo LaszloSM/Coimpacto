@@ -53,7 +53,7 @@ const cola = async (base: Awaited<ReturnType<typeof montar>>) =>
 test("abre la reunión, salta el paso 2 y pasa por asistencia a los aportes", async () => {
   const base = await montar();
   await fireEvent.press(await screen.findByTestId("abrir-reunion"));
-  expect(await screen.findByText("Asistencia")).toBeOnTheScreen();
+  expect(await screen.findByText("¿Quién vino hoy?")).toBeOnTheScreen();
   expect(screen.getByText("Paso 3 de 9")).toBeOnTheScreen();
   expect(screen.getByText("Guardado en este celular · 1 por subir")).toBeOnTheScreen();
 
@@ -131,8 +131,10 @@ test("número + nombre corto de quien autorizó sus datos; los demás solo el n�
   const [uno, ...resto] = FOTO_PRUEBA.miembros;
   await montar({ ...FOTO_PRUEBA, miembros: [{ ...uno, nombre_corto: "Yuliana I." }, ...resto] });
   await fireEvent.press(await screen.findByTestId("abrir-reunion"));
-  expect(await screen.findByText("#01 Yuliana I.")).toBeOnTheScreen();
-  expect(screen.getByText("#02")).toBeOnTheScreen();
+  // En la lista de la ACAP el número va a la izquierda del margen y al lado, el nombre corto.
+  expect(await screen.findByText("Yuliana I.")).toBeOnTheScreen();
+  expect(screen.getByTestId("asistencia-1")).toHaveTextContent(/01.*Yuliana I\./);
+  expect(screen.getByText("Miembro #02")).toBeOnTheScreen();
   await fireEvent.press(screen.getByTestId("seguir-aportes"));
   expect(await screen.findByTestId("aporte-nombre")).toHaveTextContent("Yuliana I.");
 });
@@ -159,7 +161,7 @@ test("con una propuesta del facilitador, el paso 2 la muestra y no aceptarla pid
   await fireEvent.press(screen.getByTestId("motivo-si_se_recibio"));
   await fireEvent.press(screen.getByTestId("guardar-no-aceptar"));
 
-  expect(await screen.findByText("Asistencia")).toBeOnTheScreen();
+  expect(await screen.findByText("¿Quién vino hoy?")).toBeOnTheScreen();
   const respuesta = (await cola(base)).find((e) => e.tipo === "respuesta_propuesta");
   expect(respuesta?.datos).toMatchObject({ respuesta: "no_acepta", motivo: "si_se_recibio" });
 });

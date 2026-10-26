@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 import { api, SinSesion } from "@/lib/api";
 
-import { Chispa } from "./_panel/comunes";
+import { Cabecera, Cifras } from "./_panel/comunes";
 import { fechaLarga, pesosCortos, pesosExactos, porcentaje } from "./_panel/formato";
 import { Crecimiento, Nuevos, Top } from "./_panel/Graficos";
 import { Zonas } from "./_panel/Zonas";
@@ -27,27 +27,6 @@ function Variacion({ valor, texto }: { valor: number | null; texto: string }) {
       <Flecha size={14} weight="bold" aria-hidden />
       {porcentaje(Math.abs(valor))} <span className={estilos.variacionTexto}>{texto}</span>
     </span>
-  );
-}
-
-function Cifra(props: { etiqueta: string; valor: string; exacto?: string; pie: React.ReactNode; i: number; destacada?: boolean; serie?: number[] }) {
-  return (
-    <div className={props.destacada ? `${estilos.cifra} ${estilos.cifraDestacada}` : estilos.cifra} style={{ "--i": props.i } as React.CSSProperties}>
-      <dt className={estilos.cifraEtiqueta}>
-        {props.destacada ? <span className={estilos.marcaAhorro} aria-hidden /> : null}
-        {props.etiqueta}
-      </dt>
-      <dd className={estilos.cifraValor} title={props.exacto}>
-        {props.valor}
-        {props.exacto ? <span className={estilos.oculto}> ({props.exacto})</span> : null}
-      </dd>
-      <dd className={estilos.cifraPie}>{props.pie}</dd>
-      {props.serie ? (
-        <dd style={{ margin: "10px 0 0" }}>
-          <Chispa serie={props.serie} color={props.destacada ? "var(--naranja)" : "var(--azul)"} />
-        </dd>
-      ) : null}
-    </div>
   );
 }
 
@@ -137,12 +116,7 @@ export default function Panel() {
 
   return (
     <main className={estilos.pagina}>
-      <header className={estilos.cabeza}>
-        <div>
-          <h1 className={estilos.titulo}>Panel de gerencia</h1>
-          <p className={estilos.subtitulo}>{datos?.datos_al ? `Datos al ${fechaLarga(datos.datos_al)}` : "Ciclo actual de todas las comunidades"}</p>
-        </div>
-      </header>
+      <Cabecera titulo="Panel de gerencia" sub={datos?.datos_al ? `Ciclo actual de todas las comunidades, con datos al ${fechaLarga(datos.datos_al)}` : "Ciclo actual de todas las comunidades"} />
 
       {error ? (
         <div className={estilos.error} role="alert">
@@ -163,37 +137,38 @@ export default function Panel() {
         </section>
       ) : (
         <>
-          <dl className={estilos.cifras}>
-            <Cifra
-              i={0}
-              destacada
-              etiqueta="Ahorro del ciclo"
-              valor={pesosCortos(datos.resumen.ahorro)}
-              exacto={pesosExactos(datos.resumen.ahorro)}
-              pie={<Variacion valor={datos.resumen.ahorro_variacion} texto="vs. mes pasado" />}
-              serie={datos.series.mensual.map((m) => m.ahorro)}
-            />
-            <Cifra
-              i={1}
-              etiqueta="Cartera activa"
-              valor={pesosCortos(datos.resumen.cartera)}
-              exacto={pesosExactos(datos.resumen.cartera)}
-              pie={<span className={estilos.variacionNeutra}>{pesosCortos(datos.indicadores.cartera_vencida)} vencida</span>}
-              serie={datos.series.mensual.map((m) => m.credito)}
-            />
-            <Cifra
-              i={2}
-              etiqueta="Comunidades activas"
-              valor={`${datos.resumen.comunidades_activas} de ${datos.resumen.comunidades}`}
-              pie={<span className={estilos.variacionNeutra}>con ciclo abierto</span>}
-            />
-            <Cifra
-              i={3}
-              etiqueta="Miembros"
-              valor={datos.resumen.miembros.toLocaleString("es-CO")}
-              pie={<Variacion valor={datos.resumen.miembros_variacion} texto="vs. mes pasado" />}
-            />
-          </dl>
+          <Cifras
+            cifras={[
+              {
+                etiqueta: "Ahorro del ciclo",
+                valor: pesosCortos(datos.resumen.ahorro),
+                numero: datos.resumen.ahorro,
+                formato: pesosCortos,
+                exacto: pesosExactos(datos.resumen.ahorro),
+                pie: <Variacion valor={datos.resumen.ahorro_variacion} texto="vs. mes pasado" />,
+                serie: datos.series.mensual.map((m) => m.ahorro),
+                destacada: true,
+              },
+              {
+                etiqueta: "Cartera activa",
+                valor: pesosCortos(datos.resumen.cartera),
+                exacto: pesosExactos(datos.resumen.cartera),
+                pie: `${pesosCortos(datos.indicadores.cartera_vencida)} vencida`,
+                serie: datos.series.mensual.map((m) => m.credito),
+                color: "var(--azul)",
+              },
+              {
+                etiqueta: "Comunidades activas",
+                valor: `${datos.resumen.comunidades_activas} de ${datos.resumen.comunidades}`,
+                pie: "con ciclo abierto",
+              },
+              {
+                etiqueta: "Miembros",
+                valor: datos.resumen.miembros.toLocaleString("es-CO"),
+                pie: <Variacion valor={datos.resumen.miembros_variacion} texto="vs. mes pasado" />,
+              },
+            ]}
+          />
 
           <dl className={estilos.indicadores}>
             <div>

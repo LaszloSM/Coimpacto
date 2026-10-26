@@ -154,7 +154,7 @@ test("ahorro: cifras, gráficos y tabla ordenable por comunidad", async ({ page 
   await page.goto("/fundacion/ahorro");
   await expect(page.getByRole("heading", { name: "Ahorro", level: 1 })).toBeVisible();
   await expect(page.getByText("$ 48,3 M")).toBeVisible();
-  await expect(page.getByRole("cell", { name: /Kayetamana/ })).toBeVisible();
+  await expect(page.getByRole("rowheader", { name: /Kayetamana/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Descargar Excel/ })).toHaveAttribute("href", "/api/oficina/reportes/consolidado.xlsx");
   await capturar(page, "ahorro", info);
 });
@@ -188,7 +188,7 @@ test("comunidades: crear una ACAP lleva a su ficha", async ({ page }, info) => {
     } else await r.fulfill({ json: COMUNIDADES });
   });
   await page.goto("/fundacion/comunidades");
-  await expect(page.getByRole("cell", { name: /Shiliwai/ })).toBeVisible();
+  await expect(page.getByRole("rowheader", { name: /Shiliwai/ })).toBeVisible();
   await capturar(page, "comunidades", info);
   await page.getByRole("button", { name: "Nueva comunidad" }).click();
   await page.getByLabel("Nombre de la ACAP").fill("Shiliwai");
@@ -210,7 +210,8 @@ test("ficha: asignar un cargo y crear el usuario de la app", async ({ page }, in
   await expect(page.getByText("12 de 2 ahorraron")).toBeVisible();
   await capturar(page, "ficha-datos", info);
   await page.getByRole("tab", { name: "Junta" }).click();
-  await page.getByLabel("Portador de Caja").selectOption("m2");
+  await page.getByLabel("Portador de Caja").click();
+  await page.getByRole("option", { name: /#02 Persona D\./ }).click();
   await expect(page.getByText(/Junta actualizada/)).toBeVisible();
   await capturar(page, "ficha-junta", info);
   await page.getByRole("tab", { name: "Acceso a la app" }).click();
@@ -328,13 +329,14 @@ test("usuarios: el administrador crea un usuario con su rol", async ({ page }, i
     return r.fulfill({ json: { usuarios: [{ id: "u1", usuario: "admin", nombres: "Ana", apellidos: "Admin", correo: "", rol: "Administrador", activo: true, ultimo_ingreso: null }], roles } });
   });
   await page.goto("/fundacion/usuarios");
-  await expect(page.getByRole("link", { name: "Usuarios" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Usuarios", level: 1 })).toBeVisible();
   await capturar(page, "usuarios", info);
   await page.getByRole("button", { name: "Nuevo usuario" }).click();
   await page.getByLabel("Nombres").fill("Luis");
   await page.getByLabel("Usuario", { exact: true }).fill("luis");
   await page.getByLabel("Clave inicial").fill("una-clave-larga-1");
-  await page.getByLabel("Rol", { exact: true }).selectOption("Facilitador");
+  await page.getByLabel("Rol", { exact: true }).click();
+  await page.getByRole("option", { name: /Facilitador/ }).click();
   await page.getByRole("button", { name: "Crear usuario" }).click();
   await expect.poll(() => creado).toMatchObject({ usuario: "luis", rol: "Facilitador", nombres: "Luis" });
 });

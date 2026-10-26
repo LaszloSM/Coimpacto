@@ -1,10 +1,12 @@
 "use client";
 
-// Piezas comunes de los módulos del panel: carga con su esqueleto y reintento, cabecera,
-// franja de cifras, tablas ordenables, barras de avance y el panel lateral de formularios.
+// Piezas comunes de los módulos del panel: datos con caché (volver a una sección es inmediato y
+// se actualiza por detrás), cabecera, franja de cifras, bloques, tablas ordenables, barras de
+// avance, etiquetas de estado y el cajón lateral de los formularios.
 
-import { ArrowDown, ArrowUp, Rows, X, type Icon } from "@phosphor-icons/react";
-import { animate, AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Dialog } from "@base-ui/react/dialog";
+import { ArrowDown, ArrowsDownUp, ArrowUp, CaretRight, Rows, X, type Icon } from "@phosphor-icons/react";
+import { animate, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
@@ -16,16 +18,25 @@ import m from "./modulo.module.css";
 
 export { Campo } from "./formas";
 
+// Lo último que trajo cada ruta: al volver a una sección se pinta de una vez y se refresca.
+const cache = new Map<string, unknown>();
+
 /** Trae una ruta de la API; si no hay sesión lleva a entrar. `recargar` vuelve a pedirla. */
 export function useDatos<T>(ruta: string) {
   const router = useRouter();
-  const [datos, setDatos] = useState<T | null>(null);
+  const [datos, setDatos] = useState<T | null>(() => (cache.get(ruta) as T | undefined) ?? null);
   const [error, setError] = useState<string>();
   const [intento, setIntento] = useState(0);
+  const [vista, setVista] = useState(ruta);
+  if (vista !== ruta) {
+    setVista(ruta);
+    setDatos((cache.get(ruta) as T | undefined) ?? null);
+  }
   useEffect(() => {
     let vigente = true;
     api<T>(ruta)
       .then((d) => {
+        cache.set(ruta, d);
         if (vigente) {
           setDatos(d);
           setError(undefined);
@@ -34,7 +45,7 @@ export function useDatos<T>(ruta: string) {
       .catch((e) => {
         if (!vigente) return;
         if (e instanceof SinSesion) router.replace("/fundacion/entrar");
-        else setError("No se pudieron cargar los datos. Revise la conexión e intente de nuevo.");
+        else if (!cache.has(ruta)) setError("No se pudieron cargar los datos. Revise la conexión e intente de nuevo.");
       });
     return () => {
       vigente = false;
@@ -44,23 +55,27 @@ export function useDatos<T>(ruta: string) {
   return { datos, error, recargar };
 }
 
-export function Cabecera(props: { titulo: string; sub: string; acciones?: React.ReactNode }) {
+export function Cabecera(props: { titulo: string; sub?: string; acciones?: React.ReactNode; antes?: React.ReactNode }) {
   return (
     <header className={estilos.cabeza}>
-      <div>
+      <div className={estilos.cabezaTexto}>
+        {props.antes}
         <h1 className={estilos.titulo}>{props.titulo}</h1>
-        <p className={estilos.subtitulo}>{props.sub}</p>
+        {props.sub ? <p className={estilos.subtitulo}>{props.sub}</p> : null}
       </div>
       {props.acciones ? <div className={m.acciones}>{props.acciones}</div> : null}
     </header>
   );
 }
 
-export function Cargando<T>(props: { datos: T | null; error?: string; recargar: () => void; children: (d: T) => React.ReactNode }) {
+export function Cargando<T>(props: { datos: T | null; error?: string; recargar: () => void; children: (d: T) => React.ReactNode; forma?: "modulo" | "lista" }) {
   if (props.error) {
     return (
       <div className={estilos.error} role="alert">
-        <p>{props.error}</p>
+        <div>
+          <p className={estilos.errorTitulo}>No se pudo cargar</p>
+          <p>{props.error}</p>
+        </div>
         <button type="button" className={estilos.botonSecundario} onClick={props.recargar}>
           Intentar de nuevo
         </button>
@@ -70,12 +85,18 @@ export function Cargando<T>(props: { datos: T | null; error?: string; recargar: 
   if (!props.datos) {
     return (
       <div className={estilos.esqueleto} aria-busy="true" aria-label="Cargando">
-        <div className={estilos.esqueletoFila}>
-          {[0, 1, 2, 3].map((i) => (
-            <span key={i} className={estilos.esqueletoCifra} />
+        {props.forma === "lista" ? null : (
+          <div className={estilos.esqueletoFila}>
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className={estilos.esqueletoCifra} />
+            ))}
+          </div>
+        )}
+        <div className={estilos.esqueletoTabla}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <span key={i} style={{ "--i": i } as React.CSSProperties} />
           ))}
         </div>
-        <span className={estilos.esqueletoBloque} />
       </div>
     );
   }
@@ -85,7 +106,7 @@ export function Cargando<T>(props: { datos: T | null; error?: string; recargar: 
 export interface CifraDato {
   etiqueta: string;
   valor: string;
-  pie?: string;
+  pie?: React.ReactNode;
   exacto?: string;
   destacada?: boolean;
   /** Para contar hasta la cifra al cargar: el número y cómo se escribe. */
@@ -93,46 +114,51 @@ export interface CifraDato {
   formato?: (n: number) => string;
   /** Últimos meses, para la línea pequeña bajo la cifra. */
   serie?: number[];
+  color?: string;
 }
 
-/** Cuenta desde cero hasta la cifra (600 ms, ease-out); sin animación con "reducir movimiento". */
-function Contador({ numero, formato }: { numero: number; formato: (n: number) => string }) {
+/** Cuenta desde cero hasta la cifra (500 ms, ease-out) la primera vez; sin animación con
+ * "reducir movimiento". Al volver a la sección, la cifra ya está. */
+const contadas = new Set<string>();
+function Contador({ numero, formato, clave }: { numero: number; formato: (n: number) => string; clave: string }) {
   const nodo = useRef<HTMLSpanElement>(null);
   const reducir = useReducedMotion();
   useEffect(() => {
-    if (reducir || !nodo.current) return;
+    if (reducir || !nodo.current || contadas.has(clave)) return;
+    contadas.add(clave);
     const control = animate(0, numero, {
-      duration: 0.6,
+      duration: 0.5,
       ease: [0.23, 1, 0.32, 1],
       onUpdate: (v) => {
         if (nodo.current) nodo.current.textContent = formato(Math.round(v));
       },
     });
     return () => control.stop();
-  }, [numero, formato, reducir]);
+  }, [numero, formato, reducir, clave]);
   return <span ref={nodo}>{formato(numero)}</span>;
 }
 
-/** Línea pequeña de la tendencia, con el último punto marcado. Solo forma: la cifra va arriba. */
+/** Línea pequeña de la tendencia, con el área tenue y el último punto marcado. */
 export function Chispa({ serie, color = "var(--naranja)" }: { serie: number[]; color?: string }) {
+  const id = useId();
   if (serie.length < 2) return null;
   const max = Math.max(...serie);
   const min = Math.min(...serie);
   const rango = max - min || 1;
-  const puntos = serie.map((v, i) => [(i / (serie.length - 1)) * 100, 26 - ((v - min) / rango) * 22]);
+  const puntos = serie.map((v, i) => [(i / (serie.length - 1)) * 100, 27 - ((v - min) / rango) * 22]);
   const [ux, uy] = puntos[puntos.length - 1];
+  const linea = puntos.map((p) => p.join(",")).join(" ");
   return (
     <svg className={m.chispa} viewBox="-2 0 104 30" preserveAspectRatio="none" aria-hidden>
-      <polyline
-        points={puntos.map((p) => p.join(",")).join(" ")}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-        vectorEffect="non-scaling-stroke"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <circle cx={ux} cy={uy} r="3" fill={color} vectorEffect="non-scaling-stroke" />
+      <defs>
+        <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor={color} stopOpacity="0.18" />
+          <stop offset="1" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={`0,30 ${linea} 100,30`} fill={`url(#${id})`} />
+      <polyline points={linea} fill="none" stroke={color} strokeWidth="1.75" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={ux} cy={uy} r="2.75" fill={color} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
@@ -141,26 +167,16 @@ export function Cifras({ cifras }: { cifras: CifraDato[] }) {
   return (
     <dl className={estilos.cifras} style={{ "--columnas": cifras.length } as React.CSSProperties}>
       {cifras.map((c, i) => (
-        <div
-          key={c.etiqueta}
-          className={c.destacada ? `${estilos.cifra} ${estilos.cifraDestacada}` : estilos.cifra}
-          style={{ "--i": i } as React.CSSProperties}
-        >
-          <dt className={estilos.cifraEtiqueta}>
-            {c.destacada ? <span className={estilos.marcaAhorro} aria-hidden /> : null}
-            {c.etiqueta}
-          </dt>
+        <div key={c.etiqueta} className={c.destacada ? `${estilos.cifra} ${estilos.cifraDestacada}` : estilos.cifra} style={{ "--i": i } as React.CSSProperties}>
+          <dt className={estilos.cifraEtiqueta}>{c.etiqueta}</dt>
           <dd className={estilos.cifraValor} title={c.exacto}>
-            {c.numero !== undefined && c.formato ? <Contador numero={c.numero} formato={c.formato} /> : c.valor}
+            {c.numero !== undefined && c.formato ? <Contador numero={c.numero} formato={c.formato} clave={`${c.etiqueta}:${c.numero}`} /> : c.valor}
+            {c.exacto ? <span className={estilos.oculto}> ({c.exacto})</span> : null}
           </dd>
+          {c.pie ? <dd className={estilos.cifraPie}>{typeof c.pie === "string" ? <span className={estilos.variacionNeutra}>{c.pie}</span> : c.pie}</dd> : null}
           {c.serie ? (
             <dd className={m.chispaMarco}>
-              <Chispa serie={c.serie} color={c.destacada ? "var(--naranja)" : "var(--texto-tenue)"} />
-            </dd>
-          ) : null}
-          {c.pie ? (
-            <dd className={estilos.cifraPie}>
-              <span className={estilos.variacionNeutra}>{c.pie}</span>
+              <Chispa serie={c.serie} color={c.color ?? (c.destacada ? "var(--naranja)" : "var(--texto-tenue)")} />
             </dd>
           ) : null}
         </div>
@@ -169,18 +185,18 @@ export function Cifras({ cifras }: { cifras: CifraDato[] }) {
   );
 }
 
-export function Bloque(props: { titulo: string; sub?: string; acciones?: React.ReactNode; children: React.ReactNode; ancho?: boolean }) {
+export function Bloque(props: { titulo: string; sub?: string; acciones?: React.ReactNode; children: React.ReactNode; plano?: boolean }) {
   const id = useId();
   return (
-    <section className={`${estilos.bloque} ${m.bloque}`} aria-labelledby={id}>
+    <section className={props.plano ? `${estilos.bloque} ${estilos.bloquePlano}` : estilos.bloque} aria-labelledby={id}>
       <div className={estilos.bloqueCabeza}>
         <div>
           <h2 id={id} className={estilos.bloqueTitulo}>
             {props.titulo}
           </h2>
-          {props.sub ? <p className={estilos.graficoSub}>{props.sub}</p> : null}
+          {props.sub ? <p className={estilos.bloqueSub}>{props.sub}</p> : null}
         </div>
-        {props.acciones}
+        {props.acciones ? <div className={m.acciones}>{props.acciones}</div> : null}
       </div>
       {props.children}
     </section>
@@ -193,6 +209,8 @@ export interface Columna<F> {
   valor: (f: F) => React.ReactNode;
   orden?: (f: F) => number | string;
   numero?: boolean;
+  /** Valor de la fila de totales (con la doble raya del libro). */
+  total?: React.ReactNode;
 }
 
 export function Tabla<F>(props: {
@@ -204,7 +222,10 @@ export function Tabla<F>(props: {
   vacioIcono?: Icon;
   vacioAccion?: React.ReactNode;
   alElegir?: (f: F) => void;
+  /** Nombre de la fila para el lector de pantalla ("Abrir Shiliwai"). */
+  nombreFila?: (f: F) => string;
   ordenInicial?: string;
+  totales?: boolean;
 }) {
   const [orden, setOrden] = useState<{ clave: string; asc: boolean } | null>(props.ordenInicial ? { clave: props.ordenInicial, asc: false } : null);
   const filas = useMemo(() => {
@@ -215,7 +236,7 @@ export function Tabla<F>(props: {
     return [...props.filas].sort((a, b) => {
       const x = f(a);
       const y = f(b);
-      const r = typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y));
+      const r = typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "es");
       return orden.asc ? r : -r;
     });
   }, [props.filas, props.columnas, orden]);
@@ -231,6 +252,7 @@ export function Tabla<F>(props: {
       />
     );
   }
+  const elegible = Boolean(props.alElegir);
   return (
     <div className={m.tablaMarco}>
       <table className={m.tabla}>
@@ -244,6 +266,7 @@ export function Tabla<F>(props: {
                     <button
                       type="button"
                       className={m.ordenar}
+                      data-activa={activa || undefined}
                       onClick={() =>
                         setOrden({
                           clave: c.clave,
@@ -252,7 +275,15 @@ export function Tabla<F>(props: {
                       }
                     >
                       {c.titulo}
-                      {activa ? orden!.asc ? <ArrowUp size={12} weight="bold" aria-hidden /> : <ArrowDown size={12} weight="bold" aria-hidden /> : null}
+                      {activa ? (
+                        orden!.asc ? (
+                          <ArrowUp size={12} weight="bold" aria-hidden />
+                        ) : (
+                          <ArrowDown size={12} weight="bold" aria-hidden />
+                        )
+                      ) : (
+                        <ArrowsDownUp size={12} className={m.ordenarPista} aria-hidden />
+                      )}
                     </button>
                   ) : (
                     c.titulo
@@ -260,19 +291,59 @@ export function Tabla<F>(props: {
                 </th>
               );
             })}
+            {elegible ? <th aria-hidden className={m.columnaIr} /> : null}
           </tr>
         </thead>
         <tbody>
           {filas.map((f) => (
-            <tr key={props.clave(f)} data-elegible={props.alElegir ? true : undefined} onClick={props.alElegir ? () => props.alElegir!(f) : undefined}>
-              {props.columnas.map((c) => (
-                <td key={c.clave} data-numero={c.numero || undefined}>
-                  {c.valor(f)}
+            <tr
+              key={props.clave(f)}
+              data-elegible={elegible || undefined}
+              tabIndex={elegible ? 0 : undefined}
+              aria-label={elegible && props.nombreFila ? props.nombreFila(f) : undefined}
+              onClick={elegible ? () => props.alElegir!(f) : undefined}
+              onKeyDown={
+                elegible
+                  ? (e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        props.alElegir!(f);
+                      }
+                    }
+                  : undefined
+              }
+            >
+              {props.columnas.map((c, i) =>
+                i === 0 ? (
+                  <th key={c.clave} scope="row" data-numero={c.numero || undefined}>
+                    {c.valor(f)}
+                  </th>
+                ) : (
+                  <td key={c.clave} data-numero={c.numero || undefined}>
+                    {c.valor(f)}
+                  </td>
+                ),
+              )}
+              {elegible ? (
+                <td className={m.columnaIr} aria-hidden>
+                  <CaretRight size={14} weight="bold" />
                 </td>
-              ))}
+              ) : null}
             </tr>
           ))}
         </tbody>
+        {props.totales ? (
+          <tfoot>
+            <tr>
+              {props.columnas.map((c, i) => (
+                <td key={c.clave} data-numero={c.numero || undefined}>
+                  {i === 0 && c.total === undefined ? "Total" : c.total}
+                </td>
+              ))}
+              {elegible ? <td /> : null}
+            </tr>
+          </tfoot>
+        ) : null}
       </table>
     </div>
   );
@@ -295,55 +366,27 @@ export function Etiqueta({ tono, children }: { tono: "bien" | "atencion" | "aler
   );
 }
 
-/** Panel lateral para crear o editar. Se cierra con Escape o con la X. */
+/** Cajón lateral para crear o editar: atrapa el foco, se cierra con Escape, con el velo o con la X.
+ * Entra desde la derecha con la curva de cajón y sale por el mismo lado, más rápido. */
 export function Lateral(props: { abierto: boolean; titulo: string; descripcion?: string; alCerrar: () => void; children: React.ReactNode }) {
-  const reducir = useReducedMotion();
-  const { abierto, alCerrar } = props;
-  useEffect(() => {
-    if (!abierto) return;
-    const tecla = (e: KeyboardEvent) => e.key === "Escape" && alCerrar();
-    window.addEventListener("keydown", tecla);
-    return () => window.removeEventListener("keydown", tecla);
-  }, [abierto, alCerrar]);
   return (
-    <AnimatePresence>
-      {props.abierto ? (
-        <>
-          <motion.div
-            className={m.velo}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reducir ? 0 : 0.2 }}
-            onClick={props.alCerrar}
-          />
-          <motion.aside
-            className={m.lateral}
-            role="dialog"
-            aria-modal="true"
-            aria-label={props.titulo}
-            initial={{ transform: "translateX(100%)" }}
-            animate={{ transform: "translateX(0%)" }}
-            exit={{ transform: "translateX(100%)" }}
-            transition={{
-              duration: reducir ? 0 : 0.28,
-              ease: [0.32, 0.72, 0, 1],
-            }}
-          >
-            <div className={m.lateralCabeza}>
-              <div>
-                <h2>{props.titulo}</h2>
-                {props.descripcion ? <p>{props.descripcion}</p> : null}
-              </div>
-              <button type="button" className={m.cerrar} onClick={props.alCerrar} aria-label="Cerrar">
-                <X size={20} />
-              </button>
+    <Dialog.Root open={props.abierto} onOpenChange={(abierto) => (abierto ? undefined : props.alCerrar())}>
+      <Dialog.Portal>
+        <Dialog.Backdrop className={m.velo} />
+        <Dialog.Popup className={m.lateral}>
+          <div className={m.lateralCabeza}>
+            <div>
+              <Dialog.Title className={m.lateralTitulo}>{props.titulo}</Dialog.Title>
+              {props.descripcion ? <Dialog.Description className={m.lateralDescripcion}>{props.descripcion}</Dialog.Description> : null}
             </div>
-            <div className={m.lateralCuerpo}>{props.children}</div>
-          </motion.aside>
-        </>
-      ) : null}
-    </AnimatePresence>
+            <Dialog.Close className={m.cerrar} aria-label="Cerrar">
+              <X size={18} aria-hidden />
+            </Dialog.Close>
+          </div>
+          <div className={m.lateralCuerpo}>{props.children}</div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

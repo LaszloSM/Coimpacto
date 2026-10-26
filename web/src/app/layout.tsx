@@ -12,8 +12,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#F2F3F0",
   colorScheme: "light",
+  // Pinta bajo el notch (el contenido se aleja con env(safe-area-inset-*)) y el teclado de
+  // Android achica la vista en vez de tapar los campos.
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

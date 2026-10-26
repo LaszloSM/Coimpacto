@@ -1,7 +1,7 @@
 "use client";
 
-// Entrar a la oficina: a la izquierda la marca sobre el renglón del cuaderno, a la derecha la
-// ficha con usuario y clave. Si la clave no sirve lo dice sin culpar a nadie.
+// Entrar a la oficina: a la izquierda una hoja del libro de una ACAP con su sello, a la derecha
+// el usuario y la clave. Si la clave no sirve lo dice sin culpar a nadie.
 
 import { ArrowRight, Eye, EyeSlash } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
@@ -14,6 +14,16 @@ import { Campo } from "../_panel/formas";
 import e from "../_panel/entrar.module.css";
 import f from "../_panel/formas.module.css";
 import estilos from "../_panel/tablero.module.css";
+
+// Renglones de muestra para la ilustración: así se ve una hoja del libro de la reunión.
+const RENGLONES = [
+  { n: "01", acciones: 2, total: "62.000" },
+  { n: "02", acciones: 1, total: "32.000" },
+  { n: "03", acciones: 3, total: "92.000" },
+  { n: "04", acciones: 2, total: "62.000" },
+  { n: "05", acciones: 0, total: "3.000", multa: true },
+  { n: "06", acciones: 1, total: "32.000" },
+];
 
 export default function Entrar() {
   const router = useRouter();
@@ -29,12 +39,43 @@ export default function Entrar() {
         <p className={e.logo}>
           Cred<span>i</span>mpacto
         </p>
+        <div className={e.escena}>
+          <div className={e.hoja}>
+            <div className={e.hojaCabeza}>
+              <span>Libro de la ACAP</span>
+              <span>Reunión 7</span>
+            </div>
+            <div className={e.hojaTitulos}>
+              <span>#</span>
+              <span>Acciones</span>
+              <span>Total</span>
+            </div>
+            {RENGLONES.map((r) => (
+              <div key={r.n} className={e.hojaRenglon} data-multa={r.multa || undefined}>
+                <span>{r.n}</span>
+                <span>{r.multa ? "Multa" : r.acciones}</span>
+                <span>$ {r.total}</span>
+              </div>
+            ))}
+            <div className={e.hojaTotal}>
+              <span>Caja contada</span>
+              <span>$ 283.000</span>
+            </div>
+            <span className={e.sello}>
+              <span>Bien</span>
+              <span>contado</span>
+            </span>
+          </div>
+        </div>
         <div className={e.frase}>
           <p>El libro de las comunidades que ahorran juntas.</p>
           <p className={e.fraseSub}>Panel de la Fundación CoimpactoB</p>
         </div>
       </section>
       <section className={e.lado}>
+        <p className={e.logoMovil} aria-hidden>
+          Cred<span>i</span>mpacto
+        </p>
         <form
           className={e.ficha}
           onSubmit={async (evento) => {
@@ -76,6 +117,7 @@ export default function Entrar() {
             {entrando ? null : <ArrowRight size={16} weight="bold" aria-hidden />}
           </button>
         </form>
+        <p className={e.nota}>El libro es de cada grupo; el dinero, también.</p>
       </section>
     </main>
   );

@@ -1,39 +1,26 @@
 "use client";
 
 // Gráficos del panel (Recharts). Naranja solo para el ahorro; azul de CoimpactoB para el
-// crédito; carbón para miembros. Se dibujan escalonados (0, 120, 240 ms), 450 ms ease-out, y
+// crédito; tinta para miembros. Se dibujan escalonados (0, 120, 240 ms), 450 ms ease-out, y
 // no se animan con "reducir movimiento".
 
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useSyncExternalStore } from "react";
+
+import { ChartBar } from "@phosphor-icons/react";
 
 import { mesCorto, pesosCortos, pesosExactos } from "./formato";
+import { Vacio as VacioKit } from "./formas";
+import { COLOR, CURSOR_BARRA, CURSOR_LINEA, EJE, REJILLA, useAnimar } from "./graficoTema";
 import estilos from "./tablero.module.css";
 import type { Tablero } from "./tipos";
 
-const NARANJA = "#F66A03";
-const AZUL = "#005FC5";
-const GRIS = "#C9C7C1";
-const EJE = { fontSize: 12, fill: "#6B6A66" };
-const CARBON = "#252525";
-
-// "Reducir movimiento" del sistema, leído sin setState dentro de un efecto.
-function suscribir(aviso: () => void) {
-  const consulta = window.matchMedia("(prefers-reduced-motion: no-preference)");
-  consulta.addEventListener("change", aviso);
-  return () => consulta.removeEventListener("change", aviso);
-}
-
-function useAnimar(): boolean {
-  return useSyncExternalStore(
-    suscribir,
-    () => window.matchMedia("(prefers-reduced-motion: no-preference)").matches,
-    () => false,
-  );
-}
+const NARANJA = COLOR.naranja;
+const AZUL = COLOR.azul;
+const GRIS = COLOR.gris;
+const CARBON = COLOR.tinta;
 
 function Vacio({ texto }: { texto: string }) {
-  return <p className={estilos.graficoVacio}>{texto}</p>;
+  return <VacioKit compacto icono={ChartBar} fantasma="barras" titulo="Sin datos todavía" texto={texto} />;
 }
 
 function Leyenda({ items }: { items: { color: string; texto: string }[] }) {
@@ -102,10 +89,10 @@ export function Crecimiento({ serie }: { serie: Tablero["series"]["mensual"] }) 
                     <stop offset="100%" stopColor={NARANJA} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="#ECEBE8" />
+                <CartesianGrid vertical={false} stroke={REJILLA} />
                 <XAxis dataKey="etiqueta" tick={EJE} axisLine={false} tickLine={false} />
                 <YAxis tick={EJE} axisLine={false} tickLine={false} width={76} tickFormatter={pesosCortos} />
-                <Tooltip content={<Globo formato={pesosExactos} />} cursor={{ stroke: "#DAD8D3" }} />
+                <Tooltip content={<Globo formato={pesosExactos} />} cursor={CURSOR_LINEA} />
                 <Area
                   name="Ahorro"
                   type="monotone"
@@ -166,10 +153,10 @@ export function Top({ top }: { top: Tablero["series"]["top"] }) {
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datos} layout="vertical" margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid horizontal={false} stroke="#ECEBE8" />
+                <CartesianGrid horizontal={false} stroke={REJILLA} />
                 <XAxis type="number" tick={EJE} axisLine={false} tickLine={false} tickFormatter={pesosCortos} tickCount={4} />
                 <YAxis type="category" dataKey="nombre" tick={EJE} axisLine={false} tickLine={false} width={96} />
-                <Tooltip content={<Globo formato={pesosExactos} />} cursor={{ fill: "#F4F3F0" }} />
+                <Tooltip content={<Globo formato={pesosExactos} />} cursor={CURSOR_BARRA} />
                 <Bar
                   name="Ahorro"
                   dataKey="ahorro"
@@ -225,10 +212,10 @@ export function Nuevos({ serie }: { serie: Tablero["series"]["nuevos"] }) {
           <div className={estilos.lienzo}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={datos} margin={{ top: 8, right: 8, left: 0, bottom: 0 }} barGap={4}>
-                <CartesianGrid vertical={false} stroke="#ECEBE8" />
+                <CartesianGrid vertical={false} stroke={REJILLA} />
                 <XAxis dataKey="etiqueta" tick={EJE} axisLine={false} tickLine={false} />
                 <YAxis tick={EJE} axisLine={false} tickLine={false} width={32} allowDecimals={false} />
-                <Tooltip content={<Globo formato={(v) => String(v)} />} cursor={{ fill: "#F4F3F0" }} />
+                <Tooltip content={<Globo formato={(v) => String(v)} />} cursor={CURSOR_BARRA} />
                 <Bar
                   name="Miembros nuevos"
                   dataKey="miembros"

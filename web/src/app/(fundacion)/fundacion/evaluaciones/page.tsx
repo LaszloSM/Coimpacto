@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { Bloque, Cabecera, Campo, Cargando, Cifras, Etiqueta, Lateral, Tabla, useDatos, useEnvio, modulo as m } from "../_panel/comunes";
 import { BarrasHorizontales, COLOR } from "../_panel/GraficosModulo";
 import { fechaCorta } from "../_panel/prestamos";
-import { Vacio } from "../_panel/formas";
+import { Selector, Vacio } from "../_panel/formas";
 import estilos from "../_panel/tablero.module.css";
 
 type Criterio = "gobernanza" | "transparencia" | "participacion" | "gestion_financiera" | "reglamento";
@@ -223,13 +223,12 @@ export default function Evaluaciones() {
                 <form className={m.formulario} onSubmit={guardar}>
                   <div className={m.fila2}>
                     <Campo etiqueta="Comunidad">
-                      <select required value={forma.acap_id} onChange={(e) => setForma({ ...forma, acap_id: e.target.value })}>
-                        {comunidades.datos?.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.nombre}
-                          </option>
-                        ))}
-                      </select>
+                      <Selector
+                        requerido
+                        valor={forma.acap_id}
+                        opciones={(comunidades.datos ?? []).map((c) => ({ valor: c.id, texto: c.nombre }))}
+                        alCambiar={(acap_id) => setForma({ ...forma, acap_id })}
+                      />
                     </Campo>
                     <Campo etiqueta="Fecha de la visita">
                       <input type="date" required value={forma.fecha} onChange={(e) => setForma({ ...forma, fecha: e.target.value })} />

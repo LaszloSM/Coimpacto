@@ -87,4 +87,4 @@ Read DESIGN.md before visual or UI work: it defines the fonts, colors, spacing, 
 aesthetic direction. Ask the user before departing from it. When reviewing or QA-ing
 UI, flag code that doesn't match DESIGN.md.
 
-Resumen: metáfora del cuaderno de la ACAP (renglones, corregir = tachado + reverso, sello «Bien contado» al cerrar), arqueo con el color real de cada billete, Atkinson Hyperlegible Next (`tnum`) en campo, Bitter solo en títulos de la oficina, un solo botón naranja por pantalla, solo modo claro. Vista previa: [docs/designs/preview/sistema-de-diseno.html](docs/designs/preview/sistema-de-diseno.html).
+Resumen: la libreta de la ACAP para la app y el panel (número a la izquierda del margen naranja, acciones como sellos, arqueo con el color real de cada billete, sello «Bien contado» al cerrar, totales con doble raya), Bricolage Grotesque en títulos y Atkinson Hyperlegible Next (`tnum`) en texto y cifras, naranja CoimpactoB #F66A03 con texto tinta, un solo botón naranja por pantalla, solo modo claro. Kit: `movil/src/ui` (Reanimated, hápticos, Phosphor) y `web/src/app/(fundacion)/fundacion/_panel` (Base UI, Sonner, cmdk).

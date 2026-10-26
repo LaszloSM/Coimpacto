@@ -1,12 +1,13 @@
-// Teclado de dinero (DESIGN.md "Dinero"): teclas de 56 dp con atajo 000 y la cifra con su
-// valor en letras arriba. Solo en abonos y préstamos (D11): el resto de la reunión va con toques.
+// Teclado de dinero (DESIGN.md "Dinero"): teclas de 60 dp con atajo 000, la cifra grande con su
+// valor en letras arriba y el aviso si algo no cuadra. Solo en abonos y préstamos (D11): el
+// resto de la reunión va con toques. Cada tecla vibra un toque corto.
 
-import { tokens } from "@credimpacto/tokens";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-import { Dinero, TOPE_CIFRAS } from "./componentes";
+import { Dinero, Pulsable, TOPE_CIFRAS } from "./componentes";
+import { Alerta, Borrar } from "./iconos";
+import { c, t } from "./tema";
 
-const { color, tipo, spacing, componentes } = tokens;
 const TECLAS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "000", "0", "borrar"] as const;
 /** Tope de lo que se puede escribir (cien millones): evita ceros de más por error. */
 const MAXIMO = 100_000_000;
@@ -24,29 +25,39 @@ export function TecladoDinero(props: {
     if (nuevo <= MAXIMO) props.alCambiar(nuevo);
   };
   return (
-    <View>
-      <View style={estilos.cifra}>
+    <View style={estilos.marco}>
+      <View style={[estilos.cifra, props.aviso ? estilos.cifraAviso : null]}>
         <Dinero testID={`${props.testID ?? "dinero"}-valor`} pesos={props.valor} etiqueta={props.etiqueta} grande />
         {props.aviso ? (
-          <Text style={estilos.aviso} accessibilityLiveRegion="polite">
-            {props.aviso}
-          </Text>
+          <View style={estilos.aviso}>
+            <Alerta size={18} color={c.aviso} weight="bold" />
+            <Text style={estilos.avisoTexto} accessibilityLiveRegion="polite">
+              {props.aviso}
+            </Text>
+          </View>
         ) : null}
       </View>
       <View style={estilos.teclado}>
         {TECLAS.map((tecla) => (
-          <Pressable
+          <Pulsable
             key={tecla}
             testID={`${props.testID ?? "dinero"}-${tecla}`}
             accessibilityRole="button"
             accessibilityLabel={tecla === "borrar" ? "Borrar" : tecla === "000" ? "Tres ceros" : tecla}
             onPress={() => tocar(tecla)}
-            style={({ pressed }) => [estilos.tecla, pressed && { backgroundColor: color.renglon }]}
+            vibra="paso"
+            escala={0.94}
+            style={[estilos.tecla, tecla === "borrar" && estilos.teclaBorrar]}
+            estiloPresionado={estilos.teclaPresionada}
           >
-            <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={tecla === "borrar" ? estilos.textoBorrar : estilos.texto}>
-              {tecla === "borrar" ? "Borrar" : tecla}
-            </Text>
-          </Pressable>
+            {tecla === "borrar" ? (
+              <Borrar size={28} color={c.tinta} weight="bold" />
+            ) : (
+              <Text maxFontSizeMultiplier={TOPE_CIFRAS} style={tecla === "000" ? estilos.textoCeros : estilos.texto}>
+                {tecla}
+              </Text>
+            )}
+          </Pulsable>
         ))}
       </View>
     </View>
@@ -54,32 +65,37 @@ export function TecladoDinero(props: {
 }
 
 const estilos = StyleSheet.create({
+  marco: { gap: 14, marginTop: 8 },
   cifra: {
     borderWidth: 2,
-    borderColor: componentes.dinero.borderColor,
-    borderRadius: componentes.dinero.rounded,
-    padding: spacing.md,
-    marginBottom: spacing.md,
+    borderColor: c.tinta,
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    backgroundColor: c.papel,
   },
+  cifraAviso: { borderColor: c.aviso },
   aviso: {
-    ...tipo.body,
-    color: color["por-validar"],
-    backgroundColor: color["por-validar-tinte"],
-    padding: spacing.sm,
-    marginTop: spacing.sm,
-    borderRadius: 4,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+    marginTop: 12,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: c.avisoTinte,
   },
-  teclado: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: spacing.sm },
+  avisoTexto: { ...t.body, fontSize: 16, lineHeight: 21, color: c.aviso, flex: 1 },
+  teclado: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 8 },
   tecla: {
-    width: "31%",
-    minHeight: componentes.tecla.height,
-    borderRadius: componentes.tecla.rounded,
-    borderWidth: 1,
-    borderColor: componentes.tecla.borderColor,
-    backgroundColor: componentes.tecla.backgroundColor,
+    width: "31.5%",
+    minHeight: 62,
+    borderRadius: 16,
+    backgroundColor: c.hueco,
     alignItems: "center",
     justifyContent: "center",
   },
-  texto: { ...tipo["cifra-renglon"], fontSize: 26, color: color.tinta },
-  textoBorrar: { ...tipo.label, fontSize: 18, color: color.tinta },
+  teclaBorrar: { backgroundColor: c.renglon },
+  teclaPresionada: { backgroundColor: c.renglonFuerte },
+  texto: { ...t["cifra-renglon"], fontSize: 28, lineHeight: 32, color: c.tinta },
+  textoCeros: { ...t["cifra-renglon"], fontSize: 22, lineHeight: 28, color: c.tinta },
 });

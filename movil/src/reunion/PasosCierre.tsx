@@ -4,15 +4,32 @@
 // firma en grupo; al firmar cae el sello «Bien contado» (DESIGN.md, el momento de la marca).
 
 import { formatearPesos } from "@credimpacto/reglas";
-import { tokens } from "@credimpacto/tokens";
 import { useEffect, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, ScrollView, StyleSheet, Text, TextInput, Vibration, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import type { Elemento } from "../cola/cola";
 import type { FotoGrupo } from "../cola/grupo";
 import type { Sesion } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, Contador, Dinero, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import {
+  Acciones,
+  BotonPrincipal,
+  BotonSecundario,
+  BotonVolver,
+  CabezaMiembro,
+  Dinero,
+  estilos as base,
+  Nota,
+  Parrafo,
+  Renglon,
+  Rotulo,
+  Titulo,
+  Total,
+} from "../ui/componentes";
+import { Calendario, Listo } from "../ui/iconos";
+import { c, t } from "../ui/tema";
+import { tocar } from "../ui/tocar";
 import {
   arqueoGuardado,
   BILLETES,
@@ -33,9 +50,8 @@ import { programadorNativo } from "../avisos/programadorNativo";
 import { fechaProxima, guardarProxima, OPCIONES_PROXIMA, reprogramar } from "../avisos/recordatorios";
 import { perfilesSocio } from "../socio/socio";
 import { FirmasGrupo } from "./FirmasGrupo";
+import { FilaConteo, Sello } from "./piezasCierre";
 import { PASOS, type ReunionLocal } from "./reunion";
-
-const { color, spacing, tipo, componentes } = tokens;
 
 interface PropsPaso {
   sesion: Sesion;
@@ -45,23 +61,6 @@ interface PropsPaso {
   alVolver: () => void;
   alCambiar: () => void;
 }
-
-const COLOR_BILLETE: Record<number, string> = {
-  100_000: color["billete-100000"],
-  50_000: color["billete-50000"],
-  20_000: color["billete-20000"],
-  10_000: color["billete-10000"],
-  5_000: color["billete-5000"],
-  2_000: color["billete-2000"],
-};
-const NOMBRE_COLOR: Record<number, string> = {
-  100_000: "verde",
-  50_000: "violeta",
-  20_000: "naranja",
-  10_000: "rojo",
-  5_000: "café",
-  2_000: "azul",
-};
 
 // --- paso 7: arqueo a ciegas -----------------------------------------------------------------
 
@@ -85,55 +84,37 @@ export function PasoArqueo(props: PropsPaso) {
   if (!fase) return null;
 
   if (fase !== "revelado") {
-    const denominaciones = fase === "billetes" ? BILLETES : MONEDAS;
+    const monedas = fase === "monedas";
+    const denominaciones = monedas ? MONEDAS : BILLETES;
     return (
       <>
         <ScrollView contentContainerStyle={base.contenido}>
-          <Titulo>{fase === "billetes" ? "Cuenten los billetes" : "Ahora las monedas"}</Titulo>
-          <Parrafo>Cuenten la caja sin mirar cuánto debería haber.</Parrafo>
-          {denominaciones.map((valor) => (
-            <View key={valor} style={estilos.billete}>
-              <View style={[estilos.franjaBillete, { backgroundColor: COLOR_BILLETE[valor] ?? color["renglon-fuerte"] }]} />
-              <View style={{ flex: 1 }}>
-                <Contador
-                  testID={`cuenta-${valor}`}
-                  etiqueta={`${formatearPesos(valor)}${NOMBRE_COLOR[valor] ? ` · ${NOMBRE_COLOR[valor]}` : ""}`}
-                  valor={conteo[valor] ?? 0}
-                  maximo={999}
-                  alCambiar={(n) => setConteo({ ...conteo, [valor]: n })}
-                />
-              </View>
-            </View>
-          ))}
-          <View style={estilos.total}>
-            <Dinero testID="arqueo-total" pesos={totalConteo(conteo)} etiqueta="Contado" grande />
+          <Titulo>{monedas ? "Ahora las monedas" : "Cuenten los billetes"}</Titulo>
+          <Parrafo tenue>Cuenten la caja sin mirar cuánto debería haber.</Parrafo>
+          <View style={{ marginTop: 10 }}>
+            {denominaciones.map((valor) => (
+              <FilaConteo key={valor} valor={valor} moneda={monedas} cuenta={conteo[valor] ?? 0} alCambiar={(n) => setConteo({ ...conteo, [valor]: n })} />
+            ))}
           </View>
+          <Total testID="arqueo-total" pesos={totalConteo(conteo)} etiqueta="Contado" />
         </ScrollView>
-        <View style={[base.acciones, estilos.dosBotones]}>
-          <View style={{ flex: 1 }}>
-            <BotonSecundario
-              testID="paso-anterior"
-              texto="Anterior"
-              alTocar={() => (fase === "monedas" ? setFase("billetes") : props.alVolver())}
+        <Acciones fila>
+          <BotonVolver testID="paso-anterior" alTocar={() => (monedas ? setFase("billetes") : props.alVolver())} />
+          {monedas ? (
+            <BotonPrincipal
+              testID="termine-de-contar"
+              texto="Terminé de contar"
+              alTocar={async () => {
+                const esperado = await esperadoEnCaja(props.sesion.base, props.reunion, props.foto);
+                await guardarConteo(props.sesion.base, props.reunion.id, conteo, esperado);
+                setArqueo(await arqueoGuardado(props.sesion.base, props.reunion.id));
+                setFase("revelado");
+              }}
             />
-          </View>
-          <View style={{ flex: 2 }}>
-            {fase === "billetes" ? (
-              <BotonPrincipal testID="contar-monedas" texto="Contar las monedas" alTocar={() => setFase("monedas")} />
-            ) : (
-              <BotonPrincipal
-                testID="termine-de-contar"
-                texto="Terminé de contar"
-                alTocar={async () => {
-                  const esperado = await esperadoEnCaja(props.sesion.base, props.reunion, props.foto);
-                  await guardarConteo(props.sesion.base, props.reunion.id, conteo, esperado);
-                  setArqueo(await arqueoGuardado(props.sesion.base, props.reunion.id));
-                  setFase("revelado");
-                }}
-              />
-            )}
-          </View>
-        </View>
+          ) : (
+            <BotonPrincipal testID="contar-monedas" texto="Contar las monedas" alTocar={() => setFase("monedas")} />
+          )}
+        </Acciones>
       </>
     );
   }
@@ -142,48 +123,56 @@ export function PasoArqueo(props: PropsPaso) {
   const cerrado = Boolean(arqueo!.cerradaEn);
   return (
     <>
-      <ScrollView contentContainerStyle={base.contenido}>
+      <ScrollView contentContainerStyle={base.contenido} keyboardShouldPersistTaps="handled">
         <Titulo>{PASOS[6]}</Titulo>
-        <Dinero pesos={arqueo!.contado} etiqueta="Contaron" />
-        <View style={{ height: spacing.md }} />
-        <Dinero pesos={arqueo!.esperado} etiqueta="Debería haber" />
-        <Text style={[base.titulo, { fontSize: 24 }]} testID="arqueo-resultado">
-          {diferencia === 0
-            ? "Cuadra al peso."
-            : diferencia < 0
-              ? `Faltan ${formatearPesos(-diferencia)}. Anoten el motivo.`
-              : `Sobran ${formatearPesos(diferencia)}. Anoten el motivo.`}
-        </Text>
+        <View style={estilos.comparar}>
+          <View style={estilos.compararCelda}>
+            <Dinero pesos={arqueo!.contado} etiqueta="Contaron" />
+          </View>
+          <View style={estilos.compararCelda}>
+            <Dinero pesos={arqueo!.esperado} etiqueta="Debería haber" />
+          </View>
+        </View>
+        <Animated.View entering={FadeIn.duration(260).delay(120)} style={[estilos.veredicto, diferencia === 0 ? estilos.veredictoBien : estilos.veredictoAviso]}>
+          {diferencia === 0 ? <Listo size={30} color={c.bien} weight="fill" /> : null}
+          <Text style={[estilos.veredictoTexto, { color: diferencia === 0 ? c.bien : c.aviso }]} testID="arqueo-resultado">
+            {diferencia === 0
+              ? "Cuadra al peso."
+              : diferencia < 0
+                ? `Faltan ${formatearPesos(-diferencia)}. Anoten el motivo.`
+                : `Sobran ${formatearPesos(diferencia)}. Anoten el motivo.`}
+          </Text>
+        </Animated.View>
         {diferencia !== 0 ? (
-          <TextInput
-            testID="arqueo-motivo"
-            editable={!cerrado}
-            value={motivo}
-            onChangeText={setMotivo}
-            placeholder="Motivo"
-            placeholderTextColor={color["tinta-suave"]}
-            style={estilos.motivo}
-            accessibilityLabel="Motivo de la diferencia"
-          />
+          <>
+            <Rotulo>Motivo de la diferencia</Rotulo>
+            <TextInput
+              testID="arqueo-motivo"
+              editable={!cerrado}
+              value={motivo}
+              onChangeText={setMotivo}
+              placeholder="Por ejemplo: se pagó el refrigerio"
+              placeholderTextColor={c.tenue}
+              style={estilos.motivo}
+              multiline
+              accessibilityLabel="Motivo de la diferencia"
+            />
+            <Parrafo tenue>La diferencia la firman dos cargos con el cierre.</Parrafo>
+          </>
         ) : null}
-        {diferencia !== 0 ? <Parrafo>La diferencia la firman dos cargos con el cierre.</Parrafo> : null}
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          {cerrado ? null : <BotonSecundario testID="volver-a-contar" texto="Volver a contar" alTocar={() => setFase("billetes")} />}
-        </View>
-        <View style={{ flex: 2 }}>
-          <BotonPrincipal
-            testID="seguir-cierre"
-            texto="Seguir al cierre"
-            falta={diferencia !== 0 && !motivo.trim() ? "Falta el motivo" : undefined}
-            alTocar={async () => {
-              if (diferencia !== 0 && !cerrado) await guardarMotivo(props.sesion.base, props.reunion.id, motivo);
-              props.alSeguir();
-            }}
-          />
-        </View>
-      </View>
+      <Acciones fila>
+        {cerrado ? null : <BotonVolver testID="volver-a-contar" texto="Volver a contar" alTocar={() => setFase("billetes")} />}
+        <BotonPrincipal
+          testID="seguir-cierre"
+          texto="Seguir al cierre"
+          falta={diferencia !== 0 && !motivo.trim() ? "Falta el motivo" : undefined}
+          alTocar={async () => {
+            if (diferencia !== 0 && !cerrado) await guardarMotivo(props.sesion.base, props.reunion.id, motivo);
+            props.alSeguir();
+          }}
+        />
+      </Acciones>
     </>
   );
 }
@@ -198,10 +187,7 @@ export function PasoCierre(props: PropsPaso) {
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
-    void Promise.all([
-      arqueoGuardado(props.sesion.base, props.reunion.id),
-      correccionesDeHoy(props.sesion.base, props.reunion.id),
-    ]).then(([a, c]) => {
+    void Promise.all([arqueoGuardado(props.sesion.base, props.reunion.id), correccionesDeHoy(props.sesion.base, props.reunion.id)]).then(([a, c]) => {
       setArqueo(a);
       setCorrecciones(c);
     });
@@ -212,14 +198,16 @@ export function PasoCierre(props: PropsPaso) {
   if (arqueo?.cerradaEn) {
     return (
       <>
-        <ScrollView contentContainerStyle={[base.contenido, { flexGrow: 1, alignItems: "center", justifyContent: "center", paddingTop: spacing.lg }]}>
+        <ScrollView contentContainerStyle={[base.contenido, estilos.cerrada]}>
           <Sello acap={props.foto.acap.nombre} fecha={props.reunion.fecha} />
-          <Parrafo testID="reunion-cerrada">Reunión cerrada · Guardado en este celular</Parrafo>
+          <Text style={estilos.cerradaTexto} testID="reunion-cerrada">
+            Reunión cerrada · Guardado en este celular
+          </Text>
           <ProximaReunion foto={props.foto} />
         </ScrollView>
-        <View style={base.acciones}>
+        <Acciones>
           <BotonPrincipal testID="ver-resumen" texto="Ver el resumen de cada uno" alTocar={props.alSeguir} />
-        </View>
+        </Acciones>
       </>
     );
   }
@@ -230,7 +218,13 @@ export function PasoCierre(props: PropsPaso) {
         titulo="Firmar el cierre"
         permiso="firma_cierre"
         foto={props.foto}
-        lista={<Parrafo>Caja contada: {formatearPesos(arqueo.contado)}. Con estas firmas la reunión se cierra.</Parrafo>}
+        lista={
+          <View style={{ paddingVertical: 14, gap: 4 }}>
+            <Text style={base.etiqueta}>Caja contada</Text>
+            <Text style={base.cifraRenglon}>{formatearPesos(arqueo.contado)}</Text>
+            <Text style={base.letras}>Con estas firmas la reunión se cierra.</Text>
+          </View>
+        }
         alFirmar={async (firmantes) => {
           await cerrarReunion(props.sesion.base, props.sesion.cripto, {
             reunion: props.reunion,
@@ -252,39 +246,34 @@ export function PasoCierre(props: PropsPaso) {
       <ScrollView contentContainerStyle={base.contenido}>
         <Titulo>{PASOS[7]}</Titulo>
         {!arqueo ? (
-          <Parrafo>Falta contar la caja antes de cerrar.</Parrafo>
+          <Nota tono="aviso">Falta contar la caja antes de cerrar.</Nota>
         ) : (
           <>
-            <Dinero pesos={arqueo.contado} etiqueta="Caja contada" />
-            <Text style={[base.titulo, { fontSize: 22 }]}>Correcciones de hoy</Text>
+            <View style={estilos.caja}>
+              <Dinero pesos={arqueo.contado} etiqueta="Caja contada" grande />
+            </View>
+            <Rotulo>Correcciones de hoy</Rotulo>
             {correcciones.length === 0 ? (
-              <Parrafo testID="sin-correcciones">Hoy no hubo correcciones.</Parrafo>
+              <Parrafo tenue testID="sin-correcciones">
+                Hoy no hubo correcciones.
+              </Parrafo>
             ) : (
               <>
-                <Parrafo>Al firmar el cierre, la junta las ratifica.</Parrafo>
-                {correcciones.map((c) => (
-                  <View key={c.id} style={base.renglon}>
-                    <Text style={[base.parrafo, { flex: 1 }]}>{String(c.datos.motivo)}</Text>
-                  </View>
+                <Parrafo tenue>Al firmar el cierre, la junta las ratifica.</Parrafo>
+                {correcciones.map((x) => (
+                  <Renglon key={x.id}>
+                    <Text style={base.parrafo}>{String(x.datos.motivo)}</Text>
+                  </Renglon>
                 ))}
               </>
             )}
           </>
         )}
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          <BotonSecundario testID="paso-anterior" texto="Anterior" alTocar={props.alVolver} />
-        </View>
-        <View style={{ flex: 2 }}>
-          <BotonPrincipal
-            testID="firmar-cierre"
-            texto="Firmar el cierre"
-            falta={arqueo ? undefined : "Falta el arqueo"}
-            alTocar={() => setFirmando(true)}
-          />
-        </View>
-      </View>
+      <Acciones fila>
+        <BotonVolver testID="paso-anterior" alTocar={props.alVolver} />
+        <BotonPrincipal testID="firmar-cierre" texto="Firmar el cierre" falta={arqueo ? undefined : "Falta el arqueo"} alTocar={() => setFirmando(true)} />
+      </Acciones>
     </>
   );
 }
@@ -294,73 +283,41 @@ function ProximaReunion(props: { foto: FotoGrupo }) {
   const { entorno } = useSesion();
   const [elegida, setElegida] = useState<string | null>(null);
   return (
-    <View style={{ width: "100%", gap: spacing.sm, marginTop: spacing.lg }}>
-      <Text style={base.parrafo}>{elegida ? `Próxima reunión: ${elegida}. Les avisamos el día antes.` : "¿Cuándo es la próxima reunión?"}</Text>
-      {elegida
-        ? null
-        : OPCIONES_PROXIMA.map((o) => (
-            <BotonSecundario
-              key={o.dias}
-              testID={`proxima-${o.dias}`}
-              texto={o.texto}
-              alTocar={async () => {
-                const fecha = fechaProxima(entorno.ahora(), o.dias);
-                await guardarProxima(entorno.almacen, fecha);
-                setElegida(fecha);
-                const socios = await perfilesSocio(entorno.almacen);
-                const conPrestamo = socios.filter((s) =>
-                  props.foto.prestamos.some(
-                    (p) => p.saldo > 0 && props.foto.miembros.find((m) => m.membresia_id === s.membresiaId)?.titular_id === p.titular_id,
-                  ),
-                ).length;
-                try {
-                  if (await programadorNativo.pedirPermiso()) {
-                    await reprogramar(programadorNativo, { proxima: fecha, acap: props.foto.acap.nombre, sociosConPrestamo: conPrestamo, ahora: entorno.ahora() });
-                  }
-                } catch {
-                  // Sin avisos la app funciona igual (N14).
-                }
-              }}
-            />
-          ))}
-    </View>
-  );
-}
-
-/** El sello «Bien contado»: cae de escala 1,25 a 1 en 320 ms, sin rebote, con una vibración de
- * 40 ms; con "Quitar animaciones" aparece quieto (DESIGN.md, Motion). */
-function Sello(props: { acap: string; fecha: string }) {
-  const [escala] = useState(() => new Animated.Value(1.25));
-  const [opacidad] = useState(() => new Animated.Value(0));
-
-  useEffect(() => {
-    void AccessibilityInfo.isReduceMotionEnabled().then((sinMovimiento) => {
-      if (sinMovimiento) {
-        escala.setValue(1);
-        opacidad.setValue(1);
-        return;
-      }
-      Vibration.vibrate(40);
-      Animated.parallel([
-        Animated.timing(escala, { toValue: 1, duration: 320, easing: Easing.bezier(0.2, 0.8, 0.2, 1), useNativeDriver: true }),
-        Animated.timing(opacidad, { toValue: 1, duration: 320, easing: Easing.bezier(0.2, 0.8, 0.2, 1), useNativeDriver: true }),
-      ]).start();
-    });
-  }, [escala, opacidad]);
-
-  return (
-    <Animated.View
-      testID="sello"
-      accessible
-      accessibilityLabel="Reunión cerrada. Bien contado."
-      style={[estilos.sello, { opacity: opacidad, transform: [{ scale: escala }, { rotate: "-8deg" }] }]}
-    >
-      <View style={estilos.selloInterior}>
-        <Text style={estilos.selloTexto}>BIEN{"\n"}CONTADO</Text>
-        <Text style={estilos.selloDetalle}>{props.acap}</Text>
-        <Text style={estilos.selloDetalle}>{props.fecha}</Text>
+    <View style={estilos.proxima}>
+      <View style={estilos.proximaCabeza}>
+        <Calendario size={22} color={c.naranja} weight="duotone" />
+        <Text style={estilos.proximaTitulo}>{elegida ? `Próxima reunión: ${elegida}` : "¿Cuándo es la próxima reunión?"}</Text>
       </View>
-    </Animated.View>
+      {elegida ? (
+        <Text style={base.letras}>Les avisamos el día antes.</Text>
+      ) : (
+        OPCIONES_PROXIMA.map((o) => (
+          <BotonSecundario
+            key={o.dias}
+            testID={`proxima-${o.dias}`}
+            texto={o.texto}
+            alTocar={async () => {
+              const fecha = fechaProxima(entorno.ahora(), o.dias);
+              await guardarProxima(entorno.almacen, fecha);
+              setElegida(fecha);
+              const socios = await perfilesSocio(entorno.almacen);
+              const conPrestamo = socios.filter((s) =>
+                props.foto.prestamos.some(
+                  (p) => p.saldo > 0 && props.foto.miembros.find((m) => m.membresia_id === s.membresiaId)?.titular_id === p.titular_id,
+                ),
+              ).length;
+              try {
+                if (await programadorNativo.pedirPermiso()) {
+                  await reprogramar(programadorNativo, { proxima: fecha, acap: props.foto.acap.nombre, sociosConPrestamo: conPrestamo, ahora: entorno.ahora() });
+                }
+              } catch {
+                // Sin avisos la app funciona igual (N14).
+              }
+            }}
+          />
+        ))
+      )}
+    </View>
   );
 }
 
@@ -381,78 +338,70 @@ export function PasoResumen(props: PropsPaso & { alTerminar: () => void }) {
   return (
     <>
       <ScrollView contentContainerStyle={base.contenido}>
-        <View style={estilos.encabezado}>
-          <Text style={base.cifraClave} testID="resumen-numero" accessibilityRole="header">
-            #{String(miembro.numero).padStart(2, "0")}
-          </Text>
-          <Text style={base.cifraRenglon}>
-            {indice + 1}/{lista.length}
-          </Text>
-        </View>
-        {miembro.nombre_corto ? <Text style={base.cifraRenglon}>{miembro.nombre_corto}</Text> : null}
-        <View style={estilos.cifras}>
+        <CabezaMiembro numero={miembro.numero} nombre={miembro.nombre_corto} detalle={`${indice + 1} de ${lista.length}`} testID="resumen-numero" />
+        <View style={estilos.resumenHoy}>
           <Dinero testID="resumen-hoy" pesos={resumen.ahorroHoy} etiqueta="Ahorró hoy" grande />
-          <Dinero pesos={resumen.ahorroCiclo} etiqueta="Total ahorrado en el ciclo" />
-          {resumen.debePrestamo !== null ? <Dinero pesos={resumen.debePrestamo} etiqueta="Debe del préstamo" /> : null}
         </View>
-        <Text style={base.etiqueta}>Pendiente de confirmar por la Fundación.</Text>
+        <View style={estilos.resumenFila}>
+          <View style={estilos.resumenCelda}>
+            <Dinero pesos={resumen.ahorroCiclo} etiqueta="Ahorrado en el ciclo" />
+          </View>
+          {resumen.debePrestamo !== null ? (
+            <View style={estilos.resumenCelda}>
+              <Dinero pesos={resumen.debePrestamo} etiqueta="Debe del préstamo" />
+            </View>
+          ) : null}
+        </View>
+        <Text style={[base.etiqueta, { marginTop: 18 }]}>Pendiente de confirmar por la Fundación.</Text>
       </ScrollView>
-      <View style={[base.acciones, estilos.dosBotones]}>
-        <View style={{ flex: 1 }}>
-          {indice > 0 ? <BotonSecundario texto="Anterior" alTocar={() => setIndice(indice - 1)} /> : null}
-        </View>
-        <View style={{ flex: 2 }}>
-          {ultimo ? (
-            <BotonPrincipal
-              testID="terminar-reunion"
-              texto="Terminar la reunión"
-              alTocar={async () => {
-                await terminarReunion(props.sesion.base, props.reunion.id);
-                props.alTerminar();
-              }}
-            />
-          ) : (
-            <BotonPrincipal testID="resumen-siguiente" texto="Siguiente" alTocar={() => setIndice(indice + 1)} />
-          )}
-        </View>
-      </View>
+      <Acciones fila>
+        {indice > 0 ? <BotonVolver texto="Miembro anterior" alTocar={() => setIndice(indice - 1)} /> : null}
+        {ultimo ? (
+          <BotonPrincipal
+            testID="terminar-reunion"
+            texto="Terminar la reunión"
+            sinFlecha
+            alTocar={async () => {
+              await terminarReunion(props.sesion.base, props.reunion.id);
+              tocar.bien();
+              props.alTerminar();
+            }}
+          />
+        ) : (
+          <BotonPrincipal testID="resumen-siguiente" texto="Siguiente" alTocar={() => setIndice(indice + 1)} />
+        )}
+      </Acciones>
     </>
   );
 }
 
 const estilos = StyleSheet.create({
-  dosBotones: { flexDirection: "row", gap: spacing.sm },
-  billete: { flexDirection: "row", alignItems: "stretch", gap: spacing.sm },
-  franjaBillete: { width: 14, marginVertical: spacing.sm, borderRadius: componentes.billete.rounded },
-  total: { marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 3, borderTopColor: color.tinta },
+  comparar: { flexDirection: "row", gap: 10, marginTop: 6 },
+  compararCelda: { flex: 1, padding: 14, borderRadius: 16, backgroundColor: c.mesa },
+  veredicto: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 16, padding: 16, borderRadius: 16 },
+  veredictoBien: { backgroundColor: c.bienTinte },
+  veredictoAviso: { backgroundColor: c.avisoTinte },
+  veredictoTexto: { ...t["campo-subtitulo"], flex: 1 },
   motivo: {
-    ...tipo.body,
-    color: color.tinta,
+    ...t.body,
+    color: c.tinta,
     borderWidth: 2,
-    borderColor: componentes.dinero.borderColor,
-    borderRadius: componentes.dinero.rounded,
-    minHeight: 56,
-    paddingHorizontal: spacing.md,
+    borderColor: c.tinta,
+    borderRadius: 16,
+    minHeight: 84,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    textAlignVertical: "top",
+    marginBottom: 10,
   },
-  encabezado: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: spacing.lg },
-  cifras: { gap: spacing.lg, marginVertical: spacing.lg },
-  sello: {
-    width: 176,
-    height: 176,
-    borderRadius: componentes.sello.rounded,
-    borderWidth: 3,
-    borderColor: componentes.sello.borderColor,
-    padding: 6,
-    marginBottom: spacing.lg,
-  },
-  selloInterior: {
-    flex: 1,
-    borderRadius: componentes.sello.rounded,
-    borderWidth: 1.5,
-    borderColor: componentes.sello.borderColor,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  selloTexto: { ...tipo["campo-titulo"], color: componentes.sello.textColor, textAlign: "center", lineHeight: 30 },
-  selloDetalle: { ...tipo.label, color: componentes.sello.textColor, textAlign: "center" },
+  caja: { marginTop: 4, padding: 16, borderRadius: 16, backgroundColor: c.mesa },
+  cerrada: { flexGrow: 1, alignItems: "center", paddingTop: 36 },
+  cerradaTexto: { ...t["body-fuerte"], color: c.bien, textAlign: "center", marginTop: 6 },
+  proxima: { alignSelf: "stretch", gap: 10, marginTop: 26, padding: 16, borderRadius: 18, backgroundColor: c.mesa },
+  proximaCabeza: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 2 },
+  proximaTitulo: { ...t["body-fuerte"], color: c.tinta, flex: 1 },
+  resumenHoy: { padding: 18, borderRadius: 18, backgroundColor: c.naranjaTinte },
+  resumenFila: { flexDirection: "row", gap: 10, marginTop: 10 },
+  resumenCelda: { flex: 1, padding: 14, borderRadius: 16, backgroundColor: c.mesa },
 });
+

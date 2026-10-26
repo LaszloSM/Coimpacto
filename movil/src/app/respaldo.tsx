@@ -13,7 +13,9 @@ import { dispositivoRegistrado } from "../enrolamiento/flujo";
 import { armarRespaldo, nombreDelArchivo } from "../respaldo/respaldo";
 import { firmarComoDispositivo } from "../seguridad/dispositivo";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonPrincipal, BotonSecundario, estilos as base, Estado, Nota, Parrafo } from "../ui/componentes";
+import { Archivo, Listo } from "../ui/iconos";
+import { c } from "../ui/tema";
 
 type Fase = "preparando" | "lista" | "compartida" | "nada" | "error";
 
@@ -74,7 +76,12 @@ export default function PantallaRespaldo() {
   return (
     <SafeAreaView style={base.pantalla}>
       <View style={[base.contenido, { flex: 1 }]}>
-        <Titulo>Copia de seguridad</Titulo>
+        <Estado
+          titulo="Copia de seguridad"
+          tono={fase === "error" ? "mal" : fase === "nada" ? "bien" : "naranja"}
+          trabajando={fase === "preparando"}
+          icono={fase === "nada" ? <Listo size={38} color={c.bien} weight="duotone" /> : <Archivo size={38} color={fase === "error" ? c.mal : c.naranja} weight="duotone" />}
+        >
         <Parrafo testID="respaldo-estado">
           {fase === "preparando"
             ? "Preparando copia…"
@@ -86,10 +93,11 @@ export default function PantallaRespaldo() {
                   ? `Copia lista con ${archivo!.elementos} registros. Envíela al celular de otro cargo o al facilitador.`
                   : "¿Llegó la copia?"}
         </Parrafo>
-        {fase === "lista" ? <Parrafo>Solo la Fundación puede abrirla.</Parrafo> : null}
-        {error && fase !== "error" ? <Parrafo>{error}</Parrafo> : null}
+        {fase === "lista" ? <Parrafo tenue>Solo la Fundación puede abrirla.</Parrafo> : null}
+        </Estado>
+        {error && fase !== "error" ? <Nota tono="mal">{error}</Nota> : null}
       </View>
-      <View style={base.acciones}>
+      <Acciones>
         {fase === "lista" ? (
           <BotonPrincipal testID="respaldo-compartir" texto="Enviar copia" alTocar={compartir} />
         ) : fase === "compartida" ? (
@@ -100,7 +108,7 @@ export default function PantallaRespaldo() {
         ) : (
           <BotonSecundario testID="respaldo-volver" texto="Volver al inicio" alTocar={salir} />
         )}
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }

@@ -162,6 +162,14 @@ export async function aportesRegistrados(
   return { acciones: fila.acciones, fondoSocial: fila.fondo_social === 1, multas: JSON.parse(fila.multas) };
 }
 
+/** Quiénes ya tienen su aporte anotado hoy (titular → total en pesos): la planilla del paso 4. */
+export async function anotadosDeLaReunion(base: BaseLocal, reunionId: string, ciclo: Ciclo): Promise<Map<string, number>> {
+  const filas = await base.todas<Registrado & { titular_id: string }>("SELECT * FROM registro_miembro WHERE reunion_id = ?;", reunionId);
+  return new Map(
+    filas.map((f) => [f.titular_id, montos(ciclo, { acciones: f.acciones, fondoSocial: f.fondo_social === 1, multas: JSON.parse(f.multas) }).total]),
+  );
+}
+
 /**
  * "Igual que la reunión pasada" (D11): las acciones y el fondo social que dio el miembro en la
  * última reunión del ciclo. Vale la más reciente entre la que llevó este celular y la que conoce

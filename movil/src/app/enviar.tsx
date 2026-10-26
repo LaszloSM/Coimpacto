@@ -17,7 +17,9 @@ import { borrarBase } from "../datos/baseNativa";
 import { dispositivoRegistrado } from "../enrolamiento/flujo";
 import { firmarComoDispositivo } from "../seguridad/dispositivo";
 import { useSesion } from "../sesion/contexto";
-import { BotonPrincipal, BotonSecundario, estilos as base, Franja, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonPrincipal, BotonSecundario, estilos as base, Estado, Parrafo } from "../ui/componentes";
+import { Alerta, NubeLista, NubeSubir } from "../ui/iconos";
+import { c } from "../ui/tema";
 
 export default function PantallaEnviar() {
   const { sesion, entorno, setSesion } = useSesion();
@@ -85,14 +87,21 @@ export default function PantallaEnviar() {
           ? "La Fundación retiró este celular. Se envió lo guardado y se borraron sus datos."
           : `No se pudo enviar. ${resultado.mensaje}`;
 
+  const listo = resultado?.fin === "listo";
+  const fallo = resultado && !listo;
   return (
     <SafeAreaView style={base.pantalla}>
-      <Franja porSubir={0} />
       <View style={[base.contenido, { flex: 1 }]}>
-        <Titulo>Enviar a la Fundación</Titulo>
-        <Parrafo testID="envio-estado">{texto}</Parrafo>
+        <Estado
+          titulo={!resultado ? "Enviando a la Fundación" : listo ? "Llegó a la Fundación" : "No se pudo enviar todo"}
+          tono={!resultado ? "naranja" : listo ? "bien" : "aviso"}
+          trabajando={!resultado}
+          icono={listo ? <NubeLista size={38} color={c.bien} weight="duotone" /> : fallo ? <Alerta size={38} color={c.aviso} weight="duotone" /> : <NubeSubir size={38} color={c.naranja} weight="duotone" />}
+        >
+          <Parrafo testID="envio-estado">{texto}</Parrafo>
+        </Estado>
       </View>
-      <View style={base.acciones}>
+      <Acciones>
         {mejora === "lista" ? (
           <BotonSecundario
             testID="instalar-mejora"
@@ -109,7 +118,7 @@ export default function PantallaEnviar() {
             router.replace("/");
           }}
         />
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }

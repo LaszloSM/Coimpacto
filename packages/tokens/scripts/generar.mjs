@@ -45,7 +45,7 @@ const PREFIJO = { colors: "color", rounded: "rounded", spacing: "spacing", typog
 const FUENTES_CSS = {
   "Atkinson Hyperlegible Next": "var(--fuente-atkinson-next)",
   "Atkinson Hyperlegible Mono": "var(--fuente-atkinson-mono)",
-  Bitter: "var(--fuente-bitter)",
+  "Bricolage Grotesque": "var(--fuente-bricolage)",
 };
 
 function generarCss(tokens) {
@@ -96,12 +96,12 @@ function generarCss(tokens) {
 // --- React Native (app) --------------------------------------------------------------------
 
 // Android necesita un archivo estático por peso (fuentes/nativas/, generadas por
-// scripts/fuentes_nativas.py). Cada peso es su propia familia, p. ej. "Bitter-700", y la app
+// scripts/fuentes_nativas.py). Cada peso es su propia familia, p. ej. "BricolageGrotesque-800", y la app
 // no pasa fontWeight: así Android no engrosa la letra por su cuenta.
 const FUENTES_RN = {
   "Atkinson Hyperlegible Next": "AtkinsonHyperlegibleNext",
   "Atkinson Hyperlegible Mono": "AtkinsonHyperlegibleMono",
-  Bitter: "Bitter",
+  "Bricolage Grotesque": "BricolageGrotesque",
 };
 
 /** "18px" → 18, "1.125rem" → 18, "clamp(2rem, 4vw, 3rem)" → 32 (el mínimo), "0.04em" → em relativo. */

@@ -4,7 +4,7 @@
 
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FotoGrupo } from "../cola/grupo";
@@ -16,7 +16,9 @@ import { perfiles as leerPerfiles, type Perfil } from "../seguridad/perfiles";
 import { useTiposCargo } from "../sesion/useTiposCargo";
 import { leerFoto } from "../sesion/abrir";
 import { useSesion } from "../sesion/contexto";
-import { BotonSecundario, estilos as base, Parrafo, Titulo } from "../ui/componentes";
+import { Acciones, BotonSecundario, estilos as base, Estado, Nota, Parrafo, Renglon, Titulo } from "../ui/componentes";
+import { Ir, Listo } from "../ui/iconos";
+import { c } from "../ui/tema";
 import { TecladoPin } from "../ui/TecladoPin";
 
 type Fase = "elegir" | "pin-presidente" | "pin-nuevo" | "confirmar" | "guardando" | "listo";
@@ -59,6 +61,7 @@ export default function PantallaAltaCargo() {
         <TecladoPin
           paraQuien={nombreCargo(tipos, presidente?.tipo ?? "presidente")}
           aviso={aviso ?? `${nombreCargo(tipos, presidente?.tipo ?? "presidente")} autoriza el alta.`}
+          guia={!aviso}
           alCompletar={(pin) => {
             setPinPresidente(pin);
             setAviso(undefined);
@@ -76,6 +79,7 @@ export default function PantallaAltaCargo() {
           paraQuien={quien}
           verificando={fase === "guardando"}
           aviso={fase === "pin-nuevo" ? (aviso ?? "Cree su PIN de 6 números.") : "Escriba el PIN otra vez."}
+          guia={!(fase === "pin-nuevo" && aviso)}
           alCompletar={async (pin) => {
             if (fase === "pin-nuevo") {
               setPinNuevo(pin);
@@ -120,39 +124,45 @@ export default function PantallaAltaCargo() {
   return (
     <SafeAreaView style={base.pantalla}>
       <ScrollView contentContainerStyle={base.contenido}>
-        <Titulo>{fase === "listo" ? "Cargo dado de alta" : "Dar de alta un cargo"}</Titulo>
         {fase === "listo" ? (
-          <Parrafo testID="alta-lista">Listo. Ya puede firmar en las reuniones con su PIN.</Parrafo>
-        ) : !presidente ? (
-          <Parrafo>Primero se registra el Presidente en este celular.</Parrafo>
-        ) : libres.length === 0 ? (
-          <Parrafo>Todos los cargos del ciclo ya están en este celular.</Parrafo>
+          <Estado titulo="Cargo dado de alta" tono="bien" icono={<Listo size={38} color={c.bien} weight="duotone" />}>
+            <Parrafo testID="alta-lista">Listo. Ya puede firmar en las reuniones con su PIN.</Parrafo>
+          </Estado>
         ) : (
           <>
-            {aviso ? <Parrafo>{aviso}</Parrafo> : null}
-            <Parrafo>¿Qué cargo se registra?</Parrafo>
-            {libres.map((c) => (
-              <Pressable
-                key={c.id}
-                testID={`alta-${c.tipo}`}
-                accessibilityRole="button"
-                onPress={() => {
-                  setCargoId(c.id);
-                  setAviso(undefined);
-                  setFase("pin-presidente");
-                }}
-                style={base.renglon}
-              >
-                <Text style={[base.parrafo, { flex: 1 }]}>{nombreCargo(tipos, c.tipo)}</Text>
-                <Text style={base.cifraRenglonPequena}>#{String(numeroDe(c.membresia_id)).padStart(2, "0")}</Text>
-              </Pressable>
-            ))}
+            <Titulo>Dar de alta un cargo</Titulo>
+            {!presidente ? (
+              <Nota>Primero se registra el Presidente en este celular.</Nota>
+            ) : libres.length === 0 ? (
+              <Nota tono="bien">Todos los cargos del ciclo ya están en este celular.</Nota>
+            ) : (
+              <>
+                {aviso ? <Nota tono="mal">{aviso}</Nota> : null}
+                <Parrafo tenue>¿Qué cargo se registra en este celular?</Parrafo>
+                {libres.map((x) => (
+                  <Renglon
+                    key={x.id}
+                    numero={String(numeroDe(x.membresia_id)).padStart(2, "0")}
+                    testID={`alta-${x.tipo}`}
+                    accesible={`Dar de alta ${nombreCargo(tipos, x.tipo)}`}
+                    alTocar={() => {
+                      setCargoId(x.id);
+                      setAviso(undefined);
+                      setFase("pin-presidente");
+                    }}
+                    derecha={<Ir size={20} color={c.tenue} weight="bold" />}
+                  >
+                    <Text style={base.parrafo}>{nombreCargo(tipos, x.tipo)}</Text>
+                  </Renglon>
+                ))}
+              </>
+            )}
           </>
         )}
       </ScrollView>
-      <View style={base.acciones}>
+      <Acciones>
         <BotonSecundario testID="alta-volver" texto="Volver al inicio" alTocar={salir} />
-      </View>
+      </Acciones>
     </SafeAreaView>
   );
 }

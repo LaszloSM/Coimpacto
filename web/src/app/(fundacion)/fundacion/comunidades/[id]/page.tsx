@@ -3,15 +3,15 @@
 // Ficha de una comunidad: datos, ciclo, junta, personas y acceso a la app, todo editable desde
 // el panel. Los cambios quedan en la auditoría del servidor.
 
-import { ArrowLeft } from "@phosphor-icons/react";
-import { motion } from "motion/react";
+import { ArrowLeft, CalendarBlank, DeviceMobile, UsersThree } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
-import { Bloque, Cargando, Campo, Etiqueta, Tabla, useDatos, useEnvio, modulo as m } from "../../_panel/comunes";
+import { Bloque, Cabecera, Cargando, Campo, Etiqueta, Tabla, useDatos, useEnvio, modulo as m } from "../../_panel/comunes";
 import { pesosCortos, pesosExactos } from "../../_panel/formato";
-import { CampoPesos } from "../../_panel/formas";
+import { CampoPesos, Confirmar, Pestanas, Selector } from "../../_panel/formas";
 import { Personas } from "../../_panel/Personas";
 import { fechaCorta } from "../../_panel/prestamos";
 import estilos from "../../_panel/tablero.module.css";
@@ -81,17 +81,11 @@ const PESTANAS = [
 ] as const;
 type Pestana = (typeof PESTANAS)[number][0];
 
-function Mensajes({ error, exito }: { error?: string; exito?: string }) {
+function Mensajes({ error }: { error?: string }) {
   if (error)
     return (
       <p className={m.errorFormulario} role="alert">
         {error}
-      </p>
-    );
-  if (exito)
-    return (
-      <p className={m.exito} role="status">
-        {exito}
       </p>
     );
   return null;
@@ -138,7 +132,6 @@ function LineaDeReuniones({ reuniones, miembros }: { reuniones: ReunionLinea[]; 
 
 function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const { enviar, enviando, error } = useEnvio();
-  const [exito, setExito] = useState<string>();
   const [forma, setForma] = useState({
     nombre: f.nombre,
     zona: f.zona,
@@ -152,13 +145,11 @@ function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
       </Bloque>
       <Bloque titulo="Datos de la comunidad">
         <form
-          className={m.formulario}
-          style={{ maxWidth: 560 }}
+          className={`${m.formulario} ${m.formularioPlano}`}
           onSubmit={async (e) => {
             e.preventDefault();
-            setExito(undefined);
             if (await enviar(`/oficina/comunidades/${f.id}`, forma, "PUT")) {
-              setExito("Datos guardados.");
+              toast.success("Datos de la comunidad guardados.");
               alGuardar();
             }
           }}
@@ -177,8 +168,8 @@ function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
               <input value={forma.municipio} onChange={(e) => setForma({ ...forma, municipio: e.target.value })} />
             </Campo>
           </div>
-          <Mensajes error={error} exito={exito} />
-          <div className={m.botonera} style={{ justifyContent: "flex-start" }}>
+          <Mensajes error={error} />
+          <div className={m.botonera}>
             <button type="submit" className={estilos.botonPrincipal} disabled={enviando}>
               {enviando ? "Guardando…" : "Guardar"}
             </button>
@@ -192,7 +183,6 @@ function Datos({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
 function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const activo = f.ciclos.find((c) => c.id === f.ciclo_activo);
   const { enviar, enviando, error } = useEnvio();
-  const [exito, setExito] = useState<string>();
   const [nuevo, setNuevo] = useState(!activo);
   const base = activo && !nuevo ? activo : null;
   const [forma, setForma] = useState({
@@ -208,7 +198,6 @@ function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const cambiar = (campo: keyof typeof forma) => (e: React.ChangeEvent<HTMLInputElement>) => setForma({ ...forma, [campo]: e.target.value });
   const guardar = async (e: React.FormEvent) => {
     e.preventDefault();
-    setExito(undefined);
     const cuerpo = {
       fecha_inicio: forma.fecha_inicio,
       duracion_meses: Number(forma.duracion_meses),
@@ -222,7 +211,9 @@ function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
     };
     const ok = base ? await enviar(`/oficina/ciclos/${base.id}`, cuerpo, "PUT") : await enviar(`/oficina/comunidades/${f.id}/ciclos`, cuerpo);
     if (ok) {
-      setExito(base ? "Ciclo actualizado. Los valores nuevos rigen desde la próxima reunión." : "Ciclo abierto.");
+      toast.success(base ? "Ciclo actualizado" : "Ciclo abierto", {
+        description: base ? "Los valores nuevos rigen desde la próxima reunión." : "Ya se puede asignar la junta del ciclo.",
+      });
       setNuevo(false);
       alGuardar();
     }
@@ -246,7 +237,7 @@ function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
           ) : null
         }
       >
-        <form className={m.formulario} style={{ maxWidth: 640 }} onSubmit={guardar}>
+        <form className={`${m.formulario} ${m.formularioPlano}`} onSubmit={guardar}>
           <div className={m.fila2}>
             <Campo etiqueta="Fecha de inicio">
               <input type="date" required value={forma.fecha_inicio} onChange={cambiar("fecha_inicio")} />
@@ -271,8 +262,8 @@ function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
             </Campo>
             <CampoPesos etiqueta="Meta de ahorro del ciclo (opcional)" valor={forma.meta_ahorro} alCambiar={(v) => setForma({ ...forma, meta_ahorro: v })} />
           </div>
-          <Mensajes error={error} exito={exito} />
-          <div className={m.botonera} style={{ justifyContent: "flex-start" }}>
+          <Mensajes error={error} />
+          <div className={m.botonera}>
             {nuevo && activo ? (
               <button type="button" className={estilos.botonSecundario} onClick={() => setNuevo(false)}>
                 Cancelar
@@ -338,7 +329,6 @@ function CicloForm({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
 
 function Junta({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const { enviar, enviando, error } = useEnvio();
-  const [exito, setExito] = useState<string>();
   if (!f.ciclo_activo) {
     return (
       <Bloque titulo="Junta del ciclo">
@@ -347,39 +337,41 @@ function Junta({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
     );
   }
   const asignar = async (tipo: string, membresia: string) => {
-    setExito(undefined);
     if (
       await enviar(`/oficina/ciclos/${f.ciclo_activo}/cargos`, {
         tipo,
         membresia_id: membresia || null,
       })
     ) {
-      setExito("Junta actualizada. Cada cargo crea su PIN en el celular de la ACAP.");
+      toast.success("Junta actualizada", { description: "Cada cargo crea su PIN en el celular de la ACAP." });
       alGuardar();
     }
   };
   return (
     <Bloque titulo="Junta del ciclo" sub="Cada cargo firma con su propio PIN en el celular. Una persona tiene un solo cargo por ciclo.">
-      <div className={m.formulario} style={{ maxWidth: 560 }}>
+      <div className={`${m.formulario} ${m.formularioPlano}`}>
         {f.tipos_cargo.map((t) => {
           const actual = f.cargos.find((c) => c.tipo === t.tipo);
           return (
             <Campo key={t.tipo} etiqueta={t.texto}>
-              <select value={actual?.membresia_id ?? ""} disabled={enviando} onChange={(e) => void asignar(t.tipo, e.target.value)}>
-                <option value="">Sin asignar</option>
-                {f.miembros
+              <Selector
+                valor={actual?.membresia_id ?? ""}
+                deshabilitado={enviando}
+                vacio="Sin asignar"
+                alCambiar={(v) => void asignar(t.tipo, v)}
+                opciones={f.miembros
                   .filter((p) => p.activo)
-                  .map((p) => (
-                    <option key={p.id} value={p.id}>
-                      #{String(p.numero).padStart(2, "0")} {p.nombre_corto ?? "(sin consentimiento de datos)"}
-                    </option>
-                  ))}
-              </select>
+                  .map((p) => ({
+                    valor: p.id,
+                    texto: `#${String(p.numero).padStart(2, "0")} ${p.nombre_corto ?? "Solo número"}`,
+                    detalle: p.nombre_corto ? undefined : "Sin autorización de datos",
+                  }))}
+              />
             </Campo>
           );
         })}
         {f.miembros.length === 0 ? <p className={m.tenue}>Todavía no hay personas. Agréguelas en la pestaña «Personas».</p> : null}
-        <Mensajes error={error} exito={exito} />
+        <Mensajes error={error} />
       </div>
     </Bloque>
   );
@@ -447,26 +439,13 @@ function CierreDe({ f, cicloId, alCambiar }: { f: Ficha; cicloId: string; alCamb
             }
             acciones={
               f.ciclos.length > 1 ? (
-                <select
-                  className={m.campo}
-                  value={cicloId}
-                  onChange={(e) => alCambiar(e.target.value)}
-                  aria-label="Ciclo"
-                  style={{
-                    minHeight: 40,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "1px solid var(--borde-fuerte)",
-                    font: "inherit",
-                  }}
-                >
-                  {f.ciclos.map((x) => (
-                    <option key={x.id} value={x.id}>
-                      Ciclo {x.numero}
-                      {x.estado === "activo" ? " (activo)" : ""}
-                    </option>
-                  ))}
-                </select>
+                <Selector
+                  compacto
+                  etiqueta="Ciclo"
+                  valor={cicloId}
+                  alCambiar={alCambiar}
+                  opciones={f.ciclos.map((x) => ({ valor: x.id, texto: `Ciclo ${x.numero}${x.estado === "activo" ? " (activo)" : ""}` }))}
+                />
               ) : null
             }
           >
@@ -500,7 +479,7 @@ function CierreDe({ f, cicloId, alCambiar }: { f: Ficha; cicloId: string; alCamb
             ) : (
               <p className={estilos.graficoVacio}>Todavía no hay ahorro registrado en este ciclo.</p>
             )}
-            <p className={m.tenue} style={{ margin: "16px 0 0" }}>
+            <p className={m.titular} style={{ margin: "16px 0 0" }}>
               Política de reparto pendiente de confirmar por CoimpactoB: la ganancia se reparte según las acciones de cada miembro, el fondo social queda como
               seguro y lo entregado se redondea a billetes de {pesosExactos(c.politica.multiplo_redondeo)}.
             </p>
@@ -549,7 +528,7 @@ function CierreDe({ f, cicloId, alCambiar }: { f: Ficha; cicloId: string; alCamb
                     titulo: "Debe",
                     numero: true,
                     orden: (d) => d.deuda_pendiente,
-                    valor: (d) => (d.deuda_pendiente ? pesosExactos(d.deuda_pendiente) : "—"),
+                    valor: (d) => (d.deuda_pendiente ? pesosExactos(d.deuda_pendiente) : <span className={m.tenue}>Nada</span>),
                   },
                   {
                     clave: "entregar",
@@ -570,7 +549,6 @@ function CierreDe({ f, cicloId, alCambiar }: { f: Ficha; cicloId: string; alCamb
 
 function AccesoApp({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
   const { enviar, enviando, error } = useEnvio();
-  const [exito, setExito] = useState<string>();
   const existente = f.usuarios_app[0]?.usuario;
   const [forma, setForma] = useState({
     usuario:
@@ -589,15 +567,13 @@ function AccesoApp({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
         sub="Con este usuario y su clave, la junta registra el celular de la ACAP. No entra a esta oficina."
       >
         <form
-          className={m.formulario}
-          style={{ maxWidth: 560 }}
+          className={`${m.formulario} ${m.formularioPlano}`}
           onSubmit={async (e) => {
             e.preventDefault();
-            setExito(undefined);
             if (await enviar(`/oficina/comunidades/${f.id}/usuario-app`, forma)) {
-              setExito(
-                existente ? "Clave cambiada. Entréguela en persona a la junta." : "Usuario creado. Entregue el usuario y la clave en persona a la junta.",
-              );
+              toast.success(existente ? "Clave cambiada" : "Usuario creado", {
+                description: existente ? "Entréguela en persona a la junta." : "Entregue el usuario y la clave en persona a la junta.",
+              });
               setForma({ ...forma, clave: "" });
               alGuardar();
             }
@@ -622,8 +598,8 @@ function AccesoApp({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
               onChange={(e) => setForma({ ...forma, clave: e.target.value })}
             />
           </Campo>
-          <Mensajes error={error} exito={exito} />
-          <div className={m.botonera} style={{ justifyContent: "flex-start" }}>
+          <Mensajes error={error} />
+          <div className={m.botonera}>
             <button type="submit" className={estilos.botonPrincipal} disabled={enviando}>
               {enviando ? "Guardando…" : existente ? "Cambiar la clave" : "Crear usuario"}
             </button>
@@ -648,7 +624,7 @@ function AccesoApp({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
             {
               clave: "id",
               titulo: "Identificador",
-              valor: (c) => <span className={m.tenue}>{c.id.slice(0, 8)}</span>,
+              valor: (c) => <code className={m.tenue}>{c.id.slice(0, 8)}</code>,
             },
             {
               clave: "estado",
@@ -660,17 +636,23 @@ function AccesoApp({ f, alGuardar }: { f: Ficha; alGuardar: () => void }) {
               titulo: "",
               valor: (c) =>
                 c.activo ? (
-                  <button
-                    type="button"
-                    className={estilos.botonSecundario}
-                    onClick={async () => {
-                      if (window.confirm("¿Retirar este celular? Lo que envíe después quedará por revisar.")) {
-                        if (await enviar(`/oficina/celulares/${c.id}/retirar`, {})) alGuardar();
+                  <Confirmar
+                    disparador={
+                      <button type="button" className={estilos.botonSecundario}>
+                        Retirar
+                      </button>
+                    }
+                    titulo="¿Retirar este celular?"
+                    texto="Lo que envíe después quedará por revisar. Cambie también la clave del usuario de la ACAP."
+                    accion="Retirar el celular"
+                    peligro
+                    alConfirmar={async () => {
+                      if (await enviar(`/oficina/celulares/${c.id}/retirar`, {})) {
+                        toast.success("Celular retirado");
+                        alGuardar();
                       }
                     }}
-                  >
-                    Retirar
-                  </button>
+                  />
                 ) : null,
             },
           ]}
@@ -686,52 +668,47 @@ export default function FichaComunidad() {
   const [pestana, setPestana] = useState<Pestana>("datos");
   return (
     <main className={estilos.pagina}>
-      <Link
-        href="/fundacion/comunidades"
-        className={m.tenue}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          marginBottom: 12,
-          textDecoration: "none",
-        }}
-      >
-        <ArrowLeft size={14} aria-hidden /> Comunidades
-      </Link>
       <Cargando datos={datos} error={error} recargar={recargar}>
-        {(f) => (
-          <>
-            <header className={estilos.cabeza}>
-              <div>
-                <h1 className={estilos.titulo}>{f.nombre}</h1>
-                <p className={estilos.subtitulo}>
-                  {[f.zona, f.municipio, f.departamento].filter(Boolean).join(" · ") || "Sin ubicación"} · {f.miembros.filter((p) => p.activo).length} miembros
-                </p>
-              </div>
-            </header>
-            <div className={m.pestanas} role="tablist">
-              {PESTANAS.map(([clave, texto]) => (
-                <button key={clave} type="button" role="tab" aria-selected={pestana === clave} className={m.pestana} onClick={() => setPestana(clave)}>
-                  {texto}
-                  {pestana === clave ? (
-                    <motion.span layoutId="marca-pestana" className={m.pestanaMarca} transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }} />
-                  ) : null}
-                </button>
-              ))}
-            </div>
-            <div role="tabpanel">
-              {pestana === "datos" ? <Datos f={f} alGuardar={recargar} /> : null}
-              {pestana === "ciclo" ? <CicloForm key={f.ciclo_activo ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
-              {pestana === "junta" ? <Junta f={f} alGuardar={recargar} /> : null}
-              {pestana === "personas" ? (
-                <Personas acapId={f.id} cargos={Object.fromEntries(f.cargos.map((c) => [c.membresia_id, c.texto]))} alCambiar={recargar} />
-              ) : null}
-              {pestana === "cierre" ? <CierreCiclo f={f} /> : null}
-              {pestana === "app" ? <AccesoApp key={f.usuarios_app[0]?.usuario ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
-            </div>
-          </>
-        )}
+        {(f) => {
+          const activos = f.miembros.filter((p) => p.activo).length;
+          const ciclo = f.ciclos.find((c) => c.id === f.ciclo_activo);
+          return (
+            <>
+              <Cabecera
+                antes={
+                  <Link href="/fundacion/comunidades" className={estilos.volver}>
+                    <ArrowLeft size={14} weight="bold" aria-hidden /> Comunidades
+                  </Link>
+                }
+                titulo={f.nombre}
+                sub={[f.zona, f.municipio, f.departamento].filter(Boolean).join(" · ") || "Sin ubicación"}
+                acciones={
+                  <div className={estilos.datosFicha}>
+                    <span>
+                      <UsersThree size={16} aria-hidden /> {activos} {activos === 1 ? "miembro" : "miembros"}
+                    </span>
+                    <span>
+                      <CalendarBlank size={16} aria-hidden /> {ciclo ? `Ciclo ${ciclo.numero} · ${ciclo.reuniones} ${ciclo.reuniones === 1 ? "reunión" : "reuniones"}` : "Sin ciclo activo"}
+                    </span>
+                    <span>
+                      <DeviceMobile size={16} aria-hidden /> {f.celulares.filter((c) => c.activo).length ? "Celular registrado" : "Sin celular"}
+                    </span>
+                  </div>
+                }
+              />
+              <Pestanas etiqueta="Secciones de la ficha" valor={pestana} alCambiar={setPestana} opciones={PESTANAS}>
+                {pestana === "datos" ? <Datos f={f} alGuardar={recargar} /> : null}
+                {pestana === "ciclo" ? <CicloForm key={f.ciclo_activo ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
+                {pestana === "junta" ? <Junta f={f} alGuardar={recargar} /> : null}
+                {pestana === "personas" ? (
+                  <Personas acapId={f.id} cargos={Object.fromEntries(f.cargos.map((c) => [c.membresia_id, c.texto]))} alCambiar={recargar} />
+                ) : null}
+                {pestana === "cierre" ? <CierreCiclo f={f} /> : null}
+                {pestana === "app" ? <AccesoApp key={f.usuarios_app[0]?.usuario ?? "nuevo"} f={f} alGuardar={recargar} /> : null}
+              </Pestanas>
+            </>
+          );
+        }}
       </Cargando>
     </main>
   );

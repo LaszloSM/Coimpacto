@@ -8,6 +8,7 @@ import { uuid } from "../seguridad/llavero";
 import { criptoNode as c } from "../seguridad/pruebas/criptoNode";
 import {
   abrirReunion,
+  anotadosDeLaReunion,
   aportesDeLaPasada,
   aportesRegistrados,
   asistencia,
@@ -150,6 +151,13 @@ describe("aportes por miembro", () => {
     expect(despues[2].datos.acciones).toBe(2);
     expect(new Set(despues.map((e) => e.id)).size).toBe(4);
     expect(despues.some((e) => antes.some((a) => a.id === e.id))).toBe(false);
+  });
+
+  test("la planilla sabe quién ya tiene su aporte anotado y cuánto dio", async () => {
+    const { base, reunion, escritor } = await preparar();
+    expect((await anotadosDeLaReunion(base, reunion.id, CICLO)).size).toBe(0);
+    await registrarAportes(base, c, { reunion, ciclo: CICLO, miembro: SOCIA, aportes: { acciones: 2, fondoSocial: true, multas: { tarde: 1 } }, firmante: escritor, ahora: AHORA });
+    expect(await anotadosDeLaReunion(base, reunion.id, CICLO)).toEqual(new Map([["t7", 24_000]]));
   });
 
   test("por encima del tope del ciclo no se firma nada", async () => {
